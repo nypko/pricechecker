@@ -1,0 +1,31 @@
+{
+ "https://wondamobile.com": {
+  "currency": "USD",
+  "rates": {
+   "USD": 1.0,
+   "EUR": 0.903254,
+   "GBP": 0.762941
+  },
+  "fetched": "2026-10-16T00:05:57+00:00"
+ },
+ "https://www.themobilemarvel.com": {
+  "currency": "HKD",
+  "rates": {
+   "HKD": 1.0,
+   "USD": 0.12998166,
+   "EUR": 0.11592402,
+   "GBP": 0.09792612
+  },
+  "fetched": "2026-10-16T00:09:40+00:00"
+ },
+ "https://www.giztop.com": {
+  "currency": "USD",
+  "rates": {
+   "USD": 1.0,
+   "EUR": 0.875498,
+   "GBP": 0.772501,
+   "AUD": 1.59
+  },
+  "fetched": "2026-10-16T01:58:24+00:00"
+ }
+}

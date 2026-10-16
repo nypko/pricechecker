@@ -1,0 +1,9 @@
+# Estimated import tax the buyer pays on delivery, per Ship-to destination. Shown (and added to the total, marked ≈)
+# when a store's price doesn't include it (stores.yaml: shipping.<region>.duties_included: false).
+# Charged on goods + shipping, the way customs values an import. Mobile phones have 0% customs duty in the EU, UK
+# and Australia, so only VAT/GST counts. rate_pct: null = no estimate shown (rules too variable to state a number).
+regions:
+  EU: {rate_pct: 21, name: "import VAT", note: "EU average; VAT is 17-27% depending on the country. Phones have 0% customs duty. Couriers may add a handling fee."}
+  UK: {rate_pct: 20, name: "import VAT", note: "UK VAT 20% on goods + shipping; phones have 0% customs duty. Couriers may add a handling fee."}
+  AU: {rate_pct: 10, name: "GST", note: "10% GST on goods + shipping; phones have no customs duty. Couriers may add a handling fee."}
+  US: {rate_pct: null, name: "import tariffs", note: "US tariffs on phones change often - check the current rate before buying."}

@@ -1,0 +1,141 @@
+# Stores to check every hour.
+#   type: shopify | webpage | feed | official_api
+#   affiliate_link: template for tracking links. Placeholders: {url} {url_enc} {sep} {id}
+#   affiliate_id / affiliate_id_env: your id (or the name of an env var / GitHub secret holding it)
+# Copy the exact link format from each store's affiliate dashboard - the templates below are placeholders.
+#
+#   terms: payment / shipping conditions shown on the site (Payment + Ship-to selectors)
+#     payment.<card|paypal|bank_transfer>: fee_pct (surcharge) or discount_pct; null = unknown/unverified
+#     shipping.<EU|UK|US|AU>: cost (+ currency if not the store's) ; null = not listed / unknown
+#       duties_included: true if the price already covers the destination's import duties + VAT/GST, false if the
+#       buyer pays them on delivery, omit if the store doesn't say (the site then shows "import tax not stated")
+#     watch: pages re-checked daily; if `expect` (regex) is no longer found, the site flags the terms for review
+
+stores:
+  wonda:
+    label: Wonda Mobile
+    type: shopify
+    base_url: https://wondamobile.com
+    currency: USD
+    product_types: [Mobile]
+    exclude_title: "used|kit|demo|refurb"
+    terms:   # verified 2026-10-16 from https://wondamobile.com/pages/billing-information + /policies/shipping-policy
+      payment:
+        bank_transfer: {discount_pct: 4.5, note: "Local bank transfer. EUR only from: AT BE HR CY CZ DK EE FI FR DE GR HU IE IM IT LV LT LU MT MC NL PT RO SI ES SE CH (not BG/PL/SK); GBP: UK, JE; USD: US"}
+        paypal: {fee_pct: 0}
+        card: {fee_pct: 0, note: "No handling fee; your bank may charge foreign-transaction fees"}
+      shipping:
+        EU: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated"}
+        UK: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated"}
+        US: {cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated"}
+        AU: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated"}
+      watch:   # re-checked daily; if the text disappears the site flags the terms as "needs review"
+        - {url: "https://wondamobile.com/pages/billing-information", expect: "4\\.5% discount"}
+        - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
+    affiliate_link: "{url}{sep}ref={id}"   # referral link from the dashboard: https://www.wondamobile.com?ref=ivaylo_kirov
+    affiliate_id: ivaylo_kirov
+
+  mobilemarvel:
+    label: The Mobile Marvel
+    type: shopify
+    base_url: https://www.themobilemarvel.com
+    currency: HKD
+    exclude_title: "used|kit|demo|refurb|lens|case|cover|charger|cable|watch|buds|pad|tablet|protector|strap"
+    affiliate_link: "{url}{sep}ref={id}"
+    affiliate_id: YOUR_MOBILEMARVEL_ID
+    terms:   # verified 2026-10-16 from /pages/shipping, /pages/custom-duties, /apps/frequently-asked-questions
+      payment:
+        bank_transfer: {discount_pct: 4.75, note: "Bank transfers 4.75% off all orders (manual confirmation)"}
+        paypal: {fee_pct: 0}
+        card: {fee_pct: 0}
+      shipping:
+        EU: {duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
+        UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
+        US: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & taxes included"}
+        AU: {duties_included: true, cost: 300, currency: HKD, note: "Standard (all regions except EU), up to 8 business days; duties & GST included"}
+      watch:
+        - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
+        - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
+
+  trinity:
+    label: Trinity Electronic
+    type: webpage
+    enabled: false        # behind Cloudflare bot protection (403 challenge) - enable once they allowlist
+                          # PriceCheckerBot or provide a product feed (then switch to type: feed)
+    currency: HKD
+    affiliate_link: "{url}{sep}ref={id}"
+    affiliate_id: YOUR_TRINITY_ID
+
+  tradingshenzhen:
+    label: Trading Shenzhen
+    type: feed            # the site blocks scripts (HTTP 403) - ask your affiliate contact for a product feed URL
+    feed_url_env: TSZ_FEED_URL
+    feed_format: xml      # or csv
+    feed_fields: {title: title, link: link, price: price, availability: availability}
+    title_must_contain: [""]
+    currency: EUR
+    affiliate_link: "{url}{sep}affp={id}"   # from the affiliate dashboard: .../gift-coupon/10-voucher?affp=313618
+    affiliate_id: "313618"
+    terms:   # NOT verified - site blocks automated access. Third-party listing (kimovil) says PayPal "with charge",
+             # shipping 6-16 EUR. Confirm with your affiliate contact and fill in.
+      payment:
+        bank_transfer: {discount_pct: null, note: "Unknown"}
+        paypal: {fee_pct: null, note: "Reportedly has a surcharge - amount unknown"}
+        card: {fee_pct: null, note: "Unknown"}
+      shipping:
+        EU: {cost: null, note: "Unknown (reported 6-16 EUR)"}
+        UK: {cost: null, note: "Unknown"}
+        US: {cost: null, note: "Unknown"}
+        AU: {cost: null, note: "Unknown"}
+
+  giztop:
+    label: Giztop
+    type: magento         # walks the phone category, then reads variant prices from each tracked phone's page
+    base_url: https://www.giztop.com
+    categories: [/phones.html]
+    exclude_title: "almost new|used|refurbished|open box"
+    aliases: {xiaomi-17-ultra-by-leica: xiaomi-17-ultra-leica-edition}
+    currency: USD
+    affiliate_link: "{url}{sep}ref={id}"
+    affiliate_id: YOUR_GIZTOP_ID
+    terms:   # verified 2026-10-16 from /payment/, /giztop-shipping-options/, /customs-duty/
+      payment:
+        bank_transfer: {discount_pct: 0, min_order_usd: 1500, note: "Wire transfer only for orders over $1,500 (request by ticket), no discount"}
+        paypal: {fee_pct: 0, note: "Charged in USD"}
+        card: {fee_pct: 0, note: "Cards via PayPal"}
+      shipping:
+        EU: {duties_included: true, cost: null, note: "Weight-based, shown in cart; EU duties/VAT paid by Giztop (IOSS)"}
+        UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK duties/VAT"}
+        US: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays US duties"}
+        AU: {duties_included: false, cost: null, note: "Weight-based, shown in cart; prices exclude import tax, buyer pays AU GST/duties"}
+      watch:
+        - {url: "https://www.giztop.com/payment/", expect: "Wired Transfer"}
+
+  banggood:
+    label: Banggood
+    enabled: false        # 2026-10-16: carries no current flagships (only accessories "for Xiaomi 17 Pro" etc.)
+    type: webpage         # switch to type: feed once you have the affiliate product feed
+    currency: USD
+    affiliate_link: "{url}{sep}p={id}"
+    affiliate_id: YOUR_BANGGOOD_ID
+
+  geekbuying:
+    label: Geekbuying
+    enabled: false        # 2026-10-16: phones are rugged/budget models (FOSSiBOT etc.), no tracked flagships
+    type: webpage
+    currency: USD
+    affiliate_link: "{url}{sep}aff={id}"
+    affiliate_id: YOUR_GEEKBUYING_ID
+
+  amazon:
+    label: Amazon
+    type: official_api    # Product Advertising API - scraping Amazon is against its terms
+    credential_envs: [AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_PARTNER_TAG]
+    affiliate_link: "{url}{sep}tag={id}"
+    affiliate_id_env: AMAZON_PARTNER_TAG
+
+  aliexpress:
+    label: AliExpress
+    type: official_api    # AliExpress Portals affiliate API
+    credential_envs: [ALIEXPRESS_APP_KEY, ALIEXPRESS_APP_SECRET, ALIEXPRESS_TRACKING_ID]
+    affiliate_id_env: ALIEXPRESS_TRACKING_ID

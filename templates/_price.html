@@ -1,0 +1,6 @@
+{#- data-*-approx="1" = converted at ECB rates (the store has no own price in that currency) -#}
+{%- macro price(m) -%}
+<span class="price" data-usd="{{ m.usd }}" data-eur="{{ m.eur }}" data-gbp="{{ m.gbp }}" data-aud="{{ m.aud }}"
+  data-usd-approx="{{ m.usd_approx }}" data-eur-approx="{{ m.eur_approx }}" data-gbp-approx="{{ m.gbp_approx }}" data-aud-approx="{{ m.aud_approx }}"
+  {%- if m.usd_approx %} title="Converted at ECB rate"{% endif %}>{{ "≈" if m.usd_approx }}${{ "{:,.0f}".format(m.usd) }}</span>
+{%- endmacro -%}

@@ -1,0 +1,66 @@
+"""Hourly job: check every enabled store, record price changes, rebuild the site.
+Usage: python -m pricechecker.run [--only wonda,giztop] [--no-build]
+Exit codes: 0 ok, 3 no store could be checked this time (the site is still rebuilt from the last known prices)."""
+import argparse
+import os
+import sys
+from collections import Counter
+from pathlib import Path
+
+import yaml
+
+from . import fx, history, site, terms
+from .models import StoreNotConfigured
+from .stores import ADAPTERS
+
+
+def load_config():
+    stores = yaml.safe_load(Path("config/stores.yaml").read_text())["stores"]
+    catalog = yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]
+    for p in catalog:
+        p.setdefault("edition", "china")
+        p.setdefault("brand", p["name"].split()[0])
+    return stores, catalog
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--only", help="comma-separated store names to check")
+    ap.add_argument("--no-build", action="store_true")
+    ap.add_argument("--build-only", action="store_true", help="rebuild the site from saved data, no price checks")
+    args = ap.parse_args(argv)
+    os.chdir(Path(__file__).resolve().parent.parent)
+    stores, catalog = load_config()
+    if args.build_only:
+        site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
+        return 0
+    tracked = {p["id"] for p in catalog}   # by model: any edition a store sells is shown (Global and China side by side)
+    only = set(args.only.split(",")) if args.only else None
+    results, failures, untracked_lines = {}, {}, []
+    for name, cfg in stores.items():
+        if not cfg.get("enabled", True) or (only and name not in only):
+            continue
+        print(f"[{name}] checking ({cfg['type']})")
+        try:
+            offers = ADAPTERS[cfg["type"]](name, cfg, catalog)
+        except StoreNotConfigured as e:
+            print(f"  skipped: {e}")
+            continue
+        except Exception as e:
+            print(f"  FAILED: {type(e).__name__}: {e}")
+            failures[name] = f"{type(e).__name__}: {e}"[:300]
+            continue
+        kept = [o for o in offers if o.model_id in tracked]
+        untracked = Counter(o.model_id + "/" + o.edition for o in offers if o.model_id not in tracked)
+        print(f"  {len(offers)} offers, {len(kept)} for tracked phones" + (f"; untracked models: {len(untracked)}" if untracked else ""))
+        untracked_lines += [f"{name}\t{k}\n" for k in sorted(untracked)]
+        results[name] = kept
+    Path("data/untracked.txt").write_text("".join(untracked_lines))  # models seen but not in catalog.yaml
+    history.save(results, failures)
+    if not args.no_build:
+        site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
+    return 0 if results else 3
+
+
+if __name__ == "__main__":
+    sys.exit(main())

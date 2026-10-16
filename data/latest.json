@@ -1,0 +1,2524 @@
+{
+ "updated": "2026-10-16T01:58:24Z",
+ "stores": {
+  "wonda": {
+   "checked": "2026-10-16T01:18:13Z",
+   "ok": false,
+   "offers": [],
+   "error": "Blocked: 429 from wondamobile.com - the site refuses or rate-limits automated access; use its affiliate feed/API",
+   "last_attempt": "2026-10-16T01:46:37Z"
+  },
+  "mobilemarvel": {
+   "checked": "2026-10-16T01:19:25Z",
+   "ok": false,
+   "offers": [],
+   "error": "Blocked: 429 from www.themobilemarvel.com - the site refuses or rate-limits automated access; use its affiliate feed/API",
+   "last_attempt": "2026-10-16T01:46:37Z"
+  },
+  "giztop": {
+   "checked": "2026-10-16T01:58:24Z",
+   "ok": true,
+   "offers": [
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Pro Max",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro-max.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Pro Max",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro-max.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Pro Max",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro-max.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 9 Pro Max",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9-pro-max.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic 9 Pro Max",
+     "price": 1249.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9-pro-max.html",
+     "prices": {
+      "USD": 1249.0,
+      "EUR": 1093.5,
+      "GBP": 964.85,
+      "AUD": 1985.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 9 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 9 Pro Max",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9-pro-max.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500 Pro Max",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro-max.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X500 Pro Max",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro-max.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X500 Pro Max",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro-max.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500 Pro Max",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro-max.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X10 Pro Max",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10-pro-max.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X10 Pro Max",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10-pro-max.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X10 Pro Max",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10-pro-max.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X10 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Fold",
+     "price": 2299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-fold.html",
+     "prices": {
+      "USD": 2299.0,
+      "EUR": 2012.77,
+      "GBP": 1775.98,
+      "AUD": 3655.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Fold",
+     "price": 2499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-fold.html",
+     "prices": {
+      "USD": 2499.0,
+      "EUR": 2187.87,
+      "GBP": 1930.48,
+      "AUD": 3973.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Fold",
+     "price": 1799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-fold.html",
+     "prices": {
+      "USD": 1799.0,
+      "EUR": 1575.02,
+      "GBP": 1389.73,
+      "AUD": 2860.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Fold",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-fold.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "OPPO Find X9 Ultra Global",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra-global.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Ultra Global",
+     "price": 1799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra-global.html",
+     "prices": {
+      "USD": 1799.0,
+      "EUR": 1575.02,
+      "GBP": 1389.73,
+      "AUD": 2860.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Mate 90",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 90",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Huawei Mate 90",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Mate 90 Pro",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 90 Pro",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 90 Pro",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Mate 90 Pro",
+     "price": 1899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro.html",
+     "prices": {
+      "USD": 1899.0,
+      "EUR": 1662.57,
+      "GBP": 1466.98,
+      "AUD": 3019.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 90 Pro Max",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro-max.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-90-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 90 Pro Max",
+     "price": 2099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-90-pro-max.html",
+     "prices": {
+      "USD": 2099.0,
+      "EUR": 1837.67,
+      "GBP": 1621.48,
+      "AUD": 3337.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 9",
+     "price": 939.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9.html",
+     "prices": {
+      "USD": 939.0,
+      "EUR": 822.09,
+      "GBP": 725.38,
+      "AUD": 1493.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic 9",
+     "price": 1039.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9.html",
+     "prices": {
+      "USD": 1039.0,
+      "EUR": 909.64,
+      "GBP": 802.63,
+      "AUD": 1652.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 9",
+     "price": 1139.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9.html",
+     "prices": {
+      "USD": 1139.0,
+      "EUR": 997.19,
+      "GBP": 879.88,
+      "AUD": 1811.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-9",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 9",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-9.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Pro-Blue-16GB - 1TB",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro-blue-16gb-1tb.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X10",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X10",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X10",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X10",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x10.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "HUAWEI Pura X View-White-12GB - 256GB",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-x-view-white-12gb-256gb.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "HUAWEI Pura X View",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-x-view.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "HUAWEI Pura X View",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-x-view.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Pro",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Pro",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Pro",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-18-pro.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X Fold 6",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x-fold-6.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X Fold 6",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x-fold-6.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X Fold 6",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x-fold-6.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X Fold 6",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x-fold-6.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 17 Max",
+     "price": 749.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-max.html",
+     "prices": {
+      "USD": 749.0,
+      "EUR": 655.75,
+      "GBP": 578.6,
+      "AUD": 1190.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-max",
+     "edition": "china",
+     "storage": "16/256",
+     "title": "Xiaomi 17 Max",
+     "price": 839.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-max.html",
+     "prices": {
+      "USD": 839.0,
+      "EUR": 734.54,
+      "GBP": 648.13,
+      "AUD": 1334.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Max",
+     "price": 849.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-max.html",
+     "prices": {
+      "USD": 849.0,
+      "EUR": 743.3,
+      "GBP": 655.85,
+      "AUD": 1349.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Max",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-max.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-fold",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Motorola Moto Razr Fold",
+     "price": 1799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-fold.html",
+     "prices": {
+      "USD": 1799.0,
+      "EUR": 1575.02,
+      "GBP": 1389.73,
+      "AUD": 2860.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-fold",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Motorola Moto Razr Fold",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-fold.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-fold",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Motorola Moto Razr Fold",
+     "price": 2799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-fold.html",
+     "prices": {
+      "USD": 2799.0,
+      "EUR": 2450.52,
+      "GBP": 2162.23,
+      "AUD": 4450.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-70-ultra",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Motorola Moto Razr 70 Ultra",
+     "price": 1359.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-70-ultra.html",
+     "prices": {
+      "USD": 1359.0,
+      "EUR": 1189.8,
+      "GBP": 1049.83,
+      "AUD": 2160.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-70-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Motorola Moto Razr 70 Ultra",
+     "price": 1459.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-70-ultra.html",
+     "prices": {
+      "USD": 1459.0,
+      "EUR": 1277.35,
+      "GBP": 1127.08,
+      "AUD": 2319.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "motorola-razr-70-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Motorola Moto Razr 70 Ultra",
+     "price": 1559.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/motorola-moto-razr-70-ultra.html",
+     "prices": {
+      "USD": 1559.0,
+      "EUR": 1364.9,
+      "GBP": 1204.33,
+      "AUD": 2478.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Vivo X300 Ultra Global-Black-16GB - 1TB",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra-global-black-16gb-1tb.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Vivo X300 Ultra Global",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra-global.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500 Pro",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500 Pro",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500 Pro",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X500 Pro",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X500 Pro",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x500-pro.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-x-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "HUAWEI Pura X Max",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-x-max.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-x-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "HUAWEI Pura X Max",
+     "price": 2349.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-x-max.html",
+     "prices": {
+      "USD": 2349.0,
+      "EUR": 2056.54,
+      "GBP": 1814.6,
+      "AUD": 3734.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Pura 90 Pro Max",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro-max.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Pura 90 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura 90 Pro Max",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro-max.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Pura 90 Pro Max",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro-max.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Pura 90 Pro",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Pura 90 Pro",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura 90 Pro",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-90-pro.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X9 Ultra-Black-12GB - 256GB",
+     "price": 1149.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra-black-12gb-256gb.html",
+     "prices": {
+      "USD": 1149.0,
+      "EUR": 1005.95,
+      "GBP": 887.6,
+      "AUD": 1826.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9s-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X9s Pro",
+     "price": 799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9s-pro.html",
+     "prices": {
+      "USD": 799.0,
+      "EUR": 699.52,
+      "GBP": 617.23,
+      "AUD": 1270.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9s-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X9s Pro",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9s-pro.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9s-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X9s Pro",
+     "price": 959.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9s-pro.html",
+     "prices": {
+      "USD": 959.0,
+      "EUR": 839.6,
+      "GBP": 740.83,
+      "AUD": 1524.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9s-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X9s Pro",
+     "price": 1139.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9s-pro.html",
+     "prices": {
+      "USD": 1139.0,
+      "EUR": 997.19,
+      "GBP": 879.88,
+      "AUD": 1811.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X9 Ultra",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Ultra",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X9 Ultra",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-ultra.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-n6",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find N6-Black-16GB - 512GB",
+     "price": 1659.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-n6-black-16gb-512gb.html",
+     "prices": {
+      "USD": 1659.0,
+      "EUR": 1452.45,
+      "GBP": 1281.58,
+      "AUD": 2637.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra-leica-edition",
+     "edition": "china",
+     "storage": "base",
+     "title": "Xiaomi 17 Ultra By Leica",
+     "price": 1249.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra-by-leica-edition-black-silver.html",
+     "prices": {
+      "USD": 1249.0,
+      "EUR": 1093.5,
+      "GBP": 964.85,
+      "AUD": 1985.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic V6",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-v6.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic V6",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-v6.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic V6",
+     "price": 1799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-v6.html",
+     "prices": {
+      "USD": 1799.0,
+      "EUR": 1575.02,
+      "GBP": 1389.73,
+      "AUD": 2860.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic V6",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-v6.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-n6",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find N6",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-n6.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-n6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find N6",
+     "price": 1899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-n6.html",
+     "prices": {
+      "USD": 1899.0,
+      "EUR": 1662.57,
+      "GBP": 1466.98,
+      "AUD": 3019.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X300 Ultra",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X300 Ultra",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X300 Ultra",
+     "price": 1599.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra.html",
+     "prices": {
+      "USD": 1599.0,
+      "EUR": 1399.92,
+      "GBP": 1235.23,
+      "AUD": 2542.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X300 Ultra",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-ultra.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 8 Pro Air",
+     "price": 839.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro-air.html",
+     "prices": {
+      "USD": 839.0,
+      "EUR": 734.54,
+      "GBP": 648.13,
+      "AUD": 1334.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic 8 Pro Air",
+     "price": 859.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro-air.html",
+     "prices": {
+      "USD": 859.0,
+      "EUR": 752.05,
+      "GBP": 663.58,
+      "AUD": 1365.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 8 Pro Air",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro-air.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 8 Pro Air",
+     "price": 969.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro-air.html",
+     "prices": {
+      "USD": 969.0,
+      "EUR": 848.36,
+      "GBP": 748.55,
+      "AUD": 1540.71
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra-leica-edition",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra By Leica",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra-leica.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra-leica-edition",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra By Leica",
+     "price": 1399.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra-leica.html",
+     "prices": {
+      "USD": 1399.0,
+      "EUR": 1224.82,
+      "GBP": 1080.73,
+      "AUD": 2224.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80 Pro Max",
+     "price": 1499.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro-max.html",
+     "prices": {
+      "USD": 1499.0,
+      "EUR": 1312.37,
+      "GBP": 1157.98,
+      "AUD": 2383.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Mate 80 Pro Max",
+     "price": 1699.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro-max.html",
+     "prices": {
+      "USD": 1699.0,
+      "EUR": 1487.47,
+      "GBP": 1312.48,
+      "AUD": 2701.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Mate 80 Pro",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 80 Pro",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80 Pro",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Mate 80 Pro",
+     "price": 1459.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80-pro.html",
+     "prices": {
+      "USD": 1459.0,
+      "EUR": 1277.35,
+      "GBP": 1127.08,
+      "AUD": 2319.81
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 80",
+     "price": 939.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80.html",
+     "prices": {
+      "USD": 939.0,
+      "EUR": 822.09,
+      "GBP": 725.38,
+      "AUD": 1493.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-mate-80",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Mate 80",
+     "price": 839.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-mate-80.html",
+     "prices": {
+      "USD": 839.0,
+      "EUR": 734.54,
+      "GBP": 648.13,
+      "AUD": 1334.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OnePlus 15-Titanium-16GB - 1TB",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15-titanium-16gb-1tb.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OnePlus 15-Titanium-12GB - 256GB",
+     "price": 799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15-titanium-12gb-256gb.html",
+     "prices": {
+      "USD": 799.0,
+      "EUR": 699.52,
+      "GBP": 617.23,
+      "AUD": 1270.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic 8 Pro-White-12GB - 512GB",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro-white-12gb-512gb.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 8 Pro",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 8 Pro",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 8 Pro",
+     "price": 1099.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/honor-magic-8-pro.html",
+     "prices": {
+      "USD": 1099.0,
+      "EUR": 962.17,
+      "GBP": 848.98,
+      "AUD": 1747.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Pro Max",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro-max.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Pro Max",
+     "price": 1299.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro-max.html",
+     "prices": {
+      "USD": 1299.0,
+      "EUR": 1137.27,
+      "GBP": 1003.48,
+      "AUD": 2065.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Pro Max",
+     "price": 1049.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro-max.html",
+     "prices": {
+      "USD": 1049.0,
+      "EUR": 918.4,
+      "GBP": 810.35,
+      "AUD": 1667.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 17 Pro Max",
+     "price": 949.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro-max.html",
+     "prices": {
+      "USD": 949.0,
+      "EUR": 830.85,
+      "GBP": 733.1,
+      "AUD": 1508.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X9 Pro",
+     "price": 879.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-pro.html",
+     "prices": {
+      "USD": 879.0,
+      "EUR": 769.56,
+      "GBP": 679.03,
+      "AUD": 1397.61
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X9 Pro",
+     "price": 1019.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-pro.html",
+     "prices": {
+      "USD": 1019.0,
+      "EUR": 892.13,
+      "GBP": 787.18,
+      "AUD": 1620.21
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Pro",
+     "price": 1079.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-pro.html",
+     "prices": {
+      "USD": 1079.0,
+      "EUR": 944.66,
+      "GBP": 833.53,
+      "AUD": 1715.61
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X9 Pro",
+     "price": 939.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-x9-pro.html",
+     "prices": {
+      "USD": 939.0,
+      "EUR": 822.09,
+      "GBP": 725.38,
+      "AUD": 1493.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 17 Pro",
+     "price": 869.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro.html",
+     "prices": {
+      "USD": 869.0,
+      "EUR": 760.81,
+      "GBP": 671.3,
+      "AUD": 1381.71
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Pro",
+     "price": 1039.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro.html",
+     "prices": {
+      "USD": 1039.0,
+      "EUR": 909.64,
+      "GBP": 802.63,
+      "AUD": 1652.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Pro",
+     "price": 1119.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro.html",
+     "prices": {
+      "USD": 1119.0,
+      "EUR": 979.68,
+      "GBP": 864.43,
+      "AUD": 1779.21
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Pro",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-pro.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "OnePlus 15 Global",
+     "price": 799.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15.html",
+     "prices": {
+      "USD": 799.0,
+      "EUR": 699.52,
+      "GBP": 617.23,
+      "AUD": 1270.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OnePlus 15 Global",
+     "price": 899.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15.html",
+     "prices": {
+      "USD": 899.0,
+      "EUR": 787.07,
+      "GBP": 694.48,
+      "AUD": 1429.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "OnePlus 15 Global",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "16/256",
+     "title": "OnePlus 15 Global",
+     "price": 849.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15.html",
+     "prices": {
+      "USD": 849.0,
+      "EUR": 743.3,
+      "GBP": 655.85,
+      "AUD": 1349.91
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "OnePlus 15 Global",
+     "price": 839.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oneplus-15.html",
+     "prices": {
+      "USD": 839.0,
+      "EUR": 734.54,
+      "GBP": 648.13,
+      "AUD": 1334.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Ultra",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra",
+     "price": 1119.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra.html",
+     "prices": {
+      "USD": 1119.0,
+      "EUR": 979.68,
+      "GBP": 864.43,
+      "AUD": 1779.21
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra",
+     "price": 1219.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/xiaomi-17-ultra.html",
+     "prices": {
+      "USD": 1219.0,
+      "EUR": 1067.23,
+      "GBP": 941.68,
+      "AUD": 1938.21
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X300 Pro",
+     "price": 999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-pro.html",
+     "prices": {
+      "USD": 999.0,
+      "EUR": 874.62,
+      "GBP": 771.73,
+      "AUD": 1588.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X300 Pro",
+     "price": 1139.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-pro.html",
+     "prices": {
+      "USD": 1139.0,
+      "EUR": 997.19,
+      "GBP": 879.88,
+      "AUD": 1811.01
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "vivo-x300-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X300 Pro",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/vivo-x300-pro.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-80-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura 80 Ultra",
+     "price": 1999.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-80-ultra.html",
+     "prices": {
+      "USD": 1999.0,
+      "EUR": 1750.12,
+      "GBP": 1544.23,
+      "AUD": 3178.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "huawei-pura-80-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Pura 80 Ultra",
+     "price": 2199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/huawei-pura-80-ultra.html",
+     "prices": {
+      "USD": 2199.0,
+      "EUR": 1925.22,
+      "GBP": 1698.73,
+      "AUD": 3496.41
+     }
+    },
+    {
+     "store": "giztop",
+     "model_id": "oppo-find-n5",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find N5 Global Edition-Black-16GB - 512GB",
+     "price": 1199.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://www.giztop.com/oppo-find-n5-global-edition-black-16gb-512gb.html",
+     "prices": {
+      "USD": 1199.0,
+      "EUR": 1049.72,
+      "GBP": 926.23,
+      "AUD": 1906.41
+     }
+    }
+   ]
+  }
+ }
+}

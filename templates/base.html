@@ -9,7 +9,7 @@
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="{{ root }}index.html">Price<span>Checker</span></a>
+  <a class="brand" href="{{ root or './' }}">Price<span>Checker</span></a>
   <div class="controls">
     <div class="cur" role="group" aria-label="Currency">
       <button data-cur="usd" aria-pressed="true">USD</button><button data-cur="eur">EUR</button><button data-cur="gbp">GBP</button><button data-cur="aud">AUD</button>

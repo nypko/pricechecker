@@ -3,7 +3,7 @@
 {% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – PriceChecker{% endblock %}
 {% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, updated hourly.{% endblock %}
 {% block main %}
-<p class="crumb"><a href="../index.html">← All phones</a></p>
+<p class="crumb"><a href="../">← All phones</a></p>
 <h1>{{ p.name }} {% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }}</span> {% endfor %}</h1>
 {% if p.best %}
 <p class="lead" data-offers="{{ p.offers_json }}">Best price now: {{ price(p.best.money) }} at <strong class="lead-store">{{ p.best.store_label }}</strong>

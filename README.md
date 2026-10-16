@@ -48,7 +48,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m pricechecker.run                  # all stores (exit 3 = no store answered)
 .venv/bin/python -m pricechecker.run --only giztop
 .venv/bin/python -m pricechecker.run --build-only     # rebuild the site from saved data
-.venv/bin/python -m http.server 8765 --directory build
+.venv/bin/python -m pricechecker.serve           # preview at http://127.0.0.1:8765, same URLs as Cloudflare
 ```
 
 ## Deploy (GitHub Actions + Cloudflare Pages)

@@ -21,7 +21,7 @@
 {% for p in phones %}
   <li class="card{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}"
       {% if p.best %}data-offers="{{ p.offers_json }}"{% endif %}>
-    <a class="card-link" href="phones/{{ p.slug }}.html"><span class="name">{{ p.name }}</span></a>
+    <a class="card-link" href="phones/{{ p.slug }}"><span class="name">{{ p.name }}</span></a>
     {% if p.offers %}
       <ul class="eds">
       {% for e in p.eds %}
@@ -42,7 +42,7 @@
     {% if p.best %}
       <div class="actions">
         <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View cheapest deal</a>
-        <a class="compare" href="phones/{{ p.slug }}.html">Compare {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}</a>
+        <a class="compare" href="phones/{{ p.slug }}">Compare {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}</a>
       </div>
     {% elif p.offers %}
       <div class="best none">Out of stock everywhere</div>

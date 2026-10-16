@@ -12,7 +12,8 @@ def test_payment_adjustments():
     assert terms.payment_pct(STORES["wonda"], "bank") == -4.5
     assert terms.payment_pct(STORES["mobilemarvel"], "bank") == -4.75
     assert terms.payment_pct(STORES["wonda"], "paypal") == 0
-    assert terms.payment_pct(STORES["tradingshenzhen"], "paypal") is None   # unverified -> unknown
+    assert terms.payment_pct(STORES["tradingshenzhen"], "paypal") == 4      # ~4% PayPal surcharge (payment-regulations page)
+    assert terms.duties_included(STORES["tradingshenzhen"], "AU") is True   # store covers customs/GST everywhere
     assert terms.payment_pct(STORES["amazon"], "card") is None              # no terms at all
 
 

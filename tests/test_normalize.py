@@ -72,3 +72,12 @@ def test_wonda_affiliate_link():
     cfg = yaml.safe_load((Path(__file__).parent.parent / "config/stores.yaml").read_text())["stores"]["wonda"]
     assert affiliate.link("https://wondamobile.com/products/vivo-x300-ultra?variant=123", cfg) == \
         "https://wondamobile.com/products/vivo-x300-ultra?variant=123&ref=ivaylo_kirov"
+
+
+def test_tradingshenzhen_titles():
+    from pricechecker.stores.sitemap import slug_model, title_model
+    assert model_id(title_model("Oppo Find N5 - 16GB/512GB - Foldable")) == "oppo-find-n5"
+    assert model_id(title_model("Xiaomi 17 ULTRA - 16GB/512GB - 200 MP Leica Kamera")) == "xiaomi-17-ultra"
+    assert model_id(title_model("Vivo X300 FE - 12GB/512GB - Global HK Edition - EU Warehouse")) == "vivo-x300-fe"
+    assert edition_of("Vivo X300 FE - 12GB/512GB - Global HK Edition - EU Warehouse") == "global"
+    assert slug_model("https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15-16gb512gb-eu-warehouse") == "oneplus-15"

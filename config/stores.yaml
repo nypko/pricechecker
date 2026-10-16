@@ -68,25 +68,48 @@ stores:
 
   tradingshenzhen:
     label: Trading Shenzhen
-    type: feed            # the site blocks scripts (HTTP 403) - ask your affiliate contact for a product feed URL
-    feed_url_env: TSZ_FEED_URL
-    feed_format: xml      # or csv
-    feed_fields: {title: title, link: link, price: price, availability: availability}
-    title_must_contain: [""]
+    type: sitemap         # 2026-10-16: answers PriceCheckerBot again (was 403); one product page per phone + storage
+    sitemap_url: https://tradingshenzhen.com/sitemap-products-en.xml
+    exclude_url: "case|kopfhorer|headphone|pad|tablet|book|watch|band|gadget|sonstiges|console|coupon|charger|cable"
+    exclude_title: "used|refurb|demo|case|cover"
+    request_spacing_sec: 5   # gentle: Cloudflare-protected PrestaShop with ~600 KB pages
+    sub_stores: {tradingshenzhen_eu: "eu warehouse"}   # listings shipped from their EU warehouse
+    # if they block scripts again: switch to `type: feed` with the affiliate product feed
+    #   feed_url_env: TSZ_FEED_URL, feed_format: xml|csv,
+    #   feed_fields: {title: title, link: link, price: price, availability: availability}
     currency: EUR
     affiliate_link: "{url}{sep}affp={id}"   # from the affiliate dashboard: .../gift-coupon/10-voucher?affp=313618
     affiliate_id: "313618"
-    terms:   # NOT verified - site blocks automated access. Third-party listing (kimovil) says PayPal "with charge",
-             # shipping 6-16 EUR. Confirm with your affiliate contact and fill in.
+    terms:   # verified 2026-10-16 from /en/content/payment-regulations, /customs-and-duties, /transportation-regulation
       payment:
-        bank_transfer: {discount_pct: null, note: "Unknown"}
-        paypal: {fee_pct: null, note: "Reportedly has a surcharge - amount unknown"}
-        card: {fee_pct: null, note: "Unknown"}
+        bank_transfer: {discount_pct: 0, note: "Only via EPS (AT), iDEAL (NL), P24 (PL), Giropay, Bancontact; no discount"}
+        paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees from China and passes them on; exact amount at checkout"}
+        card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned. Card address must match shipping address"}
+      shipping:   # Global Priority from China; EU-warehouse items ship free in 2-5 working days
+        EU: {duties_included: true, cost: null, note: "Global Priority from EUR 10 (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
+        UK: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and import VAT, refunds any charges"}
+        US: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and import costs, refunds any charges"}
+        AU: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and GST, refunds any charges"}
+      watch:
+        - {url: "https://tradingshenzhen.com/en/content/customs-and-duties", expect: "no customs duty and no import VAT"}
+        - {url: "https://tradingshenzhen.com/en/content/payment-regulations", expect: "about 4%"}
+
+  tradingshenzhen_eu:
+    label: Trading Shenzhen (EU warehouse)
+    part_of: tradingshenzhen   # its listings come from the Trading Shenzhen check ("... - EU Warehouse" titles)
+    currency: EUR
+    affiliate_link: "{url}{sep}affp={id}"
+    affiliate_id: "313618"
+    terms:   # verified 2026-10-16 from /en/content/transportation-regulation and /customs-and-duties
+      payment:
+        bank_transfer: {discount_pct: 0, note: "Only via EPS (AT), iDEAL (NL), P24 (PL), Giropay, Bancontact; no discount"}
+        paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees and passes them on; exact amount at checkout"}
+        card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned"}
       shipping:
-        EU: {cost: null, note: "Unknown (reported 6-16 EUR)"}
-        UK: {cost: null, note: "Unknown"}
-        US: {cost: null, note: "Unknown"}
-        AU: {cost: null, note: "Unknown"}
+        EU: {duties_included: true, cost: 0, currency: EUR, note: "Free from the EU warehouse (DHL), 2-5 working days; already in the EU, no customs or import VAT"}
+        UK: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
+        US: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
+        AU: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
 
   giztop:
     label: Giztop

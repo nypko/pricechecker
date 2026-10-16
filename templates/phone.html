@@ -61,7 +61,7 @@
       <tr class="offer-row {{ '' if o.available else 'out' }}" data-offer='{{ {"money": o.money, "pay": o.pay, "pay_ok": o.pay_ok, "ship": o.ship, "notes": o.notes, "duties": o.duties}|tojson }}'>
         <td>{{ o.store_label }}{% if o.stale %} <span class="muted" title="Last check failed">(last known)</span>{% endif %}</td>
         <td><span class="badge {{ o.edition }}">{{ edition_label[o.edition] }}</span></td>
-        <td>{{ price(o.money) }}{% if o.currency != "USD" %} <span class="muted">({{ "{:,.0f}".format(o.price) }} {{ o.currency }})</span>{% endif %}</td>
+        <td>{{ price(o.money) }}{% if o.currency not in ["USD", "EUR", "GBP", "AUD"] %} <span class="muted">({{ "{:,.0f}".format(o.price) }} {{ o.currency }})</span>{% endif %}</td>
         <td class="c-pay muted">–</td>
         <td class="c-ship muted">–</td>
         <td class="c-total"><strong>–</strong></td>

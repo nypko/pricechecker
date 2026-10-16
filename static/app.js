@@ -182,7 +182,7 @@
       t.textContent = k.payOk ? fmt(k.total, k.approx) : "–";
       t.title = !k.payOk ? "This store doesn't accept " + PAY_LABEL[state.pay] + " for this order" : "";
       if (k.payOk) row.querySelector(".c-total").appendChild(caveatEl(k));
-      row._rank = [row.classList.contains("out") ? 1 : 0, k.payOk ? 0 : 1, k.total];
+      row._rank = [row.classList.contains("out") ? 1 : 0, k.payOk ? 0 : 1, Math.round(k.total), k.complete ? 0 : 1];
       row._payPlain = k.payOk && k.adj === 0;   // "no fee" / "no discount": nothing worth a column
     });
     // Payment column only where it explains something (a discount, a fee, "not offered", "unknown")
@@ -195,7 +195,7 @@
       var rows = Array.prototype.slice.call(tb.querySelectorAll(".offer-row"));
       if (rows.length < 2) return;
       rows.sort(function (a, b) {
-        for (var i = 0; i < 3; i++) if (a._rank[i] !== b._rank[i]) return a._rank[i] - b._rank[i];
+        for (var i = 0; i < a._rank.length; i++) if (a._rank[i] !== b._rank[i]) return a._rank[i] - b._rank[i];
         return 0;
       }).forEach(function (r) { tb.appendChild(r); });
     });

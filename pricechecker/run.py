@@ -38,8 +38,8 @@ def main(argv=None) -> int:
     only = set(args.only.split(",")) if args.only else None
     results, failures, untracked_lines = {}, {}, []
     for name, cfg in stores.items():
-        if not cfg.get("enabled", True) or (only and name not in only):
-            continue
+        if not cfg.get("enabled", True) or cfg.get("part_of") or (only and name not in only):
+            continue   # part_of: filled in by its parent store's check (e.g. an EU-warehouse section)
         print(f"[{name}] checking ({cfg['type']})")
         try:
             offers = ADAPTERS[cfg["type"]](name, cfg, catalog)
@@ -49,12 +49,18 @@ def main(argv=None) -> int:
         except Exception as e:
             print(f"  FAILED: {type(e).__name__}: {e}")
             failures[name] = f"{type(e).__name__}: {e}"[:300]
+            for sub, sub_cfg in stores.items():
+                if sub_cfg.get("part_of") == name:
+                    failures[sub] = failures[name]
             continue
         kept = [o for o in offers if o.model_id in tracked]
         untracked = Counter(o.model_id + "/" + o.edition for o in offers if o.model_id not in tracked)
         print(f"  {len(offers)} offers, {len(kept)} for tracked phones" + (f"; untracked models: {len(untracked)}" if untracked else ""))
         untracked_lines += [f"{name}\t{k}\n" for k in sorted(untracked)]
-        results[name] = kept
+        results[name] = [o for o in kept if o.store == name]
+        for sub, sub_cfg in stores.items():
+            if sub_cfg.get("part_of") == name:
+                results[sub] = [o for o in kept if o.store == sub]
     Path("data/untracked.txt").write_text("".join(untracked_lines))  # models seen but not in catalog.yaml
     history.save(results, failures)
     if not args.no_build:

@@ -1,8 +1,8 @@
 {
- "updated": "2026-10-17T09:42:49Z",
+ "updated": "2026-10-17T14:13:07Z",
  "stores": {
   "wonda": {
-   "checked": "2026-10-17T09:42:49Z",
+   "checked": "2026-10-17T14:13:07Z",
    "ok": true,
    "offers": [
     {
@@ -2813,7 +2813,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-10-17T09:42:49Z",
+   "checked": "2026-10-17T14:13:07Z",
    "ok": true,
    "offers": [
     {
@@ -4087,7 +4087,7 @@
      "prices": {
       "USD": 1832.0,
       "EUR": 1629.95,
-      "GBP": 1374.0,
+      "GBP": 1375.0,
       "AUD": 2637.0
      }
     },
@@ -4791,7 +4791,7 @@
    ]
   },
   "tradingshenzhen": {
-   "checked": "2026-10-17T09:42:49Z",
+   "checked": "2026-10-17T14:13:07Z",
    "ok": true,
    "offers": [
     {
@@ -6085,7 +6085,7 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-10-17T09:42:49Z",
+   "checked": "2026-10-17T14:13:07Z",
    "ok": true,
    "offers": [
     {
@@ -6147,7 +6147,7 @@
    ]
   },
   "giztop": {
-   "checked": "2026-10-17T09:42:49Z",
+   "checked": "2026-10-17T14:13:07Z",
    "ok": true,
    "offers": [
     {

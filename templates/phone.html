@@ -38,7 +38,7 @@
         <td>{% if cell %}<button type="button" class="cell" data-storage="{{ storage }}" data-ed="{{ e.edition }}" aria-pressed="false">
               <span class="cell-v">{{ price(cell.money) }}</span><span class="cell-sub">store price</span></button>
             {% elif listed %}<span class="cell-none">out of stock</span>
-            {% else %}<span class="cell-none">not sold</span>{% endif %}</td>
+            {% else %}<span class="cell-none">no offers</span>{% endif %}</td>
         {% endfor %}
       </tr>
     {% endfor %}

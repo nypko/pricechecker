@@ -666,6 +666,116 @@
     });
   });
 
+  // ---------- compare: up to three phones side by side, chosen in the page and kept in the URL hash ----------
+  var CMP = null;
+  try { CMP = JSON.parse(document.getElementById("compare-data").textContent); } catch (e) {}
+  var cmpBox = document.getElementById("compare");
+  function cmpChosen() {
+    var by = {};
+    (CMP || []).forEach(function (q) { by[q.s] = q; });
+    return decodeURIComponent(location.hash.slice(1)).split(",").filter(function (s, i, a) { return by[s] && a.indexOf(s) === i; })
+      .slice(0, 3).map(function (s) { return by[s]; });
+  }
+  function firstNum(sp, label) {   // "7,200 mAh" -> 7200, for marking the biggest battery / fastest charging
+    var row = sp.filter(function (r) { return r[0] === label; })[0];
+    return row ? parseFloat(row[1][0][0].replace(/,/g, "")) || 0 : 0;
+  }
+  function renderCompare() {
+    if (!cmpBox || !CMP) return;
+    var chosen = cmpChosen(), n = Math.max(2, Math.min(3, chosen.length + 1));
+    cmpBox.style.setProperty("--n", n);
+    var rows = cmpBox.querySelector(".cmp-rows");
+    rows.textContent = "";
+    cmpBox.querySelector(".cmp-note").hidden = chosen.length < 2;
+    var best = chosen.map(function (q) { return q.o.length ? pick(q.o) : null; });
+    var totals = best.map(function (b) { return b && b.k.payOk ? b.k.total : Infinity; });
+    var low = Math.min.apply(null, totals);
+    function row(label, fill, top) {   // top: index of the phone that wins this row (marked), or -1
+      var r = el("div", "cmp-row"), cells = el("div", "cmp-cells");
+      r.appendChild(el("div", "cmp-label", label));
+      for (var i = 0; i < n; i++) {
+        var c = el("div", "cmp-cell" + (i === top && chosen.length > 1 ? " cmp-top" : ""));
+        if (chosen[i]) fill(c, chosen[i], i);
+        if (i === top && chosen.length > 1) c.appendChild(el("span", "sr-only", " (best of these)"));
+        cells.appendChild(c);
+      }
+      r.appendChild(cells);
+      rows.appendChild(r);
+    }
+    function argmax(vals) { var m = Math.max.apply(null, vals); return m > 0 && vals.filter(function (v) { return v === m; }).length === 1 ? vals.indexOf(m) : -1; }
+    // first row: each column's phone, with its own menu to change or remove it; the next free column offers "Add a phone"
+    var head = el("div", "cmp-row cmp-head"), hc = el("div", "cmp-cells");
+    head.appendChild(el("div", "cmp-label", "Phone"));
+    for (var i = 0; i < n; i++) {
+      var c = el("div", "cmp-cell"), q = chosen[i];
+      if (q) {
+        var a = el("a", "cmp-name", q.n);
+        a.href = "phones/" + q.s;
+        c.appendChild(a);
+        if (q.d) c.appendChild(el("span", "cmp-sub muted", new Date(q.d + "T00:00:00Z").toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" })));
+      }
+      if (q || i === chosen.length) c.appendChild(cmpMenu(i, q, chosen));
+      hc.appendChild(c);
+    }
+    head.appendChild(hc);
+    rows.appendChild(head);
+    if (!chosen.length) return;
+    row("Lowest delivered price", function (c, q, i) {
+      var b = best[i];
+      if (!b || !b.k.payOk) { c.appendChild(el("span", "muted", b ? "Not payable by " + PAY_LABEL[state.pay] : "Not in stock")); return; }
+      c.appendChild(el("span", "cmp-price", fmt(b.k.total, b.k.approx)));
+      c.appendChild(el("span", "cmp-sub", partial(b.k) ? extras(b.k) : "delivered"));
+      var w = el("span", "cmp-sub muted");
+      w.appendChild(el("span", "badge " + b.o.edition, b.o.edition === "china" ? q.cl : ED.global));
+      w.appendChild(document.createTextNode(" " + (short(b.o.storage) || "") + " · " + b.o.store_label));
+      c.appendChild(w);
+      var go = el("a", "cmp-sub", "All prices");
+      go.href = "phones/" + q.s + "#" + b.o.storage.replace("/", "-") + "-" + b.o.edition;
+      c.appendChild(go);
+    }, isFinite(low) && totals.filter(function (t) { return t === low; }).length === 1 ? totals.indexOf(low) : -1);
+    row("Versions sold", function (c, q) {
+      c.textContent = q.e.map(function (e) { return e === "china" ? q.cl : ED.global; }).join(" and ");
+    }, -1);
+    row("RAM + storage", function (c, q) {
+      if (!q.st.length) { c.appendChild(el("span", "muted", "None listed")); return; }
+      q.st.forEach(function (s) { c.appendChild(el("span", "cmp-line", short(s) || s)); });
+    }, -1);
+    ["Chip", "Screen", "Battery", "Charging"].forEach(function (label) {
+      var top = label === "Battery" || label === "Charging" ? argmax(chosen.map(function (q) { return firstNum(q.sp, label); })) : -1;
+      row(label, function (c, q) {
+        var r = q.sp.filter(function (x) { return x[0] === label; })[0];
+        if (!r) { c.appendChild(el("span", "muted", "Not listed yet")); return; }
+        r[1].forEach(function (p) {
+          var l = el("span", "cmp-line", p[0]);
+          if (p[1]) l.appendChild(el("span", "spec-tag", " " + p[1]));
+          c.appendChild(l);
+        });
+      }, top);
+    });
+    row("Google Play", function (c, q) {
+      if (q.e.indexOf("global") >= 0) c.appendChild(el("span", "cmp-sub", "Global: installed"));
+      if (q.g) c.appendChild(el("span", "cmp-sub", (q.e.length > 1 ? q.cl + ": " : "") + q.g.charAt(0).toUpperCase() + q.g.slice(1)));
+    }, -1);
+  }
+  // a column's menu: "Change" (or "Remove") for a chosen phone, "Add a phone" for the next free column
+  function cmpMenu(i, q, chosen) {
+    var s = el("select", "cmp-menu" + (q ? "" : " cmp-add"));
+    s.setAttribute("aria-label", q ? "Change or remove " + q.n : "Add a phone to compare");
+    s.appendChild(new Option(q ? "Change" : "+ Add a phone", ""));
+    if (q) s.appendChild(new Option("Remove", "-"));
+    s.insertAdjacentHTML("beforeend", document.getElementById("cmp-src").innerHTML);
+    s.value = "";
+    s.addEventListener("change", function () {
+      var slugs = chosen.map(function (x) { return x.s; });
+      if (s.value === "-") slugs.splice(i, 1);
+      else if (s.value) slugs[i] = s.value;
+      history.replaceState(null, "", slugs.length ? "#" + slugs.join(",") : location.pathname);
+      renderCompare();
+    });
+    return s;
+  }
+  if (cmpBox) window.addEventListener("hashchange", renderCompare);
+
   // ---------- everywhere ----------
   function render() {
     document.querySelectorAll(".note").forEach(function (n) { n.remove(); });   // values below are recomputed
@@ -689,6 +799,7 @@
     });
     renderIndex();
     renderPhone();
+    renderCompare();
   }
 
   function set(key, val) { state[key] = val; store("pc-" + key, val); render(); }

@@ -1,6 +1,8 @@
 (function () {
   var SYMBOL = { usd: "$", eur: "€", gbp: "£", aud: "A$" };
   var PAY_LABEL = { card: "card", paypal: "PayPal", bank: "bank transfer" };
+  var PAY_SHORT = { card: "Card", paypal: "PayPal", bank: "Bank" };
+  var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia" };
   var state = { cur: "usd", pay: "card", region: "EU" };
   var TAX = {};   // config/import_tax.yaml: estimated VAT/GST per destination
   try { TAX = JSON.parse(document.getElementById("import-tax").textContent); } catch (e) {}
@@ -19,6 +21,22 @@
     return p[0] + " GB RAM · " + (rom >= 1024 && rom % 1024 === 0 ? rom / 1024 + " TB" : rom + " GB") + " storage";
   }
   function pct(v) { return (v > 0 ? "+" : v < 0 ? "−" : "") + (Math.round(Math.abs(v) * 100) / 100) + "%"; }
+
+  // First visit: currency and Ship-to from the visitor's time zone (then their own choice, saved on the device)
+  function guess() {
+    var tz = "", lang = (navigator.language || "").toLowerCase();
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    if (tz === "Europe/London" || /-gb$/.test(lang)) return { region: "UK", cur: "gbp" };
+    if (/^Australia\//.test(tz) || /-au$/.test(lang)) return { region: "AU", cur: "aud" };
+    if (/^Europe\//.test(tz)) return { region: "EU", cur: "eur" };
+    if (/^America\//.test(tz) || /-us$/.test(lang)) return { region: "US", cur: "usd" };
+    return {};
+  }
+  var g = guess();
+  ["cur", "pay", "region"].forEach(function (k) { var v = store("pc-" + k) || g[k]; if (v) state[k] = v; });
+  if (!SYMBOL[state.cur]) state.cur = "usd";
+  if (!PAY_LABEL[state.pay]) state.pay = "card";
+  if (!REGION_NAME[state.region]) state.region = "EU";
 
   // Total for one offer under the current currency / payment / region, as landed cost:
   // store price +/- payment adjustment + shipping + estimated import VAT/GST when the store's price excludes it.
@@ -42,6 +60,8 @@
       payNote: o.notes.pay[state.pay], shipNote: o.notes.ship[state.region]
     };
   }
+  // A total the store's shipping isn't in reads "$1,149 + shipping", never as if it were everything
+  function totalText(k) { return fmt(k.total, k.approx) + (k.ship == null ? " + shipping" : ""); }
 
   // What the total contains or leaves out, in words, e.g. "excl. shipping · incl. ≈A$175 est. GST (paid on delivery)".
   function caveats(k) {
@@ -74,7 +94,7 @@
     });
     return best;
   }
-  // Cheapest listed price, ignoring payment and shipping (index cards).
+  // Cheapest listed price, ignoring payment and shipping (index cards, labelled "listed prices").
   function cheapest(offers) {
     var best = null, c = state.cur;
     offers.forEach(function (o) {
@@ -105,7 +125,6 @@
   }
 
   // "What's in the total?": the import tax rule for the chosen Ship-to destination
-  var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia" };
   function taxText() {
     var t = TAX[state.region], where = "Shipping to " + REGION_NAME[state.region] + ": ";
     if (!t) return null;
@@ -154,8 +173,19 @@
 
   function cell(td) { td.textContent = ""; return td.appendChild(document.createElement("span")); }
 
+  // phone page: show one version's rows, or both
+  var edShown = "";
+
   function render() {
     document.querySelectorAll(".note").forEach(function (n) { n.remove(); });   // values below are recomputed
+    // settings summary: header button, sticky bar, "Totals for ..." line, panel buttons
+    var summary = state.region + " · " + SYMBOL[state.cur] + " · " + PAY_SHORT[state.pay];
+    document.querySelectorAll(".prefs-summary").forEach(function (el) { el.textContent = summary; });
+    document.querySelectorAll(".for-region").forEach(function (el) { el.textContent = REGION_NAME[state.region]; });
+    document.querySelectorAll(".for-pay").forEach(function (el) { el.textContent = PAY_LABEL[state.pay]; });
+    document.querySelectorAll(".seg[data-pref] button").forEach(function (b) {
+      b.setAttribute("aria-pressed", state[b.parentNode.dataset.pref] === b.dataset.val ? "true" : "false");
+    });
     var tax = document.querySelector("#totals .tax-region"), tt = taxText();
     if (tax && tt) tax.textContent = tt;
     // simple price tags (store's own price or ECB conversion)
@@ -165,7 +195,8 @@
       if (!isNaN(v)) el.textContent = fmt(v, approx);
       setNote(el, approx ? "Converted at the European Central Bank rate: this store has no price in this currency." : "");
     });
-    // index cards: the stores' own prices (no payment/shipping adjustments - those are on the phone pages)
+    // index cards: the stores' listed prices (payment/shipping/tax are on the phone pages)
+    var gaps = [];
     document.querySelectorAll(".card[data-offers]").forEach(function (card) {
       var offers = JSON.parse(card.dataset.offers), top = cheapest(offers);
       card.querySelectorAll(".ed").forEach(function (li) {
@@ -178,52 +209,60 @@
       });
       var d = gap(offers, cheapest), el = card.querySelector(".diff");
       el.hidden = !d;
-      if (d) el.textContent = gapText(d, true);
+      if (d) {
+        el.textContent = gapText(d, true);
+        gaps.push({ d: d, abs: Math.abs(d.c.k.total - d.g.k.total), name: card.querySelector(".name").textContent, slug: card.dataset.slug });
+      }
       if (top) card.querySelector(".deal").href = top.o.link;
     });
-    // phone page headline
+    // index, before a brand is picked: the three biggest Global vs China gaps
+    var gl = document.querySelector(".gap-list");
+    if (gl) {
+      gl.textContent = "";
+      gaps.sort(function (a, b) { return b.abs - a.abs; }).slice(0, 3).forEach(function (x) {
+        var li = document.createElement("li"), a = document.createElement("a"), t = document.createElement("span");
+        a.href = "phones/" + x.slug; a.textContent = x.name;
+        t.className = "gap-text"; t.textContent = gapText(x.d, true);
+        li.appendChild(a); li.appendChild(t); gl.appendChild(li);
+      });
+      gl.parentNode.dataset.has = gaps.length ? "1" : "";
+    }
+    // phone page headline + bottom bar: cheapest TOTAL for the chosen region and payment, same as the first row below
     document.querySelectorAll(".lead[data-offers]").forEach(function (lead) {
-      var b = cheapest(JSON.parse(lead.dataset.offers));   // same listed price as the card on the index page
+      var b = pick(JSON.parse(lead.dataset.offers));
       if (!b) return;
-      lead.querySelector(".price").textContent = fmt(b.k.total, b.k.approx);
+      lead.querySelector(".lead-price .price").textContent = fmt(b.k.total, b.k.approx);
+      lead.querySelector(".lead-price .plus").textContent = b.k.ship == null ? "+ shipping" : "";
+      setNote(lead.querySelector(".lead-price .price"), "");   // the caveat line under it says what the total holds
       lead.querySelector(".lead-store").textContent = b.o.store_label;
       lead.querySelector(".lead-what").textContent = "(" + (b.o.edition === "china" ? "China" : "Global") + " version" +
         (b.o.storage !== "base" ? ", " + spec(b.o.storage) : "") + (b.k.payOk ? "" : "; " + PAY_LABEL[state.pay] + " not offered") + ")";
+      var cv = lead.querySelector(".lead-caveat");
+      cv.textContent = "";
+      cv.appendChild(caveatEl(b.k));
       lead.querySelector(".deal").href = b.o.link;
-      var bar = document.querySelector(".sticky-deal");   // the phone-only bottom bar mirrors the best price
+      var bar = document.querySelector(".sticky-deal");
       if (bar) {
         bar.querySelector(".price").textContent = fmt(b.k.total, b.k.approx);
-        bar.querySelector(".sd-store").textContent = "at " + b.o.store_label;
+        bar.querySelector(".sd-store").textContent = (b.k.ship == null ? "+ shipping, " : "") + "total at " + b.o.store_label;
         bar.querySelector(".deal").href = b.o.link;
       }
     });
-    // phone page: Global vs China table
-    document.querySelectorAll(".cmp-row").forEach(function (row) {
-      var picks = [];
-      row.querySelectorAll(".cmp-cell").forEach(function (cell) {
-        var b = pick(JSON.parse(cell.dataset.offers));
-        picks.push(b);
-        var badge = document.createElement("span");
-        badge.className = "badge " + cell.dataset.ed;
-        badge.textContent = cell.dataset.label;
-        cell.innerHTML = "";
-        cell.appendChild(badge);
-        cell.appendChild(document.createTextNode(" "));
-        if (!b) { var none = document.createElement("span"); none.className = "muted"; none.textContent = "not sold"; cell.appendChild(none); return; }
-        var strong = document.createElement("strong"), at = document.createElement("span");
-        strong.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : fmt(b.o.money[state.cur], b.k.approx);
-        strong.className = b.k.payOk ? "" : "muted";
-        at.className = "muted small";
-        at.textContent = " at " + b.o.store_label + (b.k.payOk ? "" : " · no " + PAY_LABEL[state.pay]);
-        cell.appendChild(strong); cell.appendChild(at);
-        if (b.k.payOk) cell.appendChild(caveatEl(b.k));
+    // phone page: each storage tier's header shows both versions' cheapest totals and the gap
+    document.querySelectorAll(".tier-eds").forEach(function (te) {
+      var offers = JSON.parse(te.dataset.offers), picks = {};
+      te.querySelectorAll(".tier-ed").forEach(function (sp) {
+        var b = pick(byEdition(offers, sp.dataset.ed)), v = sp.querySelector(".tier-val");
+        picks[sp.dataset.ed] = b;
+        v.textContent = !b ? "not sold" : !b.k.payOk ? "no " + PAY_LABEL[state.pay] : totalText(b.k);
+        v.className = "tier-val" + (!b || !b.k.payOk ? " muted" : "");
       });
-      var diff = row.querySelector(".cmp-diff");
-      if (picks.length === 2 && picks[0] && picks[1] && picks[0].k.payOk && picks[1].k.payOk) {
-        var d = picks[1].k.total - picks[0].k.total;
-        diff.textContent = Math.abs(d) < 1 ? "same" : (d < 0 ? "China " : "Global ") + fmt(Math.abs(d), picks[0].k.approx || picks[1].k.approx) + " cheaper";
-        diff.className = "cmp-diff";
-      } else { diff.textContent = "–"; diff.className = "cmp-diff muted"; }
+      var gp = te.querySelector(".tier-gap"), gg = picks.global, cc = picks.china;
+      if (gg && cc && gg.k.payOk && cc.k.payOk) {
+        var d = cc.k.total - gg.k.total;
+        gp.textContent = (Math.abs(d) < 1 ? "same price" : (d < 0 ? "China " : "Global ") + fmt(Math.abs(d), gg.k.approx || cc.k.approx) + " cheaper") +
+          (gg.k.ship == null || cc.k.ship == null ? ", before shipping" : "");   // one side's total has no shipping in it
+      } else gp.textContent = "";
     });
     // phone page rows
     document.querySelectorAll(".offer-row").forEach(function (row) {
@@ -238,7 +277,8 @@
       p.className = "c-pay " + (!k.payOk || k.adj == null ? "muted" : k.adj < 0 ? "good" : k.adj > 0 ? "bad" : "");
       var sv = cell(s);
       sv.textContent = k.ship == null ? "not listed" : (k.ship === 0 ? "free" : fmt(k.ship, false));
-      setNote(sv, k.shipNote);
+      setNote(sv, k.shipNote || (k.ship == null ? "This store doesn't publish a shipping price for " + REGION_NAME[state.region] +
+        "; you'll see it at checkout before paying." : ""));
       s.className = "c-ship " + (k.ship == null ? "muted" : "");
       t.textContent = k.payOk ? fmt(k.total, k.approx) : "–";
       setNote(t, !k.payOk ? "This store doesn't accept " + PAY_LABEL[state.pay] + " for this order" : "");
@@ -260,24 +300,75 @@
         return 0;
       }).forEach(function (r) { tb.appendChild(r); });
     });
-    document.querySelectorAll(".cur button").forEach(function (b) {
-      b.setAttribute("aria-pressed", b.dataset.cur === state.cur ? "true" : "false");
+    tiers();
+  }
+
+  // Per storage tier: only the cheapest shown row gets the solid button; out-of-stock rows fold away behind a toggle.
+  function tiers() {
+    document.querySelectorAll(".tier").forEach(function (sec) {
+      var rows = Array.prototype.slice.call(sec.querySelectorAll(".offer-row")), first = true, oos = 0;
+      var open = sec.classList.contains("show-out");
+      rows.forEach(function (r) {
+        var edOk = !edShown || r.dataset.ed === edShown, out = r.classList.contains("out");
+        if (out && edOk) oos++;
+        r.hidden = !edOk || (out && !open);
+        var go = r.querySelector(".go");
+        go.classList.toggle("secondary", !(first && edOk && !out));
+        if (edOk && !out) first = false;
+      });
+      var tg = sec.querySelector(".oos-toggle");
+      tg.hidden = !oos;
+      tg.textContent = open ? "Hide out-of-stock" : "Show " + oos + " out of stock";
+      tg.setAttribute("aria-expanded", open ? "true" : "false");
+      var shown = rows.some(function (r) { return !r.hidden; });
+      sec.classList.toggle("tier-empty", !shown && !oos);
     });
   }
+  document.querySelectorAll(".oos-toggle").forEach(function (b) {
+    b.addEventListener("click", function () { b.closest(".tier").classList.toggle("show-out"); tiers(); });
+  });
+  document.querySelectorAll(".ed-filter button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      edShown = b.dataset.ed;
+      document.querySelectorAll(".ed-filter button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      tiers();
+    });
+  });
 
   function set(key, val) { state[key] = val; store("pc-" + key, val); render(); }
 
-  document.querySelectorAll(".cur button").forEach(function (b) {
-    b.addEventListener("click", function () { set("cur", b.dataset.cur); });
+  // Settings panel under the header: Ship to, currency, payment in one place, reachable from anywhere on the page
+  var prefs = document.getElementById("prefs"), toggle = document.querySelector(".prefs-toggle");
+  function openPrefs(on) {
+    if (!prefs) return;
+    prefs.hidden = !on;
+    toggle.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on) { var p = prefs.querySelector('[aria-pressed="true"]') || prefs.querySelector("button"); p.focus({ preventScroll: true }); }
+  }
+  if (toggle) toggle.addEventListener("click", function () { openPrefs(prefs.hidden); });
+  document.querySelectorAll("[data-prefs]").forEach(function (b) {
+    b.addEventListener("click", function () { window.scrollTo({ top: window.scrollY }); openPrefs(true); });
   });
-  var pay = document.getElementById("pay"), region = document.getElementById("region");
-  ["cur", "pay", "region"].forEach(function (k) { var v = store("pc-" + k); if (v) state[k] = v; });
-  if (!SYMBOL[state.cur]) state.cur = "usd";
-  if (pay) { pay.value = state.pay; pay.addEventListener("change", function () { set("pay", pay.value); }); }
-  if (region) { region.value = state.region; region.addEventListener("change", function () { set("region", region.value); }); }
+  document.querySelectorAll(".prefs-done").forEach(function (b) {
+    b.addEventListener("click", function () { openPrefs(false); toggle.focus(); });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && prefs && !prefs.hidden) { openPrefs(false); toggle.focus(); }
+  });
+  document.querySelectorAll(".seg[data-pref] button").forEach(function (b) {
+    b.addEventListener("click", function () { set(b.parentNode.dataset.pref, b.dataset.val); });
+  });
   render();
 
-  // Brand chips + search on the index page
+  // "last update" -> "2 h ago" next to the prices
+  document.querySelectorAll("time[datetime]").forEach(function (t) {
+    if (!t.closest(".lead-foot, .lede")) return;
+    var mins = Math.round((Date.now() - Date.parse(t.getAttribute("datetime"))) / 60000);
+    if (isNaN(mins) || mins < 0) return;
+    t.title = t.textContent;
+    t.textContent = mins < 60 ? mins + " min ago" : mins < 48 * 60 ? Math.round(mins / 60) + " h ago" : Math.round(mins / 1440) + " days ago";
+  });
+
   // Phone pages: show the bottom "best deal" bar once the big best-price box has scrolled out of view
   var box = document.querySelector(".best-box"), bar = document.querySelector(".sticky-deal");
   if (box && bar && "IntersectionObserver" in window) {
@@ -286,14 +377,19 @@
       var hidden = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
       bar.classList.toggle("show", hidden);
       bar.setAttribute("aria-hidden", hidden ? "false" : "true");
-      bar.querySelector(".deal").tabIndex = hidden ? 0 : -1;
+      bar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = hidden ? 0 : -1; });
     }).observe(box);
   }
 
-  // Index page: until a brand (or All) is picked only the store terms are shown; picking one reveals the
-  // phone list above them. A chip can't be un-picked - there is always one active filter after the first choice.
+  // Index page: until a brand (or All) is picked, only the biggest gaps and the (folded) store terms show.
+  // Tapping the picked chip again goes back to that starting view.
   var brand = null, q = document.getElementById("q"), phones = document.getElementById("phones");
-  if (phones) document.body.classList.add("choosing");
+  var gapsBox = document.querySelector(".gaps");
+  function choosing(on) {
+    document.body.classList.toggle("choosing", on);
+    if (gapsBox) gapsBox.hidden = !on || !gapsBox.dataset.has;
+  }
+  if (phones) choosing(true);
   // Search: every word must appear in the brand + name, in any order, ignoring spaces and punctuation,
   // so "x9", "oppo x9", "x9 oppo" and "findx9" all find the Oppo Find X9 phones.
   function squash(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, ""); }
@@ -311,9 +407,10 @@
     }
   }
   function choose(b) {
-    brand = b.dataset.brand;
-    document.querySelectorAll(".chips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-    document.body.classList.remove("choosing");
+    var again = b && b.getAttribute("aria-pressed") === "true" && !(q && q.value.trim());
+    brand = again ? null : b.dataset.brand;
+    document.querySelectorAll(".chips .chip").forEach(function (x) { x.setAttribute("aria-pressed", !again && x === b ? "true" : "false"); });
+    choosing(again);
     filter();
   }
   document.querySelectorAll(".chips .chip").forEach(function (b) {
@@ -326,4 +423,8 @@
   });
   var clear = document.getElementById("clear-search");
   if (clear) clear.addEventListener("click", function () { q.value = ""; filter(); q.focus(); });
+  // the fade at the chip row's right edge only while there's more to scroll to
+  var chips = document.querySelector(".chips");
+  function chipFade() { if (chips) chips.classList.toggle("at-end", chips.scrollLeft + chips.clientWidth >= chips.scrollWidth - 4); }
+  if (chips) { chips.addEventListener("scroll", chipFade, { passive: true }); window.addEventListener("resize", chipFade); chipFade(); }
 })();

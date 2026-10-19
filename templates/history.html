@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_price.html" import price %}
+{% block title %}{{ p.name }} price history – PriceChecker{% endblock %}
+{% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
+{% block main %}
+<div class="page-nav">
+  <a class="crumb" href="../phones/{{ p.slug }}">‹ {{ p.name }} prices</a>
+</div>
+<h1>{{ p.name }} price history</h1>
+{% set first = p.changes[-1].time if p.changes else none %}
+<p class="lede">Every price and stock change we've recorded{% if first %} since <strong>{{ first.strftime("%-d %b %Y") }}</strong>{% endif %}.
+  Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.</p>
+
+{% if p.chart %}
+<section class="panel">
+  <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in USD{% if p.editions|length > 1 %}; dashed line = China version{% endif %})</span></h2>
+  <div class="chart-wrap">{{ p.chart|safe }}</div>
+  <ul class="legend">
+    {% for s in p.series_stores %}{% set st = stores|selectattr("name", "equalto", s)|first %}
+    <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
+    {% endfor %}
+    {% if p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
+  </ul>
+  {% if p.changes and (p.changes[0].time - p.changes[-1].time).days < 7 %}
+  <p class="muted small">Less than a week of data so far, so most lines are still flat.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="panel">
+  <h2>All changes <span class="muted">(newest first, the store's own price in your currency)</span></h2>
+  {% if p.changes %}
+  <table class="changes">
+    <thead><tr><th>When (UTC)</th><th>Store</th><th>Version</th><th>RAM/storage</th><th>Price</th><th>Stock</th></tr></thead>
+    <tbody>
+    {% for c in p.changes %}
+      <tr class="{{ '' if c.available else 'out' }}">
+        <td data-label="When"><time datetime="{{ c.time.isoformat() }}Z">{{ c.time.strftime("%-d %b, %H:%M") }}</time></td>
+        <td data-label="Store">{{ c.store_label }}</td>
+        <td data-label="Version"><span class="badge {{ c.edition }}">{{ edition_label[c.edition] }}</span></td>
+        <td data-label="RAM/storage">{{ c.storage|spec or "not listed" }}</td>
+        <td data-label="Price">{{ price(c.money) }}</td>
+        <td data-label="Stock">{{ "In stock" if c.available else "Out of stock" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No price changes recorded for this phone yet. They'll appear here as stores change their prices.</p>
+  {% endif %}
+</section>
+{% endblock %}

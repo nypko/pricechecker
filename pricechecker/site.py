@@ -29,25 +29,40 @@ def _money(offer: dict, rates: dict) -> dict:
     return m
 
 
-def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str]) -> str:
-    """Inline SVG line chart (USD), one line per (store, edition) - China editions dashed; empty if no history yet."""
+def _ticks(lo: float, hi: float, n: int = 4) -> list[float]:
+    """Round axis values covering lo..hi, e.g. 1075..1249 -> [1050, 1100, 1150, 1200, 1250]."""
+    raw = max((hi - lo) / n, 1)
+    mag = 10 ** (len(str(int(raw))) - 1)
+    step = next(m * mag for m in (1, 2, 2.5, 5, 10) if m * mag >= raw)
+    v, out = (lo // step) * step, []
+    while v < hi + step:
+        out.append(v)
+        v += step
+    return out
+
+
+def _usd_money(usd: float | None, rates: dict) -> dict | None:
+    return _money({"price": usd, "currency": "USD"}, rates) if usd else None
+
+
+def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str], now: datetime | None = None) -> str:
+    """Inline SVG line chart (USD), one line per (store, edition) - China editions dashed; empty if no history yet.
+    Drawn at phone width (400 units) so the axis text stays readable when the page shrinks it."""
     pts = [(t, p) for s in series.values() for t, p in s]
     if len({t for t, _ in pts}) < 2:
         return ""
-    W, H, L, R, T, B = 720, 260, 64, 12, 12, 28
-    t0, t1 = min(t for t, _ in pts), max(t for t, _ in pts)
-    lo, hi = min(p for _, p in pts), max(p for _, p in pts)
-    pad = (hi - lo) * 0.1 or hi * 0.02
-    lo, hi = lo - pad, hi + pad
+    W, H, L, R, T, B = 400, 240, 52, 8, 10, 26
+    t0, t1 = min(t for t, _ in pts), max([t for t, _ in pts] + ([now] if now else []))   # lines run up to the last check
+    ticks = _ticks(min(p for _, p in pts), max(p for _, p in pts))
+    lo, hi = ticks[0], ticks[-1]
     x = lambda t: L + (t - t0).total_seconds() / max((t1 - t0).total_seconds(), 1) * (W - L - R)
     y = lambda p: T + (hi - p) / (hi - lo) * (H - T - B)
-    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in USD">']
-    for i in range(5):
-        v = lo + (hi - lo) * i / 4
+    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in USD, shown in the table below">']
+    for v in ticks:
         parts.append(f'<line x1="{L}" x2="{W-R}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="grid"/>'
-                     f'<text x="{L-8}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">${v:,.0f}</text>')
-    parts.append(f'<text x="{L}" y="{H-8}" class="axis">{t0:%b %d}</text>'
-                 f'<text x="{W-R}" y="{H-8}" class="axis" text-anchor="end">{t1:%b %d %H:%M}</text>')
+                     f'<text x="{L-6}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">${v:,.0f}</text>')
+    parts.append(f'<text x="{L}" y="{H-6}" class="axis">{t0:%d %b}</text>'
+                 f'<text x="{W-R}" y="{H-6}" class="axis" text-anchor="end">{t1:%d %b %H:%M}</text>')
     for (store, edition), s in series.items():
         if not s:
             continue
@@ -75,6 +90,19 @@ def _series(rows: list[dict], model: dict, rates: dict) -> dict:
         if best is not None and (not out[line] or out[line][-1][1] != best):
             out[line].append((t, best))
     return out
+
+
+def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
+    """Every recorded price/stock change for the phone, newest first, for the table on its history page."""
+    out = []
+    for r in rows:
+        if r["model_id"] != model["id"] or r["edition"] not in model["editions"]:
+            continue
+        cfg = stores_cfg.get(r["store"], {})
+        out.append({"time": datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ"), "store_label": cfg.get("label", r["store"]),
+                    "edition": r["edition"], "storage": r["storage"], "available": bool(int(r["available"])),
+                    "money": _money({"price": float(r["price"]), "currency": r["currency"]}, rates)})
+    return out[::-1]
 
 
 def _models(catalog: list[dict], offers: list[dict] = ()) -> list[dict]:
@@ -122,6 +150,10 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     rows = history.load_history()
     store_names = list(stores_cfg)
     colors = {s: STORE_COLORS[i % len(STORE_COLORS)] for i, s in enumerate(store_names)}
+    try:
+        updated_at = datetime.strptime(latest.get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError:
+        updated_at = None
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
         offers = []
@@ -142,6 +174,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties")}
         by_storage = defaultdict(list)
         for o in offers:
+            o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
             by_storage[o["storage"]].append(o)
         storages = sorted(by_storage, key=_storage_key)
         eds = [{"edition": e, "label": EDITION_LABEL[e],
@@ -155,16 +188,22 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "offers_json": json.dumps([js(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
-                       "chart": _chart(_series(rows, m, rates), colors)})
+                       "chart": _chart(_series(rows, m, rates), colors, updated_at), "changes": _changes(rows, m, stores_cfg, rates),
+                       "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
     phones.sort(key=lambda p: (p["best"] is None, p["brand"], -(p["best"]["usd"] if p["best"] else 0)))
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
     env.filters["spec"] = spec
-    ctx = {"updated": latest.get("updated", ""), "fx_date": rates_info.get("date"), "colors": colors,
+    upd = latest.get("updated", "")
+    try:
+        upd_label = datetime.strptime(upd, "%Y-%m-%dT%H:%M:%SZ").strftime("%-d %b, %H:%M UTC")
+    except ValueError:
+        upd_label = upd
+    ctx = {"updated": upd, "updated_label": upd_label, "fx_date": rates_info.get("date"), "colors": colors,
            "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"),
                        "error": latest["stores"].get(s, {}).get("error", ""), "count": len(latest["stores"].get(s, {}).get("offers", [])),
                        "terms_ok": terms_status.get(s, {}).get("ok", True), "notes": terms.notes(c),
                        "pay": {m: terms.payment_pct(c, m) for m in terms.METHODS},
-                       "pay_min": {m: terms.min_order_usd(c, m) for m in terms.METHODS},
+                       "pay_min": {m: _usd_money(terms.min_order_usd(c, m), rates) for m in terms.METHODS},
                        "ship_notes": _ship_notes(terms.notes(c)["ship"])}
                       for s, c in stores_cfg.items() if c.get("enabled", True)],
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
@@ -172,8 +211,10 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "phones").mkdir(parents=True)
+    (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", **ctx))
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", **ctx))
-    print(f"  site: {len(phones)} phone pages -> {OUT}/")
+        (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", **ctx))
+    print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

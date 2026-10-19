@@ -13,8 +13,26 @@
 <header class="top">
   <div class="top-inner">
     <a class="brand" href="{{ root or './' }}">Price<span>Checker</span></a>
-    <div class="cur" role="group" aria-label="Currency">
-      <button data-cur="usd" aria-pressed="true">USD</button><button data-cur="eur">EUR</button><button data-cur="gbp">GBP</button><button data-cur="aud">AUD</button>
+    <button type="button" class="prefs-toggle" aria-expanded="false" aria-controls="prefs">
+      <span class="sr-only">Your settings: </span><span class="prefs-summary">EU · $ · Card</span>
+    </button>
+  </div>
+  <div class="prefs" id="prefs" hidden>
+    <div class="prefs-inner">
+      <div class="seg-group"><span class="seg-label" id="l-region">Ship to</span>
+        <div class="seg" role="group" aria-labelledby="l-region" data-pref="region">
+          <button type="button" data-val="EU">EU</button><button type="button" data-val="UK">UK</button><button type="button" data-val="US">US</button><button type="button" data-val="AU">Australia</button>
+        </div></div>
+      <div class="seg-group"><span class="seg-label" id="l-cur">Currency</span>
+        <div class="seg" role="group" aria-labelledby="l-cur" data-pref="cur">
+          <button type="button" data-val="usd">USD $</button><button type="button" data-val="eur">EUR €</button><button type="button" data-val="gbp">GBP £</button><button type="button" data-val="aud">AUD A$</button>
+        </div></div>
+      <div class="seg-group"><span class="seg-label" id="l-pay">Pay with</span>
+        <div class="seg" role="group" aria-labelledby="l-pay" data-pref="pay">
+          <button type="button" data-val="card">Card</button><button type="button" data-val="paypal">PayPal</button><button type="button" data-val="bank">Bank transfer</button>
+        </div></div>
+      <p class="prefs-foot"><span class="muted small">Totals on phone pages use these. Saved on this device.</span>
+        <button type="button" class="prefs-done">Done</button></p>
     </div>
   </div>
 </header>
@@ -25,7 +43,7 @@
   <p>Prices are checked every hour and can change at any time – always confirm the final price at the store.
      Prices are the store's own price in the selected currency where the store sets one; prices marked ≈ are
      converted with European Central Bank rates{% if fx_date %} ({{ fx_date }}){% endif %} and are approximate.
-     Last update: <time>{{ updated }}</time> UTC.</p>
+     Last update: <time datetime="{{ updated }}">{{ updated_label }}</time>.</p>
 </footer>
 <script type="application/json" id="import-tax">{{ import_tax_json|safe }}</script>
 <script src="{{ root }}static/app.js"></script>

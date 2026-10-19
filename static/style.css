@@ -43,7 +43,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 syst
 a { color: var(--brand); text-underline-offset: 2px; }
 :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
 main, footer, .top-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
-h1 { font-size: 1.45rem; line-height: 1.25; margin: 16px 0 8px; letter-spacing: -.01em; }
+h1 { font-size: 1.6rem; line-height: 1.25; margin: 16px 0 8px; letter-spacing: -.01em; }
 h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .muted { color: var(--muted); } .small { font-size: .85rem; }
 .good { color: var(--save); } .bad { color: var(--bad); }
@@ -54,10 +54,28 @@ h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .top-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
 .brand { font-weight: 800; font-size: 1.15rem; text-decoration: none; color: var(--text); white-space: nowrap; }
 .brand span { color: var(--brand); }
-.cur { display: flex; background: var(--surface-2); border-radius: 10px; padding: 3px; }
-.cur button { font: inherit; font-size: .85rem; font-weight: 600; border: 0; background: transparent; color: var(--muted);
-              min-width: 44px; min-height: 36px; padding: 0 8px; border-radius: 8px; cursor: pointer; }
-.cur button[aria-pressed="true"] { background: var(--surface); color: var(--brand); box-shadow: var(--shadow); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* settings: one button in the header opens Ship to / currency / payment, from any page and any scroll position */
+.prefs-toggle { font: inherit; font-size: .85rem; font-weight: 700; color: var(--brand); background: var(--brand-soft); border: 0;
+                border-radius: 999px; min-height: 40px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.prefs-toggle::after { content: ""; width: 6px; height: 6px; border: solid currentColor; border-width: 0 2px 2px 0;
+                       transform: translateY(-2px) rotate(45deg); transition: transform .15s ease-out; }
+.prefs-toggle[aria-expanded="true"]::after { transform: translateY(1px) rotate(-135deg); }
+.prefs { border-top: 1px solid var(--border); background: var(--surface); }
+.prefs-inner { max-width: 1120px; margin: 0 auto; padding: 12px var(--gutter) 14px; display: grid; gap: 12px; }
+.seg-group { display: grid; gap: 6px; }
+.seg-label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font: inherit; font-size: .9rem; font-weight: 600; min-height: var(--tap); padding: 0 14px; border-radius: 10px;
+              border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.seg-sm button { min-height: 40px; font-size: .85rem; padding: 0 12px; }
+.prefs-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; }
+.prefs-done { font: inherit; font-weight: 700; min-height: var(--tap); padding: 0 20px; border-radius: 10px; border: 0;
+              background: var(--brand); color: var(--on-brand); cursor: pointer; }
+.link-btn { font: inherit; font-weight: 600; color: var(--brand); background: none; border: 0; padding: 0 4px; min-height: 32px; cursor: pointer;
+            text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- intro + filters ---------- */
 .intro h1 { margin-top: 20px; }
@@ -70,6 +88,7 @@ h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .chips { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
          scroll-snap-type: x proximity; padding-bottom: 2px;
          mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.chips.at-end { mask-image: none; -webkit-mask-image: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: 0 0 auto; scroll-snap-align: start; font: inherit; font-size: .9rem; font-weight: 600; min-height: 40px; padding: 0 16px;
         border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
@@ -84,7 +103,9 @@ h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .grid { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: 1fr; gap: 12px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
         padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.card.out { opacity: .65; }
+.card.out { background: var(--surface-2); box-shadow: none; }
+.card.out .name { color: var(--muted); }
+.card-note { margin: 0; font-size: .8rem; color: var(--muted); }
 .card-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-decoration: none; color: var(--text); min-height: 32px; }
 .card-link::after { content: "›"; font-size: 1.5rem; line-height: 1; color: var(--muted); }
 .name { font-weight: 700; font-size: 1.05rem; }
@@ -100,31 +121,57 @@ h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; vertical-align: middle; letter-spacing: .01em; }
 .badge.global { background: var(--global); color: var(--global-text); }
 .badge.china { background: var(--china); color: var(--china-text); }
-.best.none { color: var(--muted); }
+.best.none { color: var(--muted); margin: 0; }
+
+/* index, before a brand is picked: the biggest Global vs China gaps, as a taste of what the site does */
+.gaps { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 0 0 20px; }
+.gaps h2 { margin-bottom: 8px; }
+.gap-list { list-style: none; padding: 0; margin: 0 0 8px; }
+.gap-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; padding: 10px 0;
+               border-bottom: 1px solid var(--border); }
+.gap-list a { font-weight: 700; text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+.gap-list a:hover { text-decoration: underline; }
+.gap-text { color: var(--save); font-weight: 700; font-size: .9rem; }
 
 /* buttons: orange is reserved for "go to the store" */
 .actions { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
 .deal, .go { display: flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 18px; border-radius: 12px;
              background: var(--cta); color: var(--on-cta); font-weight: 700; text-decoration: none; }
 .deal:hover, .go:hover { background: var(--cta-hover); }
-.deal::after, .go::after { content: "↗"; margin-left: 6px; font-weight: 400; }
+.deal::after, .go::after { content: "↗"; content: "↗" / ""; margin-left: 6px; font-weight: 400; }   /* link text says "(opens store site)" */
+.go.secondary { background: transparent; color: var(--cta); box-shadow: inset 0 0 0 1.5px var(--cta); }
+.go.secondary:hover { background: var(--surface-2); color: var(--cta-hover); }
 .compare { display: flex; align-items: center; justify-content: center; min-height: 40px; font-weight: 600; font-size: .9rem; text-decoration: none; }
 
 /* ---------- phone page ---------- */
-.crumb { margin: 12px 0 0; }
-.crumb a { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 600; text-decoration: none; }
+.page-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.crumb { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 600; text-decoration: none; }
+.btn-quiet { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 10px; font-weight: 600; font-size: .9rem;
+             text-decoration: none; color: var(--brand); border: 1px solid var(--border); background: var(--surface); }
+.btn-quiet:hover { border-color: var(--brand); }
 .title-badges { display: flex; gap: 6px; margin-bottom: 12px; }
 .best-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
             display: grid; gap: 4px; margin: 0 0 16px; }
 .best-box .label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--save); }
 .best-box .price { font-size: 2rem; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+.best-box .lead-caveat .caveat { font-size: .85rem; }
+.lead-price .plus { font-size: 1rem; font-weight: 700; color: var(--muted); }
+.lead-price .plus:empty { display: none; }
+.lead-foot { margin: 8px 0 0; font-size: .8rem; color: var(--muted); }
 .best-box .lead-meta { color: var(--muted); font-size: .9rem; }
 .best-box .deal { margin-top: 10px; }
-.order-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 6px; }
-.order-opts label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted); }
-.order-opts select { font: inherit; font-size: 1rem; color: var(--text); background: var(--surface); border: 1px solid var(--border);
-                     border-radius: 12px; min-height: var(--tap); padding: 0 12px; }
-.order-opts .explain { grid-column: 1 / -1; }
+.order-opts { margin: 0 0 6px; }
+.order-for { margin: 0; font-size: .95rem; }
+.order-opts .explain { margin: 0 0 8px; }
+.ed-filter { margin: 4px 0 0; }
+/* storage tier header: each version's cheapest total and the gap, so the comparison sits where the stores are */
+.tier-eds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: -4px 0 8px; font-variant-numeric: tabular-nums; }
+.tier-ed { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.tier-gap { color: var(--save); font-weight: 700; font-size: .9rem; }
+.tier-gap:empty { display: none; }
+.tier-empty { display: none; }
+.oos-toggle { margin-top: 8px; min-height: var(--tap); }
+.cmp-more { margin: 0 0 16px; }
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 16px 0; }
 .panel h2 .muted { font-weight: 400; font-size: .85rem; display: block; margin-top: 2px; }
 table { width: 100%; border-collapse: collapse; }
@@ -135,20 +182,18 @@ tr.out td { color: var(--muted); }
 .caveat.good { color: var(--save); }
 .no-pay .c-pay { display: none !important; }
 @media (min-width: 720px) { .m-only { display: none; } }   /* see app.js: hidden when every row would say "no fee" */
-.cmp-diff:not(.muted) { color: var(--save); font-weight: 700; }
 .chart { width: 100%; height: auto; }
 .chart .grid { stroke: var(--border); }
-.chart .axis { fill: var(--muted); font-size: 12px; }
+.chart .axis { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 .legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .85rem; margin: 8px 0 0; }
-.legend i { display: inline-block; width: 14px; height: 3px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
 
 /* phones: tables become cards - one store per card, labels from data-label */
 @media (max-width: 719px) {
-  .offers, .cmp, .terms, .offers tbody, .cmp tbody, .terms tbody { display: block; width: 100%; }
-  .offers thead, .cmp thead, .terms thead { display: none; }
-  .offers tr, .cmp tr, .terms tr { display: block; border-bottom: 1px solid var(--border); padding: 12px 0; }
-  .offers tr:last-child, .cmp tr:last-child, .terms tr:last-child { border-bottom: 0; padding-bottom: 0; }
-  .offers td, .cmp td, .terms td { display: block; border: 0; padding: 2px 0; }
+  .offers, .terms, .offers tbody, .terms tbody { display: block; width: 100%; }
+  .offers thead, .terms thead { display: none; }
+  .offers tr, .terms tr { display: block; border-bottom: 1px solid var(--border); padding: 12px 0; }
+  .offers tr:last-child, .terms tr:last-child { border-bottom: 0; padding-bottom: 0; }
+  .offers td, .terms td { display: block; border: 0; padding: 2px 0; }
   .terms td[data-label] { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; font-size: .9rem; }
   .terms td[data-label]::before { content: attr(data-label); color: var(--muted); flex: 0 0 auto; }
   .terms td[data-label] > * { text-align: right; }
@@ -166,11 +211,18 @@ tr.out td { color: var(--muted); }
                                                  color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
   .offers .c-go { padding-top: 2px; }
   .offers .c-go .go { width: 100%; }
-  .cmp td:first-child { font-weight: 700; padding-bottom: 6px; }
-  .cmp .cmp-cell { padding: 4px 0; }
-  .cmp .cmp-diff { padding-top: 6px; }
-  .cmp .cmp-diff.muted { display: none; }   /* "–" when only one version is sold */
   .terms .t-store { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .changes, .changes tbody { display: block; }
+  .changes thead { display: none; }
+  .changes tr { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "when ver" "store price" "spec stock";
+                gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .changes td { border: 0; padding: 0; white-space: normal; }
+  .changes td[data-label="When"] { grid-area: when; font-size: .8rem; color: var(--muted); }
+  .changes td[data-label="Version"] { grid-area: ver; text-align: right; }
+  .changes td[data-label="Store"] { grid-area: store; font-weight: 700; }
+  .changes td[data-label="Price"] { grid-area: price; font-weight: 700; text-align: right; }
+  .changes td[data-label="RAM/storage"] { grid-area: spec; font-size: .85rem; color: var(--muted); }
+  .changes td[data-label="Stock"] { grid-area: stock; font-size: .85rem; color: var(--muted); text-align: right; }
   .terms td.t-ship { display: block; font-size: .85rem; margin-top: 6px; }
   .terms td.t-ship::before { display: none; }
   .terms td.t-ship > * { text-align: left; }
@@ -188,6 +240,8 @@ tr.out td { color: var(--muted); }
   .sticky-deal .sd-price { font-weight: 800; font-size: 1.15rem; }
   .sticky-deal .sd-store { font-size: .8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
   .sticky-deal .deal { flex: 0 0 auto; }
+  .sticky-deal .sd-prefs { flex: 0 0 auto; font: inherit; font-size: .75rem; font-weight: 700; color: var(--brand); background: var(--brand-soft);
+                           border: 0; border-radius: 999px; min-height: 36px; padding: 0 10px; cursor: pointer; }
   body.has-sticky footer { padding-bottom: 96px; }
 }
 @media (prefers-reduced-motion: reduce) { .sticky-deal { transition: none; } }
@@ -197,7 +251,9 @@ tr.out td { color: var(--muted); }
 .status td { white-space: normal; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: var(--muted); vertical-align: middle; }
 .dot.ok { background: var(--save); } .dot.bad { background: var(--bad); }
-.warn { margin-left: 6px; font-size: .72rem; font-weight: 700; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 1px 6px; }
+.recheck { margin-left: 6px; font-size: .72rem; font-weight: 600; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.terms-box > summary { font-size: 1rem; }
+.terms-box .panel { margin-top: 4px; }
 .t-ship div + div { margin-top: 4px; }
 
 /* ---------- explainers for shoppers new to importing (native <details>) ---------- */
@@ -220,7 +276,6 @@ tr.out td { color: var(--muted); }
 .ed-diff dd .badge { justify-self: start; }
 .ed-diff dd:not(:has(> .badge)) { display: block; }
 .intro .explain { margin-top: 4px; }
-.cmp-more { margin: 12px 0 0; }
 .cmp-more a { font-weight: 600; font-size: .9rem; }
 
 /* values with details behind them: dotted underline, tap or Enter shows the note inline */
@@ -228,14 +283,21 @@ tr.out td { color: var(--muted); }
 .note { display: block; flex-basis: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px; background: var(--surface-2);
         color: var(--text); font-size: .8rem; font-weight: 400; line-height: 1.4; text-align: left; white-space: normal;
         text-transform: none; letter-spacing: normal; cursor: auto; text-decoration: none; }
-@media (prefers-reduced-motion: reduce) { .explain summary::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .explain summary::after, .prefs-toggle::after { transition: none; } }
 
+footer p { max-width: 62ch; }
+/* price history page */
+.lede { color: var(--muted); margin: 0 0 8px; max-width: 70ch; }
+.chart-wrap { max-width: 640px; }
+.legend svg { margin-right: 6px; vertical-align: middle; }
+.changes td, .changes th { white-space: nowrap; }
+.changes tr.out td { color: var(--muted); }
 footer { color: var(--muted); font-size: .8rem; padding-top: 24px; padding-bottom: 32px; border-top: 1px solid var(--border); margin-top: 32px; }
 
 /* ---------- tablet and up ---------- */
 @media (min-width: 720px) {
   :root { --gutter: 24px; }
-  h1 { font-size: 1.75rem; }
+  h1 { font-size: 1.85rem; }
   .filters { display: flex; gap: 12px; align-items: center; }
   .filters #q { flex: 0 1 320px; }
   .chips { margin-top: 0; flex: 1; }

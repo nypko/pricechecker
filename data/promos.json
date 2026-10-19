@@ -1,0 +1,69 @@
+{
+ "wonda": {
+  "seen": [
+   "24% off",
+   "> Enjoy 4.5% discount by using local bank transfer payment\" >",
+   "> Enjoy 4.5% discount by using local bank transfer payment\">",
+   ">> Enjoy 4.5% discount by using local bank transfer payment",
+   "Enjoy 4.5% discount by using local bank transfer payment. New!!! United Arab Emirates, New Zealand"
+  ],
+  "current": [
+   "> Enjoy 4.5% discount by using local bank transfer payment\">",
+   ">> Enjoy 4.5% discount by using local bank transfer payment",
+   "> Enjoy 4.5% discount by using local bank transfer payment\" >",
+   "Enjoy 4.5% discount by using local bank transfer payment. New!!! United Arab Emirates, New Zealand",
+   "24% off"
+  ],
+  "checked": "2026-10-19T12:08:56+00:00",
+  "errors": []
+ },
+ "mobilemarvel": {
+  "seen": [
+   "2% summer sale at checkout - Auto Applied",
+   "Bank Transfer 4.75% Off",
+   "💸 Bank transfers enjoy 4.75% OFF all orders"
+  ],
+  "current": [
+   "💸 Bank transfers enjoy 4.75% OFF all orders",
+   "2% summer sale at checkout - Auto Applied",
+   "Bank Transfer 4.75% Off"
+  ],
+  "checked": "2026-10-19T12:08:56+00:00",
+  "errors": [],
+  "promo_active": true
+ },
+ "tradingshenzhen": {
+  "seen": [
+   "SECOND HAND SALE",
+   "Sign Up And Get A 10€ Voucher",
+   "Your voucher is active"
+  ],
+  "current": [
+   "SECOND HAND SALE",
+   "Sign Up And Get A 10€ Voucher",
+   "Your voucher is active"
+  ],
+  "checked": "2026-10-19T12:08:56+00:00",
+  "errors": []
+ },
+ "giztop": {
+  "seen": [
+   "Flash Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the big deals.",
+   "Honor WIN RT-Black-12GB - 512GB ( Brand New, 35% Off )",
+   "SIGN UP & GET 5% OFF.",
+   "Save up to 30% OFF with coupon code: H2026, save for the latest smartphones, tablets, earbuds, Hi-Fi, smart devices, etc. It's valid until October 30th, 2026."
+  ],
+  "current": [
+   "Save up to 30% OFF with coupon code: H2026, save for the latest smartphones, tablets, earbuds, Hi-Fi, smart devices, etc. It's valid until October 30th, 2026.",
+   "Flash Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the big deals.",
+   "Honor WIN RT-Black-12GB - 512GB ( Brand New, 35% Off )",
+   "SIGN UP & GET 5% OFF."
+  ],
+  "checked": "2026-10-19T12:08:56+00:00",
+  "errors": [],
+  "coupons": {
+   "H2026": true
+  }
+ },
+ "_checked": "2026-10-19T12:08:56+00:00"
+}

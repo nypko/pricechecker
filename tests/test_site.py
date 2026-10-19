@@ -97,3 +97,9 @@ def test_buyer_summary_groups_by_store_and_region(tmp_path, monkeypatch):
     monkeypatch.setattr(buyer_reports, "APPROVED", f)
     s = buyer_reports.summary(datetime(2026, 10, 19, tzinfo=timezone.utc))
     assert s == {"giztop": {"EU": {"n": 3, "dmin": 9, "dmax": 21, "dmed": 12, "nd": 3, "tk": 2, "tx": 1}}}
+
+
+def test_ed_labels_asia_for_samsung_and_sony():
+    from pricechecker.site import ed_labels
+    assert ed_labels("Samsung")["china"] == "Asia" and ed_labels("Sony")["china"] == "Asia"
+    assert ed_labels("Xiaomi") == {"global": "Global", "china": "China"}

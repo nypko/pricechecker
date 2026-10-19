@@ -40,6 +40,7 @@ stores:
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
     affiliate_link: "{url}{sep}ref={id}"   # referral link from the dashboard: https://www.wondamobile.com?ref=ivaylo_kirov
     affiliate_id: ivaylo_kirov
+    google_play: "Installs Google Play, Gmail and Contacts before shipping"   # wondamobile.com/pages/about-us-wonda-mobile, checked 2026-10-20
     trust: {reviews: {score: 4.8, count: 3377, source: Trustpilot, url: "https://www.trustpilot.com/review/wondamobile.com"}, warranty_months: 12, returns_days: 7, checked: 2026-10-19}   # "up to 12 months warranty" (warranty policy); 7 days from arrival (refund policy)
 
   mobilemarvel:

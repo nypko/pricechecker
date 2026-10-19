@@ -258,6 +258,7 @@
   var layout = document.querySelector(".ph-layout");
   var BRAND = layout ? layout.dataset.brand : "";
   var GOOGLE = (layout && layout.dataset.google) || "no Google Play preinstalled";   // config/google.yaml, per brand
+  if (layout && layout.dataset.cl) ED.china = layout.dataset.cl;   // "Asia" for Samsung and Sony (config/google.yaml)
   (function () {   // shared links keep the chosen cell: #16-512-china
     var m = /^#(\d+)-(\d+)-(global|china)$/.exec(location.hash);
     if (m) sel = { storage: m[1] + "/" + m[2], ed: m[3] };
@@ -310,22 +311,24 @@
     if (!t) return;
     var other = sel.ed === "china" ? "global" : "china", ob = pick(inStock(sel.storage, other));
     var sold = OFFERS.some(function (o) { return o.edition === other; });
-    var lose = GOOGLE + ", " +
-      "usually no manufacturer warranty outside China, and it may miss some 4G/5G bands";
+    var cn = sel.ed === "china" ? b : ob;   // the China/Asia offer this line is about
+    var setup = cn && cn.o.gplay ? cn.o.store_label + " sets up Google Play before shipping. " : "";   // stores.yaml google_play
+    var lose = (setup ? "" : GOOGLE + ", ") + "usually no manufacturer warranty outside " +
+      (ED.china === "China" ? "China" : "China, Hong Kong and Taiwan") + ", and it may miss some 4G/5G bands";
     t.textContent = "";
     t.hidden = !b.k.payOk || (sel.ed === "global" && !(ob && ob.k.payOk));
     if (t.hidden) return;
     var text;
-    if (!sold) text = "China version only. " + lose.charAt(0).toUpperCase() + lose.slice(1) + ". ";
-    else if (!ob || !ob.k.payOk) text = "Only the China version is sold at this RAM/storage. It has " + lose + ". ";
+    if (!sold) text = ED.china + " version only. " + lose.charAt(0).toUpperCase() + lose.slice(1) + ". ";
+    else if (!ob || !ob.k.payOk) text = "Only the " + ED.china + " version is sold at this RAM/storage. It has " + lose + ". ";
     else {
       var d = ob.k.total - b.k.total;
       var lead = Math.abs(d) < 1 ? "Both versions cost about the same here" + gapNote(ob.k, b.k) + ". " :
         ED[other] + " version costs " + fmt(Math.abs(d), ob.k.approx || b.k.approx) + (d > 0 ? " more" : " less") +
         gapNote(ob.k, b.k) + " (" + fmt(ob.k.total, ob.k.approx) + "). ";   // "Global version costs ≈€215 more before shipping and tax (€1,312)."
-      text = lead + (sel.ed === "china" ? "With the China version: " : "The China version has ") + lose + ". ";
+      text = lead + (sel.ed === "china" ? "With the " + ED.china + " version: " : "The " + ED.china + " version has ") + lose + ". ";
     }
-    t.appendChild(document.createTextNode(text));
+    t.appendChild(document.createTextNode(text + setup));
     if (ob && ob.k.payOk) {
       var sw = el("button", "link-btn", "See " + ED[other]);
       sw.type = "button";
@@ -361,6 +364,7 @@
     body.appendChild(dl);
     if (couponText(o)) body.appendChild(el("p", "coupon", couponText(o)));
     if (trustText(o)) body.appendChild(el("p", "st-trust", trustText(o)));
+    if (o.gplay) body.appendChild(el("p", "st-gplay", o.gplay));
     if (buyersText(o)) body.appendChild(el("p", "st-buyers", buyersText(o)));
     var go = el("a", "go secondary", (o.available ? "Go to " : "Check ") + o.store_label);
     go.href = o.link; go.rel = "sponsored nofollow noopener"; go.target = "_blank";
@@ -450,6 +454,9 @@
     var at = ans.querySelector(".ans-trust");
     at.textContent = trustText(b.o);   // right under the store name, so it needs no name of its own
     at.hidden = !at.textContent;
+    var ag = ans.querySelector(".ans-gplay");
+    ag.textContent = b.o.gplay || "";   // e.g. Wonda installs Google Play before shipping (stores.yaml google_play)
+    ag.hidden = !ag.textContent;
     var ab = ans.querySelector(".ans-buyers");
     ab.textContent = buyersText(b.o);
     ab.hidden = !ab.textContent;
@@ -603,7 +610,7 @@
       if (!offers.length) return;
       var b = pick(offers), m = globalOnly ? null : match(offers), low = lowerOpen(offers, b);
       var badge = row.querySelector(".prow-sub .badge");
-      badge.className = "badge " + b.o.edition; badge.textContent = ED[b.o.edition];
+      badge.className = "badge " + b.o.edition; badge.textContent = b.o.edition === "china" && row.dataset.cl ? row.dataset.cl : ED[b.o.edition];
       row.querySelector(".prow-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
       row.querySelector(".prow-store").textContent = " · " + b.o.store_label;
       var pv = row.querySelector(".prow-v .price");

@@ -19,7 +19,7 @@
     {% for s in store_names %}{% set st = stores|selectattr("name", "equalto", s)|first %}
     <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
     {% endfor %}
-    {% if china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
+    {% if china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>{{ p.ed_label.china }} version</li>{% endif %}
   </ul>
 {%- endmacro %}
 {% macro charts(svgs) %}{% for c, svg in svgs.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}{% endmacro %}
@@ -28,14 +28,14 @@
   <p class="hist-variant"><label for="hist-var">Variant</label>
     <span class="select"><select id="hist-var"><option value="all">All RAM/storage options</option>{% for storage, offers in p.by_storage %}<option value="{{ storage }}">{{ storage|spec or "RAM/storage not listed" }}</option>{% endfor %}</select></span></p>
   <div class="hist-one" data-storage="all">
-    <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in <span class="for-cur">USD</span>{% if p.editions|length > 1 %}; dashed line = China version{% endif %})</span></h2>
+    <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in <span class="for-cur">USD</span>{% if p.editions|length > 1 %}; dashed line = {{ p.ed_label.china }} version{% endif %})</span></h2>
     {{ hstats.stats(p.chart_stats) }}
     {{ charts(p.chart) }}
     {{ legend(p.series_stores, p.editions|length > 1) }}
   </div>
   {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
   <div class="hist-one" data-storage="{{ storage }}" hidden>
-    <h2>Lowest in-stock price per store <span class="muted">(in <span class="for-cur">USD</span>{% if th.china %}; dashed line = China version{% endif %})</span></h2>
+    <h2>Lowest in-stock price per store <span class="muted">(in <span class="for-cur">USD</span>{% if th.china %}; dashed line = {{ p.ed_label.china }} version{% endif %})</span></h2>
     {% if th.svg %}{{ hstats.stats(th.stats) }}{{ charts(th.svg) }}{{ legend(th.stores.keys(), th.china) }}
     {% else %}<p class="muted small">No prices recorded at this RAM/storage yet.</p>{% endif %}
   </div>
@@ -57,7 +57,7 @@
       <tr class="{{ '' if c.available else 'out' }}" data-storage="{{ c.storage }}">
         <td data-label="When"><time datetime="{{ c.time.isoformat() }}Z">{{ c.time.strftime("%-d %b, %H:%M") }}</time></td>
         <td data-label="Store">{{ c.store_label }}</td>
-        <td data-label="Version"><span class="badge {{ c.edition }}">{{ edition_label[c.edition] }}</span></td>
+        <td data-label="Version"><span class="badge {{ c.edition }}">{{ p.ed_label[c.edition] }}</span></td>
         <td data-label="RAM/storage">{{ c.storage|spec or "not listed" }}</td>
         <td data-label="Price">{{ price(c.money) }}</td>
         <td data-label="Stock">{{ "In stock" if c.available else "Out of stock" }}</td>

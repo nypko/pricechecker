@@ -20,12 +20,13 @@
 <header class="ph-head">
   <h1>{{ p.name }}</h1>
   <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
+  {% if p.google.model_note and "china" in p.editions %}<p class="muted small ed-note">{{ p.ed_label.china }} version: {{ p.google.model_note }}</p>{% endif %}
   {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
-  {{ explain.editions(p.editions, p.brand|lower, google=p.google) }}
+  {{ explain.editions(p.editions, p.brand|lower, google=p.google, cl=p.ed_label.china) }}
 </header>
 
 {% if p.best %}
-<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-google="{{ p.google.short }}" data-slug="{{ p.slug }}">
+<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-google="{{ p.google.short }}" data-cl="{{ p.ed_label.china }}" data-slug="{{ p.slug }}">
 
 <section class="picker" aria-labelledby="pick-h">
   <div class="sec-head">
@@ -61,9 +62,10 @@
 <section class="answer" aria-labelledby="ans-h">
   <h2 id="ans-h" class="ans-label">Lowest store price</h2>
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
-  <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
+  <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ p.ed_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
   <p class="ans-trust" hidden></p>
+  <p class="ans-gplay" hidden></p>
   <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
   <p class="ans-buyers" hidden></p>
   <p class="ans-or" hidden></p>
@@ -122,13 +124,13 @@
       <div class="hist-one" data-storage="{{ storage }}" hidden>
       {% if th.svg %}
         {{ hstats.stats(th.stats) }}
-        <p class="muted small hist-note">Lowest in-stock price per store, in <span class="for-cur">USD</span>{% if th.china %}; dashed line = China version{% endif %}.</p>
+        <p class="muted small hist-note">Lowest in-stock price per store, in <span class="for-cur">USD</span>{% if th.china %}; dashed line = {{ p.ed_label.china }} version{% endif %}.</p>
         {% for c, svg in th.svg.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}
         <ul class="legend">
           {% for s, eds in th.stores.items() %}{% set st = stores|selectattr("name", "equalto", s)|first %}
           <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
           {% endfor %}
-          {% if th.china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
+          {% if th.china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>{{ p.ed_label.china }} version</li>{% endif %}
         </ul>
       {% else %}
         <p class="muted small hist-note">No price changes recorded at this RAM/storage yet.</p>
@@ -144,7 +146,7 @@
 
 {% macro rel_list(items) %}<ul class="rel-list">{% for q in items %}
   <li><a href="{{ q.slug }}"><span class="rel-name">{{ q.name }}</span>
-    <span class="rel-sub">{% if q.announced %}{{ q.announced|month }} · {% endif %}{% for e in q.editions %}{{ edition_label[e] }}{{ " / " if not loop.last }}{% endfor %}{% if q.money %} · store price from {{ price(q.money) }}{% endif %}</span></a></li>
+    <span class="rel-sub">{% if q.announced %}{{ q.announced|month }} · {% endif %}{% for e in q.editions %}{{ q.ed_label[e] }}{{ " / " if not loop.last }}{% endfor %}{% if q.money %} · store price from {{ price(q.money) }}{% endif %}</span></a></li>
 {% endfor %}</ul>{% endmacro %}
 {% if p.related.brand or p.related.near %}
 <section class="related" aria-labelledby="rel-h">
@@ -157,7 +159,7 @@
 <noscript>
   <section class="others">
     <h2>All store prices <span class="muted small">(before shipping, payment fees and import tax)</span></h2>
-    <ul class="plain-list">{% for o in p.offers %}<li>{{ o.store_label }} · {{ edition_label[o.edition] }} {{ o.storage|spec }} · {{ price(o.money) }}{% if not o.available %} (out of stock){% endif %} · <a href="{{ o.link }}" rel="sponsored nofollow noopener">store</a></li>{% endfor %}</ul>
+    <ul class="plain-list">{% for o in p.offers %}<li>{{ o.store_label }} · {{ p.ed_label[o.edition] }} {{ o.storage|spec }} · {{ price(o.money) }}{% if not o.available %} (out of stock){% endif %} · <a href="{{ o.link }}" rel="sponsored nofollow noopener">store</a></li>{% endfor %}</ul>
   </section>
 </noscript>
 <script type="application/json" id="offers">{{ p.all_json|replace("</", "<\\/")|safe }}</script>

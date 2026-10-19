@@ -1,13 +1,14 @@
 {#- Plain-language explainers for shoppers new to importing. Native <details>, so they work by tap, keyboard and without JS. -#}
 
 {#- editions: list of "global"/"china" the phone is sold in (index: both); brand: phone brand, lower case ("" on the index);
-    google: the brand's entry from config/google.yaml plus the caveat (phone pages only) -#}
-{%- macro editions(eds, brand="", id="editions", google=none) -%}
+    google: the brand's entry from config/google.yaml plus the caveat (phone pages only);
+    cl: what the non-Global version is called for this brand ("China", or "Asia" for Samsung and Sony) -#}
+{%- macro editions(eds, brand="", id="editions", google=none, cl="China") -%}
 {%- set both = "global" in eds and "china" in eds -%}
 <details class="explain" id="{{ id }}">
-  <summary>{% if both %}Global or China version: what's different?{% elif "china" in eds %}What is a China version?{% else %}What is a Global version?{% endif %}</summary>
+  <summary>{% if both %}Global or {{ cl }} version: what's different?{% elif "china" in eds %}What is {{ "an" if cl[0] in "AEIOU" else "a" }} {{ cl }} version?{% else %}What is a Global version?{% endif %}</summary>
   <div class="explain-body">
-    <p>Usually the same phone and cameras. What changes is the software, the warranty and which mobile networks it's built for.{% if both %} The China version is often cheaper.{% endif %}</p>
+    <p>Usually the same phone and cameras. What changes is the software, the warranty and which mobile networks it's built for.{% if both %} The {{ cl }} version is often cheaper.{% endif %}</p>
     <dl class="ed-diff">
       <div>
         <dt>Google apps</dt>
@@ -16,7 +17,7 @@
         {%- else %}
         <dd><span class="badge global">Global</span> Google Play and Google apps installed.</dd>
         {%- if google %}
-        <dd><span class="badge china">China</span> {{ google.long }}{% if google.caveat %} {{ google.caveat }}{% endif %}</dd>
+        <dd><span class="badge china">{{ cl }}</span> {{ google.long }}{% if google.caveat %} {{ google.caveat }}{% endif %}</dd>
         {%- else %}
         <dd><span class="badge china">China</span> Google Play is not set up. On Xiaomi, Oppo, OnePlus, vivo and Honor it can be switched on in Settings; on other brands it can often be added, but some apps may not work fully. Huawei phones have no Google services in either version.</dd>
         {%- endif %}
@@ -25,16 +26,16 @@
       <div>
         <dt>Warranty</dt>
         <dd><span class="badge global">Global</span> International warranty from many sellers. Check the store.</dd>
-        <dd><span class="badge china">China</span> Usually no manufacturer warranty outside China. You rely on the store's own warranty and returns.</dd>
+        <dd><span class="badge china">{{ cl }}</span> Usually no manufacturer warranty outside {{ "China" if cl == "China" else "China, Hong Kong and Taiwan" }}. You rely on the store's own warranty and returns.</dd>
       </div>
       <div>
         <dt>Networks &amp; SIM</dt>
         <dd><span class="badge global">Global</span> Built for networks worldwide; eSIM where the model has it.</dd>
-        <dd><span class="badge china">China</span> May miss some 4G/5G bands your carrier uses, and often has no eSIM. Check the band list before you buy.</dd>
+        <dd><span class="badge china">{{ cl }}</span> May miss some 4G/5G bands your carrier uses, and often has no eSIM. Check the band list before you buy.</dd>
       </div>
       <div>
         <dt>Language</dt>
-        <dd><span class="badge china">China</span> Can be set to English; some Chinese apps come preinstalled.</dd>
+        <dd><span class="badge china">{{ cl }}</span> Can be set to English; {{ "some Chinese apps come preinstalled" if cl == "China" else "China software comes with some Chinese apps" }}.</dd>
       </div>
     </dl>
   </div>

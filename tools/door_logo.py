@@ -9,7 +9,7 @@ COUNTER = "M340 135Q408 135 447 173Q486 211 486 295V403Q486 487 447 525Q408 563 
 ADV, CAP = 697, 698
 # the door fills the counter's height and starts at its left edge; width from the reference door (169:365)
 X0, Y0, H = 229, 135, 428
-W = round(H * 169 / 365)                     # 198
+W = round(H * 169 / 365 * 1.15)              # 228: the reference proportions, 15% wider (left edge unchanged)
 FRAME = 16                                   # frame in the letter's ink, merges with the D's stem and bowl
 
 def box(fx, fy, fw, fh):

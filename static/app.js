@@ -239,23 +239,36 @@
   // phone list above them. A chip can't be un-picked - there is always one active filter after the first choice.
   var brand = null, q = document.getElementById("q"), phones = document.getElementById("phones");
   if (phones) document.body.classList.add("choosing");
+  // Search: every word must appear in the brand + name, in any order, ignoring spaces and punctuation,
+  // so "x9", "oppo x9", "x9 oppo" and "findx9" all find the Oppo Find X9 phones.
+  function squash(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, ""); }
+  var noResults = document.getElementById("no-results");
   function filter() {
-    var text = q ? q.value.trim().toLowerCase() : "";
+    var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .card").forEach(function (c) {
-      c.hidden = !((!brand || c.dataset.brand === brand) && (!text || c.dataset.name.indexOf(text) !== -1));
+      var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
+      c.hidden = !((!brand || c.dataset.brand === brand) && words.every(function (w) { return hay.indexOf(w) !== -1; }));
+      if (!c.hidden) shown++;
     });
+    if (noResults) {
+      noResults.hidden = shown > 0 || brand === null;
+      noResults.querySelector(".nr-q").textContent = q ? q.value.trim() : "";
+    }
   }
   function choose(b) {
     brand = b.dataset.brand;
-    document.querySelectorAll(".chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    document.querySelectorAll(".chips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
     document.body.classList.remove("choosing");
     filter();
   }
-  document.querySelectorAll(".chip").forEach(function (b) {
+  document.querySelectorAll(".chips .chip").forEach(function (b) {
     b.addEventListener("click", function () { choose(b); });
   });
+  // Typing searches every brand: a brand chosen before would otherwise hide the match without saying why
   if (q) q.addEventListener("input", function () {
-    if (brand === null) choose(document.querySelector('.chip[data-brand=""]'));   // searching = browsing All
+    if (brand !== "" && q.value.trim()) choose(document.querySelector('.chip[data-brand=""]'));
     else filter();
   });
+  var clear = document.getElementById("clear-search");
+  if (clear) clear.addEventListener("click", function () { q.value = ""; filter(); q.focus(); });
 })();

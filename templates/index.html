@@ -17,6 +17,11 @@
 
 <p class="pick-hint">Pick a brand, or <strong>All</strong>, to see the prices.</p>
 
+<div class="no-results" id="no-results" hidden>
+  <p>No phones match “<span class="nr-q"></span>”.</p>
+  <button type="button" class="chip" id="clear-search">Clear search</button>
+</div>
+
 <ul class="grid" id="phones">
 {% for p in phones %}
   <li class="card{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}"

@@ -483,9 +483,12 @@ footer p { max-width: 62ch; }
 @media (min-width: 720px) {
   :root { --gutter: 24px; }
   h1 { font-size: 2rem; }
-  .list-tools { display: flex; gap: 12px; align-items: center; }
-  .list-tools #q { flex: 0 1 340px; }
-  .chips { margin-top: 0; flex: 1; flex-wrap: wrap; overflow: visible; mask-image: none; -webkit-mask-image: none; }
+  /* search and the Global / Watched switches on one row, every brand on one row below (scrolls sideways if it must) */
+  .list-tools { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  .list-tools #q { flex: 0 1 380px; order: 1; }
+  #global-only { order: 2; margin-left: auto; }
+  #watch-only { order: 3; }
+  .chips { order: 4; flex: 1 0 100%; margin-top: 0; }
   .chip-global { margin-top: 0; }
   .hsearch { display: block; }
   .hsearch-icon { display: none; }
@@ -509,14 +512,14 @@ footer p { max-width: 62ch; }
    Labels sit above the values on phones (every column keeps its full width) and in a left column from 720px. */
 .cmp { --n: 2; margin: 8px 0 24px; }
 .cmp-cells { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; }
-.cmp-row { padding: 10px 0; border-top: 1px solid var(--line); }
+.cmp-row { padding: 6px 0; border-top: 1px solid var(--line); }
 .cmp-head { position: sticky; top: 57px; z-index: 5; background: var(--bg); border-top: 0; }   /* names stay in view below the site header */
-.cmp-menu { display: block; margin-top: 4px; max-width: 100%; min-height: 32px; font: inherit; font-size: .82rem; font-weight: 600; color: var(--brand);
+.cmp-menu { display: block; margin-top: 6px; width: 100%; min-height: 32px; font: inherit; font-size: .82rem; font-weight: 600; color: var(--brand);
             background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0 6px; }
 .cmp-add { width: 100%; min-height: var(--tap); border-style: dashed; }
 .cmp-label { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
-.cmp-cell { min-width: 0; font-size: .9rem; line-height: 1.35; overflow-wrap: anywhere; }
-.cmp-top { background: var(--save-soft); border-radius: 8px; padding: 4px 8px; margin: -4px -8px; }
+.cmp-cell { min-width: 0; font-size: .9rem; line-height: 1.35; overflow-wrap: anywhere; padding: 6px 8px; border-radius: 8px; }
+.cmp-top { background: var(--save-soft); }
 .cmp-top .cmp-price, .cmp-top > .cmp-line { color: var(--save); }
 .cmp-name { display: block; font-weight: 700; text-decoration: none; }
 .cmp-price { display: block; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -526,11 +529,11 @@ footer p { max-width: 62ch; }
 .cmp-note { margin: 8px 0 0; }
 @media (min-width: 720px) {
   .cmp-row { display: grid; grid-template-columns: 160px 1fr; gap: 10px; align-items: start; }
-  .cmp-label { margin: 2px 0 0; font-size: .82rem; }
+  .cmp-label { margin: 0; padding-top: 8px; font-size: .82rem; }
 }
-.cmp-cfg { display: block; width: 100%; text-align: left; margin: 0 0 4px; min-height: 34px; padding: 4px 8px; font: inherit; font-size: .88rem;
+.cmp-cfg { display: inline-flex; align-items: center; margin: 0 6px 6px 0; min-height: 34px; padding: 4px 12px; font: inherit; font-size: .88rem;
            font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); background: var(--surface); border: 1px solid var(--border);
-           border-radius: 8px; cursor: pointer; }
+           border-radius: 999px; cursor: pointer; white-space: nowrap; }
 .cmp-cfg[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
 .cmp-cfg.near[aria-pressed="true"] { border-style: dashed; }
 .cmp-cfg:disabled { color: var(--muted); font-weight: 400; text-decoration: line-through; cursor: default; background: transparent; }

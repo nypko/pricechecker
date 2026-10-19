@@ -61,7 +61,7 @@
     el.className = "caveat";
     el.textContent = c.length ? c.join(" · ") : "incl. shipping & import tax";
     if (!c.length) el.classList.add("good");
-    if (k.duties !== true && k.taxNote) el.title = k.taxNote;
+    if (k.duties !== true && k.taxNote) setNote(el, k.taxNote);
     return el;
   }
 
@@ -104,13 +104,66 @@
     return (diff < 0 ? "China" : "Global") + " version " + fmt(Math.abs(diff), approx) + " cheaper" + where;
   }
 
+  // "What's in the total?": the import tax rule for the chosen Ship-to destination
+  var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia" };
+  function taxText() {
+    var t = TAX[state.region], where = "Shipping to " + REGION_NAME[state.region] + ": ";
+    if (!t) return null;
+    if (t.rate_pct == null) return where + t.note + " We don't add an estimate to totals.";
+    return where + "when a store's price excludes " + t.name + ", you pay it to the courier on delivery and we add an " +
+      "estimate (≈) to that store's total. " + t.note;
+  }
+
+  // Details behind a value (store terms, conversions, tax rules): shown inline on tap or Enter, since
+  // hover tooltips never appear on phones. setNote(el, "") removes it.
+  function setNote(el, text) {
+    if (text) el.dataset.note = text; else delete el.dataset.note;
+    noteable(el);
+  }
+  function noteable(el) {
+    var on = !!el.dataset.note;
+    if (on) { el.tabIndex = 0; el.setAttribute("role", "button"); el.setAttribute("aria-expanded", noteOf(el) ? "true" : "false"); }
+    else { el.removeAttribute("tabindex"); el.removeAttribute("role"); el.removeAttribute("aria-expanded"); }
+  }
+  // the note goes right after the value (not inside it), so it doesn't inherit the value's dotted underline
+  function noteOf(el) { var n = el.nextElementSibling; return n && n.classList.contains("note") ? n : null; }
+  function toggleNote(el) {
+    var open = noteOf(el);
+    if (open) open.remove();
+    else {
+      var n = document.createElement("span");
+      n.className = "note";
+      n.textContent = el.dataset.note;
+      el.after(n);
+    }
+    el.setAttribute("aria-expanded", open ? "false" : "true");
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-note]");
+    if (el && el.dataset.note && !e.target.closest("a")) toggleNote(el);
+  });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target;
+    if ((e.key === "Enter" || e.key === " ") && el.dataset && el.dataset.note) { e.preventDefault(); toggleNote(el); }
+  });
+  document.querySelectorAll("[data-note]").forEach(noteable);
+  // Links to an explainer (#editions) open it, not just scroll to its closed summary
+  document.querySelectorAll("[data-open]").forEach(function (a) {
+    a.addEventListener("click", function () { var d = document.getElementById(a.dataset.open); if (d) d.open = true; });
+  });
+
+  function cell(td) { td.textContent = ""; return td.appendChild(document.createElement("span")); }
+
   function render() {
+    document.querySelectorAll(".note").forEach(function (n) { n.remove(); });   // values below are recomputed
+    var tax = document.querySelector("#totals .tax-region"), tt = taxText();
+    if (tax && tt) tax.textContent = tt;
     // simple price tags (store's own price or ECB conversion)
     document.querySelectorAll(".price").forEach(function (el) {
       var v = parseFloat(el.dataset[state.cur]);
       var approx = el.dataset[state.cur + "Approx"] === "1";
       if (!isNaN(v)) el.textContent = fmt(v, approx);
-      if (approx) el.title = "Converted at ECB rate"; else el.removeAttribute("title");
+      setNote(el, approx ? "Converted at the European Central Bank rate: this store has no price in this currency." : "");
     });
     // index cards: the stores' own prices (no payment/shipping adjustments - those are on the phone pages)
     document.querySelectorAll(".card[data-offers]").forEach(function (card) {
@@ -178,15 +231,17 @@
       var p = row.querySelector(".c-pay"), s = row.querySelector(".c-ship"), t = row.querySelector(".c-total strong");
       var old = row.querySelector(".c-total .caveat");
       if (old) old.remove();
-      p.textContent = !k.payOk ? "not offered" : k.adj == null ? "unknown" :
+      var pv = cell(p);
+      pv.textContent = !k.payOk ? "not offered" : k.adj == null ? "unknown" :
         k.adj === 0 ? (state.pay === "bank" ? "no discount" : "no fee") : pct(k.adj) + " (" + (k.adjAmt < 0 ? "−" : "+") + fmt(Math.abs(k.adjAmt), false) + ")";
-      p.title = k.payNote || "";
+      setNote(pv, k.payNote);
       p.className = "c-pay " + (!k.payOk || k.adj == null ? "muted" : k.adj < 0 ? "good" : k.adj > 0 ? "bad" : "");
-      s.textContent = k.ship == null ? "not listed" : (k.ship === 0 ? "free" : fmt(k.ship, false));
-      s.title = k.shipNote || "";
+      var sv = cell(s);
+      sv.textContent = k.ship == null ? "not listed" : (k.ship === 0 ? "free" : fmt(k.ship, false));
+      setNote(sv, k.shipNote);
       s.className = "c-ship " + (k.ship == null ? "muted" : "");
       t.textContent = k.payOk ? fmt(k.total, k.approx) : "–";
-      t.title = !k.payOk ? "This store doesn't accept " + PAY_LABEL[state.pay] + " for this order" : "";
+      setNote(t, !k.payOk ? "This store doesn't accept " + PAY_LABEL[state.pay] + " for this order" : "");
       if (k.payOk) row.querySelector(".c-total").appendChild(caveatEl(k));
       row._rank = [row.classList.contains("out") ? 1 : 0, k.payOk ? 0 : 1, Math.round(k.total), k.complete ? 0 : 1];
       row._payPlain = k.payOk && k.adj === 0;   // "no fee" / "no discount": nothing worth a column

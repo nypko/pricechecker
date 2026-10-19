@@ -124,7 +124,7 @@ h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .order-opts label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--muted); }
 .order-opts select { font: inherit; font-size: 1rem; color: var(--text); background: var(--surface); border: 1px solid var(--border);
                      border-radius: 12px; min-height: var(--tap); padding: 0 12px; }
-.order-note { grid-column: 1 / -1; margin: 0; }
+.order-opts .explain { grid-column: 1 / -1; }
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 16px 0; }
 .panel h2 .muted { font-weight: 400; font-size: .85rem; display: block; margin-top: 2px; }
 table { width: 100%; border-collapse: collapse; }
@@ -149,7 +149,7 @@ tr.out td { color: var(--muted); }
   .offers tr, .cmp tr, .terms tr { display: block; border-bottom: 1px solid var(--border); padding: 12px 0; }
   .offers tr:last-child, .cmp tr:last-child, .terms tr:last-child { border-bottom: 0; padding-bottom: 0; }
   .offers td, .cmp td, .terms td { display: block; border: 0; padding: 2px 0; }
-  .terms td[data-label] { display: flex; justify-content: space-between; gap: 12px; font-size: .9rem; }
+  .terms td[data-label] { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; font-size: .9rem; }
   .terms td[data-label]::before { content: attr(data-label); color: var(--muted); flex: 0 0 auto; }
   .terms td[data-label] > * { text-align: right; }
   /* store card: name + version, big total, then a 2x2 grid of details, then the button */
@@ -200,6 +200,36 @@ tr.out td { color: var(--muted); }
 .warn { margin-left: 6px; font-size: .72rem; font-weight: 700; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 1px 6px; }
 .t-ship div + div { margin-top: 4px; }
 
+/* ---------- explainers for shoppers new to importing (native <details>) ---------- */
+.explain { margin: 0 0 12px; }
+.explain summary { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); font-weight: 600; font-size: .95rem;
+                   color: var(--brand); cursor: pointer; list-style: none; border-radius: 8px; }
+.explain summary::-webkit-details-marker { display: none; }
+.explain summary::after { content: ""; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0;
+                          transform: translateY(-2px) rotate(45deg); transition: transform .15s ease-out; }
+.explain[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.explain summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.explain-body { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: .9rem;
+                max-width: 68ch; }
+.explain-body > p { margin: 0 0 12px; color: var(--text); font-size: inherit; }
+.explain dl { margin: 0; display: grid; gap: 12px; }
+.explain dl > div { display: grid; gap: 4px; }
+.explain dt { font-weight: 700; }
+.explain dd { margin: 0; }
+.ed-diff dd { display: grid; grid-template-columns: 4.25rem 1fr; align-items: baseline; }
+.ed-diff dd .badge { justify-self: start; }
+.ed-diff dd:not(:has(> .badge)) { display: block; }
+.intro .explain { margin-top: 4px; }
+.cmp-more { margin: 12px 0 0; }
+.cmp-more a { font-weight: 600; font-size: .9rem; }
+
+/* values with details behind them: dotted underline, tap or Enter shows the note inline */
+[data-note]:not([data-note=""]) { text-decoration: underline dotted; text-decoration-color: var(--muted); text-underline-offset: 3px; cursor: pointer; }
+.note { display: block; flex-basis: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px; background: var(--surface-2);
+        color: var(--text); font-size: .8rem; font-weight: 400; line-height: 1.4; text-align: left; white-space: normal;
+        text-transform: none; letter-spacing: normal; cursor: auto; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .explain summary::after { transition: none; } }
+
 footer { color: var(--muted); font-size: .8rem; padding-top: 24px; padding-bottom: 32px; border-top: 1px solid var(--border); margin-top: 32px; }
 
 /* ---------- tablet and up ---------- */
@@ -214,7 +244,7 @@ footer { color: var(--muted); font-size: .8rem; padding-top: 24px; padding-botto
   .best-box .deal { grid-row: 1 / span 3; grid-column: 2; margin: 0; }
   .order-opts { display: flex; flex-wrap: wrap; align-items: flex-end; }
   .order-opts label { min-width: 180px; }
-  .order-note { flex-basis: 100%; }
+  .order-opts .explain { flex-basis: 100%; }
   .offers .go { min-height: 36px; padding: 0 12px; font-size: .9rem; }
   .offers td { white-space: nowrap; }
   .offers .c-total { white-space: normal; min-width: 150px; }

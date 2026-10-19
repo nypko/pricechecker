@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
+{% import "_explain.html" as explain %}
 {% block main %}
 <section class="intro">
   <h1>Flagship phone prices, checked every hour</h1>
   {% set n_stores = stores|selectattr("count")|list|length %}
   <p>{{ phones|length }} phones · {{ n_stores }} stores · Global and China versions side by side, so the price gap is easy to spot.</p>
+  {{ explain.editions(["global", "china"]) }}
 </section>
 
 <div class="filters">
@@ -67,11 +69,11 @@
     {% for s in stores %}
       <tr>
         <td class="t-store"><span class="dot {{ 'ok' if s.ok else ('bad' if s.ok == false else 'off') }}"></span>{{ s.label }}
-          {% if not s.terms_ok %}<span class="warn" title="The store's terms page changed since we last verified it">terms need review</span>{% endif %}</td>
+          {% if not s.terms_ok %}<span class="warn" data-note="The store's terms page changed since we last verified it">terms need review</span>{% endif %}</td>
         <td class="muted" data-label="Prices"><span>{% if s.ok %}{{ s.count }}{% elif s.ok == false %}last check failed{% else %}not connected{% endif %}</span></td>
         {% for m in ["bank", "paypal", "card"] %}
         {% set v = s.pay[m] %}
-        <td title="{{ s.notes.pay[m] }}" data-label="{{ {'bank': 'Bank transfer', 'paypal': 'PayPal', 'card': 'Card'}[m] }}"><span>{% if s.pay_min[m] %}<span class="muted">orders over ${{ "{:,.0f}".format(s.pay_min[m]) }} only</span>{% elif v is none %}<span class="muted">unknown</span>{% elif v < 0 %}<strong class="good">{{ v|round(2) }}%</strong>{% elif v > 0 %}<span class="bad">+{{ v|round(2) }}%</span>{% else %}no fee{% endif %}</span></td>
+        <td data-label="{{ {'bank': 'Bank transfer', 'paypal': 'PayPal', 'card': 'Card'}[m] }}"><span data-note="{{ s.notes.pay[m] }}">{% if s.pay_min[m] %}<span class="muted">orders over ${{ "{:,.0f}".format(s.pay_min[m]) }} only</span>{% elif v is none %}<span class="muted">unknown</span>{% elif v < 0 %}<strong class="good">{{ v|round(2) }}%</strong>{% elif v > 0 %}<span class="bad">+{{ v|round(2) }}%</span>{% else %}no fee{% endif %}</span></td>
         {% endfor %}
         <td class="muted small t-ship" data-label="Shipping">{% for note, regions in s.ship_notes %}<div><strong>{{ regions|join(" / ") }}:</strong> {{ note }}</div>{% else %}unknown{% endfor %}</td>
       </tr>
@@ -79,6 +81,6 @@
     </tbody>
   </table>
   </div>
-  <p class="muted small">Terms are taken from each store's payment, shipping and customs pages and re-checked daily. Tap or hover a value for details.</p>
+  <p class="muted small">Terms are taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.</p>
 </section>
 {% endblock %}

@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
+{% import "_explain.html" as explain %}
 {% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – PriceChecker{% endblock %}
 {% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, updated hourly.{% endblock %}
 {% block main %}
 <p class="crumb"><a href="../">‹ All phones</a></p>
 <h1>{{ p.name }}</h1>
 <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
+{{ explain.editions(p.editions, p.brand|lower) }}
 {% if p.best %}
 <div class="best-box lead" data-offers="{{ p.offers_json }}">
   <span class="label">Best price now</span>
@@ -24,7 +26,7 @@
   <label>Ship to
     <select id="region"><option value="EU">EU</option><option value="UK">UK</option><option value="US">US</option><option value="AU">Australia</option></select>
   </label>
-  <p class="muted small order-note">Totals include payment fees or discounts, shipping, and estimated import tax (≈) where a store's price excludes it.</p>
+  {{ explain.totals() }}
 </div>
 {% endif %}
 
@@ -43,8 +45,7 @@
     {% endfor %}
     </tbody>
   </table>
-  <p class="muted small">Global versions come with Google services and international warranty from most sellers; China versions
-     are often cheaper but may need extra setup.</p>
+  <p class="cmp-more"><a href="#editions" data-open="editions">What you give up with a cheaper version</a></p>
 </section>
 {% endif %}
 
@@ -64,7 +65,7 @@
     <tbody>
     {% for o in offers %}
       <tr class="offer-row {{ '' if o.available else 'out' }}" data-offer='{{ {"money": o.money, "pay": o.pay, "pay_ok": o.pay_ok, "ship": o.ship, "notes": o.notes, "duties": o.duties}|tojson }}'>
-        <td class="c-store"><span>{{ o.store_label }}{% if o.stale %} <span class="muted small" title="Last check failed">(last known)</span>{% endif %}</span>
+        <td class="c-store"><span>{{ o.store_label }}{% if o.stale %} <span class="muted small" data-note="Our last check of this store failed, so this is the last price we saw.">(last known)</span>{% endif %}</span>
           <span class="badge {{ o.edition }} m-only">{{ edition_label[o.edition] }}</span></td>
         <td class="d-only" data-label="Version"><span class="badge {{ o.edition }}">{{ edition_label[o.edition] }}</span></td>
         <td data-label="Price"><span>{{ price(o.money) }}{% if o.currency not in ["USD", "EUR", "GBP", "AUD"] %} <span class="muted">({{ "{:,.0f}".format(o.price) }} {{ o.currency }})</span>{% endif %}</span></td>

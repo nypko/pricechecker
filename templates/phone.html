@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
 {% import "_explain.html" as explain %}
-{% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – PriceChecker{% endblock %}
+{% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – DoorPrice{% endblock %}
 {% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, delivered to your country, updated hourly.{% endblock %}
 {% block main %}
 <div class="page-nav">

@@ -1,4 +1,4 @@
-/* PriceChecker - answer first, mobile first.
+/* DoorPrice - answer first, mobile first.
    Colour roles (one meaning each, so shoppers learn them at a glance):
      brand blue  = navigation, selection, settings
      action orange = "go to the store" only
@@ -68,8 +68,14 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 /* ---------- header + settings ---------- */
 .top { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--border); }
 .top-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
-.brand { font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--text); white-space: nowrap; letter-spacing: -.01em; }
-.brand span { color: var(--brand); }
+.brand { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 700; font-size: 1.3rem;
+         text-decoration: none; color: var(--text); white-space: nowrap; letter-spacing: -.02em; }
+/* [D]oorPrice: the D is the font's own Bold D (advance 697, cap height 698 per 1000) drawn as SVG, with a door in its counter */
+.lockup { display: inline-block; line-height: 1; white-space: nowrap; }
+.dp-d { display: inline-block; width: .697em; height: .698em; vertical-align: baseline; overflow: visible; margin-right: -.03em; }   /* matches the wordmark's tight tracking */
+.dp-glass { fill: var(--brand); }
+.brand-b { color: var(--brand); }
+
 .prefs-toggle { font: inherit; font-size: .85rem; font-weight: 700; color: var(--brand); background: var(--brand-soft); border: 0;
                 border-radius: 999px; min-height: 40px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
 .prefs-toggle::after, .explain summary::after, .hist-toggle::after, .oos > summary::after {
@@ -113,6 +119,9 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 /* ---------- index: intro, tools, ranked list ---------- */
 .intro { padding-top: 8px; }
 .intro h1 { margin-top: 16px; max-width: 22ch; }
+/* the home page opens with the logo at full size; the headline below it says what the site does */
+.intro .hero-brand { margin: 28px 0 0; color: var(--text); font-weight: 700; font-size: clamp(2.6rem, 11vw, 4rem); line-height: 1; letter-spacing: -.035em; }
+.hero-brand + h1 { margin-top: 14px; font-size: clamp(1.25rem, 4.2vw, 1.6rem); font-weight: 600; color: var(--muted); letter-spacing: -.01em; }
 .intro p { color: var(--muted); margin: 0 0 4px; max-width: 60ch; }
 .list-tools { position: sticky; top: 57px; z-index: 15; background: var(--bg); padding: 10px var(--gutter) 8px; margin: 0 calc(-1 * var(--gutter)); }
 #q { width: 100%; font: inherit; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;
@@ -195,7 +204,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .ans-label.warn { color: var(--bad); }
 .answer.nopay .bar { display: none; }
 .ans-alt { margin: -6px 0 12px; }
-.coupon { margin: 0 0 12px; padding: 8px 12px; border: 1px dashed var(--border); border-radius: 10px; font-size: .85rem; color: var(--text); }
+.coupon { margin: 0 0 12px; font-size: .85rem; color: var(--text); }   /* a plain line: the answer card is already the container */
 .st-body .coupon { margin: 0 0 10px; }
 .ans-alt .link-btn { padding: 0; text-align: left; line-height: 1.4; }
 .answer .deal-off { width: 100%; justify-content: center; margin-top: 16px; min-height: var(--tap); }

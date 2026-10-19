@@ -1,4 +1,6 @@
-# PriceChecker
+# DoorPrice
+
+(Repository and Cloudflare project are still named `pricechecker`; the checker identifies itself to stores as `PriceCheckerBot`.)
 
 Static website that compares prices of flagship phones across stores, refreshed every hour, with affiliate links.
 

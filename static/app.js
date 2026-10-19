@@ -386,6 +386,7 @@
   }
   function choose(c) {
     sel = c;
+    stickyPicked();   // on phones, the deal bar comes up as soon as a choice is made
     histSel = null;   // the price history follows the grid until a variant is picked in its own menu
     renderPhone();
     if (history.replaceState) history.replaceState(null, "", "#" + c.storage.replace("/", "-") + "-" + c.ed);
@@ -863,14 +864,25 @@
   });
 
   // Phone pages: show the bottom "deal" bar once the answer's button has scrolled out of view
+  // Phone pages (phones only, see CSS): the bottom deal bar shows while the answer's own button is off screen - once it has
+  // scrolled away above, or as soon as a price is picked in the grid (the answer is then further down the page)
   var dealBtn = document.querySelector(".answer .deal"), sbar = document.querySelector(".sticky-deal");
+  var sbPicked = false, sbOff = false, sbAbove = false;
+  function stickyShow() {
+    if (!sbar) return;
+    var show = sbAbove || (sbPicked && sbOff);
+    sbar.classList.toggle("show", show);
+    sbar.setAttribute("aria-hidden", show ? "false" : "true");
+    sbar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = show ? 0 : -1; });
+  }
+  function stickyPicked() { sbPicked = true; stickyShow(); }
   if (dealBtn && sbar && "IntersectionObserver" in window) {
     document.body.classList.add("has-sticky");
     new IntersectionObserver(function (entries) {
-      var e = entries[0], hidden = e.intersectionRatio < 1 && e.boundingClientRect.top < 64;   // partly under the header or above it
-      sbar.classList.toggle("show", hidden);
-      sbar.setAttribute("aria-hidden", hidden ? "false" : "true");
-      sbar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = hidden ? 0 : -1; });
+      var e = entries[0];
+      sbOff = e.intersectionRatio < 1;                          // partly hidden, under the header, or out of view
+      sbAbove = sbOff && e.boundingClientRect.top < 64;
+      stickyShow();
     }, { rootMargin: "-64px 0px 0px 0px", threshold: [0, 1] }).observe(dealBtn);   // the sticky header's area counts as off screen
   }
 

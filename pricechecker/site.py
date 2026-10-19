@@ -289,7 +289,7 @@ def _spec_parts(v: str) -> list[tuple[str, str]]:
     [("7,200 mAh", "China"), ("7,100 mAh", "Global")]; "7.95″ inside" -> [("7.95″", "inner screen")]; else [(v, "")]."""
     out = []
     for part in v.split(" / "):
-        m = re.match(r"^(.*?)\s*\((China|Global|US)\)$", part)
+        m = re.match(r"^(.*?)\s*\((China|Global|US|EU)\)$", part)
         if m:
             out.append((m[1], m[2]))
         elif part.endswith(" inside"):

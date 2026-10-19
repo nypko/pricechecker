@@ -1,16 +1,17 @@
 # Key specs on each phone page: chip, screen (inner screen for foldables), battery and fastest wired charging.
-# Entered by hand, checked 2026-10-19 (the six marked "added" 2026-10-20). "brand" = the brand's own spec page; otherwise launch coverage where at least
+# Entered by hand, checked 2026-10-19 (the six marked "added" 2026-10-20); all re-checked 2026-10-20 against GSMArena,
+# brand announcements and Android Authority, corrections marked "fixed". "brand" = the brand's own spec page; otherwise launch coverage where at least
 # two sources agree (GSMArena, PhoneArena, Huawei Central, Notebookcheck, Engadget, Gizmochina, Beebom, FoneArena). A field sources disagree on is left
 # out rather than guessed. Battery is the typical (advertised) capacity; Global and China differ where noted.
 phones:
-  honor-magic-8-pro:      {chip: Snapdragon 8 Elite Gen 5, screen: 6.71, battery: "7,200 mAh (China) / 7,100 mAh (Global)", charging: "120 W (China) / 100 W (Global)"}
+  honor-magic-8-pro:      {chip: Snapdragon 8 Elite Gen 5, screen: 6.71, battery: "7,200 mAh (China) / 7,100 mAh (Global) / 6,270 mAh (EU)", charging: "120 W (China) / 100 W (Global)"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   honor-magic-8-pro-air:  {chip: Dimensity 9500, screen: 6.31, battery: "5,500 mAh", charging: "80 W"}
   honor-magic-9:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.37, battery: "8,000 mAh", charging: "80 W"}
   honor-magic-9-pro-max:  {chip: Snapdragon 8 Elite Extreme Gen 6, screen: 6.8, battery: "8,800 mAh", charging: "100 W"}
-  honor-magic-9-super:    {chip: Snapdragon 8 Elite Gen 5, battery: "11,000 mAh", charging: "80 W"}
+  honor-magic-9-super:    {chip: Snapdragon 8 Elite Gen 5, screen: 6.81, battery: "11,000 mAh", charging: "80 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   honor-magic-v6:         {chip: Snapdragon 8 Elite Gen 5, screen: "7.95 inside", battery: "6,850–7,150 mAh (China) / 6,660 mAh (Global)", charging: "80 W"}
   huawei-mate-80:         {chip: Kirin 9020, screen: 6.75, battery: "5,750 mAh", charging: "66 W"}
-  huawei-mate-80-pro:     {chip: Kirin 9030, screen: 6.75, battery: "5,750 mAh", charging: "100 W"}
+  huawei-mate-80-pro:     {chip: "Kirin 9030 (Kirin 9030 Pro on 16 GB models)", screen: 6.75, battery: "5,750 mAh", charging: "100 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   huawei-mate-80-pro-max: {chip: Kirin 9030 Pro, screen: 6.9, battery: "6,000 mAh", charging: "100 W"}
   huawei-mate-90:         {chip: Kirin 9030, screen: 6.75, battery: "6,600 mAh", charging: "66 W"}   # added 2026-10-20: GSMArena, Beebom
   huawei-mate-90-pro:     {chip: Kirin 9035, screen: 6.75, battery: "6,600 mAh", charging: "100 W"}   # added 2026-10-20: GSMArena launch news, NPowerUser, ProPakistani
@@ -18,9 +19,9 @@ phones:
   huawei-pura-80-ultra:   {chip: Kirin 9020, screen: 6.8, battery: "5,700 mAh (China) / 5,170 mAh (Global)", charging: "100 W"}
   huawei-pura-90-pro:     {chip: Kirin 9030S, screen: 6.6, battery: "6,000 mAh", charging: "66 W"}   # added 2026-10-20: GSMArena, 91mobiles, Gizmochina; a few listings give other screen sizes
   huawei-pura-90-pro-max: {chip: Kirin 9030S, screen: 6.9, battery: "6,000 mAh", charging: "100 W"}
-  huawei-pura-90s-pro:    {chip: Kirin 9030S, screen: 6.9, battery: "6,000 mAh", charging: "66 W"}
+  huawei-pura-90s-pro:    {chip: Kirin 9030S, screen: 6.6, battery: "6,000 mAh / 5,500 mAh (EU)", charging: "66 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   huawei-pura-90s-pro-max: {chip: Kirin 9030S, screen: 6.9, battery: "6,000 mAh", charging: "100 W"}
-  huawei-pura-x-max:      {chip: Kirin 9030, screen: "7.7 inside", battery: "5,300 mAh", charging: "66 W"}
+  huawei-pura-x-max:      {chip: Kirin 9030 Pro, screen: "7.7 inside", battery: "5,300 mAh", charging: "66 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   huawei-pura-x-view:     {chip: Kirin 9030S, screen: 6.39, battery: "7,000 mAh", charging: "66 W"}
   motorola-razr-70-ultra: {chip: Snapdragon 8 Elite, screen: "6.96 inside", battery: "5,000 mAh", charging: "68 W"}
   motorola-razr-fold:     {chip: Snapdragon 8 Gen 5, screen: "8.1 inside", battery: "6,000 mAh", charging: "80 W"}
@@ -31,8 +32,8 @@ phones:
   oppo-find-x9-pro:       {chip: Dimensity 9500, screen: 6.78, battery: "7,500 mAh", charging: "80 W", source: brand}
   oppo-find-x9s-pro:      {chip: Dimensity 9500, screen: 6.32, battery: "7,025 mAh", charging: "80 W"}
   oppo-find-x9-ultra:     {chip: Snapdragon 8 Elite Gen 5, screen: 6.82, battery: "7,050 mAh", charging: "100 W", source: brand}
-  oppo-find-x10:          {chip: Dimensity 9600M, screen: 6.59, battery: "8,000 mAh", charging: "80 W"}
-  oppo-find-x10-pro-max:  {chip: Dimensity 9600 Pro, screen: 6.78, battery: "8,000 mAh", charging: "80 W"}
+  oppo-find-x10:          {chip: Dimensity 9600M, screen: 6.59, battery: "8,000 mAh / 7,150 mAh (EU)", charging: "80 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
+  oppo-find-x10-pro-max:  {chip: Dimensity 9600 Pro, screen: 6.78, battery: "8,000 mAh / 7,150 mAh (EU)", charging: "80 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   samsung-galaxy-s26:     {chip: "Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)", screen: 6.3, battery: "4,300 mAh", charging: "25 W"}
   samsung-galaxy-s26-plus: {chip: "Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)", screen: 6.7, battery: "4,900 mAh", charging: "45 W"}
   samsung-galaxy-s26-ultra: {chip: Snapdragon 8 Elite Gen 5 for Galaxy, screen: 6.9, battery: "5,000 mAh", charging: "60 W"}
@@ -46,7 +47,7 @@ phones:
   vivo-x500:              {chip: Dimensity 9600M, screen: 6.59, battery: "7,500 mAh", charging: "90 W"}   # added 2026-10-20: Gizmochina, Beebom, Notebookcheck
   vivo-x500-pro:          {chip: Dimensity 9600 Pro, screen: 6.36, battery: "6,510 mAh", charging: "90 W"}
   vivo-x500-pro-max:      {chip: Dimensity 9600 Pro, screen: 6.85, battery: "8,000 mAh", charging: "90 W"}
-  vivo-x-fold-6:          {chip: Dimensity 9500, screen: "8.02 inside", battery: "7,000 mAh (China) / 6,900 mAh (Global)", charging: "80 W"}
+  vivo-x-fold-6:          {chip: Dimensity 9500 Super Edition, screen: "8.02 inside", battery: "7,000 mAh (China) / 6,900 mAh (Global)", charging: "80 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   xiaomi-17-max:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.9, battery: "8,000 mAh", charging: "100 W"}   # added 2026-10-20: FoneArena, Beebom, Gizbot
   xiaomi-17-pro:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.3, battery: "6,300 mAh", charging: "100 W"}
   xiaomi-17-pro-max:      {chip: Snapdragon 8 Elite Gen 5, screen: 6.9, battery: "7,500 mAh", charging: "100 W"}

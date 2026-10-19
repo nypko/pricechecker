@@ -21,7 +21,9 @@
   <h1>{{ p.name }}</h1>
   <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
   {% if p.google.model_note and "china" in p.editions %}<p class="muted small ed-note">{{ p.ed_label.china }} version: {{ p.google.model_note }}</p>{% endif %}
-  {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
+  {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div class="spec"><dt>{{ k }}</dt>
+    {%- for val, tag in v|spec_parts %}<dd>{{ val }}{% if tag %} <span class="spec-tag">{{ tag }}</span>{% endif %}</dd>{% endfor %}</div>{% endfor %}</dl>{% endif %}
+  <p class="cmp-link"><a href="../compare#{{ p.slug }}">Compare with another phone</a></p>
   {{ explain.editions(p.editions, p.brand|lower, google=p.google, cl=p.ed_label.china) }}
 </header>
 

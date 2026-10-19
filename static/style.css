@@ -173,11 +173,17 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .chip-global { margin-top: 8px; }
 .pill.up { background: var(--surface-2); color: var(--muted); }
 .pill.flat { background: var(--brand-soft); color: var(--brand); }
-/* key specs under the phone's name: four short facts, wrapping on narrow screens */
-.specs { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0 2px; font-size: .86rem; }
-.specs div { display: flex; gap: 6px; min-width: 0; }
-.specs dt { color: var(--muted); }
-.specs dd { margin: 0; font-weight: 600; }
+/* key specs under the phone's name: four facts in a 2 × 2 grid on phones, one row of four from 720px.
+   A value that differs by version ("7,200 mAh China / 7,100 mAh Global") gets one line per version. */
+.specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; margin: 12px 0 6px; padding: 12px 0;
+         border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+@media (min-width: 720px) { .specs { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.spec { min-width: 0; }
+.spec dt { font-size: .75rem; color: var(--muted); margin-bottom: 2px; }
+.spec dd { margin: 0; font-weight: 600; font-size: .92rem; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.spec dd + dd { margin-top: 3px; }
+.spec-tag { font-weight: 400; font-size: .75rem; color: var(--muted); }
+.cmp-link { margin: 4px 0 0; font-size: .9rem; }
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .watch[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
 .no-js .watch { display: none; }
@@ -498,3 +504,34 @@ footer p { max-width: 62ch; }
   .prefs-toggle::after, .explain summary::after, .hist-toggle::after, .oos > summary::after, .tier-hist, .sticky-deal, .cell { transition: none; }
   .answer.settle .ans-total, .answer.settle .bar { animation: none; }
 }
+
+/* ---------- compare: up to three phones side by side ----------
+   Labels sit above the values on phones (every column keeps its full width) and in a left column from 720px. */
+.cmp { --n: 2; margin: 8px 0 24px; }
+.cmp-cells { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 10px; }
+.cmp-row { padding: 10px 0; border-top: 1px solid var(--line); }
+.cmp-head { position: sticky; top: 57px; z-index: 5; background: var(--bg); border-top: 0; }   /* names stay in view below the site header */
+.cmp-menu { display: block; margin-top: 4px; max-width: 100%; min-height: 32px; font: inherit; font-size: .82rem; font-weight: 600; color: var(--brand);
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0 6px; }
+.cmp-add { width: 100%; min-height: var(--tap); border-style: dashed; }
+.cmp-label { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
+.cmp-cell { min-width: 0; font-size: .9rem; line-height: 1.35; overflow-wrap: anywhere; }
+.cmp-top { background: var(--save-soft); border-radius: 8px; padding: 4px 8px; margin: -4px -8px; }
+.cmp-top .cmp-price, .cmp-top > .cmp-line { color: var(--save); }
+.cmp-name { display: block; font-weight: 700; text-decoration: none; }
+.cmp-price { display: block; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cmp-sub, .cmp-line { display: block; font-size: .82rem; margin-top: 2px; }
+.cmp-line { font-size: .9rem; font-weight: 600; }
+.cmp-sub .badge { font-size: .7rem; }
+.cmp-note { margin: 8px 0 0; }
+@media (min-width: 720px) {
+  .cmp-row { display: grid; grid-template-columns: 160px 1fr; gap: 10px; align-items: start; }
+  .cmp-label { margin: 2px 0 0; font-size: .82rem; }
+}
+.cmp-cfg { display: block; width: 100%; text-align: left; margin: 0 0 4px; min-height: 34px; padding: 4px 8px; font: inherit; font-size: .88rem;
+           font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+           border-radius: 8px; cursor: pointer; }
+.cmp-cfg[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+.cmp-cfg.near[aria-pressed="true"] { border-style: dashed; }
+.cmp-cfg:disabled { color: var(--muted); font-weight: 400; text-decoration: line-through; cursor: default; background: transparent; }
+.cmp-near { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 2px; }

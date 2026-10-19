@@ -1,6 +1,7 @@
 """Generates the static website into build/ from data/latest.json, data/history.csv and config/."""
 import hashlib
 import json
+import re
 import shutil
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
@@ -112,7 +113,7 @@ def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
     (OUT / "robots.txt").write_text(robots)
     if not live:
         return
-    paths = ["", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "compare", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
                                      f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
@@ -283,6 +284,21 @@ def _specs(sp: dict | None) -> list[tuple[str, str]]:
     return [(k, str(v)) for k, v in rows if v]
 
 
+def _spec_parts(v: str) -> list[tuple[str, str]]:
+    """One spec value -> [(value, tag)] for display on separate lines: "7,200 mAh (China) / 7,100 mAh (Global)" ->
+    [("7,200 mAh", "China"), ("7,100 mAh", "Global")]; "7.95″ inside" -> [("7.95″", "inner screen")]; else [(v, "")]."""
+    out = []
+    for part in v.split(" / "):
+        m = re.match(r"^(.*?)\s*\((China|Global|US)\)$", part)
+        if m:
+            out.append((m[1], m[2]))
+        elif part.endswith(" inside"):
+            out.append((part[:-7], "inner screen"))
+        else:
+            out.append((part, ""))
+    return out
+
+
 def _trust(t: dict | None) -> dict | None:
     """stores.yaml trust block, JSON-ready (YAML reads the checked date as a date)."""
     return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
@@ -451,6 +467,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         ph["related"] = {"brand": [card(q) for q in same], "near": [card(q) for q in near]}
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
     env.filters["spec"] = spec
+    env.filters["spec_parts"] = _spec_parts
     env.filters["month"] = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%b %Y") if d else ""
     upd = latest.get("updated", "")
     try:
@@ -485,6 +502,14 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", path=f'phones/{p["slug"]}', **ctx))
         (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", path=f'history/{p["slug"]}', **ctx))
+    # /compare: every phone's specs and in-stock offers in one JSON block; the browser shows up to three side by side
+    # (picked in the page, kept in the URL hash so a comparison can be shared) and prices them for the chosen Ship-to
+    cmp = [{"s": p["slug"], "n": p["name"], "b": p["brand"], "d": p["announced"], "e": p["editions"], "cl": p["ed_label"]["china"],
+            "sp": [[k, _spec_parts(v)] for k, v in p["specs"]], "g": p["google"]["short"] if "china" in p["editions"] else "",
+            "st": [st for st, _ in p["by_storage"]], "o": json.loads(p["offers_json"])}
+           for p in sorted(phones, key=lambda q: q["name"])]
+    (OUT / "compare.html").write_text(env.get_template("compare.html").render(
+        root="", path="compare", cmp_phones=cmp, cmp_json=json.dumps(cmp, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"), **ctx))
     for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
     _seo_files(ctx["site"], phones)

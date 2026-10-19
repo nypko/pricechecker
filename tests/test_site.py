@@ -103,3 +103,9 @@ def test_ed_labels_asia_for_samsung_and_sony():
     from pricechecker.site import ed_labels
     assert ed_labels("Samsung")["china"] == "Asia" and ed_labels("Sony")["china"] == "Asia"
     assert ed_labels("Xiaomi") == {"global": "Global", "china": "China"}
+
+
+def test_spec_parts_splits_editions():
+    assert site._spec_parts("7,200 mAh (China) / 7,100 mAh (Global)") == [("7,200 mAh", "China"), ("7,100 mAh", "Global")]
+    assert site._spec_parts("7.95″ inside") == [("7.95″", "inner screen")]
+    assert site._spec_parts("Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)") == [("Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)", "")]

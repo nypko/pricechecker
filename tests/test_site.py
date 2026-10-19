@@ -65,3 +65,12 @@ def test_delivery_days_come_from_store_terms():
     from pricechecker import terms
     cfg = {"terms": {"shipping": {"EU": {"days": [2, 5]}, "UK": {"cost": 0}}}}
     assert terms.delivery(cfg, "EU") == [2, 5] and terms.delivery(cfg, "UK") is None
+
+
+def test_specs_config_uses_catalog_ids():
+    import yaml
+    from pathlib import Path
+    ids = {p["id"] for p in yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]}
+    specs = yaml.safe_load(Path("config/specs.yaml").read_text())["phones"]
+    assert set(specs) <= ids, set(specs) - ids
+    assert site._specs({"chip": "X", "screen": "8.12 inside", "battery": "5,600 mAh"}) == [("Chip", "X"), ("Screen", "8.12″ inside"), ("Battery", "5,600 mAh")]

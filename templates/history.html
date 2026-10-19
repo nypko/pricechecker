@@ -3,6 +3,7 @@
 {% import "_stats.html" as hstats %}
 {% block title %}{{ p.name }} price history – DoorPrice{% endblock %}
 {% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../phones/{{ p.slug }}">{{ p.name }} prices</a>
@@ -10,7 +11,8 @@
 <h1>{{ p.name }} price history</h1>
 {% set first = p.changes[-1].time if p.changes else none %}
 <p class="lede">Every price and stock change we've recorded{% if first %} since <strong>{{ first.strftime("%-d %b %Y") }}</strong>{% endif %}.
-  Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.</p>
+  Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
+  <a href="../feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
 
 {% macro legend(store_names, china) %}
   <ul class="legend">

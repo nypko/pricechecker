@@ -32,6 +32,14 @@
   <div class="top-inner">
     <a class="brand" href="{{ root or './' }}" aria-label="DoorPrice home">
       {{ brand.lockup("simple", "dph") }}</a>
+    {% if path %}
+    {#- search from any page: suggestions are the phone names; Enter opens the phone (or the list, filtered) -#}
+    <form class="hsearch" role="search" action="{{ root or './' }}" data-root="{{ root }}">
+      <input type="search" id="hq" name="q" list="phone-names" placeholder="Search phones" aria-label="Search phones" autocomplete="off" enterkeyhint="go">
+      <datalist id="phone-names">{% for ph in nav_phones %}<option value="{{ ph.name }}" data-slug="{{ ph.slug }}"></option>{% endfor %}</datalist>
+    </form>
+    <a class="hsearch-icon" href="{{ root or './' }}#search" aria-label="Search phones"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></a>
+    {% endif %}
     <button type="button" class="prefs-toggle" aria-expanded="false" aria-controls="prefs">
       <span class="sr-only">Your settings: </span><span class="prefs-summary">EU · $ · Card</span>
     </button>

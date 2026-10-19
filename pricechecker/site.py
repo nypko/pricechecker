@@ -41,6 +41,53 @@ def _ticks(lo: float, hi: float, n: int = 4) -> list[float]:
     return out
 
 
+def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dict, updated_at: datetime | None) -> None:
+    """Atom feeds of price changes, so people can follow a phone without an account: feeds/<slug>.xml per phone and
+    feeds/all.xml for every phone. Each entry is one store price change, in the store's own currency, with the price before."""
+    from xml.sax.saxutils import escape
+    base = (site_cfg.get("base_url") or "https://doorprice.app").rstrip("/")
+    names = {p["id"]: p["name"] for p in phones}
+    sym = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$", "HKD": "HK$"}
+    money = lambda v, c: f"{sym.get(c, c + ' ')}{v:,.0f}"
+    last: dict[tuple, dict] = {}
+    entries = []
+    for r in rows:   # oldest first: each change knows the price before it
+        if r["model_id"] not in names:
+            continue
+        key = (r["store"], r["model_id"], r["edition"], r["storage"])
+        prev = last.get(key)
+        if prev is None or (r["available"] == prev["available"] and abs(r["price"] - prev["price"]) < prev["price"] * 0.005):
+            last.setdefault(key, r)   # currency-rounding moves (a store re-converting its prices) aren't news
+            continue
+        last[key] = r
+        label = stores_cfg.get(r["store"], {}).get("label", r["store"])
+        what = f"{names[r['model_id']]} {EDITION_LABEL[r['edition']]}" + (f" {spec(r['storage'])}" if "/" in r["storage"] else "")
+        if r["available"] and not prev["available"]:
+            change = f"back in stock at {money(r['price'], r['currency'])}"
+        elif not r["available"]:
+            change = "out of stock"
+        elif r["price"] < prev["price"]:
+            change = f"down to {money(r['price'], r['currency'])} (was {money(prev['price'], prev['currency'])})"
+        else:
+            change = f"up to {money(r['price'], r['currency'])} (was {money(prev['price'], prev['currency'])})"
+        entries.append({"model": r["model_id"], "time": r["time"], "title": f"{what} at {label}: {change}",
+                        "id": f"{base}/history/{r['model_id']}#{r['time']}-{r['store']}-{r['edition']}-{r['storage']}"})
+    entries.reverse()   # newest first
+
+    def write(path: Path, title: str, link: str, items: list[dict]) -> None:
+        stamp = items[0]["time"] if items else (f"{updated_at:%Y-%m-%dT%H:%M:%SZ}" if updated_at else "2026-01-01T00:00:00Z")
+        body = "".join(f"<entry><title>{escape(e['title'])}</title><id>{escape(e['id'])}</id><updated>{e['time']}</updated>"
+                       f'<link href="{escape(base)}/history/{e["model"]}"/></entry>' for e in items[:50])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">'
+                        f"<title>{escape(title)}</title><id>{escape(link)}</id><updated>{stamp}</updated>"
+                        f'<link href="{escape(link)}"/><author><name>DoorPrice</name></author>{body}</feed>\n')
+    for ph in phones:
+        write(OUT / "feeds" / f"{ph['slug']}.xml", f"{ph['name']} price changes – DoorPrice", f"{base}/phones/{ph['slug']}",
+              [e for e in entries if e["model"] == ph["id"]])
+    write(OUT / "feeds" / "all.xml", "Phone price changes – DoorPrice", f"{base}/", entries)
+
+
 def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
     """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
@@ -208,6 +255,23 @@ def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:
     return json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
 
+def _specs(sp: dict | None) -> list[tuple[str, str]]:
+    """specs.yaml entry -> [("Chip", "Dimensity 9500"), ("Screen", "6.78″"), ...] in a fixed order, skipping blanks."""
+    if not sp:
+        return []
+    screen = sp.get("screen")
+    if screen is not None:
+        size, _, rest = str(screen).partition(" ")
+        screen = f"{size}″" + (f" {rest}" if rest else "")
+    rows = [("Chip", sp.get("chip")), ("Screen", screen), ("Battery", sp.get("battery")), ("Charging", sp.get("charging"))]
+    return [(k, str(v)) for k, v in rows if v]
+
+
+def _trust(t: dict | None) -> dict | None:
+    """stores.yaml trust block, JSON-ready (YAML reads the checked date as a date)."""
+    return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
+
+
 def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
     """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
@@ -297,6 +361,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     tax_eu = (yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"].get("EU") or {}).get("rate_pct")
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
+    specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
         offers = []
@@ -314,11 +379,15 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                                              if stores_cfg[store].get("part_of") else stores_cfg[store]),
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
+                                   "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
                                    "trend": _trend(rows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust")}
+        # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
+        lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend")},
+                          "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
         # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
         full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}
         by_storage = defaultdict(list)
@@ -334,19 +403,28 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                                        separators=(",", ":")) for e in m["editions"]]}
                    for s in storages if len(m["editions"]) > 1]
         phones.append({**m, "slug": m["id"], "best": in_stock[0] if in_stock else None, "eds": eds,
-                       "offers_json": json.dumps([js(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
+                       "offers_json": json.dumps([lean(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
                        "all_json": json.dumps([full(o) for o in offers], separators=(",", ":")),
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
                        "title_price": _title_price(offers, tax_eu),
                        "ld": _product_ld(m, in_stock, site_cfg),
+                       "specs": _specs(specs.get(m["id"])),
                        "chart": _charts(rows, m, rates, colors, updated_at),
                        "chart_stats": _all_stats(rows, m, rates, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
+    # end of each phone page: the same brand's other phones (newest first) and the nearest in price from other brands
+    card = lambda q: {"name": q["name"], "slug": q["slug"], "announced": q["announced"], "editions": q["editions"],
+                      "money": q["best"]["money"] if q["best"] else None}
+    for ph in phones:
+        same = [q for q in phones if q["brand"] == ph["brand"] and q is not ph][:4]
+        others = [q for q in phones if q["brand"] != ph["brand"] and q["best"]]
+        near = sorted(others, key=lambda q: abs(q["best"]["usd"] - ph["best"]["usd"]))[:3] if ph["best"] else []
+        ph["related"] = {"brand": [card(q) for q in same], "near": [card(q) for q in near]}
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
     env.filters["spec"] = spec
     env.filters["month"] = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%b %Y") if d else ""
@@ -366,6 +444,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "month": updated_at.strftime("%B %Y") if updated_at else "",   # "October 2026" in page titles
            "site": site_cfg,
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
+           "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
            "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -380,4 +459,5 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
     _seo_files(ctx["site"], phones)
+    _feeds(ctx["site"], phones, rows, stores_cfg, updated_at)
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

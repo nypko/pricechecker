@@ -6,21 +6,26 @@
 {% set tp = p.title_price %}
 {% block title %}{{ p.name }} price{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
 {% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} import store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
-{% block head %}{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../">All phones</a>
-  <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
+  <div class="page-actions">
+    {% if p.best %}<button type="button" class="btn-quiet watch" data-slug="{{ p.slug }}" aria-pressed="false">Watch</button>{% endif %}
+    <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
+  </div>
 </div>
+<p class="watch-note muted small" hidden>Watching: the list shows how this phone's price has moved since your last visit. Saved on this device only.</p>
 
 <header class="ph-head">
   <h1>{{ p.name }}</h1>
   <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
+  {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
   {{ explain.editions(p.editions, p.brand|lower) }}
 </header>
 
 {% if p.best %}
-<div class="ph-layout" data-brand="{{ p.brand|lower }}">
+<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-slug="{{ p.slug }}">
 
 <section class="picker" aria-labelledby="pick-h">
   <div class="sec-head">
@@ -58,6 +63,7 @@
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
   <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
+  <p class="ans-trust" hidden></p>
   <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
   <p class="ans-or" hidden></p>
   <p class="ans-alt" hidden></p>
@@ -101,12 +107,24 @@
       {% endif %}
       </div>
     {% endfor %}
-      <p class="small hist-more"><a href="../history/{{ p.slug }}">Every recorded change for this phone</a></p>
+      <p class="small hist-more"><a href="../history/{{ p.slug }}">Every recorded change for this phone</a> · <a href="../feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
     </div>
   </div>
 </section>
 
 </div>
+
+{% macro rel_list(items) %}<ul class="rel-list">{% for q in items %}
+  <li><a href="{{ q.slug }}"><span class="rel-name">{{ q.name }}</span>
+    <span class="rel-sub">{% if q.announced %}{{ q.announced|month }} · {% endif %}{% for e in q.editions %}{{ edition_label[e] }}{{ " / " if not loop.last }}{% endfor %}{% if q.money %} · store price from {{ price(q.money) }}{% endif %}</span></a></li>
+{% endfor %}</ul>{% endmacro %}
+{% if p.related.brand or p.related.near %}
+<section class="related" aria-labelledby="rel-h">
+  <h2 id="rel-h" class="sr-only">Related phones</h2>
+  {% if p.related.brand %}<div><h3>More from {{ p.brand }}</h3>{{ rel_list(p.related.brand) }}</div>{% endif %}
+  {% if p.related.near %}<div><h3>Similar price, other brands</h3>{{ rel_list(p.related.near) }}</div>{% endif %}
+</section>
+{% endif %}
 
 <noscript>
   <section class="others">

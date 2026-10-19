@@ -29,3 +29,10 @@ def test_active_uses_last_scan_and_until():
     assert promos.active("s", cfg, {"s": {"promo_active": False}}) is False
     assert promos.active("s", {"terms": {"promo": {"pct": 2, "until": "2000-01-01"}}}, {}) is False
     assert promos.active("s", {"terms": {}}, {}) is False
+
+
+def test_coupon_hints_expire():
+    cfg = {"coupons": [{"code": "H2026", "text": "up to 30%", "until": "2999-01-01", "watch": "H2026"}]}
+    assert [c["code"] for c in promos.coupons("g", cfg, {})] == ["H2026"]
+    assert promos.coupons("g", cfg, {"g": {"coupons": {"H2026": False}}}) == []          # gone from the page
+    assert promos.coupons("g", {"coupons": [{"code": "X", "until": "2000-01-01"}]}, {}) == []   # past its date

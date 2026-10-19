@@ -104,6 +104,12 @@ def scan(stores_cfg: dict, force: bool = False) -> dict:
             if was is not None and active is not None and was != active:
                 (started if active else ended).append(f"{cfg.get('label', name)}: {promo.get('label', 'promotion')} "
                                                       f"({promo.get('pct')}%) {'is back' if active else 'has ended'}")
+        for c in _coupons(cfg):   # coupon hints expire the same way
+            was = (prev.get("coupons") or {}).get(c["code"])
+            now_on = promo_active(c, "\n".join(texts) if texts else None, now.date())
+            rec.setdefault("coupons", {})[c["code"]] = was if now_on is None else now_on
+            if was and now_on is False:
+                ended.append(f"{cfg.get('label', name)}: coupon {c['code']} is no longer shown - its hint is hidden")
         state[name] = rec
         print(f"  [promos] {name}: {len(found)} promotion lines, {len(fresh)} new"
               + (f", promo {'active' if rec.get('promo_active') else 'inactive'}" if promo else "")
@@ -149,3 +155,18 @@ def active(name: str, cfg: dict, state: dict | None = None) -> bool:
         state = json.loads(STATE.read_text()) if STATE.exists() else {}
     known = (state.get(name) or {}).get("promo_active")
     return True if known is None else bool(known)
+
+
+def _coupons(cfg: dict) -> list[dict]:
+    """`coupons:` sits under a store's `terms:` in stores.yaml (next to `promo:`)."""
+    return (cfg.get("terms") or {}).get("coupons") or cfg.get("coupons") or []
+
+
+def coupons(name: str, cfg: dict, state: dict | None = None) -> list[dict]:
+    """Coupon hints to show for a store: not past `until`, and not reported gone by the last scan."""
+    if state is None:
+        state = json.loads(STATE.read_text()) if STATE.exists() else {}
+    seen = (state.get(name) or {}).get("coupons") or {}
+    return [{"code": c["code"], "text": c.get("text", ""), "until": str(c["until"]) if c.get("until") else ""}
+            for c in _coupons(cfg)
+            if promo_active({**c, "watch": None}, None, date.today()) is not False and seen.get(c["code"]) is not False]

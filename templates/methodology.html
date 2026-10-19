@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}How DoorPrice works out delivered prices and import tax – DoorPrice{% endblock %}
+{% block description %}How DoorPrice calculates the delivered price of an imported phone: payment fees, shipping, import VAT for every EU country, the UK, Australia and the US, courier fees, and how stores are ranked.{% endblock %}
+{% block main %}
+{% set eu = tax_regions.EU %}
+<article class="prose">
+  <h1>How prices are worked out</h1>
+  <p class="lede">Every total on DoorPrice is the price you would pay to get the phone to your door: the store's price,
+    the fee or discount for how you pay, shipping, and the import tax due on delivery. This page shows exactly how each
+    part is calculated and where the numbers come from.</p>
+
+  <h2>The delivered total</h2>
+  <ol class="steps">
+    <li><strong>Store price</strong> for the RAM/storage and version you picked, in your currency where the store sets one;
+      otherwise converted at the European Central Bank rate and marked ≈. Store-wide automatic discounts are applied.</li>
+    <li><strong>Payment fee or discount</strong> from the store's own payment page (for example a bank-transfer discount or a
+      PayPal surcharge). A method the store doesn't accept for that order is shown as not available.</li>
+    <li><strong>Shipping</strong> to your Ship-to destination from the store's shipping page. If a store only says
+      "shipping from €10", the total says so.</li>
+    <li><strong>Import tax</strong>, when the store's price doesn't include it: the VAT or GST rate of your destination applied
+      to the phone plus shipping, the way customs values an import, plus the courier's clearance fee where the courier
+      publishes one. Estimates are marked ≈.</li>
+  </ol>
+  <p>When we can't know a part, the total says so instead of guessing: "+ shipping" means the store doesn't publish its
+    shipping cost, and "tax?" means the store doesn't say whether import tax is included.</p>
+
+  <h2>Import tax by destination</h2>
+  <p>Phones (customs code 8517.13) have 0% customs duty in the EU, the UK and Australia, so only VAT or GST is due. A phone
+    costs more than every low-value limit (€150 in the EU, £135 in the UK, A$1,000 in Australia), so the tax is always
+    charged on import, normally collected by the courier before delivery.</p>
+
+  <h3 id="eu">European Union</h3>
+  <p>{{ eu.note }} Pick your country under <button type="button" class="link-btn" data-prefs>Ship to</button> for its exact
+    rate; until you do, totals use {{ eu.rate_pct }}%, about the EU average.</p>
+  <div class="table-wrap">
+  <table class="tax-table">
+    <thead><tr><th scope="col">Country</th><th scope="col">Import VAT</th><th scope="col">Courier clearance fee</th></tr></thead>
+    <tbody>
+    {%- for code, c in eu_countries %}
+      <tr><th scope="row">{{ c.name }}</th><td>{{ c.vat }}%</td>
+        <td>{% if c.fee %}{{ c.fee.pct }}% of the tax, at least €{{ c.fee.min }} ({{ c.fee.by }}) – included{% else %}<span class="muted">not published, not included</span>{% endif %}</td></tr>
+    {%- endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted small">Example: a €1,000 phone with €20 shipping to Germany: 19% of €1,020 = €193.80 import VAT, plus DHL's
+    €15 minimum fee, ≈€209 paid on delivery.</p>
+
+  <h3 id="uk">United Kingdom</h3>
+  <p>{{ tax_regions.UK.note }}</p>
+
+  <h3 id="au">Australia</h3>
+  <p>{{ tax_regions.AU.note }}</p>
+
+  <h3 id="us">United States</h3>
+  <p>{{ tax_regions.US.note }}</p>
+
+  <h3 id="global">Other countries</h3>
+  <p>{{ tax_regions.Global.note }}</p>
+
+  <h2>When a store says import tax is included</h2>
+  <p>Some stores pay the import tax themselves (delivered duty paid) and say so on their customs page; those totals have no
+    tax added. A shipping line advertised as "tax-free" is not the same thing: it can mean the parcel is declared below its
+    value, which leaves the buyer liable if customs checks it. We only treat tax as included when the store's own terms
+    say it pays it.</p>
+
+  <h2>How stores are ranked</h2>
+  <ol class="steps">
+    <li>Offers you can pay for with your chosen method come first.</li>
+    <li>Then totals that are complete (shipping and import tax known) come ahead of ones that leave something open, so a
+      lower-looking price with unknown shipping doesn't hide the real cheapest. The cheaper open offer is still shown
+      ("or €X + shipping at …").</li>
+    <li>Then the lowest total wins.</li>
+  </ol>
+  <p>Affiliate commissions never change the order, and stores without an affiliate deal are ranked the same way.</p>
+
+  <h2>Global, China and Asia versions</h2>
+  <p>A <strong>Global</strong> version is made for sale worldwide, with Google apps and broad network bands. A
+    <strong>China</strong> version runs the brand's Chinese software; on most brands Google Play can be switched on in
+    Settings, and the phone page says how for its brand. For Samsung and Sony we say <strong>Asia</strong> version, because
+    one model number covers China, Hong Kong and Taiwan and the store doesn't say which software it ships. The maker's
+    warranty is usually tied to the region the phone was sold in.</p>
+
+  <h2>Specs</h2>
+  <p>Chip, screen, battery and charging are entered by hand from the brand's spec page or from launch coverage where at
+    least two sources agree (such as GSMArena and Notebookcheck). A field the sources disagree on is left out rather than
+    guessed. Where a version or market has a different battery, each is shown on its own line.</p>
+
+  <h2>Which stores we list</h2>
+  <p>A store is added when it sells current flagships to buyers abroad, publishes its shipping, payment and import-tax
+    terms, has a track record buyers can check, and allows its public product data to be read: our checker follows each
+    store's <code>robots.txt</code> and never gets around bot protection. Prices are checked every hour; store terms are
+    re-checked regularly and dated.</p>
+
+  <p class="muted small">Questions or a number that looks wrong? {% if site.contact_email %}Write to
+    <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>.{% endif %} See also <a href="{{ root }}about">About DoorPrice</a>.</p>
+</article>
+{% endblock %}

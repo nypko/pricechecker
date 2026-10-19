@@ -113,7 +113,7 @@ def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
     (OUT / "robots.txt").write_text(robots)
     if not live:
         return
-    paths = ["", "compare", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "compare", "methodology", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
                                      f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
@@ -503,7 +503,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
            "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
-           "import_tax_json": json.dumps(tax_cfg)}
+           "tax_regions": tax_cfg, "import_tax_json": json.dumps(tax_cfg)}
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "phones").mkdir(parents=True)
@@ -522,7 +522,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            for p in sorted(phones, key=lambda q: q["name"])]
     (OUT / "compare.html").write_text(env.get_template("compare.html").render(
         root="", path="compare", cmp_phones=cmp, cmp_json=json.dumps(cmp, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"), **ctx))
-    for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
+    for page in ("about", "methodology", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
     _seo_files(ctx["site"], phones)
     _feeds(ctx["site"], phones, rows, stores_cfg, updated_at)

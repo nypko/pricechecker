@@ -16,7 +16,7 @@
 <script>if (/\.pages\.dev$/.test(location.hostname)) location.replace({{ site.base_url.rstrip('/')|tojson }} + location.pathname + location.search + location.hash);</script>
 {% endif %}
 <meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
-<link rel="stylesheet" href="{{ root }}static/style.css">
+<link rel="stylesheet" href="{{ root }}static/style.css?v={{ asset_v['style.css'] }}">
 {#- link previews when a page is shared; per-page title and description from the blocks above -#}
 <meta property="og:site_name" content="DoorPrice">
 <meta property="og:type" content="website">
@@ -74,6 +74,6 @@
   <p class="foot-links"><a href="{{ root }}about">About DoorPrice</a> · <a href="{{ root }}privacy">Privacy</a></p>
 </footer>
 <script type="application/json" id="import-tax">{{ import_tax_json|safe }}</script>
-<script src="{{ root }}static/app.js"></script>
+<script src="{{ root }}static/app.js?v={{ asset_v['app.js'] }}"></script>
 </body>
 </html>

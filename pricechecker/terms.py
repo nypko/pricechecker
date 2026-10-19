@@ -21,6 +21,13 @@ def payment_pct(cfg: dict, method: str) -> float | None:
     return None if t.get("fee_pct") is None else float(t["fee_pct"])
 
 
+def promo(cfg: dict) -> dict | None:
+    """Store-wide automatic discount, e.g. {'pct': 2, 'label': 'Summer sale', 'stacks_with_bank': False, 'note': ...}."""
+    p = (cfg.get("terms") or {}).get("promo")
+    return {"pct": float(p["pct"]), "label": p.get("label", "Store discount"), "stacks_with_bank": bool(p.get("stacks_with_bank")),
+            "note": p.get("note", "")} if p and p.get("pct") else None
+
+
 def min_order_usd(cfg: dict, method: str) -> float | None:
     """Smallest order (USD) for which the store accepts this payment method, e.g. Giztop wires only over $1,500."""
     t = (cfg.get("terms") or {}).get("payment", {}).get(METHODS[method]) or {}

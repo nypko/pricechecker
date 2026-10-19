@@ -58,7 +58,12 @@
   // pay% unknown -> treated as 0 but flagged; shipping unknown -> excluded from total but flagged;
   // import tax not stated by the store -> shown as a possible amount but not added.
   function cost(o) {
-    var c = state.cur, base = o.money[c], adj = o.pay[state.pay], ship = o.ship[state.region];
+    var c = state.cur, list = o.money[c], adj = o.pay[state.pay], ship = o.ship[state.region];
+    // store-wide automatic discount (e.g. a summer sale); with bank transfer only the larger discount counts unless they combine
+    var pr = o.promo, promoPct = !pr ? 0 : (state.pay === "bank" && adj != null && adj < 0 && !pr.stacks_with_bank) ?
+      (-adj >= pr.pct ? 0 : pr.pct) : pr.pct;
+    if (promoPct && state.pay === "bank" && adj != null && adj < 0 && !pr.stacks_with_bank) adj = 0;
+    var promoAmt = list * promoPct / 100, base = list - promoAmt;
     var adjAmt = adj == null ? 0 : base * adj / 100;
     var shipAmt = ship ? ship[c] : 0;
     var duties = o.duties ? o.duties[state.region] : null, tax = TAX[state.region] || {};
@@ -66,6 +71,7 @@
     var taxAdded = duties === false && taxEst != null ? taxEst : 0;
     return {
       payOk: !o.pay_ok || o.pay_ok[state.pay] !== false,
+      list: list, promoAmt: promoAmt, promoPct: promoPct, promoLabel: pr ? pr.label : "", promoNote: pr ? pr.note : "",
       base: base, baseApprox: o.money[c + "_approx"] === 1, adj: adj, adjAmt: adjAmt, ship: ship ? shipAmt : null,
       taxEst: taxEst, taxAdded: taxAdded, taxName: tax.name || "import tax", taxNote: tax.note || "",
       total: base + adjAmt + shipAmt + taxAdded,
@@ -201,7 +207,8 @@
   // The answer's cost, part by part: what the bar shows and the list under it spells out
   function parts(k) {
     var p = [];
-    p.push({ cls: "s-phone", label: "Phone", v: k.base + Math.min(k.adjAmt, 0), text: fmt(k.base, k.baseApprox) });
+    p.push({ cls: "s-phone", label: "Phone", v: k.base + Math.min(k.adjAmt, 0), text: fmt(k.list, k.baseApprox) });
+    if (k.promoAmt) p.push({ cls: "s-save", label: k.promoLabel, v: 0, text: "−" + fmt(k.promoAmt, k.baseApprox) + " (" + pct(-k.promoPct) + ")", good: true, note: k.promoNote });
     if (!k.payOk) { p.push({ cls: "s-fee", label: "Paying by " + PAY_LABEL[state.pay], v: 0, text: "not accepted for this order", muted: true, note: k.payNote }); return p; }
     if (k.adj == null) p.push({ cls: "s-fee", label: PAY_SHORT[state.pay] + " fee", v: 0, text: "unknown", muted: true, note: k.payNote });
     else if (k.adjAmt > 0) p.push({ cls: "s-fee", label: PAY_SHORT[state.pay] + " fee", v: k.adjAmt, text: "+" + fmt(k.adjAmt) + " (" + pct(k.adj) + ")", note: k.payNote });

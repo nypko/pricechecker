@@ -178,12 +178,12 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                    "pay": {k: terms.payment_pct(stores_cfg[store], k) for k in terms.METHODS},
                                    "pay_ok": {k: terms.payment_available(stores_cfg[store], k, usd) for k in terms.METHODS},
                                    "ship": {r: terms.shipping(stores_cfg[store], r, o, rates) for r in terms.REGIONS},
-                                   "notes": terms.notes(stores_cfg[store]),
+                                   "notes": terms.notes(stores_cfg[store]), "promo": terms.promo(stores_cfg[store]),
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo")}
         # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
         full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}
         by_storage = defaultdict(list)

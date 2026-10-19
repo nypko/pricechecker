@@ -48,6 +48,9 @@ stores:
         bank_transfer: {discount_pct: 4.75, note: "Bank transfers 4.75% off all orders (manual confirmation)"}
         paypal: {fee_pct: 0}
         card: {fee_pct: 0}
+      # store-wide promotion applied automatically at checkout (2026-10-19, homepage banner: "2% summer sale at checkout - Auto Applied").
+      # Not stated whether it combines with the bank-transfer discount, so with bank transfer only the larger 4.75% is counted.
+      promo: {pct: 2, label: "Summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
       shipping:
         EU: {duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
         UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
@@ -56,6 +59,7 @@ stores:
       watch:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
+        - {url: "https://www.themobilemarvel.com/", expect: "2% summer sale"}   # flags the promo ending - then remove `promo`
 
   trinity:
     label: Trinity Electronic

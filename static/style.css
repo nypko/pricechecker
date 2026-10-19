@@ -276,6 +276,16 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .tier-hist-inner { overflow: hidden; min-height: 0; }
 .tier-hist.open .tier-hist-inner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
 .hist-note { margin: 0 0 8px; }
+/* "Variant" menu above a price history chart: a native select, chevron drawn like the other toggles */
+.no-js .hist-variant { display: none; }   /* without JS the history page shows the all-options chart only */
+.hist-variant { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 12px; }
+.hist-variant label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+.select { position: relative; display: inline-flex; max-width: 100%; color: var(--text); }
+.select::after { content: ""; position: absolute; right: 14px; top: 50%; width: 7px; height: 7px; border: solid currentColor;
+  border-width: 0 2px 2px 0; transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+.select select { font: inherit; font-size: .92rem; font-weight: 600; color: inherit; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; min-height: 40px; padding: 0 38px 0 12px; max-width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer; }
+.select select:hover { border-color: var(--brand); }
 .hist-more { margin: 10px 0 0; }
 .tier-hist .chart .axis { font-size: 13px; }
 

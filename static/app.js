@@ -312,8 +312,20 @@
     d.appendChild(body); li.appendChild(d);
     return li;
   }
+  // price history: one chart block per RAM/storage, picked in the "Variant" menu above it
+  var histSel = null;
+  function showHist(storage) {
+    document.querySelectorAll(".hist-one").forEach(function (h) { h.hidden = h.dataset.storage !== storage; });
+    var m = document.getElementById("hist-var");
+    if (m) m.value = storage;
+    // history page: the table of changes follows the menu too
+    document.querySelectorAll(".changes tbody tr[data-storage]").forEach(function (r) {
+      r.hidden = storage !== "all" && r.dataset.storage !== storage;
+    });
+  }
   function choose(c) {
     sel = c;
+    histSel = null;   // the price history follows the grid until a variant is picked in its own menu
     renderPhone();
     if (history.replaceState) history.replaceState(null, "", "#" + c.storage.replace("/", "-") + "-" + c.ed);
   }
@@ -395,7 +407,7 @@
     ol.textContent = "";
     oos.forEach(function (o) { ol.appendChild(storeRow(o, cost(o), null)); });
     // price history for the chosen RAM/storage
-    document.querySelectorAll(".hist-one").forEach(function (h) { h.hidden = h.dataset.storage !== sel.storage; });
+    showHist(histSel || sel.storage);
     // phone-only bottom bar
     var sb = document.querySelector(".sticky-deal");
     if (sb) {
@@ -407,6 +419,8 @@
   document.querySelectorAll(".cell").forEach(function (c) {
     c.addEventListener("click", function () { choose({ storage: c.dataset.storage, ed: c.dataset.ed }); });
   });
+  var hv = document.getElementById("hist-var");
+  if (hv) hv.addEventListener("change", function () { histSel = hv.value; showHist(histSel); });
   var ht = document.querySelector(".hist-toggle");
   if (ht) ht.addEventListener("click", function () {
     var box = document.getElementById(ht.getAttribute("aria-controls")), open = ht.getAttribute("aria-expanded") !== "true";
@@ -472,6 +486,9 @@
     document.querySelectorAll(".prefs-summary").forEach(function (e) { e.textContent = summary; });
     document.querySelectorAll(".for-region").forEach(function (e) { e.textContent = REGION_NAME[state.region]; });
     document.querySelectorAll(".for-pay").forEach(function (e) { e.textContent = PAY_LABEL[state.pay]; });
+    document.querySelectorAll(".for-cur").forEach(function (e) { e.textContent = state.cur.toUpperCase(); });
+    // price history charts are drawn once per currency; show the chosen one
+    document.querySelectorAll(".chart-wrap[data-cur]").forEach(function (e) { e.hidden = e.dataset.cur !== state.cur; });
     document.querySelectorAll(".seg[data-pref] button").forEach(function (b) {
       b.setAttribute("aria-pressed", state[b.parentNode.dataset.pref] === b.dataset.val ? "true" : "false");
     });

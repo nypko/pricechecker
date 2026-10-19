@@ -116,6 +116,11 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 /* ---------- index: intro, tools, ranked list ---------- */
 .intro { padding-top: 8px; }
 .intro h1 { margin-top: 16px; max-width: 22ch; }
+/* the home page opens with the logo at full size; the headline below it says what the site does */
+.intro .hero-brand { display: flex; align-items: center; gap: 14px; margin: 24px 0 0; color: var(--text); }
+.hero-brand .brand-mark { width: clamp(52px, 13vw, 72px); height: auto; }
+.hero-word { font-weight: 700; font-size: clamp(2.3rem, 9vw, 3.4rem); line-height: 1; letter-spacing: -.035em; }
+.hero-brand + h1 { margin-top: 14px; font-size: clamp(1.25rem, 4.2vw, 1.6rem); font-weight: 600; color: var(--muted); letter-spacing: -.01em; }
 .intro p { color: var(--muted); margin: 0 0 4px; max-width: 60ch; }
 .list-tools { position: sticky; top: 57px; z-index: 15; background: var(--bg); padding: 10px var(--gutter) 8px; margin: 0 calc(-1 * var(--gutter)); }
 #q { width: 100%; font: inherit; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;

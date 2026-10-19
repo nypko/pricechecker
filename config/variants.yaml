@@ -1,0 +1,24 @@
+# RAM/storage options a brand makes for a version, read from the brand's own spec page (checked 2026-10-19).
+# On a phone page, an option missing from this list shows "not offered" (the brand doesn't make it); an option the
+# brand makes but none of our stores lists shows "no offers". List a version only once the brand's own site shows
+# its line-up: leaks and launches not yet on the brand's site stay out, and their empty cells say "no offers".
+# Not listed yet (checked 2026-10-19): Oppo Find X10 Pro Max and vivo X500, X500 Pro Max and X Fold 6 aren't on
+# the brands' global sites; mi.com blocks automated reading (Xiaomi 17 Ultra Global: 12/512, 16/512, 16/1TB per GSMArena).
+honor-magic-8-pro:
+  global: {made: [12/512, 16/1024], source: "https://www.honor.com/global/phones/honor-magic8-pro/spec/"}
+honor-magic-v6:
+  global: {made: [16/512, 16/1024], source: "https://www.honor.com/global/phones/honor-magic-v6/spec/"}
+huawei-pura-80-ultra:
+  global: {made: [16/512], source: "https://consumer.huawei.com/en/phones/pura80-ultra/specs/"}
+oppo-find-n5:
+  global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-n/find-n5/specs/"}
+oppo-find-n6:
+  global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-n/find-n6/specs/"}
+oppo-find-x9-pro:
+  global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-pro/specs/"}
+oppo-find-x9-ultra:
+  global: {made: [12/512, 16/1024], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/"}
+vivo-x300-pro:
+  global: {made: [16/512], source: "https://www.vivo.com/en/products/param/x300-pro"}
+vivo-x300-ultra:
+  global: {made: [16/512, 16/1024], source: "https://www.vivo.com/en/products/param/x300-ultra"}

@@ -38,6 +38,7 @@
         <td>{% if cell %}<button type="button" class="cell" data-storage="{{ storage }}" data-ed="{{ e.edition }}" aria-pressed="false">
               <span class="cell-v">{{ price(cell.money) }}</span><span class="cell-sub">store price</span></button>
             {% elif listed %}<span class="cell-none">out of stock</span>
+            {% elif p.made[e.edition] and storage not in p.made[e.edition] %}<span class="cell-none">not offered</span>
             {% else %}<span class="cell-none">no offers</span>{% endif %}</td>
         {% endfor %}
       </tr>
@@ -45,7 +46,8 @@
     </tbody>
   </table>
   <p class="grid-note">Each price is the cheapest total for that choice: phone, payment fee, shipping and import tax where we know them.
-    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number.</p>
+    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number.
+    {%- if p.made %} “Not offered”: the brand doesn't make that version with this RAM/storage; “no offers”: none of our stores lists it.{% endif %}</p>
   <p class="nojs-only grid-note">These are store prices, before shipping, payment fees and import tax. Turn on JavaScript to see delivered totals.</p>
 </section>
 

@@ -183,6 +183,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
         js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties")}
+        # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
+        full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}
         by_storage = defaultdict(list)
         for o in offers:
             o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
@@ -197,6 +199,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                    for s in storages if len(m["editions"]) > 1]
         phones.append({**m, "slug": m["id"], "best": in_stock[0] if in_stock else None, "eds": eds,
                        "offers_json": json.dumps([js(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
+                       "all_json": json.dumps([full(o) for o in offers], separators=(",", ":")),
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "chart": _chart(_series(rows, m, rates), colors, updated_at),

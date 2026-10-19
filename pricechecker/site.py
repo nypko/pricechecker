@@ -1,4 +1,5 @@
 """Generates the static website into build/ from data/latest.json, data/history.csv and config/."""
+import hashlib
 import json
 import shutil
 from collections import defaultdict
@@ -456,7 +457,10 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         upd_label = datetime.strptime(upd, "%Y-%m-%dT%H:%M:%SZ").strftime("%-d %b, %H:%M UTC")
     except ValueError:
         upd_label = upd
-    ctx = {"updated": upd, "updated_label": upd_label, "fx_date": rates_info.get("date"), "colors": colors,
+    # ?v=<content hash> on the script and stylesheet: browsers cache them for hours (Cloudflare's default), and an old
+    # app.js on a new page breaks it (Chrome on Android kept a pre-Phase-2 app.js and the brand filters stopped working)
+    ver = {f: hashlib.sha256(Path("static", f).read_bytes()).hexdigest()[:10] for f in ("app.js", "style.css")}
+    ctx = {"asset_v": ver, "updated": upd, "updated_label": upd_label, "fx_date": rates_info.get("date"), "colors": colors,
            "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"), "part_of": c.get("part_of"),
                        "error": latest["stores"].get(s, {}).get("error", ""), "count": len(latest["stores"].get(s, {}).get("offers", [])),
                        "terms_ok": terms_status.get(s, {}).get("ok", True), "notes": terms.notes(c),

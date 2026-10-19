@@ -331,6 +331,14 @@ th { font-size: .8rem; color: var(--muted); font-weight: 600; }
 
 footer { color: var(--muted); font-size: .8rem; padding-top: 24px; padding-bottom: 32px; border-top: 1px solid var(--border); margin-top: 32px; }
 footer p { max-width: 62ch; }
+.foot-links a { color: var(--muted); font-weight: 600; }
+/* About and Privacy: a reading page */
+.prose { max-width: 58ch; padding-block: 8px 24px; }   /* Plex is narrow: 58ch is about 75 characters a line */
+.prose h1 { margin-top: 24px; }
+.prose h2 { margin: 28px 0 8px; font-size: 1.15rem; }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul { padding-left: 1.2em; display: grid; gap: 8px; }
+.prose .lede { font-size: 1.1rem; color: var(--muted); margin-bottom: 8px; }
 
 /* ---------- phones: tables become stacked rows ---------- */
 @media (max-width: 719px) {

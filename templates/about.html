@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}About DoorPrice – how we compare phone prices{% endblock %}
+{% block description %}DoorPrice is an independent price comparison site for flagship phones from import stores. How we check prices, work out delivered totals, and earn money.{% endblock %}
+{% block main %}
+{% set connected = stores|rejectattr("ok", "none")|rejectattr("part_of")|list %}   {#- an EU warehouse is part of its store -#}
+<article class="prose">
+  <h1>About DoorPrice</h1>
+  <p class="lede">DoorPrice shows what a flagship phone from an import store really costs once it reaches your door:
+    the store's price plus payment fees, shipping and estimated import tax for your country.</p>
+
+  <h2>Who runs it</h2>
+  <p>DoorPrice is an independent project based in {{ site.country }}. It isn't owned by, or part of, any store or phone brand.</p>
+
+  <h2>What we compare</h2>
+  <p>We track {{ phones|length }} current flagship phones at {{ connected|length }} specialist import stores:
+    {% for s in connected %}{{ s.label }}{{ ", " if not loop.last }}{% endfor %}.
+    Many of these phones come in a Global and a China version, so we show both side by side at the same RAM and storage.</p>
+
+  <h2>How prices are checked</h2>
+  <ul>
+    <li><strong>Every hour</strong> an automated checker reads each store's public product data. It identifies itself to
+      stores, follows their <code>robots.txt</code> rules and keeps a slow, polite pace.</li>
+    <li><strong>Store terms</strong> (payment fees and discounts, shipping costs, who pays import tax) come from each store's own
+      payment, shipping and customs pages and are re-checked daily. Where buyers' experience differs from what a store
+      promises, the page says so.</li>
+    <li><strong>Currencies:</strong> we use a store's own price in your currency where it sets one; other prices are converted
+      at European Central Bank rates and marked ≈.</li>
+  </ul>
+
+  <h2>How the delivered total is worked out</h2>
+  <p>For your chosen country and payment method: the store's price, plus or minus its payment fee or discount, plus
+    shipping, plus estimated import VAT or GST when the store's price doesn't include it. When something isn't known,
+    such as a store that doesn't publish its shipping cost, the total says so ("+ shipping", "tax?") instead of guessing.
+    Always confirm the final price at the store before you pay.</p>
+
+  <h2>How DoorPrice earns money</h2>
+  <p>Some links to stores are affiliate links: if you buy after clicking one, the store may pay us a commission. It costs
+    you nothing extra. <strong>Commissions never change the order:</strong> stores are always ranked by the total you would pay,
+    and stores without an affiliate deal are listed the same way. We don't accept payment for placement and don't publish
+    sponsored reviews.</p>
+
+  <h2>Corrections and contact</h2>
+  {% if site.contact_email %}
+  <p>Spotted a wrong price, a changed term or a store we should add? Write to
+    <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>. Stores and affiliate networks can use the same address.</p>
+  {% else %}
+  <p>Spotted a wrong price, a changed term or a store we should add? A contact address will be listed here shortly.</p>
+  {% endif %}
+  <p class="muted small">See also the <a href="{{ root }}privacy">privacy notice</a>.</p>
+</article>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Privacy – DoorPrice{% endblock %}
+{% block description %}DoorPrice sets no cookies and uses no analytics or tracking. What is stored on your device and what happens when you visit a store.{% endblock %}
+{% block main %}
+<article class="prose">
+  <h1>Privacy</h1>
+  <p class="lede">Short version: DoorPrice sets no cookies, runs no analytics or advertising trackers, and has no accounts,
+    so it collects no personal data about you.</p>
+
+  <h2>What is stored on your device</h2>
+  <p>Your choices for currency, ship-to country and payment method are saved in your browser's local storage so the
+    site remembers them next time. They never leave your device and you can clear them at any time by clearing this
+    site's data in your browser.</p>
+
+  <h2>Hosting</h2>
+  <p>The site is hosted on Cloudflare Pages. Like any web host, Cloudflare processes technical data such as your IP address
+    to deliver pages and protect against abuse; see <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>.
+    Fonts and all other files are served from DoorPrice itself, not from third-party services.</p>
+
+  <h2>When you click through to a store</h2>
+  <p>Store links open the store's own website. Some are affiliate links, so the store or its affiliate network may set
+    cookies to recognise that you came from DoorPrice. From that point the store's own privacy policy applies.
+    Nothing about you is passed from DoorPrice to the store beyond the link you clicked.</p>
+
+  <h2>Contact</h2>
+  {% if site.contact_email %}
+  <p>Questions about privacy: <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>.</p>
+  {% else %}
+  <p>A contact address for privacy questions will be listed here shortly.</p>
+  {% endif %}
+  <p class="muted small">Last updated {{ month }}. See also <a href="{{ root }}about">About DoorPrice</a>.</p>
+</article>
+{% endblock %}

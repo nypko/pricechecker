@@ -243,7 +243,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     except ValueError:
         upd_label = upd
     ctx = {"updated": upd, "updated_label": upd_label, "fx_date": rates_info.get("date"), "colors": colors,
-           "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"),
+           "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"), "part_of": c.get("part_of"),
                        "error": latest["stores"].get(s, {}).get("error", ""), "count": len(latest["stores"].get(s, {}).get("offers", [])),
                        "terms_ok": terms_status.get(s, {}).get("ok", True), "notes": terms.notes(c),
                        "pay": {m: terms.payment_pct(c, m) for m in terms.METHODS},
@@ -251,6 +251,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "ship_notes": _ship_notes(terms.notes(c)["ship"])}
                       for s, c in stores_cfg.items() if c.get("enabled", True)],
            "month": updated_at.strftime("%B %Y") if updated_at else "",   # "October 2026" in page titles
+           "site": yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {},
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
            "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
     if OUT.exists():
@@ -263,4 +264,6 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", **ctx))
         (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", **ctx))
+    for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
+        (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", **ctx))
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

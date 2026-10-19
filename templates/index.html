@@ -18,13 +18,14 @@
     <button class="chip" data-brand="" aria-pressed="true">All brands</button>
     {% for b in brands %}<button class="chip" data-brand="{{ b|lower }}" aria-pressed="false">{{ b }}</button>{% endfor %}
   </div>
+  <button type="button" class="chip chip-global" id="global-only" aria-pressed="false">Global version only</button>
 </div>
 
 <div class="list-head">
   <p class="list-meta"><span class="count">{{ phones|length }}</span> phones · delivered to <strong class="for-region">the EU</strong>
     <button type="button" class="link-btn" data-prefs>Change</button></p>
   <div class="seg seg-sm sort" role="group" aria-label="Sort by">
-    <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
+    <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="drop" aria-pressed="false">Price drops</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
   </div>
 </div>
 
@@ -43,8 +44,9 @@
       <span class="prow-name">{{ p.name }}{% if p.announced %} <time class="prow-date" datetime="{{ p.announced }}">{{ p.announced|month }}</time>{% endif %}</span>
       {% if p.best %}
       <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
-        <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span></span>
+        <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span><span class="prow-count"></span> <span class="pill prow-trend" hidden></span></span>
       <span class="prow-price"><span class="prow-v">{{ price(p.best.money) }}</span><span class="prow-plus"></span></span>
+      <span class="prow-or"></span>
       <span class="prow-gap" hidden></span>
       {% elif p.offers %}
       <span class="prow-sub muted">Out of stock everywhere</span>

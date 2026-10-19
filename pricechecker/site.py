@@ -2,7 +2,7 @@
 import json
 import shutil
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import yaml
@@ -60,6 +60,7 @@ def _usd_money(usd: float | None, rates: dict) -> dict | None:
 
 
 SYMBOL = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$"}
+LABELS: dict[str, str] = {}   # store key -> name shown in chart readouts; set by build()
 
 
 def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str], now: datetime | None = None,
@@ -81,7 +82,9 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     lo, hi = ticks[0], ticks[-1]
     x = lambda t: L + (t - t0).total_seconds() / max((t1 - t0).total_seconds(), 1) * (W - L - R)
     y = lambda p: T + (hi - p) / (hi - lo) * (H - T - B)
-    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in {cur}, shown in the table below">']
+    # data-* let app.js read a value off the chart where it is tapped: the time span, plot edges, and each line's steps
+    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in {cur}, shown in the table below" '
+             f'data-t0="{t0:%Y-%m-%dT%H:%M}" data-t1="{t1:%Y-%m-%dT%H:%M}" data-l="{L}" data-r="{W-R}">']
     for v in ticks:
         parts.append(f'<line x1="{L}" x2="{W-R}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="grid"/>'
                      f'<text x="{L-6}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">{SYMBOL[cur]}{v:,.0f}</text>')
@@ -94,8 +97,10 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
         d = f"M{x(s[0][0]):.1f} {y(s[0][1]):.1f}" + "".join(  # step line: price holds until the next change
             f" H{x(t):.1f} V{y(p):.1f}" for t, p in s[1:])
         dash = ' stroke-dasharray="6 4"' if edition == "china" else ""
-        parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash} data-ed="{edition}">'
-                     f'<title>{store} ({EDITION_LABEL[edition]})</title></path>')
+        name = f"{LABELS.get(store, store)} ({EDITION_LABEL[edition]})"
+        steps = ";".join(f"{x(t):.1f}:{SYMBOL[cur]}{p:,.0f}" for t, p in s[:-1])
+        parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash} data-ed="{edition}" '
+                     f'data-name="{name}" data-steps="{steps}"><title>{name}</title></path>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -124,18 +129,87 @@ def _charts(rows: list[dict], model: dict, rates: dict, colors: dict, now: datet
     return out if all(out.values()) else {}
 
 
+def _all_stats(rows: list[dict], model: dict, rates: dict, now: datetime | None, storage: str | None = None) -> dict:
+    """_stats once per site currency, like the charts: {"usd": {...}, ...}; {} if no history."""
+    out = {c.lower(): _stats(_series(rows, model, rates, storage, c), now, c) for c in CURRENCIES}
+    return out if all(out.values()) else {}
+
+
 def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors: dict, now: datetime | None) -> dict:
     """Price history for one RAM/storage option (the toggle under each table on the phone page)."""
     series = _series(rows, model, rates, storage)
     eds = defaultdict(list)   # store -> versions it has lines for, so the legend can follow the version filter
     for s, e in series:
         eds[s].append(e)
-    return {"svg": _charts(rows, model, rates, colors, now, storage), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
+    return {"svg": _charts(rows, model, rates, colors, now, storage), "stats": _all_stats(rows, model, rates, now, storage), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
             "china": any(e == "china" for _, e in series)}
 
 
+def _trend(rows: list[dict], model_id: str, o: dict, now: datetime | None) -> dict | None:
+    """How one offer's store price moved, from the hourly history, as ratios so the browser can show it in any currency:
+    {"drop": 0.05, "since": "2026-10-16"} when it is below its highest in-stock price of the last 7 days (or since we
+    first saw it, if that's sooner), and "low30": 1 when it's the lowest in 30 days of history. None = no movement to show."""
+    if not now or not o.get("available"):
+        return None
+    hist = [(datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ"), r["price"], r["available"]) for r in rows
+            if r["store"] == o["store"] and r["model_id"] == model_id and r["edition"] == o["edition"] and r["storage"] == o["storage"]]
+    if not hist:
+        return None
+    price, start = float(o["price"]), now - timedelta(days=7)
+    held = [p for t, p, ok in hist if t <= start and ok][-1:]               # the price the week started with
+    recent = [p for t, p, ok in hist if t > start and ok]
+    prev = max(held + recent) if held + recent else None
+    out = {}
+    if prev and prev > price * 1.005:                                       # ignore rounding-size moves
+        first = hist[0][0]
+        out = {"drop": round((prev - price) / price, 4), "since": "" if first <= start else first.strftime("%Y-%m-%d")}
+    if now - hist[0][0] >= timedelta(days=30):
+        month = [p for t, p, ok in hist if ok and t >= now - timedelta(days=30)] + [p for t, p, ok in hist if ok and t < now - timedelta(days=30)][-1:]
+        if month and price <= min(month) and max(month) > price * 1.005:
+            out["low30"] = 1
+    return out or None
+
+
+def _stats(series: dict, now: datetime | None, cur: str) -> dict | None:
+    """Now / lowest / highest / average of the cheapest in-stock price at any store, over the recorded history (one variant,
+    one currency). The average is weighted by time, so a price that held for days counts for more than a one-hour blip."""
+    events = sorted({t for s in series.values() for t, _ in s})
+    if not events or not now:
+        return None
+    level, steps = {}, []
+    for t in events:
+        for line, s in series.items():
+            for tt, p in s:
+                if tt == t:
+                    level[line] = p
+        steps.append((t, min(level.values())))
+    span = [(t, p, ((steps[i + 1][0] if i + 1 < len(steps) else now) - t).total_seconds()) for i, (t, p) in enumerate(steps)]
+    total = sum(w for _, _, w in span)
+    lo = min(steps, key=lambda x: x[1])
+    hi = max(steps, key=lambda x: x[1])
+    fmt = lambda v: f"{SYMBOL[cur]}{v:,.0f}"
+    return {"now": fmt(steps[-1][1]), "low": fmt(lo[1]), "low_at": f"{lo[0]:%-d %b}", "high": fmt(hi[1]), "high_at": f"{hi[0]:%-d %b}",
+            "avg": fmt(sum(p * w for _, p, w in span) / total) if total else fmt(steps[-1][1]), "since": f"{steps[0][0]:%-d %b}"}
+
+
+def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:
+    """schema.org Product + AggregateOffer for search results ("from €X · N offers"): the stores' own prices in EUR
+    (what the store charges, as search engines expect), not our delivered totals. Empty when nothing is in stock."""
+    if not in_stock:
+        return ""
+    eur = [o["money"]["eur"] for o in in_stock]
+    ld = {"@context": "https://schema.org", "@type": "Product", "name": model["name"], "brand": {"@type": "Brand", "name": model["brand"]},
+          "offers": {"@type": "AggregateOffer", "priceCurrency": "EUR", "lowPrice": f"{min(eur):.2f}", "highPrice": f"{max(eur):.2f}",
+                     "offerCount": len(in_stock)}}
+    base = (site_cfg.get("base_url") or "").rstrip("/")
+    if site_cfg.get("domain_live") and base:
+        ld["url"] = f"{base}/phones/{model['id']}"
+        ld["image"] = f"{base}/static/icons/icon-512.png"
+    return json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+
 def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
-    """Cheapest total for the page title and search snippet: shipping to the EU, paying by card, in EUR - the same sum
+    """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
     price excludes it). Returns (total, complete); complete = shipping known and import tax settled either way."""
     best = None
@@ -151,7 +225,7 @@ def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, b
         duties = (o.get("duties") or {}).get("EU")
         tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
         total, complete = base + adj + ship_amt + tax, ship is not None and duties is not None
-        if best is None or total < best[0]:
+        if best is None or (not complete, total) < (not best[1], best[0]):   # a complete total leads, as on the page
             best = (total, complete)
     return best
 
@@ -213,6 +287,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     terms_status = terms_status or {}
     latest = history.load_latest()
     rows = history.load_history()
+    LABELS.update({k: v.get("label", k) for k, v in stores_cfg.items()})
     store_names = list(stores_cfg)
     colors = {s: STORE_COLORS[i % len(STORE_COLORS)] for i, s in enumerate(store_names)}
     try:
@@ -221,6 +296,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         updated_at = None
     tax_eu = (yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"].get("EU") or {}).get("rate_pct")
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
+    site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
         offers = []
@@ -237,10 +313,12 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                    "coupons": promos.coupons(store, stores_cfg.get(stores_cfg[store].get("part_of"), stores_cfg[store])
                                                              if stores_cfg[store].get("part_of") else stores_cfg[store]),
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
+                                   "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
+                                   "trend": _trend(rows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store")}
         # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
         full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}
         by_storage = defaultdict(list)
@@ -262,7 +340,9 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
                        "title_price": _title_price(offers, tax_eu),
+                       "ld": _product_ld(m, in_stock, site_cfg),
                        "chart": _charts(rows, m, rates, colors, updated_at),
+                       "chart_stats": _all_stats(rows, m, rates, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
     phones.sort(key=lambda p: p["name"])
@@ -284,7 +364,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "ship_notes": _ship_notes(terms.notes(c)["ship"])}
                       for s, c in stores_cfg.items() if c.get("enabled", True)],
            "month": updated_at.strftime("%B %Y") if updated_at else "",   # "October 2026" in page titles
-           "site": yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {},
+           "site": site_cfg,
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
            "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
     if OUT.exists():

@@ -122,8 +122,38 @@
     return x.length ? " before " + x.join(" and ") : "";
   }
 
-  // Cheapest offer for the current choices; stores that don't take the chosen payment method rank last.
-  function better(k, b) { return (k.payOk && !b.payOk) || (k.payOk === b.payOk && k.total < b.total); }
+  // Cheapest offer for the current choices. Stores that don't take the chosen payment method rank last, and a total we can
+  // fully work out leads over a lower one that leaves shipping or import tax open (that one is shown as "or €X + shipping").
+  function better(k, b) {
+    if (k.payOk !== b.payOk) return k.payOk;
+    if (partial(k) !== partial(b)) return !partial(k);
+    return k.total < b.total;
+  }
+  // The cheapest total that leaves something open, when it's lower than the complete one that leads
+  function lowerOpen(offers, best) {
+    var low = null;
+    offers.forEach(function (o) {
+      var k = cost(o);
+      if (k.payOk && partial(k) && k.total < best.k.total && (!low || k.total < low.k.total)) low = { o: o, k: k };
+    });
+    return best && !partial(best.k) ? low : null;
+  }
+  // "Arrives in 12–19 working days" / "up to 8 working days" from the store's terms for the chosen Ship-to
+  function delivery(o) {
+    var d = o.days && o.days[state.region];
+    if (!d) return "";
+    return d[0] == null ? "up to " + d[1] + " working days" : d[0] + "–" + d[1] + " working days";
+  }
+  // Price movement from the hourly history: "↓ €40 this week" / "↓ €40 since 16 Oct" / "Lowest in 30 days"
+  function trendText(o, k) {
+    var t = o.trend;
+    if (!t) return "";
+    if (t.drop) {
+      var amt = k.list * t.drop;
+      if (amt >= 1) return "↓ " + fmt(amt, k.baseApprox) + (t.since ? " since " + new Date(t.since + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : " this week");
+    }
+    return t.low30 ? "Lowest in 30 days" : "";
+  }
   function pick(offers) {
     var best = null;
     offers.forEach(function (o) { var k = cost(o); if (!best || better(k, best.k)) best = { o: o, k: k }; });
@@ -298,8 +328,8 @@
     if (o.available && k.payOk && partial(k)) tot.appendChild(el("span", "plus", " " + extras(k)));
     s.appendChild(tot);
     s.appendChild(el("span", "st-delta", !o.available ? "" : !k.payOk ? "no " + PAY_LABEL[state.pay] :
-      best ? "+" + fmt(Math.max(0, k.total - best.k.total)) + " vs best" + gapNote(k, best.k) : ""));
-    s.appendChild(el("span", "st-cav", o.available && k.payOk ? caveats(k) : ""));
+      best ? (k.total < best.k.total ? "−" + fmt(best.k.total - k.total) + " vs best" : "+" + fmt(k.total - best.k.total) + " vs best") + gapNote(k, best.k) : ""));
+    s.appendChild(el("span", "st-cav", o.available && k.payOk ? caveats(k) + (delivery(o) ? " · arrives in " + delivery(o) : "") : ""));
     d.appendChild(s);
     var body = el("div", "st-body"), dl = el("dl", "breakdown compact");
     breakdown(dl, k);
@@ -344,7 +374,7 @@
     });
     cells.forEach(function (c) {
       c.classList.toggle("best", c === overall && overall._b.k.payOk);
-      c.dataset.tag = partial(overall._b.k) ? "Lowest before " + (overall._b.k.ship == null ? "shipping" : "tax") : "Cheapest";
+      c.dataset.tag = partial(overall._b.k) ? "Lowest before " + (overall._b.k.ship == null ? "shipping" : "tax") : "Cheapest delivered";
     });
     var payable = null;   // the cheapest cell you can actually pay for with the chosen method
     cells.forEach(function (c) { if (c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
@@ -367,6 +397,10 @@
     v.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "–";
     setNote(v, "");
     ans.querySelector(".ans-plus").textContent = b.k.payOk ? extras(b.k, true) : "";
+    // a lower total that leaves shipping or import tax open (it's in "Other stores" below), named so it doesn't seem missing
+    var low = b.k.payOk ? lowerOpen(inStock(sel.storage, sel.ed), b) : null, aor = ans.querySelector(".ans-or");
+    aor.textContent = low ? "or " + fmt(low.k.total, low.k.approx) + " " + extras(low.k, true) + " at " + low.o.store_label : "";
+    aor.hidden = !low;
     var alt = ans.querySelector(".ans-alt");
     alt.textContent = "";
     alt.hidden = b.k.payOk || !payable;
@@ -381,6 +415,12 @@
     badge.className = "ans-ed badge " + b.o.edition; badge.textContent = ED[b.o.edition];
     ans.querySelector(".ans-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
     ans.querySelector(".ans-store").textContent = b.o.store_label + (b.o.stale ? " (last known price)" : "");
+    var dv = ans.querySelector(".ans-days");
+    dv.textContent = b.k.payOk && delivery(b.o) ? "Arrives in " + delivery(b.o) + " after you order" : "";
+    dv.hidden = !dv.textContent;
+    var tr = ans.querySelector(".ans-trend");
+    tr.textContent = b.k.payOk ? trendText(b.o, b.k) : "";
+    tr.hidden = !tr.textContent;
     bar(ans.querySelector(".bar"), b.k);
     breakdown(ans.querySelector(".breakdown"), b.k);
     tradeoff(b);
@@ -419,6 +459,40 @@
   document.querySelectorAll(".cell").forEach(function (c) {
     c.addEventListener("click", function () { choose({ storage: c.dataset.storage, ed: c.dataset.ed }); });
   });
+  // Tap or hover a price history chart: a line at that moment and each store's price then
+  function readout(svg, ev) {
+    var box = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+    var x = (ev.clientX - box.left) / box.width * vb.width, l = +svg.dataset.l, r = +svg.dataset.r;
+    var wrap = svg.parentNode, tip = wrap.querySelector(".readout"), cross = svg.querySelector(".cross");
+    if (x < l || x > r) { if (tip) tip.hidden = true; if (cross) cross.remove(); return; }
+    var t0 = Date.parse(svg.dataset.t0 + "Z"), t1 = Date.parse(svg.dataset.t1 + "Z");
+    var when = new Date(t0 + (x - l) / (r - l) * (t1 - t0));
+    if (!tip) { tip = el("div", "readout"); tip.setAttribute("aria-live", "polite"); wrap.appendChild(tip); }
+    tip.textContent = "";
+    tip.appendChild(el("strong", null, when.toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + ", " +
+      when.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC"));
+    svg.querySelectorAll("path[data-steps]").forEach(function (p) {
+      if (p.closest("[hidden]") || getComputedStyle(p).display === "none") return;
+      var v = null;
+      p.dataset.steps.split(";").forEach(function (st) { var i = st.indexOf(":"); if (+st.slice(0, i) <= x) v = st.slice(i + 1); });
+      if (!v) return;
+      var row = el("span", "ro-row"), sw = el("i", "ro-sw");
+      sw.style.borderColor = p.getAttribute("stroke");
+      if (p.dataset.ed === "china") sw.style.borderStyle = "dashed";
+      row.appendChild(sw); row.appendChild(el("span", null, p.dataset.name + " "));
+      row.appendChild(el("b", null, v));
+      tip.appendChild(row);
+    });
+    tip.hidden = false;
+    tip.style.left = Math.min(Math.max(0, ev.clientX - box.left - tip.offsetWidth / 2), box.width - tip.offsetWidth) + "px";
+    if (!cross) { cross = document.createElementNS("http://www.w3.org/2000/svg", "line"); cross.setAttribute("class", "cross"); svg.appendChild(cross); }
+    cross.setAttribute("x1", x); cross.setAttribute("x2", x); cross.setAttribute("y1", 10); cross.setAttribute("y2", vb.height - 26);
+  }
+  document.querySelectorAll("svg.chart[data-t0]").forEach(function (svg) {
+    svg.addEventListener("pointermove", function (ev) { readout(svg, ev); });
+    svg.addEventListener("pointerdown", function (ev) { readout(svg, ev); });
+    svg.addEventListener("pointerleave", function (ev) { if (ev.pointerType === "mouse") readout(svg, { clientX: -1e6 }); });
+  });
   var hv = document.getElementById("hist-var");
   if (hv) hv.addEventListener("change", function () { histSel = hv.value; showHist(histSel); });
   var ht = document.querySelector(".hist-toggle");
@@ -431,11 +505,16 @@
 
   // ---------- index: one row per phone, ranked ----------
   var sortBy = "date";
+  var globalOnly = store("pc-global") === "1";   // "Global version only" chip on the index, remembered on this device
   function renderIndex() {
     var list = document.getElementById("phones");
     if (!list) return;
     list.querySelectorAll(".prow[data-offers]").forEach(function (row) {
-      var offers = JSON.parse(row.dataset.offers), b = pick(offers), m = match(offers);
+      var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
+      var offers = globalOnly ? byEdition(all, "global") : all;
+      row._noGlobal = !offers.length;
+      if (!offers.length) return;
+      var b = pick(offers), m = globalOnly ? null : match(offers), low = lowerOpen(offers, b);
       var badge = row.querySelector(".prow-sub .badge");
       badge.className = "badge " + b.o.edition; badge.textContent = ED[b.o.edition];
       row.querySelector(".prow-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
@@ -443,7 +522,15 @@
       var pv = row.querySelector(".prow-v .price");
       pv.textContent = fmt(b.k.total, b.k.approx);
       setNote(pv, "");
-      row.querySelector(".prow-plus").textContent = extras(b.k);
+      row.querySelector(".prow-plus").textContent = partial(b.k) ? extras(b.k) : "delivered";
+      row.querySelector(".prow-or").textContent = low ? "or " + fmt(low.k.total, low.k.approx) + " " + extras(low.k) + " at " + low.o.store_label : "";
+      var n = {};
+      offers.forEach(function (o) { n[o.store_label] = 1; });
+      row.querySelector(".prow-count").textContent = " · " + Object.keys(n).length + (Object.keys(n).length === 1 ? " store" : " stores");
+      var pill = row.querySelector(".prow-trend");
+      pill.textContent = b.k.payOk ? trendText(b.o, b.k) : "";
+      pill.hidden = !pill.textContent;
+      row._drop = b.o.trend && b.o.trend.drop ? b.k.list * b.o.trend.drop : 0;
       row.querySelector(".prow-link").href = "phones/" + row.dataset.slug + "#" + b.o.storage.replace("/", "-") + "-" + b.o.edition;
       var gp = row.querySelector(".prow-gap");
       row._price = b.k.payOk ? b.k.total : Infinity;
@@ -468,6 +555,7 @@
       if (ao !== bo) return ao - bo;
       if (sortBy === "price" && a._price !== b._price) return a._price - b._price;
       if (sortBy === "gap" && a._gap !== b._gap) return b._gap - a._gap;
+      if (sortBy === "drop" && a._drop !== b._drop) return b._drop - a._drop;
       return a.dataset.name < b.dataset.name ? -1 : 1;
     }).forEach(function (r) { list.appendChild(r); });
   }
@@ -488,7 +576,7 @@
     document.querySelectorAll(".for-pay").forEach(function (e) { e.textContent = PAY_LABEL[state.pay]; });
     document.querySelectorAll(".for-cur").forEach(function (e) { e.textContent = state.cur.toUpperCase(); });
     // price history charts are drawn once per currency; show the chosen one
-    document.querySelectorAll(".chart-wrap[data-cur]").forEach(function (e) { e.hidden = e.dataset.cur !== state.cur; });
+    document.querySelectorAll(".chart-wrap[data-cur], .hstats-box[data-cur]").forEach(function (e) { e.hidden = e.dataset.cur !== state.cur; });
     document.querySelectorAll(".seg[data-pref] button").forEach(function (b) {
       b.setAttribute("aria-pressed", state[b.parentNode.dataset.pref] === b.dataset.val ? "true" : "false");
     });
@@ -557,7 +645,8 @@
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
-      c.hidden = !((!brand || c.dataset.brand === brand) && words.every(function (w) { return hay.indexOf(w) !== -1; }));
+      c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) &&
+                   words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
     });
     if (count) count.textContent = shown;
@@ -579,6 +668,18 @@
     if (brand && q.value.trim()) chooseBrand(document.querySelector('.chip[data-brand=""]'));
     else filter();
   });
+  // "Global version only": rank each phone by its Global offers and hide phones sold only as a China version
+  var gchip = document.getElementById("global-only");
+  if (gchip) {
+    gchip.setAttribute("aria-pressed", globalOnly ? "true" : "false");
+    gchip.addEventListener("click", function () {
+      globalOnly = !globalOnly;
+      store("pc-global", globalOnly ? "1" : "0");
+      gchip.setAttribute("aria-pressed", globalOnly ? "true" : "false");
+      renderIndex(); filter();
+    });
+    if (globalOnly) filter();
+  }
   var clear = document.getElementById("clear-search");
   if (clear) clear.addEventListener("click", function () { q.value = ""; filter(); q.focus(); });
   // the fade at the chip row's right edge only while there's more to scroll to

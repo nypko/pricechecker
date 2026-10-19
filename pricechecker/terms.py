@@ -57,6 +57,12 @@ def shipping(cfg: dict, region: str, offer: dict, rates: dict) -> dict | None:
     return out
 
 
+def delivery(cfg: dict, region: str) -> list | None:
+    """Delivery time in working days from the store's shipping terms, [min, max] (min may be None: "up to 8"), or None."""
+    d = ((cfg.get("terms") or {}).get("shipping", {}).get(region) or {}).get("days")
+    return list(d) if d else None
+
+
 def duties_included(cfg: dict, region: str) -> bool | None:
     """Does the price already include the destination's import duties and VAT/GST? None = the store doesn't say."""
     return ((cfg.get("terms") or {}).get("shipping", {}).get(region) or {}).get("duties_included")

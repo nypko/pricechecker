@@ -6,7 +6,9 @@
 #
 #   terms: payment / shipping conditions shown on the site (Payment + Ship-to selectors)
 #     payment.<card|paypal|bank_transfer>: fee_pct (surcharge) or discount_pct; null = unknown/unverified
-#     shipping.<EU|UK|US|AU>: cost (+ currency if not the store's) ; null = not listed / unknown
+#     shipping.<EU|UK|US|AU|Global>: cost (+ currency if not the store's) ; null = not listed / unknown
+#       days: [min, max] working days to delivery as the store states them ([null, 8] = "up to 8"); omit if not stated.
+#       Trading Shenzhen: 10-14 days transit + 2-5 days processing (stated on its EU terms; processing is the same everywhere)
 #       duties_included: true if the price already covers the destination's import duties + VAT/GST, false if the
 #       buyer pays them on delivery, omit if the store doesn't say (the site then shows "import tax not stated")
 #     watch: pages re-checked daily; if `expect` (regex) is no longer found, the site flags the terms for review
@@ -25,11 +27,11 @@ stores:
         paypal: {fee_pct: 0}
         card: {fee_pct: 0, note: "No handling fee; your bank may charge foreign-transaction fees"}
       shipping:
-        EU: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
-        UK: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
-        US: {cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
-        AU: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
-        Global: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties and import tax not stated - you may pay them on delivery"}
+        EU: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        UK: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        US: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        AU: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        Global: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties and import tax not stated - you may pay them on delivery"}
       watch:   # re-checked daily; if the text disappears the site flags the terms as "needs review"
         - {url: "https://wondamobile.com/pages/billing-information", expect: "4\\.5% discount"}
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
@@ -54,11 +56,11 @@ stores:
       # Not stated whether it combines with the bank-transfer discount, so with bank transfer only the larger 4.75% is counted.
       promo: {pct: 2, label: "Summer sale", watch: "2% summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
       shipping:
-        EU: {duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
-        UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
-        US: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & taxes included"}
-        AU: {duties_included: true, cost: 300, currency: HKD, note: "Standard (all regions except EU), up to 8 business days; duties & GST included"}
-        Global: {duties_included: null, cost: 300, currency: HKD, note: "Standard (all regions except EU), DHL/FedEx/UPS; duties and taxes are stated as included for the UK, US and Australia, not for other countries"}
+        EU: {days: [6, 12], duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
+        UK: {days: [null, 8], duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
+        US: {days: [null, 8], duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & taxes included"}
+        AU: {days: [null, 8], duties_included: true, cost: 300, currency: HKD, note: "Standard (all regions except EU), up to 8 business days; duties & GST included"}
+        Global: {days: [null, 8], duties_included: null, cost: 300, currency: HKD, note: "Standard (all regions except EU), DHL/FedEx/UPS; duties and taxes are stated as included for the UK, US and Australia, not for other countries"}
       watch:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
@@ -93,11 +95,11 @@ stores:
         paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees from China and passes them on; exact amount at checkout"}
         card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned. Card address must match shipping address"}
       shipping:   # Global Priority from China; EU-warehouse items ship free in 2-5 working days
-        EU: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout) (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
-        UK: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import VAT, refunds any charges"}
-        US: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import costs, refunds any charges"}
-        AU: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and GST, refunds any charges"}
-        Global: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store says it covers customs and import tax and refunds any charges"}
+        EU: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout) (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
+        UK: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import VAT, refunds any charges"}
+        US: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import costs, refunds any charges"}
+        AU: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and GST, refunds any charges"}
+        Global: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store says it covers customs and import tax and refunds any charges"}
       watch:
         - {url: "https://tradingshenzhen.com/en/content/customs-and-duties", expect: "no customs duty and no import VAT"}
         - {url: "https://tradingshenzhen.com/en/content/payment-regulations", expect: "about 4%"}
@@ -114,7 +116,7 @@ stores:
         paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees and passes them on; exact amount at checkout"}
         card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned"}
       shipping:
-        EU: {duties_included: true, cost: 0, currency: EUR, note: "Free from the EU warehouse (DHL), 2-5 working days; already in the EU, no customs or import VAT"}
+        EU: {days: [2, 5], duties_included: true, cost: 0, currency: EUR, note: "Free from the EU warehouse (DHL), 2-5 working days; already in the EU, no customs or import VAT"}
         UK: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
         US: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
         AU: {cost: null, note: "EU warehouse shipping outside the EU not stated"}

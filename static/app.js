@@ -257,6 +257,7 @@
   try { OFFERS = JSON.parse(document.getElementById("offers").textContent); } catch (e) {}
   var layout = document.querySelector(".ph-layout");
   var BRAND = layout ? layout.dataset.brand : "";
+  var GOOGLE = (layout && layout.dataset.google) || "no Google Play preinstalled";   // config/google.yaml, per brand
   (function () {   // shared links keep the chosen cell: #16-512-china
     var m = /^#(\d+)-(\d+)-(global|china)$/.exec(location.hash);
     if (m) sel = { storage: m[1] + "/" + m[2], ed: m[3] };
@@ -309,7 +310,7 @@
     if (!t) return;
     var other = sel.ed === "china" ? "global" : "china", ob = pick(inStock(sel.storage, other));
     var sold = OFFERS.some(function (o) { return o.edition === other; });
-    var lose = (BRAND === "huawei" ? "no Google services (true of every Huawei), " : "no Google Play, ") +
+    var lose = GOOGLE + ", " +
       "usually no manufacturer warranty outside China, and it may miss some 4G/5G bands";
     t.textContent = "";
     t.hidden = !b.k.payOk || (sel.ed === "global" && !(ob && ob.k.payOk));

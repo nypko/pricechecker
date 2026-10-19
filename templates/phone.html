@@ -21,11 +21,11 @@
   <h1>{{ p.name }}</h1>
   <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
   {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
-  {{ explain.editions(p.editions, p.brand|lower) }}
+  {{ explain.editions(p.editions, p.brand|lower, google=p.google) }}
 </header>
 
 {% if p.best %}
-<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-slug="{{ p.slug }}">
+<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-google="{{ p.google.short }}" data-slug="{{ p.slug }}">
 
 <section class="picker" aria-labelledby="pick-h">
   <div class="sec-head">

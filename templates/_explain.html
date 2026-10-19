@@ -1,7 +1,8 @@
 {#- Plain-language explainers for shoppers new to importing. Native <details>, so they work by tap, keyboard and without JS. -#}
 
-{#- editions: list of "global"/"china" the phone is sold in (index: both); brand: phone brand, lower case ("" on the index) -#}
-{%- macro editions(eds, brand="", id="editions") -%}
+{#- editions: list of "global"/"china" the phone is sold in (index: both); brand: phone brand, lower case ("" on the index);
+    google: the brand's entry from config/google.yaml plus the caveat (phone pages only) -#}
+{%- macro editions(eds, brand="", id="editions", google=none) -%}
 {%- set both = "global" in eds and "china" in eds -%}
 <details class="explain" id="{{ id }}">
   <summary>{% if both %}Global or China version: what's different?{% elif "china" in eds %}What is a China version?{% else %}What is a Global version?{% endif %}</summary>
@@ -14,7 +15,11 @@
         <dd>No Google services on Huawei phones in either version. Apps come from Huawei's AppGallery.</dd>
         {%- else %}
         <dd><span class="badge global">Global</span> Google Play and Google apps installed.</dd>
-        <dd><span class="badge china">China</span> Chinese software without Google Play. It can often be added, but some apps may not work fully.{% if not brand %} Huawei phones have no Google services in either version.{% endif %}</dd>
+        {%- if google %}
+        <dd><span class="badge china">China</span> {{ google.long }}{% if google.caveat %} {{ google.caveat }}{% endif %}</dd>
+        {%- else %}
+        <dd><span class="badge china">China</span> Google Play is not set up. On Xiaomi, Oppo, OnePlus, vivo and Honor it can be switched on in Settings; on other brands it can often be added, but some apps may not work fully. Huawei phones have no Google services in either version.</dd>
+        {%- endif %}
         {%- endif %}
       </div>
       <div>

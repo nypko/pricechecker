@@ -362,6 +362,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
+    google = yaml.safe_load(Path("config/google.yaml").read_text())   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
@@ -413,6 +414,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "title_price": _title_price(offers, tax_eu),
                        "ld": _product_ld(m, in_stock, site_cfg),
                        "specs": _specs(specs.get(m["id"])),
+                       "google": {**google["brands"].get(m["brand"].lower(), google["brands"]["default"]),
+                                  "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""},
                        "chart": _charts(rows, m, rates, colors, updated_at),
                        "chart_stats": _all_stats(rows, m, rates, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),

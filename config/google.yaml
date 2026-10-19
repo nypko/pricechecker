@@ -1,0 +1,35 @@
+# Google Play on each brand's China version (China software). Checked 2026-10-20 against brand support pages, setup
+# guides (cyrusyip.org, smartprix, smartzone.de), XDA forums and owner reports on GSMArena; see the sources per brand.
+#   short: completes "The China version has ___, usually no manufacturer warranty..." on phone pages
+#   long:  the "Global or China version: what's different?" explainer, Google apps row
+# A brand not listed falls back to "default".
+brands:
+  huawei:
+    short: "no Google services (true of every Huawei)"
+    long: "No Google services on Huawei phones in either version, and no switch to add them. Apps come from Huawei's AppGallery."
+  xiaomi:   # Settings > Additional settings > Account & sync > Basic Google services (HyperOS, cyrusyip.org; XDA)
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software has a switch for it: Settings › Additional settings › Account & sync › Basic Google services, then install Google Play from Xiaomi's GetApps store."
+  oppo:     # Settings > search "Google" > Google Mobile Services, then Play Store from App Market (ColorOS China; smartprix, XDA)
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software has a switch for it: search Settings for \"Google\", turn on Google Mobile Services, then install Google Play from the App Market."
+  oneplus:  # China OnePlus phones run ColorOS, same switch as Oppo
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software (ColorOS) has a switch for it: search Settings for \"Google\", turn on Google Mobile Services, then install Google Play from the App Market."
+  vivo:     # Settings search "Google" > Google services on, then Play from vivo App Store (smartprix; X300 Pro China owners on GSMArena)
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software has a switch for it: search Settings for \"Google\", turn on Google services, then install Google Play from the vivo App Store."
+  honor:    # Honor's own MagicOS 10 guide: Settings switch for Google Play services (honor.com/cn/support/content/zh-cn15886371)
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but Honor's software has a switch for Google Play services in Settings (Honor's own guide notes it may use more battery). Then search the Honor app market for the Google apps."
+  motorola: # sellers say Google Play is included; some buyers had to add it themselves
+    short: "Google Play that may need turning on or adding yourself"
+    long: "Stores say Google Play is included, but some buyers report having to switch it on in Settings or add it themselves."
+  samsung:  # China firmware (CHC) has no Google apps; Hong Kong firmware (TGY) on the same model numbers does (XDA, SamMobile)
+    short: "no Google apps preinstalled on China software (Hong Kong units have them)"
+    long: "China software has no Google apps preinstalled; you add Google Play yourself. Units with Hong Kong software (same model number) come with Google apps. Ask the store which one it ships."
+  default:
+    short: "no Google Play preinstalled"
+    long: "Chinese software without Google Play. It can often be added, but some apps may not work fully."
+# Shown under every non-Huawei China version, whatever the brand
+caveat: "Even with Google Play on, tap-to-pay with Google Wallet can be less reliable (Google blocked it on China-version phones for a few weeks in August 2026), and some banking apps refuse to run."

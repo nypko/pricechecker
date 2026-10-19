@@ -49,8 +49,9 @@ stores:
         paypal: {fee_pct: 0}
         card: {fee_pct: 0}
       # store-wide promotion applied automatically at checkout (2026-10-19, homepage banner: "2% summer sale at checkout - Auto Applied").
+      # Counts only while `watch` text is on the store's homepage (pricechecker/promos.py) and before `until`, if set.
       # Not stated whether it combines with the bank-transfer discount, so with bank transfer only the larger 4.75% is counted.
-      promo: {pct: 2, label: "Summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
+      promo: {pct: 2, label: "Summer sale", watch: "2% summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
       shipping:
         EU: {duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
         UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
@@ -59,7 +60,6 @@ stores:
       watch:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
-        - {url: "https://www.themobilemarvel.com/", expect: "2% summer sale"}   # flags the promo ending - then remove `promo`
 
   trinity:
     label: Trinity Electronic
@@ -74,6 +74,7 @@ stores:
     label: Trading Shenzhen
     type: sitemap         # 2026-10-16: answers PriceCheckerBot again (was 403); one product page per phone + storage
     sitemap_url: https://tradingshenzhen.com/sitemap-products-en.xml
+    promo_pages: ["https://tradingshenzhen.com/en/"]   # read daily for promotion text (pricechecker/promos.py)
     exclude_url: "case|kopfhorer|headphone|pad|tablet|book|watch|band|gadget|sonstiges|console|coupon|charger|cable"
     exclude_title: "used|refurb|demo|case|cover"
     request_spacing_sec: 5   # gentle: Cloudflare-protected PrestaShop with ~600 KB pages
@@ -130,6 +131,9 @@ stores:
         bank_transfer: {discount_pct: 0, min_order_usd: 1500, note: "Wire transfer only for orders over $1,500 (request by ticket), no discount"}
         paypal: {fee_pct: 0, note: "Charged in USD"}
         card: {fee_pct: 0, note: "Cards via PayPal"}
+      # codes the shopper types: shown as a hint, never in totals; hidden after `until` or once `watch` leaves the homepage
+      coupons:
+        - {code: H2026, text: "store says it saves up to 30%", until: 2026-10-30, watch: "H2026"}
       shipping:
         EU: {duties_included: null, cost: null, note: "Weight-based, shown in cart. Giztop says it pays EU duties/VAT through IOSS, but IOSS only covers parcels up to EUR 150 and its own customs page says customs may charge the buyer for smartphones; buyers report paying on delivery (Trustpilot, 2026)"}
         UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}

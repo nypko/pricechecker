@@ -195,6 +195,8 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .ans-label.warn { color: var(--bad); }
 .answer.nopay .bar { display: none; }
 .ans-alt { margin: -6px 0 12px; }
+.coupon { margin: 0 0 12px; padding: 8px 12px; border: 1px dashed var(--border); border-radius: 10px; font-size: .85rem; color: var(--text); }
+.st-body .coupon { margin: 0 0 10px; }
 .ans-alt .link-btn { padding: 0; text-align: left; line-height: 1.4; }
 .answer .deal-off { width: 100%; justify-content: center; margin-top: 16px; min-height: var(--tap); }
 .answer.settle .ans-total, .answer.settle .bar { animation: settle .32s cubic-bezier(.16, 1, .3, 1); }
@@ -235,6 +237,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .others h2 { margin-bottom: 8px; }
 .store-list { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .store-list > li + li { border-top: 1px solid var(--line); }
+.store-list:empty { display: none; }
 .st > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name total" "cav delta";
                 gap: 0 12px; padding: 12px 16px; align-items: baseline; }
 .st > summary::-webkit-details-marker { display: none; }

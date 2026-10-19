@@ -5,3 +5,4 @@ venv/
 .env
 data/untracked.txt
 .pytest_cache/
+.promo_report.md

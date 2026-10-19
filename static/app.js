@@ -274,6 +274,13 @@
     more.href = "#editions"; more.dataset.open = "editions";
     t.appendChild(more);
   }
+  // "Code H2026: store says it saves up to 30%, until 30 Oct. Not in the total."
+  function couponText(o) {
+    return (o.coupons || []).map(function (c) {
+      var until = c.until ? new Date(c.until + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "";
+      return "Code " + c.code + ": " + c.text + (until ? ", until " + until : "") + ". Not in the total.";
+    }).join(" ");
+  }
   function storeRow(o, k, best) {
     var li = el("li"), d = el("details", "st"), s = el("summary");
     var name = el("span", "st-name", o.store_label);
@@ -289,6 +296,7 @@
     var body = el("div", "st-body"), dl = el("dl", "breakdown compact");
     breakdown(dl, k);
     body.appendChild(dl);
+    if (couponText(o)) body.appendChild(el("p", "coupon", couponText(o)));
     var go = el("a", "go secondary", (o.available ? "Go to " : "Check ") + o.store_label);
     go.href = o.link; go.rel = "sponsored nofollow noopener"; go.target = "_blank";
     go.appendChild(el("span", "sr-only", " (opens store site)"));
@@ -356,6 +364,9 @@
     bar(ans.querySelector(".bar"), b.k);
     breakdown(ans.querySelector(".breakdown"), b.k);
     tradeoff(b);
+    var cp = ans.querySelector(".ans-coupon");
+    cp.textContent = couponText(b.o);
+    cp.hidden = !cp.textContent;
     var deal = ans.querySelector(".deal");
     deal.href = b.o.link;
     deal.className = b.k.payOk ? "deal" : "btn-quiet deal-off";

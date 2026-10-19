@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from . import fx, history, site, terms
+from . import fx, history, site, terms, promos
 from .models import StoreNotConfigured
 from .stores import ADAPTERS
 
@@ -63,6 +63,10 @@ def main(argv=None) -> int:
                 results[sub] = [o for o in kept if o.store == sub]
     Path("data/untracked.txt").write_text("".join(untracked_lines))  # models seen but not in catalog.yaml
     history.save(results, failures)
+    try:
+        promos.scan(stores)   # once a day: new promotion text -> report; configured promotions expire with their banner
+    except Exception as e:
+        print(f"  [promos] scan failed: {type(e).__name__}: {e}")
     if not args.no_build:
         site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
     return 0 if results else 3

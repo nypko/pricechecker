@@ -75,9 +75,11 @@
 </section>
 
 <section class="hist-sec">
-  <button type="button" class="hist-toggle" aria-expanded="false" aria-controls="hist-box">Price history for this RAM/storage</button>
+  <button type="button" class="hist-toggle" aria-expanded="false" aria-controls="hist-box">Price history</button>
   <div class="tier-hist" id="hist-box" inert>
     <div class="tier-hist-inner">
+      <p class="hist-variant"><label for="hist-var">Variant</label>
+        <span class="select"><select id="hist-var">{% for storage, offers in p.by_storage %}<option value="{{ storage }}">{{ storage|spec or "RAM/storage not listed" }}</option>{% endfor %}</select></span></p>
     {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
       <div class="hist-one" data-storage="{{ storage }}" hidden>
       {% if th.svg %}

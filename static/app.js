@@ -312,8 +312,20 @@
     d.appendChild(body); li.appendChild(d);
     return li;
   }
+  // price history: one chart block per RAM/storage, picked in the "Variant" menu above it
+  var histSel = null;
+  function showHist(storage) {
+    document.querySelectorAll(".hist-one").forEach(function (h) { h.hidden = h.dataset.storage !== storage; });
+    var m = document.getElementById("hist-var");
+    if (m) m.value = storage;
+    // history page: the table of changes follows the menu too
+    document.querySelectorAll(".changes tbody tr[data-storage]").forEach(function (r) {
+      r.hidden = storage !== "all" && r.dataset.storage !== storage;
+    });
+  }
   function choose(c) {
     sel = c;
+    histSel = null;   // the price history follows the grid until a variant is picked in its own menu
     renderPhone();
     if (history.replaceState) history.replaceState(null, "", "#" + c.storage.replace("/", "-") + "-" + c.ed);
   }
@@ -395,7 +407,7 @@
     ol.textContent = "";
     oos.forEach(function (o) { ol.appendChild(storeRow(o, cost(o), null)); });
     // price history for the chosen RAM/storage
-    document.querySelectorAll(".hist-one").forEach(function (h) { h.hidden = h.dataset.storage !== sel.storage; });
+    showHist(histSel || sel.storage);
     // phone-only bottom bar
     var sb = document.querySelector(".sticky-deal");
     if (sb) {
@@ -407,6 +419,8 @@
   document.querySelectorAll(".cell").forEach(function (c) {
     c.addEventListener("click", function () { choose({ storage: c.dataset.storage, ed: c.dataset.ed }); });
   });
+  var hv = document.getElementById("hist-var");
+  if (hv) hv.addEventListener("change", function () { histSel = hv.value; showHist(histSel); });
   var ht = document.querySelector(".hist-toggle");
   if (ht) ht.addEventListener("click", function () {
     var box = document.getElementById(ht.getAttribute("aria-controls")), open = ht.getAttribute("aria-expanded") !== "true";

@@ -5,7 +5,7 @@
   var PAY_SHORT = { card: "Card", paypal: "PayPal", bank: "Bank" };
   var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia", Global: "your country" };
   var ED = { global: "Global", china: "China" };
-  var state = { cur: "usd", pay: "card", region: "EU" };
+  var state = { cur: "usd", pay: "card", region: "EU", country: "" };   // country: EU member state for its VAT rate ("" = EU average)
   var TAX = {};   // config/import_tax.yaml: estimated VAT/GST per destination
   try { TAX = JSON.parse(document.getElementById("import-tax").textContent); } catch (e) {}
 
@@ -15,7 +15,7 @@
   // Watched phones, kept on this device: {slug: {k: "EU|card|eur", v: headline total when last seen}}
   function watched() { try { return JSON.parse(store("pc-watch") || "{}") || {}; } catch (e) { return {}; } }
   function setWatched(w) { store("pc-watch", JSON.stringify(w)); }
-  function prefKey() { return state.region + "|" + state.pay + "|" + state.cur; }
+  function prefKey() { return state.region + (state.country ? "-" + state.country : "") + "|" + state.pay + "|" + state.cur; }
   function fmt(v, approx) {
     return (approx ? "≈" : "") + SYMBOL[state.cur] + Math.round(v).toLocaleString("en-US");
   }
@@ -45,13 +45,18 @@
   // sent anywhere); the browser language only when there is no time zone. Then the visitor's own choice, saved on the device.
   var EU_TZ = /^(Europe\/(Amsterdam|Athens|Berlin|Bratislava|Brussels|Bucharest|Budapest|Copenhagen|Dublin|Helsinki|Lisbon|Ljubljana|Luxembourg|Madrid|Malta|Mariehamn|Nicosia|Paris|Prague|Riga|Rome|Sofia|Stockholm|Tallinn|Vienna|Vilnius|Warsaw|Zagreb)|Asia\/(Nicosia|Famagusta)|Atlantic\/(Madeira|Azores))$/;
   var US_TZ = /^(America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage|Juneau|Sitka|Nome|Yakutat|Metlakatla|Adak|Detroit|Boise|Menominee|Indiana\/.+|Kentucky\/.+|North_Dakota\/.+)|Pacific\/Honolulu)$/;
+  // EU time zone -> member state, for that country's VAT rate (config/import_tax.yaml)
+  var TZ_COUNTRY = { Amsterdam: "NL", Athens: "GR", Berlin: "DE", Busingen: "DE", Bratislava: "SK", Brussels: "BE", Bucharest: "RO",
+    Budapest: "HU", Copenhagen: "DK", Dublin: "IE", Helsinki: "FI", Mariehamn: "FI", Lisbon: "PT", Madeira: "PT", Azores: "PT",
+    Ljubljana: "SI", Luxembourg: "LU", Madrid: "ES", Ceuta: "ES", Malta: "MT", Nicosia: "CY", Famagusta: "CY", Paris: "FR",
+    Prague: "CZ", Riga: "LV", Rome: "IT", Sofia: "BG", Stockholm: "SE", Tallinn: "EE", Vienna: "AT", Vilnius: "LT", Warsaw: "PL", Zagreb: "HR" };
   function guess() {
     var tz = "", lang = (navigator.language || "").toLowerCase();
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
     if (tz && !/^(UTC|Etc\/)/.test(tz)) {
       if (tz === "Europe/London") return { region: "UK", cur: "gbp" };
       if (/^Australia\//.test(tz)) return { region: "AU", cur: "aud" };
-      if (EU_TZ.test(tz)) return { region: "EU", cur: "eur" };
+      if (EU_TZ.test(tz)) return { region: "EU", cur: "eur", country: TZ_COUNTRY[tz.split("/").pop()] || "" };
       if (US_TZ.test(tz)) return { region: "US", cur: "usd" };
       return { region: "Global", cur: "usd" };
     }
@@ -60,10 +65,25 @@
     return {};
   }
   var g = guess();
-  ["cur", "pay", "region"].forEach(function (k) { var v = store("pc-" + k) || g[k]; if (v) state[k] = v; });
+  ["cur", "pay", "region", "country"].forEach(function (k) { var v = store("pc-" + k) || g[k]; if (v) state[k] = v; });
   if (!SYMBOL[state.cur]) state.cur = "usd";
   if (!PAY_LABEL[state.pay]) state.pay = "card";
   if (!REGION_NAME[state.region]) state.region = "EU";
+  var EU_C = (TAX.EU && TAX.EU.countries) || {};
+  if (!EU_C[state.country]) state.country = "";
+  // Where the parcel goes, in words: "Bulgaria" once an EU country is picked, else "the EU" / "the UK" / ...
+  function placeName() { return state.region === "EU" && EU_C[state.country] ? EU_C[state.country].name : REGION_NAME[state.region]; }
+  // The import tax rule for the chosen destination: {rate, name, fee, note}. EU: the picked country's VAT and, where the
+  // courier publishes it, its clearance fee; no country picked: the EU average.
+  function taxRule() {
+    var t = TAX[state.region] || {}, c = state.region === "EU" ? EU_C[state.country] : null;
+    if (!c) return { rate: t.rate_pct, name: t.name || "import tax", fee: null, note: t.note || "" };
+    var fee = c.fee || null;
+    var note = c.name + ": " + c.vat + "% import VAT on the phone plus shipping; phones have 0% customs duty. " +
+      (fee ? fee.by + " adds a clearance fee of " + fee.pct + "% of the tax, at least " + fmt(fee.min_m[state.cur]) + " (included in the estimate)."
+           : "The courier also charges a clearance fee, which we don't add because it isn't published for " + c.name + ".");
+    return { rate: c.vat, name: "import VAT", fee: fee, note: note };
+  }
 
   // Total for one offer under the current currency / payment / region, as landed cost:
   // store price +/- payment adjustment + shipping + estimated import VAT/GST when the store's price excludes it.
@@ -78,14 +98,16 @@
     var promoAmt = list * promoPct / 100, base = list - promoAmt;
     var adjAmt = adj == null ? 0 : base * adj / 100;
     var shipAmt = ship ? ship[c] : 0;
-    var duties = o.duties ? o.duties[state.region] : null, tax = TAX[state.region] || {};
-    var taxEst = tax.rate_pct == null ? null : (base + adjAmt + shipAmt) * tax.rate_pct / 100;
+    var duties = o.duties ? o.duties[state.region] : null, tax = taxRule();
+    var vat = tax.rate == null ? null : (base + adjAmt + shipAmt) * tax.rate / 100;
+    var taxFee = vat != null && tax.fee ? Math.max(vat * tax.fee.pct / 100, tax.fee.min_m[c]) : 0;
+    var taxEst = vat == null ? null : vat + taxFee;
     var taxAdded = duties === false && taxEst != null ? taxEst : 0;
     return {
       payOk: !o.pay_ok || o.pay_ok[state.pay] !== false,
       list: list, promoAmt: promoAmt, promoPct: promoPct, promoLabel: pr ? pr.label : "", promoNote: pr ? pr.note : "",
       base: base, baseApprox: o.money[c + "_approx"] === 1, adj: adj, adjAmt: adjAmt, ship: ship ? shipAmt : null,
-      taxEst: taxEst, taxAdded: taxAdded, taxName: tax.name || "import tax", taxNote: tax.note || "",
+      taxEst: taxEst, taxAdded: taxAdded, taxName: tax.name, taxNote: tax.note, taxFee: taxFee,
       total: base + adjAmt + shipAmt + taxAdded,
       approx: o.money[c + "_approx"] === 1 || taxAdded > 0 || !!(ship && ship.min),
       shipMin: !!(ship && ship.min),   // the store publishes only a starting price ("from EUR 10")
@@ -213,11 +235,12 @@
 
   // "What's in the total?": the import tax rule for the chosen Ship-to destination
   function taxText() {
-    var t = TAX[state.region], where = "Shipping to " + REGION_NAME[state.region] + ": ";
-    if (!t) return null;
-    if (t.rate_pct == null) return where + t.note + " We don't add an estimate to totals.";
+    var t = taxRule(), where = "Shipping to " + placeName() + ": ";
+    if (!TAX[state.region]) return null;
+    if (t.rate == null) return where + t.note + " We don't add an estimate to totals.";
     return where + "when a store's price excludes " + t.name + ", you pay it to the courier on delivery and we add an " +
-      "estimate (≈) to that store's total. " + t.note;
+      "estimate (≈) to that store's total. " + t.note +
+      (state.region === "EU" && !EU_C[state.country] ? " Pick your country under Ship to for its exact rate." : "");
   }
 
   // Details behind a value (store terms, conversions, tax rules): shown inline on tap or Enter, since
@@ -281,7 +304,8 @@
                                  note: k.shipNote || "This store doesn't publish a shipping price for " + REGION_NAME[state.region] + "." });
     else p.push({ cls: "s-ship", label: "Shipping", v: k.ship, text: k.ship === 0 ? "free" : (k.shipMin ? "from " + fmt(k.ship) + ", exact at checkout" : fmt(k.ship)), note: k.shipNote });
     if (k.duties === true) p.push({ cls: "s-tax", label: "Import tax", v: 0, text: "included by the store", muted: true });
-    else if (k.duties === false && k.taxEst != null) p.push({ cls: "s-tax", label: "Import tax", v: k.taxAdded, text: fmt(k.taxEst, true) + " est., paid on delivery", note: k.taxNote });
+    else if (k.duties === false && k.taxEst != null) p.push({ cls: "s-tax", label: "Import tax", v: k.taxAdded, note: k.taxNote,
+      text: fmt(k.taxEst, true) + " est." + (k.taxFee ? " incl. " + fmt(k.taxFee) + " courier fee" : "") + ", paid on delivery" });
     else if (k.duties === false) p.push({ cls: "s-tax", label: "Import tax", v: 0, text: "may apply, not included", muted: true, note: k.taxNote });
     else p.push({ cls: "s-maybe", label: "Import tax", v: k.taxEst || 0, text: "not stated" + (k.taxEst ? ", may add " + fmt(k.taxEst, true) : ""), muted: true, note: k.taxNote });
     return p;
@@ -564,7 +588,7 @@
     taxNow();
     document.getElementById("rf-store").addEventListener("change", function (ev) { ev.target.dataset.touched = "1"; });
     var cc = document.getElementById("rf-country");
-    if (!cc.value) cc.value = { UK: "GB", US: "US", AU: "AU" }[state.region] || "";
+    if (!cc.value) cc.value = { UK: "GB", US: "US", AU: "AU", EU: state.country }[state.region] || "";
     rf.addEventListener("submit", function (ev) {
       ev.preventDefault();
       var data = {};
@@ -807,9 +831,11 @@
   // ---------- everywhere ----------
   function render() {
     document.querySelectorAll(".note").forEach(function (n) { n.remove(); });   // values below are recomputed
-    var summary = state.region + " · " + SYMBOL[state.cur] + " · " + PAY_SHORT[state.pay];
+    var summary = (state.region === "EU" && state.country ? state.country : state.region) + " · " + SYMBOL[state.cur] + " · " + PAY_SHORT[state.pay];
+    var cs = document.getElementById("p-country");
+    if (cs) { cs.value = state.country; cs.closest(".seg-group").hidden = state.region !== "EU"; }
     document.querySelectorAll(".prefs-summary").forEach(function (e) { e.textContent = summary; });
-    document.querySelectorAll(".for-region").forEach(function (e) { e.textContent = REGION_NAME[state.region]; });
+    document.querySelectorAll(".for-region").forEach(function (e) { e.textContent = placeName(); });
     document.querySelectorAll(".for-pay").forEach(function (e) { e.textContent = PAY_LABEL[state.pay]; });
     document.querySelectorAll(".for-cur").forEach(function (e) { e.textContent = state.cur.toUpperCase(); });
     // price history charts are drawn once per currency; show the chosen one
@@ -831,6 +857,8 @@
   }
 
   function set(key, val) { state[key] = val; store("pc-" + key, val); render(); }
+  var countrySel = document.getElementById("p-country");
+  if (countrySel) countrySel.addEventListener("change", function () { set("country", countrySel.value); });
 
   // Settings panel under the header: Ship to, currency, payment in one place, reachable from anywhere on the page
   var prefs = document.getElementById("prefs"), toggle = document.querySelector(".prefs-toggle");

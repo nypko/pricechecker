@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  PYTHONUNBUFFERED: "1"   # progress shows in the log as it happens (and survives a timeout)
   # Cloudflare Pages project name -> https://<name>.pages.dev (override with a repository variable if taken)
   CF_PAGES_PROJECT: ${{ vars.CF_PAGES_PROJECT || 'pricechecker' }}
   # deploy steps are skipped (not failed) until the Cloudflare secrets are added
@@ -21,7 +22,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 45   # a normal run is ~15-20 min: Shopify stores need 2 min between requests
+    timeout-minutes: 55   # a normal run is ~12-15 min (Shopify needs ~75 s between requests); ~30 min once a week for rates
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -42,6 +43,7 @@ jobs:
         run: |   # exit 3 = no store answered this hour; still publish the last known prices. Anything else fails the job.
           python -m pricechecker.run || [ $? -eq 3 ]
       - name: Commit price history
+        if: always()   # also after a timeout: keeps the caches (store rates, pages) so the next run is shorter
         run: |
           git config user.name "price-checker-bot"
           git config user.email "price-checker-bot@users.noreply.github.com"

@@ -15,7 +15,7 @@ SITE_CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
 
 
 RATES_CACHE = Path("data/shop_rates.json")
-REQUEST_SPACING_SEC = 120  # Shopify allows ~1 storefront request/min per IP (seemingly across all Shopify shops); stay well under
+REQUEST_SPACING_SEC = 75  # Shopify allows ~1 storefront request/min per IP, shared by all Shopify shops (grouped in http.py)
 
 
 def _space_requests(base: str) -> None:
@@ -27,10 +27,12 @@ def _space_requests(base: str) -> None:
 def market_rates(base: str) -> tuple[str, dict]:
     """The shop's base currency (meta.json) and its OWN conversion rate for each site currency, read the same way
     a shopper's browser gets it (?currency=XXX). e.g. ('USD', {'USD': 1.0, 'EUR': 0.903254, 'GBP': 0.762941}).
-    Cached for 20h: Shopify updates these rates about daily, and every saved request helps with its rate limit."""
+    Cached for 7 days: shown prices come from the per-currency feeds; these rates only say which currencies the
+    shop sells in (and convert a variant missing from a feed). Every saved request helps with the rate limit."""
     cache = json.loads(RATES_CACHE.read_text()) if RATES_CACHE.exists() else {}
     hit = cache.get(base)
-    if hit and datetime.now(timezone.utc) - datetime.fromisoformat(hit["fetched"]) < timedelta(hours=20):
+    if hit and set(SITE_CURRENCIES) <= set(hit.get("checked", hit["rates"])) and \
+            datetime.now(timezone.utc) - datetime.fromisoformat(hit["fetched"]) < timedelta(days=7):
         return hit["currency"], hit["rates"]
     shop_cur = http.get(f"{base}/meta.json").json()["currency"]
     rates = {shop_cur: 1.0}
@@ -40,7 +42,8 @@ def market_rates(base: str) -> tuple[str, dict]:
         m = _ACTIVE.search(http.get(f"{base}/policies/terms-of-service", params={"currency": cur}).text)
         if m and m.group(1) == cur:  # the shop really offers this currency (otherwise the site converts via ECB)
             rates[cur] = float(m.group(2))
-    cache[base] = {"currency": shop_cur, "rates": rates, "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    cache[base] = {"currency": shop_cur, "rates": rates, "checked": [shop_cur] + SITE_CURRENCIES,
+                   "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     RATES_CACHE.write_text(json.dumps(cache, indent=1))
     return shop_cur, rates
 

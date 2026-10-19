@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
+{% import "_stats.html" as hstats %}
 {% block title %}{{ p.name }} price history – DoorPrice{% endblock %}
 {% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
 {% block main %}
@@ -26,13 +27,14 @@
     <span class="select"><select id="hist-var"><option value="all">All RAM/storage options</option>{% for storage, offers in p.by_storage %}<option value="{{ storage }}">{{ storage|spec or "RAM/storage not listed" }}</option>{% endfor %}</select></span></p>
   <div class="hist-one" data-storage="all">
     <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in <span class="for-cur">USD</span>{% if p.editions|length > 1 %}; dashed line = China version{% endif %})</span></h2>
+    {{ hstats.stats(p.chart_stats) }}
     {{ charts(p.chart) }}
     {{ legend(p.series_stores, p.editions|length > 1) }}
   </div>
   {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
   <div class="hist-one" data-storage="{{ storage }}" hidden>
     <h2>Lowest in-stock price per store <span class="muted">(in <span class="for-cur">USD</span>{% if th.china %}; dashed line = China version{% endif %})</span></h2>
-    {% if th.svg %}{{ charts(th.svg) }}{{ legend(th.stores.keys(), th.china) }}
+    {% if th.svg %}{{ hstats.stats(th.stats) }}{{ charts(th.svg) }}{{ legend(th.stores.keys(), th.china) }}
     {% else %}<p class="muted small">No prices recorded at this RAM/storage yet.</p>{% endif %}
   </div>
   {% endfor %}

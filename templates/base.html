@@ -17,6 +17,15 @@
 {% endif %}
 <meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
 <link rel="stylesheet" href="{{ root }}static/style.css">
+{#- link previews when a page is shared; per-page title and description from the blocks above -#}
+<meta property="og:site_name" content="DoorPrice">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.description() }}">
+{% if site.domain_live and site.base_url %}<meta property="og:url" content="{{ site.base_url.rstrip('/') }}/{{ path }}">
+<meta property="og:image" content="{{ site.base_url.rstrip('/') }}/static/icons/icon-512.png">{% endif %}
+<meta name="twitter:card" content="summary">
+{% block head %}{% endblock %}
 </head>
 <body>
 <header class="top">

@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
 {% import "_explain.html" as explain %}
+{% import "_stats.html" as hstats %}
 {#- search-friendly: the cheapest total (EU, card) in the title; "delivered" only when shipping and import tax are settled -#}
 {% set tp = p.title_price %}
 {% block title %}{{ p.name }} price{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
 {% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} import store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
+{% block head %}{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../">All phones</a>
@@ -56,6 +58,7 @@
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
   <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
+  <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
   <p class="ans-alt" hidden></p>
   <p class="coupon ans-coupon" hidden></p>
   <div class="bar" aria-hidden="true"></div>
@@ -83,6 +86,7 @@
     {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
       <div class="hist-one" data-storage="{{ storage }}" hidden>
       {% if th.svg %}
+        {{ hstats.stats(th.stats) }}
         <p class="muted small hist-note">Lowest in-stock price per store, in <span class="for-cur">USD</span>{% if th.china %}; dashed line = China version{% endif %}.</p>
         {% for c, svg in th.svg.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}
         <ul class="legend">

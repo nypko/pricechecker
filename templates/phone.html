@@ -5,7 +5,7 @@
 {% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, delivered to your country, updated hourly.{% endblock %}
 {% block main %}
 <div class="page-nav">
-  <a class="crumb" href="../">‹ All phones</a>
+  <a class="crumb" href="../">All phones</a>
   <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
 </div>
 
@@ -34,7 +34,7 @@
         {% set cell = offers|selectattr("edition", "equalto", e.edition)|selectattr("available")|first %}
         {% set listed = offers|selectattr("edition", "equalto", e.edition)|list %}
         <td>{% if cell %}<button type="button" class="cell" data-storage="{{ storage }}" data-ed="{{ e.edition }}" aria-pressed="false">
-              <span class="cell-v">{{ price(cell.money) }}</span><span class="cell-sub"></span></button>
+              <span class="cell-v">{{ price(cell.money) }}</span><span class="cell-sub">store price</span></button>
             {% elif listed %}<span class="cell-none">out of stock</span>
             {% else %}<span class="cell-none">not sold</span>{% endif %}</td>
         {% endfor %}
@@ -42,14 +42,17 @@
     {% endfor %}
     </tbody>
   </table>
-  <p class="grid-note">Each price is the cheapest total for that choice: phone, payment fee, shipping and estimated import tax.</p>
+  <p class="grid-note">Each price is the cheapest total for that choice: phone, payment fee, shipping and import tax where we know them.
+    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number.</p>
+  <p class="nojs-only grid-note">These are store prices, before shipping, payment fees and import tax. Turn on JavaScript to see delivered totals.</p>
 </section>
 
 <section class="answer" aria-labelledby="ans-h">
-  <h2 id="ans-h" class="ans-label">Cheapest for this choice</h2>
+  <h2 id="ans-h" class="ans-label">Lowest store price</h2>
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
   <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
+  <p class="ans-alt" hidden></p>
   <div class="bar" aria-hidden="true"></div>
   <dl class="breakdown"></dl>
   <p class="tradeoff" hidden></p>
@@ -79,6 +82,7 @@
           {% for s, eds in th.stores.items() %}{% set st = stores|selectattr("name", "equalto", s)|first %}
           <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
           {% endfor %}
+          {% if th.china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
         </ul>
       {% else %}
         <p class="muted small hist-note">No price changes recorded at this RAM/storage yet.</p>
@@ -94,7 +98,7 @@
 
 <noscript>
   <section class="others">
-    <h2>All store prices</h2>
+    <h2>All store prices <span class="muted small">(before shipping, payment fees and import tax)</span></h2>
     <ul class="plain-list">{% for o in p.offers %}<li>{{ o.store_label }} · {{ edition_label[o.edition] }} {{ o.storage|spec }} · {{ price(o.money) }}{% if not o.available %} (out of stock){% endif %} · <a href="{{ o.link }}" rel="sponsored nofollow noopener">store</a></li>{% endfor %}</ul>
   </section>
 </noscript>

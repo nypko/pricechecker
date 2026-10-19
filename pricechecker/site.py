@@ -14,7 +14,7 @@ OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
 EDITIONS = ["global", "china"]
 EDITION_LABEL = {"global": "Global", "china": "China"}
-STORE_COLORS = ["#2a78d6", "#e3742c", "#1fa37a", "#b0479c", "#c9a227", "#5c6bc0", "#d64545", "#3fa7b5"]
+STORE_COLORS = ["#2a78d6", "#e3742c", "#1fa37a", "#b0479c", "#c9a227", "#6d4c41", "#d64545", "#3fa7b5"]
 
 
 def _money(offer: dict, rates: dict) -> dict:

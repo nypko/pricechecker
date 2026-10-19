@@ -1,4 +1,5 @@
 (function () {
+  document.documentElement.classList.remove("no-js");
   var SYMBOL = { usd: "$", eur: "€", gbp: "£", aud: "A$" };
   var PAY_LABEL = { card: "card", paypal: "PayPal", bank: "bank transfer" };
   var PAY_SHORT = { card: "Card", paypal: "PayPal", bank: "Bank" };
@@ -20,6 +21,13 @@
     if (p.length !== 2) return "";
     var rom = +p[1];
     return p[0] + " GB RAM · " + (rom >= 1024 && rom % 1024 === 0 ? rom / 1024 + " TB" : rom + " GB") + " storage";
+  }
+  // "16/1024" -> "16 + 1 TB" (short form for one-line labels)
+  function short(storage) {
+    var p = (storage || "").split("/");
+    if (p.length !== 2) return "";
+    var rom = +p[1];
+    return p[0] + " + " + (rom >= 1024 && rom % 1024 === 0 ? rom / 1024 + " TB" : rom + " GB");
   }
   function pct(v) { return (v > 0 ? "+" : v < 0 ? "−" : "") + (Math.round(Math.abs(v) * 100) / 100) + "%"; }
   function el(tag, cls, text) {
@@ -81,6 +89,23 @@
     return out.length ? out.join(" · ") : "incl. shipping & import tax";
   }
 
+  // What a total leaves out: shipping the store doesn't list, import tax that may still be due
+  function maybeTax(k) { return k.duties !== true && !k.taxAdded; }
+  function extras(k, long) {
+    var x = [];
+    if (k.ship == null) x.push("shipping");
+    if (maybeTax(k)) x.push(long ? (k.taxEst ? "up to " + fmt(k.taxEst, true) + " import tax" : "import tax") : "tax?");
+    return x.length ? "+ " + x.join(long ? " and " : ", ") : "";
+  }
+  function partial(k) { return k.ship == null || maybeTax(k); }
+  // "≈£301 less", "before shipping" / "before tax" when either side's total leaves something out
+  function gapNote(a, b) {
+    var x = [];
+    if (a.ship == null || b.ship == null) x.push("shipping");
+    if (maybeTax(a) || maybeTax(b)) x.push("tax");
+    return x.length ? " before " + x.join(" and ") : "";
+  }
+
   // Cheapest offer for the current choices; stores that don't take the chosen payment method rank last.
   function better(k, b) { return (k.payOk && !b.payOk) || (k.payOk === b.payOk && k.total < b.total); }
   function pick(offers) {
@@ -100,6 +125,7 @@
     return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
   }
   function match(offers) {
+    offers = offers.filter(function (o) { return o.available !== false; });
     var G = byEdition(offers, "global"), C = byEdition(offers, "china"), best = null;
     if (!G.length || !C.length) return null;
     var gs = {}, cs = {};
@@ -174,6 +200,7 @@
   function parts(k) {
     var p = [];
     p.push({ cls: "s-phone", label: "Phone", v: k.base + Math.min(k.adjAmt, 0), text: fmt(k.base, k.baseApprox) });
+    if (!k.payOk) { p.push({ cls: "s-fee", label: "Paying by " + PAY_LABEL[state.pay], v: 0, text: "not accepted for this order", muted: true, note: k.payNote }); return p; }
     if (k.adj == null) p.push({ cls: "s-fee", label: PAY_SHORT[state.pay] + " fee", v: 0, text: "unknown", muted: true, note: k.payNote });
     else if (k.adjAmt > 0) p.push({ cls: "s-fee", label: PAY_SHORT[state.pay] + " fee", v: k.adjAmt, text: "+" + fmt(k.adjAmt) + " (" + pct(k.adj) + ")", note: k.payNote });
     else if (k.adjAmt < 0) p.push({ cls: "s-save", label: PAY_SHORT[state.pay] + " discount", v: 0, text: "−" + fmt(-k.adjAmt) + " (" + pct(k.adj) + ")", good: true, note: k.payNote });
@@ -198,7 +225,7 @@
     });
     var tot = el("div", "bd-row bd-total");
     tot.appendChild(el("dt", null, "Total"));
-    tot.appendChild(el("dd", null, fmt(k.total, k.approx) + (k.ship == null ? " + shipping" : "")));
+    tot.appendChild(el("dd", null, k.payOk ? fmt(k.total, k.approx) + (partial(k) ? " " + extras(k, true) : "") : "not available"));
     dl.appendChild(tot);
   }
   function bar(box, k) {
@@ -211,20 +238,32 @@
     var t = document.querySelector(".tradeoff");
     if (!t) return;
     var other = sel.ed === "china" ? "global" : "china", ob = pick(inStock(sel.storage, other));
+    var sold = OFFERS.some(function (o) { return o.edition === other; });
+    var lose = (BRAND === "huawei" ? "no Google services (true of every Huawei), " : "no Google Play, ") +
+      "usually no manufacturer warranty outside China, and it may miss some 4G/5G bands";
     t.textContent = "";
-    t.hidden = !ob || !ob.k.payOk || !b.k.payOk;
+    t.hidden = !b.k.payOk || (sel.ed === "global" && !(ob && ob.k.payOk));
     if (t.hidden) return;
-    var d = ob.k.total - b.k.total, approx = ob.k.approx || b.k.approx;
-    var lose = (BRAND === "huawei" ? "" : "no Google Play, ") + "usually no manufacturer warranty outside China, and it may miss some 4G/5G bands";
-    var lead = Math.abs(d) < 1 ? "Both versions cost the same here. " :
-      ED[other] + " version: " + fmt(ob.k.total, approx) + (d > 0 ? ", " + fmt(d, approx) + " more. " : ", " + fmt(-d, approx) + " less. ");
-    t.appendChild(document.createTextNode(lead + (sel.ed === "china" ? "With the China version: " : "The China version has ") + lose + ". "));
-    var sw = el("button", "link-btn", "See " + ED[other]);
-    sw.type = "button";
-    sw.addEventListener("click", function () { choose({ storage: sel.storage, ed: other }); });
+    var text;
+    if (!sold) text = "China version only. " + lose.charAt(0).toUpperCase() + lose.slice(1) + ". ";
+    else if (!ob || !ob.k.payOk) text = "Only the China version is sold at this RAM/storage. It has " + lose + ". ";
+    else {
+      var d = ob.k.total - b.k.total;
+      var lead = Math.abs(d) < 1 ? "Both versions cost about the same here" + gapNote(ob.k, b.k) + ". " :
+        ED[other] + " version: " + fmt(ob.k.total, ob.k.approx) + (partial(ob.k) ? " " + extras(ob.k) : "") + ", " +
+        fmt(Math.abs(d), ob.k.approx || b.k.approx) + (d > 0 ? " more" : " less") + gapNote(ob.k, b.k) + ". ";
+      text = lead + (sel.ed === "china" ? "With the China version: " : "The China version has ") + lose + ". ";
+    }
+    t.appendChild(document.createTextNode(text));
+    if (ob && ob.k.payOk) {
+      var sw = el("button", "link-btn", "See " + ED[other]);
+      sw.type = "button";
+      sw.addEventListener("click", function () { choose({ storage: sel.storage, ed: other }); });
+      t.appendChild(sw); t.appendChild(document.createTextNode(" · "));
+    }
     var more = el("a", null, "What's different?");
     more.href = "#editions"; more.dataset.open = "editions";
-    t.appendChild(sw); t.appendChild(document.createTextNode(" · ")); t.appendChild(more);
+    t.appendChild(more);
   }
   function storeRow(o, k, best) {
     var li = el("li"), d = el("details", "st"), s = el("summary");
@@ -232,10 +271,10 @@
     if (o.stale) name.appendChild(el("span", "st-stale", " · last known price"));
     s.appendChild(name);
     var tot = el("span", "st-total", !o.available ? "out of stock" : k.payOk ? fmt(k.total, k.approx) : "–");
-    if (o.available && k.payOk && k.ship == null) tot.appendChild(el("span", "plus", " + shipping"));
+    if (o.available && k.payOk && partial(k)) tot.appendChild(el("span", "plus", " " + extras(k)));
     s.appendChild(tot);
     s.appendChild(el("span", "st-delta", !o.available ? "" : !k.payOk ? "no " + PAY_LABEL[state.pay] :
-      best ? "+" + fmt(Math.max(0, k.total - best.k.total)) + " vs best" : ""));
+      best ? "+" + fmt(Math.max(0, k.total - best.k.total)) + " vs best" + gapNote(k, best.k) : ""));
     s.appendChild(el("span", "st-cav", o.available && k.payOk ? caveats(k) : ""));
     d.appendChild(s);
     var body = el("div", "st-body"), dl = el("dl", "breakdown compact");
@@ -262,11 +301,16 @@
       var b = pick(inStock(c.dataset.storage, c.dataset.ed));
       c._b = b;
       c.querySelector(".cell-v").textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "no " + PAY_LABEL[state.pay];
-      c.querySelector(".cell-sub").textContent = !b.k.payOk ? "" : b.k.ship == null ? "+ shipping" : "";
+      c.querySelector(".cell-sub").textContent = b.k.payOk ? extras(b.k) : "";
       c.classList.toggle("nopay", !b.k.payOk);
       if (!overall || better(b.k, overall._b.k)) overall = c;
     });
-    cells.forEach(function (c) { c.classList.toggle("best", c === overall); });
+    cells.forEach(function (c) {
+      c.classList.toggle("best", c === overall && overall._b.k.payOk);
+      c.dataset.tag = partial(overall._b.k) ? "Lowest before " + (overall._b.k.ship == null ? "shipping" : "tax") : "Cheapest";
+    });
+    var payable = null;   // the cheapest cell you can actually pay for with the chosen method
+    cells.forEach(function (c) { if (c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
     var found = sel && Array.prototype.some.call(cells, function (c) { return c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
     if (!found) sel = { storage: overall.dataset.storage, ed: overall.dataset.ed };
     var cur = null;
@@ -277,11 +321,25 @@
     });
     // the answer
     var b = cur._b, ans = document.querySelector(".answer");
-    ans.querySelector(".ans-label").textContent = cur === overall ? "Cheapest delivered price" : "Cheapest for this choice";
+    var label = ans.querySelector(".ans-label");
+    label.textContent = !b.k.payOk ? "Not available paying by " + PAY_LABEL[state.pay] :
+      cur === overall ? (partial(b.k) ? "Lowest delivered price we can work out" : "Cheapest delivered price") : "Cheapest for this choice";
+    label.classList.toggle("warn", !b.k.payOk);
+    ans.classList.toggle("nopay", !b.k.payOk);
     var v = ans.querySelector(".ans-v .price");
-    v.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : fmt(b.k.base, b.k.baseApprox);
+    v.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "–";
     setNote(v, "");
-    ans.querySelector(".ans-plus").textContent = !b.k.payOk ? "doesn't take " + PAY_LABEL[state.pay] : b.k.ship == null ? "+ shipping" : "";
+    ans.querySelector(".ans-plus").textContent = b.k.payOk ? extras(b.k, true) : "";
+    var alt = ans.querySelector(".ans-alt");
+    alt.textContent = "";
+    alt.hidden = b.k.payOk || !payable;
+    if (!b.k.payOk && payable) {
+      var go2 = el("button", "link-btn", "Cheapest you can pay by " + PAY_LABEL[state.pay] + ": " + fmt(payable._b.k.total, payable._b.k.approx) +
+        " (" + ED[payable.dataset.ed] + ", " + (spec(payable.dataset.storage) || "RAM/storage not listed") + ")");
+      go2.type = "button";
+      go2.addEventListener("click", function () { choose({ storage: payable.dataset.storage, ed: payable.dataset.ed }); });
+      alt.appendChild(go2);
+    }
     var badge = ans.querySelector(".ans-ed");
     badge.className = "ans-ed badge " + b.o.edition; badge.textContent = ED[b.o.edition];
     ans.querySelector(".ans-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
@@ -291,7 +349,9 @@
     tradeoff(b);
     var deal = ans.querySelector(".deal");
     deal.href = b.o.link;
-    deal.querySelector(".deal-t").textContent = "View deal at " + b.o.store_label;
+    deal.className = b.k.payOk ? "deal" : "btn-quiet deal-off";
+    deal.querySelector(".deal-t").textContent = b.k.payOk ? "View deal at " + b.o.store_label : "See " + b.o.store_label + "'s payment options";
+    ans.classList.remove("settle"); void ans.offsetWidth; ans.classList.add("settle");   // a short settle when the answer changes
     // the other stores for the same choice, cheapest first
     var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o; });
     var live = others.filter(function (o) { return o.available; }).map(function (o) { return { o: o, k: cost(o) }; });
@@ -311,7 +371,7 @@
     // phone-only bottom bar
     var sb = document.querySelector(".sticky-deal");
     if (sb) {
-      sb.querySelector(".sd-price").textContent = fmt(b.k.total, b.k.approx) + (b.k.ship == null ? " + shipping" : "");
+      sb.querySelector(".sd-price").textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) + (partial(b.k) ? " " + extras(b.k) : "") : "Not available by " + PAY_LABEL[state.pay];
       sb.querySelector(".sd-store").textContent = ED[b.o.edition] + " · " + b.o.store_label;
       sb.querySelector(".deal").href = b.o.link;
     }
@@ -341,7 +401,7 @@
       var pv = row.querySelector(".prow-v .price");
       pv.textContent = fmt(b.k.total, b.k.approx);
       setNote(pv, "");
-      row.querySelector(".prow-plus").textContent = b.k.ship == null ? "+ shipping" : "";
+      row.querySelector(".prow-plus").textContent = extras(b.k);
       row.querySelector(".prow-link").href = "phones/" + row.dataset.slug + "#" + b.o.storage.replace("/", "-") + "-" + b.o.edition;
       var gp = row.querySelector(".prow-gap");
       row._price = b.k.payOk ? b.k.total : Infinity;
@@ -350,9 +410,10 @@
       if (m) {
         var d = m.g.k.total - m.c.k.total, approx = m.g.k.approx || m.c.k.approx;
         row._gap = d;
-        gp.className = "prow-gap " + (d > 0 ? "china" : "global");
-        gp.textContent = Math.abs(d) < 1 ? "Same price both versions" :
-          (d > 0 ? "China " : "Global ") + fmt(Math.abs(d), approx) + " less" + (m.same ? "" : " (closest RAM/storage)");
+        var cfg = m.same ? (short(m.g.o.storage) ? " at " + short(m.g.o.storage) : "") : " (closest RAM/storage)";
+        gp.className = "prow-gap";
+        gp.textContent = Math.abs(d) < 1 ? "Same price both versions" + cfg :
+          (d > 0 ? "China " : "Global ") + fmt(Math.abs(d), approx) + " less" + cfg + gapNote(m.g.k, m.c.k);
       }
     });
     sortRows();
@@ -435,11 +496,11 @@
   if (dealBtn && sbar && "IntersectionObserver" in window) {
     document.body.classList.add("has-sticky");
     new IntersectionObserver(function (entries) {
-      var hidden = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
+      var e = entries[0], hidden = e.intersectionRatio < 1 && e.boundingClientRect.top < 64;   // partly under the header or above it
       sbar.classList.toggle("show", hidden);
       sbar.setAttribute("aria-hidden", hidden ? "false" : "true");
       sbar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = hidden ? 0 : -1; });
-    }).observe(dealBtn);
+    }, { rootMargin: "-64px 0px 0px 0px", threshold: [0, 1] }).observe(dealBtn);   // the sticky header's area counts as off screen
   }
 
   // Index: search + brand filter over the ranked list

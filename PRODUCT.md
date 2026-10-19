@@ -34,7 +34,7 @@ Three things together, none leading:
 
 ## Brand Commitments
 - Name is **DoorPrice** (chosen 2026-10-19, replacing "PriceChecker"): the price at your door. Domains doorprice.app / .co were open on that date; the site still runs at pricechecker-87q.pages.dev until one is bought.
-- Logo: [D]oorPrice - the tile is the capital D, its counter cut as an arched door with a handle (templates/_brand.html, static/icons/); "oor" in text colour, "Price" in brand blue. The stores still see the checker as `PriceCheckerBot` (Trading Shenzhen allows that name).
+- Logo: [D]oorPrice - the D is IBM Plex Sans Bold's own D with a panel door in its counter (four-pane window in brand blue, four panels, knob), from the user's reference picture; simple version for small sizes (templates/_brand.html, tools/door_logo.py, static/icons/). "oor" in text colour, "Price" in brand blue. The stores still see the checker as `PriceCheckerBot` (Trading Shenzhen allows that name).
 - Mobile-first: every surface must work well at phone width before desktop.
 
 ## Evidence on Hand

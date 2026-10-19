@@ -397,6 +397,10 @@
     v.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "–";
     setNote(v, "");
     ans.querySelector(".ans-plus").textContent = b.k.payOk ? extras(b.k, true) : "";
+    // a lower total that leaves shipping or import tax open (it's in "Other stores" below), named so it doesn't seem missing
+    var low = b.k.payOk ? lowerOpen(inStock(sel.storage, sel.ed), b) : null, aor = ans.querySelector(".ans-or");
+    aor.textContent = low ? "or " + fmt(low.k.total, low.k.approx) + " " + extras(low.k, true) + " at " + low.o.store_label : "";
+    aor.hidden = !low;
     var alt = ans.querySelector(".ans-alt");
     alt.textContent = "";
     alt.hidden = b.k.payOk || !payable;

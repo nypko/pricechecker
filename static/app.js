@@ -3,7 +3,7 @@
   var SYMBOL = { usd: "$", eur: "€", gbp: "£", aud: "A$" };
   var PAY_LABEL = { card: "card", paypal: "PayPal", bank: "bank transfer" };
   var PAY_SHORT = { card: "Card", paypal: "PayPal", bank: "Bank" };
-  var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia" };
+  var REGION_NAME = { EU: "the EU", UK: "the UK", US: "the US", AU: "Australia", Global: "your country" };
   var ED = { global: "Global", china: "China" };
   var state = { cur: "usd", pay: "card", region: "EU" };
   var TAX = {};   // config/import_tax.yaml: estimated VAT/GST per destination
@@ -37,14 +37,22 @@
     return e;
   }
 
-  // First visit: currency and Ship-to from the visitor's time zone (then their own choice, saved on the device)
+  // First visit: Ship-to and currency from the device's time zone, worked out here in the browser (no IP lookup, nothing
+  // sent anywhere); the browser language only when there is no time zone. Then the visitor's own choice, saved on the device.
+  var EU_TZ = /^(Europe\/(Amsterdam|Athens|Berlin|Bratislava|Brussels|Bucharest|Budapest|Copenhagen|Dublin|Helsinki|Lisbon|Ljubljana|Luxembourg|Madrid|Malta|Mariehamn|Nicosia|Paris|Prague|Riga|Rome|Sofia|Stockholm|Tallinn|Vienna|Vilnius|Warsaw|Zagreb)|Asia\/(Nicosia|Famagusta)|Atlantic\/(Madeira|Azores))$/;
+  var US_TZ = /^(America\/(New_York|Chicago|Denver|Los_Angeles|Phoenix|Anchorage|Juneau|Sitka|Nome|Yakutat|Metlakatla|Adak|Detroit|Boise|Menominee|Indiana\/.+|Kentucky\/.+|North_Dakota\/.+)|Pacific\/Honolulu)$/;
   function guess() {
     var tz = "", lang = (navigator.language || "").toLowerCase();
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
-    if (tz === "Europe/London" || /-gb$/.test(lang)) return { region: "UK", cur: "gbp" };
-    if (/^Australia\//.test(tz) || /-au$/.test(lang)) return { region: "AU", cur: "aud" };
-    if (/^Europe\//.test(tz)) return { region: "EU", cur: "eur" };
-    if (/^America\//.test(tz) || /-us$/.test(lang)) return { region: "US", cur: "usd" };
+    if (tz && !/^(UTC|Etc\/)/.test(tz)) {
+      if (tz === "Europe/London") return { region: "UK", cur: "gbp" };
+      if (/^Australia\//.test(tz)) return { region: "AU", cur: "aud" };
+      if (EU_TZ.test(tz)) return { region: "EU", cur: "eur" };
+      if (US_TZ.test(tz)) return { region: "US", cur: "usd" };
+      return { region: "Global", cur: "usd" };
+    }
+    if (/-gb$/.test(lang)) return { region: "UK", cur: "gbp" };
+    if (/-au$/.test(lang)) return { region: "AU", cur: "aud" };
     return {};
   }
   var g = guess();

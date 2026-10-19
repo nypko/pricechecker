@@ -29,6 +29,7 @@ stores:
         UK: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
         US: {cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
         AU: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        Global: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties and import tax not stated - you may pay them on delivery"}
       watch:   # re-checked daily; if the text disappears the site flags the terms as "needs review"
         - {url: "https://wondamobile.com/pages/billing-information", expect: "4\\.5% discount"}
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
@@ -57,6 +58,7 @@ stores:
         UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
         US: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & taxes included"}
         AU: {duties_included: true, cost: 300, currency: HKD, note: "Standard (all regions except EU), up to 8 business days; duties & GST included"}
+        Global: {duties_included: null, cost: 300, currency: HKD, note: "Standard (all regions except EU), DHL/FedEx/UPS; duties and taxes are stated as included for the UK, US and Australia, not for other countries"}
       watch:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
@@ -95,6 +97,7 @@ stores:
         UK: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import VAT, refunds any charges"}
         US: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import costs, refunds any charges"}
         AU: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and GST, refunds any charges"}
+        Global: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store says it covers customs and import tax and refunds any charges"}
       watch:
         - {url: "https://tradingshenzhen.com/en/content/customs-and-duties", expect: "no customs duty and no import VAT"}
         - {url: "https://tradingshenzhen.com/en/content/payment-regulations", expect: "about 4%"}
@@ -115,6 +118,7 @@ stores:
         UK: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
         US: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
         AU: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
+        Global: {cost: null, note: "EU warehouse shipping outside the EU not stated"}
 
   giztop:
     label: Giztop
@@ -139,6 +143,7 @@ stores:
         UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
         US: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays US duties. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
         AU: {duties_included: false, cost: null, note: "Weight-based, shown in cart; prices exclude import tax, buyer pays AU GST/duties"}
+        Global: {duties_included: false, cost: null, note: "Weight-based, shown in cart; prices exclude import tax, buyer pays duties and tax on delivery"}
       watch:
         - {url: "https://www.giztop.com/payment/", expect: "Wired Transfer"}
         - {url: "https://www.giztop.com/customs-duty", expect: "IOSS"}

@@ -472,6 +472,9 @@
     document.querySelectorAll(".prefs-summary").forEach(function (e) { e.textContent = summary; });
     document.querySelectorAll(".for-region").forEach(function (e) { e.textContent = REGION_NAME[state.region]; });
     document.querySelectorAll(".for-pay").forEach(function (e) { e.textContent = PAY_LABEL[state.pay]; });
+    document.querySelectorAll(".for-cur").forEach(function (e) { e.textContent = state.cur.toUpperCase(); });
+    // price history charts are drawn once per currency; show the chosen one
+    document.querySelectorAll(".chart-wrap[data-cur]").forEach(function (e) { e.hidden = e.dataset.cur !== state.cur; });
     document.querySelectorAll(".seg[data-pref] button").forEach(function (b) {
       b.setAttribute("aria-pressed", state[b.parentNode.dataset.pref] === b.dataset.val ? "true" : "false");
     });

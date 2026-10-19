@@ -79,8 +79,8 @@
     {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
       <div class="hist-one" data-storage="{{ storage }}" hidden>
       {% if th.svg %}
-        <p class="muted small hist-note">Lowest in-stock price per store, in USD{% if th.china %}; dashed line = China version{% endif %}.</p>
-        <div class="chart-wrap">{{ th.svg|safe }}</div>
+        <p class="muted small hist-note">Lowest in-stock price per store, in <span class="for-cur">USD</span>{% if th.china %}; dashed line = China version{% endif %}.</p>
+        {% for c, svg in th.svg.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}
         <ul class="legend">
           {% for s, eds in th.stores.items() %}{% set st = stores|selectattr("name", "equalto", s)|first %}
           <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>

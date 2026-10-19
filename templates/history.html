@@ -13,14 +13,15 @@
 
 {% if p.chart %}
 <section class="panel">
-  <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in USD{% if p.editions|length > 1 %}; dashed line = China version{% endif %})</span></h2>
-  <div class="chart-wrap">{{ p.chart|safe }}</div>
+  <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in <span class="for-cur">USD</span>{% if p.editions|length > 1 %}; dashed line = China version{% endif %})</span></h2>
+  {% for c, svg in p.chart.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}
   <ul class="legend">
     {% for s in p.series_stores %}{% set st = stores|selectattr("name", "equalto", s)|first %}
     <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
     {% endfor %}
     {% if p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
   </ul>
+  <p class="muted small">Where a store prices in another currency, its line is converted at today's European Central Bank rate.</p>
   {% if p.changes and (p.changes[0].time - p.changes[-1].time).days < 7 %}
   <p class="muted small">Less than a week of data so far, so most lines are still flat.</p>
   {% endif %}

@@ -59,8 +59,12 @@ def _usd_money(usd: float | None, rates: dict) -> dict | None:
     return _money({"price": usd, "currency": "USD"}, rates) if usd else None
 
 
-def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str], now: datetime | None = None) -> str:
-    """Inline SVG line chart (USD), one line per (store, edition) - China editions dashed; empty if no history yet.
+SYMBOL = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$"}
+
+
+def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str], now: datetime | None = None,
+           cur: str = "USD") -> str:
+    """Inline SVG line chart in `cur`, one line per (store, edition) - China editions dashed; empty if no history yet.
     Drawn at phone width (400 units) so the axis text stays readable when the page shrinks it."""
     pts = [(t, p) for s in series.values() for t, p in s]
     if len({t for t, _ in pts}) < 2:
@@ -71,10 +75,10 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     lo, hi = ticks[0], ticks[-1]
     x = lambda t: L + (t - t0).total_seconds() / max((t1 - t0).total_seconds(), 1) * (W - L - R)
     y = lambda p: T + (hi - p) / (hi - lo) * (H - T - B)
-    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in USD, shown in the table below">']
+    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in {cur}, shown in the table below">']
     for v in ticks:
         parts.append(f'<line x1="{L}" x2="{W-R}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="grid"/>'
-                     f'<text x="{L-6}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">${v:,.0f}</text>')
+                     f'<text x="{L-6}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">{SYMBOL[cur]}{v:,.0f}</text>')
     parts.append(f'<text x="{L}" y="{H-6}" class="axis">{t0:%d %b}</text>'
                  f'<text x="{W-R}" y="{H-6}" class="axis" text-anchor="end">{t1:%d %b %H:%M}</text>')
     for (store, edition), s in series.items():
@@ -90,8 +94,8 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     return "".join(parts)
 
 
-def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = None) -> dict:
-    """Per (store, edition): that store's lowest in-stock price for the phone at every change, in USD -
+def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = None, cur: str = "USD") -> dict:
+    """Per (store, edition): that store's lowest in-stock price for the phone at every change, in `cur` -
     across all RAM/storage options, or for one (storage="12/512")."""
     state: dict[tuple, float | None] = {}
     out: dict[tuple, list] = defaultdict(list)
@@ -99,12 +103,19 @@ def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = No
         if r["model_id"] != model["id"] or r["edition"] not in model["editions"] or (storage and r["storage"] != storage):
             continue
         line = (r["store"], r["edition"])
-        state[(line, r["storage"])] = fx.convert(r["price"], r["currency"], "USD", rates) if r["available"] else None
+        state[(line, r["storage"])] = fx.convert(r["price"], r["currency"], cur, rates) if r["available"] else None
         t = datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ")
         best = min((p for (l, _), p in state.items() if l == line and p is not None), default=None)
         if best is not None and (not out[line] or out[line][-1][1] != best):
             out[line].append((t, best))
     return out
+
+
+def _charts(rows: list[dict], model: dict, rates: dict, colors: dict, now: datetime | None, storage: str | None = None) -> dict:
+    """The chart once per site currency ({"usd": svg, ...}; {} if no history yet), so it follows the visitor's currency.
+    History records each store's own price; other currencies are converted at the current ECB rate."""
+    out = {c.lower(): _chart(_series(rows, model, rates, storage, c), colors, now, c) for c in CURRENCIES}
+    return out if all(out.values()) else {}
 
 
 def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors: dict, now: datetime | None) -> dict:
@@ -113,7 +124,7 @@ def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors
     eds = defaultdict(list)   # store -> versions it has lines for, so the legend can follow the version filter
     for s, e in series:
         eds[s].append(e)
-    return {"svg": _chart(series, colors, now), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
+    return {"svg": _charts(rows, model, rates, colors, now, storage), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
             "china": any(e == "china" for _, e in series)}
 
 
@@ -243,7 +254,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "title_price": _title_price(offers, tax_eu),
-                       "chart": _chart(_series(rows, m, rates), colors, updated_at),
+                       "chart": _charts(rows, m, rates, colors, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
     phones.sort(key=lambda p: p["name"])

@@ -1,97 +1,313 @@
+/* PriceChecker - mobile-first.
+   Colour roles (one meaning each, so shoppers learn them at a glance):
+     brand blue  = trust / navigation (header, links, selected filters) - the convention for comparison sites
+     action orange = "go to the store" only (deal buttons) - warm complement to the blue, the eye's first stop
+     savings green = cheapest / price gap - read as gain
+     red = fees and warnings only
+   All text/background pairs meet WCAG AA (4.5:1, buttons included). */
 :root {
-  --bg: #f6f7f9; --surface: #ffffff; --text: #1b1f24; --muted: #5f6b7a; --border: #dfe3e8;
-  --accent: #2a62d6; --accent-text: #ffffff; --good: #1f8a5b; --bad: #c43d3d; --chip: #eef1f5;
-  --global: #e6f0ff; --global-text: #1f4fae; --china: #fdf0e3; --china-text: #9a4d0b;
+  --bg: #f4f6f9; --surface: #ffffff; --surface-2: #f0f3f7; --text: #141a22; --muted: #586474; --border: #dde3ea;
+  --brand: #1d4ed8; --brand-soft: #e8efff; --on-brand: #ffffff;
+  --cta: #c2410c; --cta-hover: #9a3412; --on-cta: #ffffff;
+  --save: #0b7a43; --save-soft: #e3f6ec; --bad: #b42318;
+  --global: #e6efff; --global-text: #1e3fa8; --china: #fdf0e1; --china-text: #8a4208;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .08);
+  --radius: 14px; --gutter: 16px; --tap: 44px;
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1216; --surface: #171b21; --text: #e8ebef; --muted: #98a2ae; --border: #2a3038;
-    --accent: #5b8cf0; --accent-text: #0f1216; --good: #4cc38a; --bad: #ef6b6b; --chip: #222830;
-    --global: #1c2a44; --global-text: #9dbcf7; --china: #3a2814; --china-text: #f0b77a;
+    --bg: #0d1117; --surface: #161b22; --surface-2: #1c232c; --text: #e6edf3; --muted: #9aa6b4; --border: #2b333d;
+    --brand: #79a6ff; --brand-soft: #1a2a4a; --on-brand: #0d1117;
+    --cta: #fb923c; --cta-hover: #fdba74; --on-cta: #1a0f05;
+    --save: #4ccf8a; --save-soft: #12301f; --bad: #ff7b72;
+    --global: #1a2a4a; --global-text: #a8c4ff; --china: #3a2612; --china-text: #f5b971;
+    --shadow: none; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1216; --surface: #171b21; --text: #e8ebef; --muted: #98a2ae; --border: #2a3038;
-  --accent: #5b8cf0; --accent-text: #0f1216; --good: #4cc38a; --bad: #ef6b6b; --chip: #222830;
-  --global: #1c2a44; --global-text: #9dbcf7; --china: #3a2814; --china-text: #f0b77a;
+  --bg: #0d1117; --surface: #161b22; --surface-2: #1c232c; --text: #e6edf3; --muted: #9aa6b4; --border: #2b333d;
+  --brand: #79a6ff; --brand-soft: #1a2a4a; --on-brand: #0d1117;
+  --cta: #fb923c; --cta-hover: #fdba74; --on-cta: #1a0f05;
+  --save: #4ccf8a; --save-soft: #12301f; --bad: #ff7b72;
+  --global: #1a2a4a; --global-text: #a8c4ff; --china: #3a2612; --china-text: #f5b971;
+  --shadow: none; color-scheme: dark;
 }
+
+/* ---------- base ---------- */
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+       -webkit-tap-highlight-color: transparent; }
+a { color: var(--brand); text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+main, footer, .top-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+h1 { font-size: 1.6rem; line-height: 1.25; margin: 16px 0 8px; letter-spacing: -.01em; }
+h2 { font-size: 1.05rem; margin: 0 0 12px; }
+.muted { color: var(--muted); } .small { font-size: .85rem; }
+.good { color: var(--save); } .bad { color: var(--bad); }
+.price, .ed .price, .c-total strong { font-variant-numeric: tabular-nums; }
+
+/* ---------- header: sticky, compact ---------- */
+.top { position: sticky; top: 0; z-index: 20; background: var(--surface); border-bottom: 1px solid var(--border); }
+.top-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
+.brand { font-weight: 800; font-size: 1.15rem; text-decoration: none; color: var(--text); white-space: nowrap; }
+.brand span { color: var(--brand); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* settings: one button in the header opens Ship to / currency / payment, from any page and any scroll position */
+.prefs-toggle { font: inherit; font-size: .85rem; font-weight: 700; color: var(--brand); background: var(--brand-soft); border: 0;
+                border-radius: 999px; min-height: 40px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.prefs-toggle::after { content: ""; width: 6px; height: 6px; border: solid currentColor; border-width: 0 2px 2px 0;
+                       transform: translateY(-2px) rotate(45deg); transition: transform .15s ease-out; }
+.prefs-toggle[aria-expanded="true"]::after { transform: translateY(1px) rotate(-135deg); }
+.prefs { border-top: 1px solid var(--border); background: var(--surface); }
+.prefs-inner { max-width: 1120px; margin: 0 auto; padding: 12px var(--gutter) 14px; display: grid; gap: 12px; }
+.seg-group { display: grid; gap: 6px; }
+.seg-label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { font: inherit; font-size: .9rem; font-weight: 600; min-height: var(--tap); padding: 0 14px; border-radius: 10px;
+              border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
+.seg-sm button { min-height: 40px; font-size: .85rem; padding: 0 12px; }
+.prefs-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; }
+.prefs-done { font: inherit; font-weight: 700; min-height: var(--tap); padding: 0 20px; border-radius: 10px; border: 0;
+              background: var(--brand); color: var(--on-brand); cursor: pointer; }
+.link-btn { font: inherit; font-weight: 600; color: var(--brand); background: none; border: 0; padding: 0 4px; min-height: 32px; cursor: pointer;
+            text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- intro + filters ---------- */
+.intro h1 { margin-top: 20px; }
+.intro p { color: var(--muted); margin: 0 0 4px; font-size: .95rem; }
+.filters { position: sticky; top: 57px; z-index: 15; background: var(--bg); padding: 12px 0 8px; margin: 0 calc(-1 * var(--gutter));
+           padding-left: var(--gutter); padding-right: var(--gutter); }
+#q { width: 100%; font: inherit; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;
+     background: var(--surface); color: var(--text); -webkit-appearance: none; appearance: none; }
+#q::placeholder { color: var(--muted); }
+.chips { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+         scroll-snap-type: x proximity; padding-bottom: 2px;
+         mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.chips.at-end { mask-image: none; -webkit-mask-image: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: 0 0 auto; scroll-snap-align: start; font: inherit; font-size: .9rem; font-weight: 600; min-height: 40px; padding: 0 16px;
+        border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .pick-hint { display: none; }
-.choosing .pick-hint { display: block; margin: 8px 0 28px; color: var(--muted); }
-.choosing #phones { display: none; }   /* without JS the class is never set, so the full list shows */   /* .card sets display:flex, which would override the hidden attribute */
-body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-a { color: var(--accent); }
-main, footer, .top { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding-top: 16px; padding-bottom: 16px; gap: 12px; }
-.brand { font-weight: 800; font-size: 1.3rem; text-decoration: none; color: var(--text); }
-.brand span { color: var(--accent); }
-.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-end; }
-.controls label, .order-opts label { display: flex; gap: 6px; align-items: center; font-size: .9rem; color: var(--muted); }
-.controls select, .order-opts select { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; }
-.order-opts { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; margin: 16px 0 0; }
-.good { color: var(--good); } .bad { color: var(--bad); }
-.small { font-size: .85rem; }
-.warn { margin-left: 6px; font-size: .75rem; font-weight: 600; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 1px 6px; }
-.status td { white-space: normal; }
-.cur { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.cur button, .chip { font: inherit; border: 0; background: var(--surface); color: var(--text); padding: 6px 12px; cursor: pointer; }
-.cur button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
-h1 { font-size: 1.6rem; line-height: 1.25; margin: 8px 0; }
-h2 { font-size: 1.1rem; margin: 0 0 12px; }
-.intro p, .muted { color: var(--muted); }
-.filters { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; align-items: center; }
-#q { flex: 1 1 220px; font: inherit; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { background: var(--chip); border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
-.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); }
-.grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-.card.out { opacity: .6; }
-.card-link { text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.choosing .pick-hint { display: block; margin: 4px 0 20px; color: var(--muted); }
+.choosing #phones { display: none; }
+.no-results { text-align: center; padding: 32px 16px; color: var(--muted); }
+.no-results p { margin: 0 0 12px; }   /* without JS the class is never set, so the full list shows */
+
+/* ---------- phone cards: one column on phones, grid from tablet up ---------- */
+.grid { list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: 1fr; gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+        padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.card.out { background: var(--surface-2); box-shadow: none; }
+.card.out .name { color: var(--muted); }
+.card-note { margin: 0; font-size: .8rem; color: var(--muted); }
+.card-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-decoration: none; color: var(--text); min-height: 32px; }
+.card-link::after { content: "›"; font-size: 1.5rem; line-height: 1; color: var(--muted); }
 .name { font-weight: 700; font-size: 1.05rem; }
-.badge { font-size: .75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; vertical-align: middle; }
+.eds { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.ed { background: var(--surface-2); border: 2px solid transparent; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ed.cheapest { border-color: var(--save); background: var(--save-soft); }
+.ed .badge { align-self: flex-start; margin-bottom: 4px; }
+.ed .price { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+.ed .spec { font-size: .8rem; font-weight: 600; }
+.ed .where { font-size: .8rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diff { margin: 0; align-self: flex-start; font-weight: 700; font-size: .85rem; color: var(--save); background: var(--save-soft);
+        border-radius: 999px; padding: 4px 10px; }
+.badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; vertical-align: middle; letter-spacing: .01em; }
 .badge.global { background: var(--global); color: var(--global-text); }
 .badge.china { background: var(--china); color: var(--china-text); }
-.best .price { font-size: 1.5rem; font-weight: 800; }
-.eds { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-.ed { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: baseline; padding: 8px 10px; border-radius: 8px; background: var(--chip); }
-.ed .badge { grid-row: span 3; align-self: start; }
-.ed .price { font-size: 1.3rem; font-weight: 800; }
-.ed .spec, .ed .where { grid-column: 2; }
-.ed .spec { font-size: .85rem; font-weight: 600; }
-.ed.cheapest { outline: 2px solid var(--good); }
-.no-pay .c-pay { display: none; }   /* see app.js: hidden when every row would say "no fee" */
-.caveat { display: block; font-size: .75rem; font-weight: 400; color: var(--muted); white-space: normal; max-width: 260px; }
-.caveat.good { color: var(--good); }
-.diff { margin: 0; font-weight: 600; color: var(--good); font-size: .9rem; }
-.cmp td { vertical-align: top; }
-.from, .where { color: var(--muted); font-size: .9rem; }
-.where { display: block; }
-.best.none { color: var(--muted); }
-.actions { display: flex; gap: 12px; align-items: center; margin-top: auto; flex-wrap: wrap; }
-.deal { background: var(--accent); color: var(--accent-text); text-decoration: none; padding: 6px 14px; border-radius: 8px; font-weight: 600; }
-.lead .deal { margin-left: 8px; }
-.compare { font-size: .9rem; }
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+.best.none { color: var(--muted); margin: 0; }
+
+/* index, before a brand is picked: the biggest Global vs China gaps, as a taste of what the site does */
+.gaps { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 0 0 20px; }
+.gaps h2 { margin-bottom: 8px; }
+.gap-list { list-style: none; padding: 0; margin: 0 0 8px; }
+.gap-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; padding: 10px 0;
+               border-bottom: 1px solid var(--border); }
+.gap-list a { font-weight: 700; text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+.gap-list a:hover { text-decoration: underline; }
+.gap-text { color: var(--save); font-weight: 700; font-size: .9rem; }
+
+/* buttons: orange is reserved for "go to the store" */
+.actions { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.deal, .go { display: flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 18px; border-radius: 12px;
+             background: var(--cta); color: var(--on-cta); font-weight: 700; text-decoration: none; }
+.deal:hover, .go:hover { background: var(--cta-hover); }
+.deal::after, .go::after { content: "↗"; content: "↗" / ""; margin-left: 6px; font-weight: 400; }   /* link text says "(opens store site)" */
+.go.secondary { background: transparent; color: var(--cta); box-shadow: inset 0 0 0 1.5px var(--cta); }
+.go.secondary:hover { background: var(--surface-2); color: var(--cta-hover); }
+.compare { display: flex; align-items: center; justify-content: center; min-height: 40px; font-weight: 600; font-size: .9rem; text-decoration: none; }
+
+/* ---------- phone page ---------- */
+.page-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.crumb { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 600; text-decoration: none; }
+.btn-quiet { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 10px; font-weight: 600; font-size: .9rem;
+             text-decoration: none; color: var(--brand); border: 1px solid var(--border); background: var(--surface); }
+.btn-quiet:hover { border-color: var(--brand); }
+.title-badges { display: flex; gap: 6px; margin-bottom: 12px; }
+.best-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
+            display: grid; gap: 4px; margin: 0 0 16px; }
+.best-box .label { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--save); }
+.best-box .price { font-size: 2rem; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+.best-box .lead-caveat .caveat { font-size: .85rem; }
+.lead-price .plus { font-size: 1rem; font-weight: 700; color: var(--muted); }
+.lead-price .plus:empty { display: none; }
+.lead-foot { margin: 8px 0 0; font-size: .8rem; color: var(--muted); }
+.best-box .lead-meta { color: var(--muted); font-size: .9rem; }
+.best-box .deal { margin-top: 10px; }
+.order-opts { margin: 0 0 6px; }
+.order-for { margin: 0; font-size: .95rem; }
+.order-opts .explain { margin: 0 0 8px; }
+.ed-filter { margin: 4px 0 0; }
+/* storage tier header: each version's cheapest total and the gap, so the comparison sits where the stores are */
+.tier-eds { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: -4px 0 8px; font-variant-numeric: tabular-nums; }
+.tier-ed { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.tier-gap { color: var(--save); font-weight: 700; font-size: .9rem; }
+.tier-gap:empty { display: none; }
+.tier-empty { display: none; }
+.oos-toggle { margin-top: 8px; min-height: var(--tap); }
+.cmp-more { margin: 0 0 16px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; margin: 16px 0; }
+.panel h2 .muted { font-weight: 400; font-size: .85rem; display: block; margin-top: 2px; }
 table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .8rem; color: var(--muted); font-weight: 600; }
 tr.out td { color: var(--muted); }
+.caveat { display: block; font-size: .75rem; font-weight: 400; color: var(--muted); }
+.caveat.good { color: var(--save); }
+.no-pay .c-pay { display: none !important; }
+@media (min-width: 720px) { .m-only { display: none; } }   /* see app.js: hidden when every row would say "no fee" */
 .chart { width: 100%; height: auto; }
 .chart .grid { stroke: var(--border); }
-.chart .axis { fill: var(--muted); font-size: 12px; }
-.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; font-size: .9rem; }
-.legend i { display: inline-block; width: 12px; height: 3px; margin-right: 6px; vertical-align: middle; }
-.status ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px; }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: var(--muted); }
-.dot.ok { background: var(--good); } .dot.bad { background: var(--bad); }
-.crumb { margin: 8px 0 0; }
-footer { color: var(--muted); font-size: .85rem; padding-top: 24px; padding-bottom: 32px; border-top: 1px solid var(--border); margin-top: 32px; }
-@media (max-width: 520px) { h1 { font-size: 1.3rem; } .best .price, .ed .price { font-size: 1.2rem; } }
-@media (max-width: 640px) {   /* Global vs China table: one block per configuration, the badges label each price */
-  .cmp thead { display: none; }
-  .cmp tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--border); }
-  .cmp td { display: block; border: 0; padding: 3px 0; white-space: normal; }
-  .cmp td:first-child { font-weight: 600; }
-  .cmp .cmp-diff.muted { display: none; }   /* "–" when only one version is sold */
+.chart .axis { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .85rem; margin: 8px 0 0; }
+
+/* phones: tables become cards - one store per card, labels from data-label */
+@media (max-width: 719px) {
+  .offers, .terms, .offers tbody, .terms tbody { display: block; width: 100%; }
+  .offers thead, .terms thead { display: none; }
+  .offers tr, .terms tr { display: block; border-bottom: 1px solid var(--border); padding: 12px 0; }
+  .offers tr:last-child, .terms tr:last-child { border-bottom: 0; padding-bottom: 0; }
+  .offers td, .terms td { display: block; border: 0; padding: 2px 0; }
+  .terms td[data-label] { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 12px; font-size: .9rem; }
+  .terms td[data-label]::before { content: attr(data-label); color: var(--muted); flex: 0 0 auto; }
+  .terms td[data-label] > * { text-align: right; }
+  /* store card: name + version, big total, then a 2x2 grid of details, then the button */
+  .offers tr { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+  .offers .d-only { display: none; }
+  .offers .c-store, .offers .c-total, .offers .c-go { grid-column: 1 / -1; }
+  .offers .c-store { order: -2; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 700; }
+  .offers .c-total { order: -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 8px; }
+  .offers .c-total::before { content: "Total"; color: var(--muted); font-size: .9rem; }
+  .offers .c-total strong { font-size: 1.35rem; }
+  .offers .c-total .caveat { flex-basis: 100%; }
+  .offers td[data-label]:not(.c-total) { font-size: .9rem; }
+  .offers td[data-label]:not(.c-total)::before { content: attr(data-label); display: block; font-size: .72rem; font-weight: 600;
+                                                 color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .offers .c-go { padding-top: 2px; }
+  .offers .c-go .go { width: 100%; }
+  .terms .t-store { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .changes, .changes tbody { display: block; }
+  .changes thead { display: none; }
+  .changes tr { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "when ver" "store price" "spec stock";
+                gap: 2px 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .changes td { border: 0; padding: 0; white-space: normal; }
+  .changes td[data-label="When"] { grid-area: when; font-size: .8rem; color: var(--muted); }
+  .changes td[data-label="Version"] { grid-area: ver; text-align: right; }
+  .changes td[data-label="Store"] { grid-area: store; font-weight: 700; }
+  .changes td[data-label="Price"] { grid-area: price; font-weight: 700; text-align: right; }
+  .changes td[data-label="RAM/storage"] { grid-area: spec; font-size: .85rem; color: var(--muted); }
+  .changes td[data-label="Stock"] { grid-area: stock; font-size: .85rem; color: var(--muted); text-align: right; }
+  .terms td.t-ship { display: block; font-size: .85rem; margin-top: 6px; }
+  .terms td.t-ship::before { display: none; }
+  .terms td.t-ship > * { text-align: left; }
+}
+
+/* sticky "best deal" bar on phone pages (phones only), shown once the big price box scrolls away */
+.sticky-deal { display: none; }
+@media (max-width: 719px) {
+  .sticky-deal { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; align-items: center; gap: 12px;
+                 padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom)); background: var(--surface);
+                 border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgba(16, 24, 40, .08);
+                 transform: translateY(110%); transition: transform .2s ease; }
+  .sticky-deal.show { transform: none; }
+  .sticky-deal .sd-text { flex: 1; min-width: 0; line-height: 1.2; }
+  .sticky-deal .sd-price { font-weight: 800; font-size: 1.15rem; }
+  .sticky-deal .sd-store { font-size: .8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .sticky-deal .deal { flex: 0 0 auto; }
+  .sticky-deal .sd-prefs { flex: 0 0 auto; font: inherit; font-size: .75rem; font-weight: 700; color: var(--brand); background: var(--brand-soft);
+                           border: 0; border-radius: 999px; min-height: 36px; padding: 0 10px; cursor: pointer; }
+  body.has-sticky footer { padding-bottom: 96px; }
+}
+@media (prefers-reduced-motion: reduce) { .sticky-deal { transition: none; } }
+
+/* ---------- store terms ---------- */
+.status { margin-top: 8px; }
+.status td { white-space: normal; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: var(--muted); vertical-align: middle; }
+.dot.ok { background: var(--save); } .dot.bad { background: var(--bad); }
+.recheck { margin-left: 6px; font-size: .72rem; font-weight: 600; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.terms-box > summary { font-size: 1rem; }
+.terms-box .panel { margin-top: 4px; }
+.t-ship div + div { margin-top: 4px; }
+
+/* ---------- explainers for shoppers new to importing (native <details>) ---------- */
+.explain { margin: 0 0 12px; }
+.explain summary { display: inline-flex; align-items: center; gap: 8px; min-height: var(--tap); font-weight: 600; font-size: .95rem;
+                   color: var(--brand); cursor: pointer; list-style: none; border-radius: 8px; }
+.explain summary::-webkit-details-marker { display: none; }
+.explain summary::after { content: ""; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0;
+                          transform: translateY(-2px) rotate(45deg); transition: transform .15s ease-out; }
+.explain[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.explain summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.explain-body { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: .9rem;
+                max-width: 68ch; }
+.explain-body > p { margin: 0 0 12px; color: var(--text); font-size: inherit; }
+.explain dl { margin: 0; display: grid; gap: 12px; }
+.explain dl > div { display: grid; gap: 4px; }
+.explain dt { font-weight: 700; }
+.explain dd { margin: 0; }
+.ed-diff dd { display: grid; grid-template-columns: 4.25rem 1fr; align-items: baseline; }
+.ed-diff dd .badge { justify-self: start; }
+.ed-diff dd:not(:has(> .badge)) { display: block; }
+.intro .explain { margin-top: 4px; }
+.cmp-more a { font-weight: 600; font-size: .9rem; }
+
+/* values with details behind them: dotted underline, tap or Enter shows the note inline */
+[data-note]:not([data-note=""]) { text-decoration: underline dotted; text-decoration-color: var(--muted); text-underline-offset: 3px; cursor: pointer; }
+.note { display: block; flex-basis: 100%; margin-top: 4px; padding: 6px 10px; border-radius: 8px; background: var(--surface-2);
+        color: var(--text); font-size: .8rem; font-weight: 400; line-height: 1.4; text-align: left; white-space: normal;
+        text-transform: none; letter-spacing: normal; cursor: auto; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .explain summary::after, .prefs-toggle::after { transition: none; } }
+
+footer p { max-width: 62ch; }
+/* price history page */
+.lede { color: var(--muted); margin: 0 0 8px; max-width: 70ch; }
+.chart-wrap { max-width: 640px; }
+.legend svg { margin-right: 6px; vertical-align: middle; }
+.changes td, .changes th { white-space: nowrap; }
+.changes tr.out td { color: var(--muted); }
+footer { color: var(--muted); font-size: .8rem; padding-top: 24px; padding-bottom: 32px; border-top: 1px solid var(--border); margin-top: 32px; }
+
+/* ---------- tablet and up ---------- */
+@media (min-width: 720px) {
+  :root { --gutter: 24px; }
+  h1 { font-size: 1.85rem; }
+  .filters { display: flex; gap: 12px; align-items: center; }
+  .filters #q { flex: 0 1 320px; }
+  .chips { margin-top: 0; flex: 1; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .best-box { grid-template-columns: 1fr auto; align-items: center; }
+  .best-box .deal { grid-row: 1 / span 3; grid-column: 2; margin: 0; }
+  .order-opts { display: flex; flex-wrap: wrap; align-items: flex-end; }
+  .order-opts label { min-width: 180px; }
+  .order-opts .explain { flex-basis: 100%; }
+  .offers .go { min-height: 36px; padding: 0 12px; font-size: .9rem; }
+  .offers td { white-space: nowrap; }
+  .offers .c-total { white-space: normal; min-width: 150px; }
 }

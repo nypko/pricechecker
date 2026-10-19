@@ -1,0 +1,52 @@
+{#- Plain-language explainers for shoppers new to importing. Native <details>, so they work by tap, keyboard and without JS. -#}
+
+{#- editions: list of "global"/"china" the phone is sold in (index: both); brand: phone brand, lower case ("" on the index) -#}
+{%- macro editions(eds, brand="", id="editions") -%}
+{%- set both = "global" in eds and "china" in eds -%}
+<details class="explain" id="{{ id }}">
+  <summary>{% if both %}Global or China version: what's different?{% elif "china" in eds %}What is a China version?{% else %}What is a Global version?{% endif %}</summary>
+  <div class="explain-body">
+    <p>Usually the same phone and cameras. What changes is the software, the warranty and which mobile networks it's built for.{% if both %} The China version is often cheaper.{% endif %}</p>
+    <dl class="ed-diff">
+      <div>
+        <dt>Google apps</dt>
+        {%- if brand == "huawei" %}
+        <dd>No Google services on Huawei phones in either version. Apps come from Huawei's AppGallery.</dd>
+        {%- else %}
+        <dd><span class="badge global">Global</span> Google Play and Google apps installed.</dd>
+        <dd><span class="badge china">China</span> Chinese software without Google Play. It can often be added, but some apps may not work fully.{% if not brand %} Huawei phones have no Google services in either version.{% endif %}</dd>
+        {%- endif %}
+      </div>
+      <div>
+        <dt>Warranty</dt>
+        <dd><span class="badge global">Global</span> International warranty from many sellers. Check the store.</dd>
+        <dd><span class="badge china">China</span> Usually no manufacturer warranty outside China. You rely on the store's own warranty and returns.</dd>
+      </div>
+      <div>
+        <dt>Networks &amp; SIM</dt>
+        <dd><span class="badge global">Global</span> Built for networks worldwide; eSIM where the model has it.</dd>
+        <dd><span class="badge china">China</span> May miss some 4G/5G bands your carrier uses, and often has no eSIM. Check the band list before you buy.</dd>
+      </div>
+      <div>
+        <dt>Language</dt>
+        <dd><span class="badge china">China</span> Can be set to English; some Chinese apps come preinstalled.</dd>
+      </div>
+    </dl>
+  </div>
+</details>
+{%- endmacro -%}
+
+{#- What a total on the phone page is made of. app.js fills .tax-region with the Ship-to destination's import tax rule. -#}
+{%- macro totals() -%}
+<details class="explain" id="totals">
+  <summary>What's in the total?</summary>
+  <div class="explain-body">
+    <dl class="total-parts">
+      <div><dt>Price</dt><dd>The store's own price in your currency. <strong>≈</strong> means the store has no price in that currency, so we converted it at the European Central Bank rate.</dd></div>
+      <div><dt>Payment</dt><dd>The store's fee or discount for how you pay, e.g. a discount for bank transfer or a PayPal fee.</dd></div>
+      <div><dt>Shipping</dt><dd>Shipping to your country, where the store lists it. If it doesn't, the total says “excl. shipping”.</dd></div>
+      <div><dt>Import tax</dt><dd class="tax-region">Some stores include import tax in their price; others leave it for you to pay the courier on delivery. Where the store excludes it, we add an estimate (≈).</dd></div>
+    </dl>
+  </div>
+</details>
+{%- endmacro -%}

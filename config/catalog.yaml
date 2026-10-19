@@ -10,22 +10,22 @@ phones:
   - {id: honor-magic-9-pro-max, edition: china, name: "Honor Magic 9 Pro Max"}
   - {id: honor-magic-9-super, edition: china, name: "Honor Magic 9 Super"}
   - {id: honor-magic-v6, edition: global, name: "Honor Magic V6"}
-  - {id: huawei-mate-80, edition: china, name: "HUAWEI Mate 80"}
-  - {id: huawei-mate-80-pro, edition: china, name: "HUAWEI Mate 80 Pro"}
-  - {id: huawei-mate-80-pro-max, edition: china, name: "HUAWEI Mate 80 Pro Max"}
-  - {id: huawei-mate-90, edition: china, name: "HUAWEI Mate 90"}
-  - {id: huawei-mate-90-pro, edition: china, name: "HUAWEI Mate 90 Pro"}
-  - {id: huawei-mate-90-pro-max, edition: china, name: "HUAWEI Mate 90 Pro Max"}
-  - {id: huawei-pura-80-ultra, edition: global, name: "HUAWEI Pura 80 Ultra"}
-  - {id: huawei-pura-90-pro, edition: china, name: "HUAWEI Pura 90 Pro"}
-  - {id: huawei-pura-90-pro-max, edition: china, name: "HUAWEI Pura 90 Pro Max"}
-  - {id: huawei-pura-90s-pro, edition: global, name: "HUAWEI Pura 90s Pro"}
-  - {id: huawei-pura-90s-pro-max, edition: global, name: "HUAWEI Pura 90s Pro Max"}
-  - {id: huawei-pura-x-max, edition: china, name: "HUAWEI Pura X Max"}
-  - {id: huawei-pura-x-view, edition: china, name: "HUAWEI Pura X View"}
-  - {id: motorola-razr-70-ultra, edition: china, name: "Moto Razr 70 Ultra"}
-  - {id: motorola-razr-fold, edition: china, name: "Moto Razr Fold"}
-  - {id: oneplus-15, edition: global, name: "Oneplus 15"}
+  - {id: huawei-mate-80, edition: china, name: "Huawei Mate 80"}
+  - {id: huawei-mate-80-pro, edition: china, name: "Huawei Mate 80 Pro"}
+  - {id: huawei-mate-80-pro-max, edition: china, name: "Huawei Mate 80 Pro Max"}
+  - {id: huawei-mate-90, edition: china, name: "Huawei Mate 90"}
+  - {id: huawei-mate-90-pro, edition: china, name: "Huawei Mate 90 Pro"}
+  - {id: huawei-mate-90-pro-max, edition: china, name: "Huawei Mate 90 Pro Max"}
+  - {id: huawei-pura-80-ultra, edition: global, name: "Huawei Pura 80 Ultra"}
+  - {id: huawei-pura-90-pro, edition: china, name: "Huawei Pura 90 Pro"}
+  - {id: huawei-pura-90-pro-max, edition: china, name: "Huawei Pura 90 Pro Max"}
+  - {id: huawei-pura-90s-pro, edition: global, name: "Huawei Pura 90s Pro"}
+  - {id: huawei-pura-90s-pro-max, edition: global, name: "Huawei Pura 90s Pro Max"}
+  - {id: huawei-pura-x-max, edition: china, name: "Huawei Pura X Max"}
+  - {id: huawei-pura-x-view, edition: china, name: "Huawei Pura X View"}
+  - {id: motorola-razr-70-ultra, edition: china, name: "Motorola Razr 70 Ultra"}
+  - {id: motorola-razr-fold, edition: china, name: "Motorola Razr Fold"}
+  - {id: oneplus-15, edition: global, name: "OnePlus 15"}
   - {id: oppo-find-n5, edition: global, name: "Oppo Find N5"}
   - {id: oppo-find-n6, edition: china, name: "Oppo Find N6"}
   - {id: oppo-find-n6, edition: global, name: "Oppo Find N6"}

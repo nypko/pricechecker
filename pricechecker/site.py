@@ -121,7 +121,8 @@ def _models(catalog: list[dict], offers: list[dict] = ()) -> list[dict]:
     is visible side by side. Editions come from catalog.yaml plus whatever the stores actually sell."""
     models: dict[str, dict] = {}
     for ph in catalog:
-        m = models.setdefault(ph["id"], {"id": ph["id"], "name": ph["name"], "brand": ph["brand"], "editions": []})
+        m = models.setdefault(ph["id"], {"id": ph["id"], "name": ph["name"], "brand": ph["brand"], "editions": [],
+                                         "announced": str(ph.get("announced") or "")})   # first official launch, YYYY-MM-DD
         if ph["edition"] not in m["editions"]:
             m["editions"].append(ph["edition"])
     for o in offers:
@@ -205,9 +206,11 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "chart": _chart(_series(rows, m, rates), colors, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
-    phones.sort(key=lambda p: (p["best"] is None, p["brand"], -(p["best"]["usd"] if p["best"] else 0)))
+    phones.sort(key=lambda p: p["name"])
+    phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
     env.filters["spec"] = spec
+    env.filters["month"] = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%b %Y") if d else ""
     upd = latest.get("updated", "")
     try:
         upd_label = datetime.strptime(upd, "%Y-%m-%dT%H:%M:%SZ").strftime("%-d %b, %H:%M UTC")

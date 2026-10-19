@@ -69,7 +69,8 @@
       base: base, baseApprox: o.money[c + "_approx"] === 1, adj: adj, adjAmt: adjAmt, ship: ship ? shipAmt : null,
       taxEst: taxEst, taxAdded: taxAdded, taxName: tax.name || "import tax", taxNote: tax.note || "",
       total: base + adjAmt + shipAmt + taxAdded,
-      approx: o.money[c + "_approx"] === 1 || taxAdded > 0,
+      approx: o.money[c + "_approx"] === 1 || taxAdded > 0 || !!(ship && ship.min),
+      shipMin: !!(ship && ship.min),   // the store publishes only a starting price ("from EUR 10")
       complete: adj != null && !!ship,
       duties: duties,
       payNote: o.notes.pay[state.pay], shipNote: o.notes.ship[state.region]
@@ -80,6 +81,7 @@
   function caveats(k) {
     var out = [];
     if (k.ship == null) out.push("excl. shipping");
+    else if (k.shipMin) out.push("shipping from " + fmt(k.ship));
     if (k.adj == null) out.push(PAY_LABEL[state.pay] + " fee unknown");
     if (k.duties === false)
       out.push(k.taxEst != null ? "incl. " + fmt(k.taxEst, true) + " est. " + k.taxName : k.taxName + " may apply, not included");
@@ -207,7 +209,7 @@
     else p.push({ cls: "s-fee", label: "Paying by " + PAY_LABEL[state.pay], v: 0, text: state.pay === "bank" ? "no discount" : "no fee", muted: true, note: k.payNote });
     if (k.ship == null) p.push({ cls: "s-ship", label: "Shipping", v: 0, text: "not listed, shown at checkout", muted: true,
                                  note: k.shipNote || "This store doesn't publish a shipping price for " + REGION_NAME[state.region] + "." });
-    else p.push({ cls: "s-ship", label: "Shipping", v: k.ship, text: k.ship === 0 ? "free" : fmt(k.ship), note: k.shipNote });
+    else p.push({ cls: "s-ship", label: "Shipping", v: k.ship, text: k.ship === 0 ? "free" : (k.shipMin ? "from " + fmt(k.ship) + ", exact at checkout" : fmt(k.ship)), note: k.shipNote });
     if (k.duties === true) p.push({ cls: "s-tax", label: "Import tax", v: 0, text: "included by the store", muted: true });
     else if (k.duties === false && k.taxEst != null) p.push({ cls: "s-tax", label: "Import tax", v: k.taxAdded, text: fmt(k.taxEst, true) + " est., paid on delivery", note: k.taxNote });
     else if (k.duties === false) p.push({ cls: "s-tax", label: "Import tax", v: 0, text: "may apply, not included", muted: true, note: k.taxNote });
@@ -388,7 +390,7 @@
   });
 
   // ---------- index: one row per phone, ranked ----------
-  var sortBy = "price";
+  var sortBy = "date";
   function renderIndex() {
     var list = document.getElementById("phones");
     if (!list) return;
@@ -422,6 +424,7 @@
     var list = document.getElementById("phones"), rows = Array.prototype.slice.call(list.children);
     rows.sort(function (a, b) {
       var ao = a.dataset.offers ? 0 : 1, bo = b.dataset.offers ? 0 : 1;
+      if (sortBy === "date" && a.dataset.date !== b.dataset.date) return a.dataset.date < b.dataset.date ? 1 : -1;
       if (ao !== bo) return ao - bo;
       if (sortBy === "price" && a._price !== b._price) return a._price - b._price;
       if (sortBy === "gap" && a._gap !== b._gap) return b._gap - a._gap;

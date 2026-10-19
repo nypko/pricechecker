@@ -3,62 +3,64 @@
 # offers: product page URLs for 'webpage' stores (Giztop, Banggood, Geekbuying). Optional storage: "16/512".
 # Shopify and feed stores are matched automatically by id + edition.
 
+# announced: first official launch (usually China) - checked 2026-10-19 against GSMArena, PhoneArena, Huawei Central,
+# Gizmochina, Wikipedia and brand announcements. The site lists phones newest first by this date.
 phones:
-  - {id: honor-magic-8-pro, edition: global, name: "Honor Magic 8 Pro"}
-  - {id: honor-magic-8-pro-air, edition: china, name: "Honor Magic 8 Pro Air"}
-  - {id: honor-magic-9, edition: china, name: "Honor Magic 9"}
-  - {id: honor-magic-9-pro-max, edition: china, name: "Honor Magic 9 Pro Max"}
-  - {id: honor-magic-9-super, edition: china, name: "Honor Magic 9 Super"}
-  - {id: honor-magic-v6, edition: global, name: "Honor Magic V6"}
-  - {id: huawei-mate-80, edition: china, name: "Huawei Mate 80"}
-  - {id: huawei-mate-80-pro, edition: china, name: "Huawei Mate 80 Pro"}
-  - {id: huawei-mate-80-pro-max, edition: china, name: "Huawei Mate 80 Pro Max"}
-  - {id: huawei-mate-90, edition: china, name: "Huawei Mate 90"}
-  - {id: huawei-mate-90-pro, edition: china, name: "Huawei Mate 90 Pro"}
-  - {id: huawei-mate-90-pro-max, edition: china, name: "Huawei Mate 90 Pro Max"}
-  - {id: huawei-pura-80-ultra, edition: global, name: "Huawei Pura 80 Ultra"}
-  - {id: huawei-pura-90-pro, edition: china, name: "Huawei Pura 90 Pro"}
-  - {id: huawei-pura-90-pro-max, edition: china, name: "Huawei Pura 90 Pro Max"}
-  - {id: huawei-pura-90s-pro, edition: global, name: "Huawei Pura 90s Pro"}
-  - {id: huawei-pura-90s-pro-max, edition: global, name: "Huawei Pura 90s Pro Max"}
-  - {id: huawei-pura-x-max, edition: china, name: "Huawei Pura X Max"}
-  - {id: huawei-pura-x-view, edition: china, name: "Huawei Pura X View"}
-  - {id: motorola-razr-70-ultra, edition: china, name: "Motorola Razr 70 Ultra"}
-  - {id: motorola-razr-fold, edition: china, name: "Motorola Razr Fold"}
-  - {id: oneplus-15, edition: global, name: "OnePlus 15"}
-  - {id: oppo-find-n5, edition: global, name: "Oppo Find N5"}
-  - {id: oppo-find-n6, edition: china, name: "Oppo Find N6"}
-  - {id: oppo-find-n6, edition: global, name: "Oppo Find N6"}
-  - {id: oppo-find-x10, edition: china, name: "Oppo Find X10"}
-  - {id: oppo-find-x10-pro-max, edition: china, name: "Oppo Find X10 Pro Max"}
-  - {id: oppo-find-x9-pro, edition: china, name: "Oppo Find X9 Pro"}
-  - {id: oppo-find-x9-ultra, edition: china, name: "Oppo Find X9 Ultra"}
-  - {id: oppo-find-x9-ultra, edition: global, name: "Oppo Find X9 Ultra"}
-  - {id: oppo-find-x9s-pro, edition: china, name: "Oppo Find X9s Pro"}
-  - {id: samsung-galaxy-s26, edition: china, name: "Samsung Galaxy S26"}
-  - {id: samsung-galaxy-s26-plus, edition: china, name: "Samsung Galaxy S26+"}
-  - {id: samsung-galaxy-s26-ultra, edition: china, name: "Samsung Galaxy S26 Ultra"}
-  - {id: samsung-galaxy-z-fold-8, edition: china, name: "Samsung Galaxy Z Fold 8"}
-  - {id: samsung-galaxy-z-fold-8-ultra, edition: china, name: "Samsung Galaxy Z Fold 8 Ultra"}
-  - {id: sony-xperia-1-vii, edition: china, name: "Sony Xperia 1 VII"}
-  - {id: sony-xperia-1-viii, edition: china, name: "Sony Xperia 1 VIII"}
-  - {id: vivo-x-fold-6, edition: china, name: "Vivo X Fold 6"}
-  - {id: vivo-x-fold-6, edition: global, name: "Vivo X Fold 6"}
-  - {id: vivo-x300-fe, edition: global, name: "Vivo X300 FE"}
-  - {id: vivo-x300-pro, edition: china, name: "Vivo X300 Pro"}
-  - {id: vivo-x300-pro, edition: global, name: "Vivo X300 Pro"}
-  - {id: vivo-x300-ultra, edition: china, name: "Vivo X300 Ultra"}
-  - {id: vivo-x300-ultra, edition: global, name: "Vivo X300 Ultra"}
-  - {id: vivo-x500, edition: china, name: "Vivo X500"}
-  - {id: vivo-x500, edition: global, name: "Vivo X500"}
-  - {id: vivo-x500-pro, edition: china, name: "Vivo X500 Pro"}
-  - {id: vivo-x500-pro-max, edition: china, name: "Vivo X500 Pro Max"}
-  - {id: vivo-x500-pro-max, edition: global, name: "Vivo X500 Pro Max"}
-  - {id: xiaomi-17-pro, edition: china, name: "Xiaomi 17 Pro"}
-  - {id: xiaomi-17-pro-max, edition: china, name: "Xiaomi 17 Pro Max"}
-  - {id: xiaomi-17-ultra, edition: global, name: "Xiaomi 17 Ultra"}
-  - {id: xiaomi-17-ultra-leica-edition, edition: china, name: "Xiaomi 17 Ultra (Leica Edition)"}
-  - {id: xiaomi-18-fold, edition: china, name: "Xiaomi 18 Fold"}
-  - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro"}
-  - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max"}
-  - {id: xiaomi-17-max, edition: china, name: "Xiaomi 17 Max"}
+  - {id: honor-magic-8-pro, edition: global, name: "Honor Magic 8 Pro", announced: 2025-10-15}
+  - {id: honor-magic-8-pro-air, edition: china, name: "Honor Magic 8 Pro Air", announced: 2026-01-19}
+  - {id: honor-magic-9, edition: china, name: "Honor Magic 9", announced: 2026-09-28}
+  - {id: honor-magic-9-pro-max, edition: china, name: "Honor Magic 9 Pro Max", announced: 2026-09-28}
+  - {id: honor-magic-9-super, edition: china, name: "Honor Magic 9 Super", announced: 2026-09-28}
+  - {id: honor-magic-v6, edition: global, name: "Honor Magic V6", announced: 2026-03-01}
+  - {id: huawei-mate-80, edition: china, name: "Huawei Mate 80", announced: 2025-11-25}
+  - {id: huawei-mate-80-pro, edition: china, name: "Huawei Mate 80 Pro", announced: 2025-11-25}
+  - {id: huawei-mate-80-pro-max, edition: china, name: "Huawei Mate 80 Pro Max", announced: 2025-11-25}
+  - {id: huawei-mate-90, edition: china, name: "Huawei Mate 90", announced: 2026-09-29}
+  - {id: huawei-mate-90-pro, edition: china, name: "Huawei Mate 90 Pro", announced: 2026-09-29}
+  - {id: huawei-mate-90-pro-max, edition: china, name: "Huawei Mate 90 Pro Max", announced: 2026-09-29}
+  - {id: huawei-pura-80-ultra, edition: global, name: "Huawei Pura 80 Ultra", announced: 2025-06-11}
+  - {id: huawei-pura-90-pro, edition: china, name: "Huawei Pura 90 Pro", announced: 2026-04-20}
+  - {id: huawei-pura-90-pro-max, edition: china, name: "Huawei Pura 90 Pro Max", announced: 2026-04-20}
+  - {id: huawei-pura-90s-pro, edition: global, name: "Huawei Pura 90s Pro", announced: 2026-07-14}
+  - {id: huawei-pura-90s-pro-max, edition: global, name: "Huawei Pura 90s Pro Max", announced: 2026-07-14}
+  - {id: huawei-pura-x-max, edition: china, name: "Huawei Pura X Max", announced: 2026-04-20}
+  - {id: huawei-pura-x-view, edition: china, name: "Huawei Pura X View", announced: 2026-08-28}
+  - {id: motorola-razr-70-ultra, edition: china, name: "Motorola Razr 70 Ultra", announced: 2026-04-29}
+  - {id: motorola-razr-fold, edition: china, name: "Motorola Razr Fold", announced: 2026-01-07}
+  - {id: oneplus-15, edition: global, name: "OnePlus 15", announced: 2025-10-27}
+  - {id: oppo-find-n5, edition: global, name: "Oppo Find N5", announced: 2025-02-20}
+  - {id: oppo-find-n6, edition: china, name: "Oppo Find N6", announced: 2026-03-17}
+  - {id: oppo-find-n6, edition: global, name: "Oppo Find N6", announced: 2026-03-17}
+  - {id: oppo-find-x10, edition: china, name: "Oppo Find X10", announced: 2026-09-22}
+  - {id: oppo-find-x10-pro-max, edition: china, name: "Oppo Find X10 Pro Max", announced: 2026-09-22}
+  - {id: oppo-find-x9-pro, edition: china, name: "Oppo Find X9 Pro", announced: 2025-10-16}
+  - {id: oppo-find-x9-ultra, edition: china, name: "Oppo Find X9 Ultra", announced: 2026-04-21}
+  - {id: oppo-find-x9-ultra, edition: global, name: "Oppo Find X9 Ultra", announced: 2026-04-21}
+  - {id: oppo-find-x9s-pro, edition: china, name: "Oppo Find X9s Pro", announced: 2026-04-21}
+  - {id: samsung-galaxy-s26, edition: china, name: "Samsung Galaxy S26", announced: 2026-02-25}
+  - {id: samsung-galaxy-s26-plus, edition: china, name: "Samsung Galaxy S26+", announced: 2026-02-25}
+  - {id: samsung-galaxy-s26-ultra, edition: china, name: "Samsung Galaxy S26 Ultra", announced: 2026-02-25}
+  - {id: samsung-galaxy-z-fold-8, edition: china, name: "Samsung Galaxy Z Fold 8", announced: 2026-07-22}
+  - {id: samsung-galaxy-z-fold-8-ultra, edition: china, name: "Samsung Galaxy Z Fold 8 Ultra", announced: 2026-07-22}
+  - {id: sony-xperia-1-vii, edition: china, name: "Sony Xperia 1 VII", announced: 2025-05-13}
+  - {id: sony-xperia-1-viii, edition: china, name: "Sony Xperia 1 VIII", announced: 2026-05-13}
+  - {id: vivo-x-fold-6, edition: china, name: "Vivo X Fold 6", announced: 2026-10-01}
+  - {id: vivo-x-fold-6, edition: global, name: "Vivo X Fold 6", announced: 2026-10-01}
+  - {id: vivo-x300-fe, edition: global, name: "Vivo X300 FE", announced: 2026-04-16}
+  - {id: vivo-x300-pro, edition: china, name: "Vivo X300 Pro", announced: 2025-10-13}
+  - {id: vivo-x300-pro, edition: global, name: "Vivo X300 Pro", announced: 2025-10-13}
+  - {id: vivo-x300-ultra, edition: china, name: "Vivo X300 Ultra", announced: 2026-03-30}
+  - {id: vivo-x300-ultra, edition: global, name: "Vivo X300 Ultra", announced: 2026-03-30}
+  - {id: vivo-x500, edition: china, name: "Vivo X500", announced: 2026-09-21}
+  - {id: vivo-x500, edition: global, name: "Vivo X500", announced: 2026-09-21}
+  - {id: vivo-x500-pro, edition: china, name: "Vivo X500 Pro", announced: 2026-09-21}
+  - {id: vivo-x500-pro-max, edition: china, name: "Vivo X500 Pro Max", announced: 2026-09-21}
+  - {id: vivo-x500-pro-max, edition: global, name: "Vivo X500 Pro Max", announced: 2026-09-21}
+  - {id: xiaomi-17-pro, edition: china, name: "Xiaomi 17 Pro", announced: 2025-09-25}
+  - {id: xiaomi-17-pro-max, edition: china, name: "Xiaomi 17 Pro Max", announced: 2025-09-25}
+  - {id: xiaomi-17-ultra, edition: global, name: "Xiaomi 17 Ultra", announced: 2025-12-25}
+  - {id: xiaomi-17-ultra-leica-edition, edition: china, name: "Xiaomi 17 Ultra (Leica Edition)", announced: 2025-12-25}
+  - {id: xiaomi-18-fold, edition: china, name: "Xiaomi 18 Fold", announced: 2026-09-07}
+  - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro", announced: 2026-09-23}
+  - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max", announced: 2026-09-23}
+  - {id: xiaomi-17-max, edition: china, name: "Xiaomi 17 Max", announced: 2026-05-28}

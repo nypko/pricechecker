@@ -5,7 +5,7 @@
 {% set connected = stores|rejectattr("ok", "none")|list %}
 <section class="intro">
   <h1>What a flagship phone really costs, delivered</h1>
-  <p>{{ phones|length }} phones from {{ connected|length }} import stores, with payment fees, shipping and estimated import tax worked in. Checked every hour.</p>
+  <p>{{ phones|length }} phones, newest first, from {{ connected|length }} import stores, with payment fees, shipping and estimated import tax worked in. Checked every hour.</p>
   {{ explain.editions(["global", "china"]) }}
 </section>
 
@@ -21,7 +21,7 @@
   <p class="list-meta"><span class="count">{{ phones|length }}</span> phones · delivered to <strong class="for-region">the EU</strong>
     <button type="button" class="link-btn" data-prefs>Change</button></p>
   <div class="seg seg-sm sort" role="group" aria-label="Sort by">
-    <button type="button" data-sort="price" aria-pressed="true">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
+    <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
   </div>
 </div>
 
@@ -34,10 +34,10 @@
 
 <ol class="plist" id="phones">
 {% for p in phones %}
-  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}"
+  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}" data-date="{{ p.announced }}"
       {% if p.best %}data-offers="{{ p.offers_json }}"{% endif %}>
     <a class="prow-link" href="phones/{{ p.slug }}">
-      <span class="prow-name">{{ p.name }}</span>
+      <span class="prow-name">{{ p.name }}{% if p.announced %} <time class="prow-date" datetime="{{ p.announced }}">{{ p.announced|month }}</time>{% endif %}</span>
       {% if p.best %}
       <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
         <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span></span>
@@ -75,7 +75,9 @@
       </tbody>
     </table>
     </div>
-    <p class="muted small">Taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.</p>
+    <p class="muted small">Taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.
+      Where buyers' experience differs from a store's promise (reviews on Trustpilot and XDA forums), the note says so.
+      Courier fees and import tax rules: courier and tax-office guidance, checked October 2026.</p>
   </details>
 </section>
 {% endblock %}

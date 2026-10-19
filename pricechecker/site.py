@@ -233,6 +233,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "phones").mkdir(parents=True)
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
+    shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", **ctx))
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", **ctx))

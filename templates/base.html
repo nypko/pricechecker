@@ -5,14 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161b22" media="(prefers-color-scheme: dark)">
-<title>{% block title %}PriceChecker – flagship phone prices{% endblock %}</title>
+<title>{% block title %}DoorPrice – flagship phone prices, delivered{% endblock %}</title>
+<link rel="icon" href="{{ root }}static/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{{ root }}static/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{{ root }}static/icons/apple-touch-icon.png">
+<link rel="manifest" href="{{ root }}static/site.webmanifest">
 <meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
 <link rel="stylesheet" href="{{ root }}static/style.css">
 </head>
 <body>
 <header class="top">
   <div class="top-inner">
-    <a class="brand" href="{{ root or './' }}">Price<span>Checker</span></a>
+    <a class="brand" href="{{ root or './' }}" aria-label="DoorPrice home">
+      <svg class="brand-mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="7" class="bm-tile"/><path d="M9 7h6.5a9 9 0 0 1 0 18H9z" class="bm-door"/><circle cx="14.6" cy="16" r="1.9" class="bm-tile"/></svg>
+      <span>Door<span class="brand-b">Price</span></span></a>
     <button type="button" class="prefs-toggle" aria-expanded="false" aria-controls="prefs">
       <span class="sr-only">Your settings: </span><span class="prefs-summary">EU · $ · Card</span>
     </button>

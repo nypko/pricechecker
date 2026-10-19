@@ -109,3 +109,20 @@ def test_spec_parts_splits_editions():
     assert site._spec_parts("7,200 mAh (China) / 7,100 mAh (Global)") == [("7,200 mAh", "China"), ("7,100 mAh", "Global")]
     assert site._spec_parts("7.95″ inside") == [("7.95″", "inner screen")]
     assert site._spec_parts("Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)") == [("Snapdragon 8 Elite Gen 5 or Exynos 2600 (by market)", "")]
+
+
+def test_average_dad_titles_parse():
+    from pricechecker.normalize import model_id, edition_of, storage_of
+    assert (model_id("OPPO Find X10 Pro Max (Global)"), edition_of("OPPO Find X10 Pro Max (Global)")) == ("oppo-find-x10-pro-max", "global")
+    assert (model_id("OnePlus 16"), edition_of("OnePlus 16"), storage_of("Black / 12GB/256GB")) == ("oneplus-16", "china", "12/256")
+    import re, yaml
+    from pathlib import Path
+    cfg = yaml.safe_load(Path("config/stores.yaml").read_text())["stores"]["averagedad"]
+    assert re.search(cfg["exclude_title"], "OPPO Find X10 Pro Max Photo Kit", re.I)
+
+
+def test_tax_config_covers_all_eu_countries():
+    import yaml
+    from pathlib import Path
+    eu = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]["EU"]["countries"]
+    assert len(eu) == 27 and all(17 <= c["vat"] <= 27 for c in eu.values())

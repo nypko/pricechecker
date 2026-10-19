@@ -316,6 +316,7 @@
         go.classList.toggle("secondary", !(first && edOk && !out));
         if (edOk && !out) first = false;
       });
+      sec.dataset.ed = edShown;
       var tg = sec.querySelector(".oos-toggle");
       tg.hidden = !oos;
       tg.textContent = open ? "Hide out-of-stock" : "Show " + oos + " out of stock";
@@ -324,6 +325,15 @@
       sec.classList.toggle("tier-empty", !shown && !oos);
     });
   }
+  // Price history under each table: opens in place, the panel grows to fit it
+  document.querySelectorAll(".hist-toggle").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var box = document.getElementById(b.getAttribute("aria-controls")), open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", open ? "true" : "false");
+      box.classList.toggle("open", open);
+      box.inert = !open;
+    });
+  });
   document.querySelectorAll(".oos-toggle").forEach(function (b) {
     b.addEventListener("click", function () { b.closest(".tier").classList.toggle("show-out"); tiers(); });
   });

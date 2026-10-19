@@ -70,18 +70,19 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
         d = f"M{x(s[0][0]):.1f} {y(s[0][1]):.1f}" + "".join(  # step line: price holds until the next change
             f" H{x(t):.1f} V{y(p):.1f}" for t, p in s[1:])
         dash = ' stroke-dasharray="6 4"' if edition == "china" else ""
-        parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash}>'
+        parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash} data-ed="{edition}">'
                      f'<title>{store} ({EDITION_LABEL[edition]})</title></path>')
     parts.append("</svg>")
     return "".join(parts)
 
 
-def _series(rows: list[dict], model: dict, rates: dict) -> dict:
-    """Per (store, edition): that store's lowest in-stock price (any storage) for the phone, at every change, in USD."""
+def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = None) -> dict:
+    """Per (store, edition): that store's lowest in-stock price for the phone at every change, in USD -
+    across all RAM/storage options, or for one (storage="12/512")."""
     state: dict[tuple, float | None] = {}
     out: dict[tuple, list] = defaultdict(list)
     for r in rows:
-        if r["model_id"] != model["id"] or r["edition"] not in model["editions"]:
+        if r["model_id"] != model["id"] or r["edition"] not in model["editions"] or (storage and r["storage"] != storage):
             continue
         line = (r["store"], r["edition"])
         state[(line, r["storage"])] = fx.convert(r["price"], r["currency"], "USD", rates) if r["available"] else None
@@ -90,6 +91,16 @@ def _series(rows: list[dict], model: dict, rates: dict) -> dict:
         if best is not None and (not out[line] or out[line][-1][1] != best):
             out[line].append((t, best))
     return out
+
+
+def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors: dict, now: datetime | None) -> dict:
+    """Price history for one RAM/storage option (the toggle under each table on the phone page)."""
+    series = _series(rows, model, rates, storage)
+    eds = defaultdict(list)   # store -> versions it has lines for, so the legend can follow the version filter
+    for s, e in series:
+        eds[s].append(e)
+    return {"svg": _chart(series, colors, now), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
+            "china": any(e == "china" for _, e in series)}
 
 
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
@@ -188,7 +199,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "offers_json": json.dumps([js(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
-                       "chart": _chart(_series(rows, m, rates), colors, updated_at), "changes": _changes(rows, m, stores_cfg, rates),
+                       "chart": _chart(_series(rows, m, rates), colors, updated_at),
+                       "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
     phones.sort(key=lambda p: (p["best"] is None, p["brand"], -(p["best"]["usd"] if p["best"] else 0)))
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())

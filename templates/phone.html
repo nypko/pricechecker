@@ -66,6 +66,27 @@
     </tbody>
   </table>
   <button type="button" class="link-btn oos-toggle" hidden></button>
+  {% set th = p.tier_charts[storage] %}
+  <div class="tier-foot">
+    <button type="button" class="hist-toggle" aria-expanded="false" aria-controls="hist-{{ loop.index }}">Price history</button>
+  </div>
+  <div class="tier-hist" id="hist-{{ loop.index }}" inert>
+    <div class="tier-hist-inner">
+    {% if th.svg %}
+      <p class="muted small hist-note">Lowest in-stock price per store at this RAM/storage, in USD{% if th.china %}; dashed line = China version{% endif %}.</p>
+      <div class="chart-wrap">{{ th.svg|safe }}</div>
+      <ul class="legend">
+        {% for s, eds in th.stores.items() %}{% set st = stores|selectattr("name", "equalto", s)|first %}
+        <li data-eds="{{ eds }}"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
+        {% endfor %}
+        {% if th.china and p.editions|length > 1 %}<li class="muted lg-china"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>China version</li>{% endif %}
+      </ul>
+    {% else %}
+      <p class="muted small hist-note">No price changes recorded at this RAM/storage yet.</p>
+    {% endif %}
+      <p class="small hist-more"><a href="../history/{{ p.slug }}">Every recorded change for this phone</a></p>
+    </div>
+  </div>
 </section>
 {% else %}
 <p>No store currently lists this phone.</p>

@@ -25,10 +25,10 @@ stores:
         paypal: {fee_pct: 0}
         card: {fee_pct: 0, note: "No handling fee; your bank may charge foreign-transaction fees"}
       shipping:
-        EU: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated"}
-        UK: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated"}
-        US: {cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated"}
-        AU: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated"}
+        EU: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        UK: {cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        US: {cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        AU: {cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties/GST not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
       watch:   # re-checked daily; if the text disappears the site flags the terms as "needs review"
         - {url: "https://wondamobile.com/pages/billing-information", expect: "4\\.5% discount"}
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
@@ -48,6 +48,9 @@ stores:
         bank_transfer: {discount_pct: 4.75, note: "Bank transfers 4.75% off all orders (manual confirmation)"}
         paypal: {fee_pct: 0}
         card: {fee_pct: 0}
+      # store-wide promotion applied automatically at checkout (2026-10-19, homepage banner: "2% summer sale at checkout - Auto Applied").
+      # Not stated whether it combines with the bank-transfer discount, so with bank transfer only the larger 4.75% is counted.
+      promo: {pct: 2, label: "Summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
       shipping:
         EU: {duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
         UK: {duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
@@ -56,6 +59,7 @@ stores:
       watch:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
+        - {url: "https://www.themobilemarvel.com/", expect: "2% summer sale"}   # flags the promo ending - then remove `promo`
 
   trinity:
     label: Trinity Electronic
@@ -86,10 +90,10 @@ stores:
         paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees from China and passes them on; exact amount at checkout"}
         card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned. Card address must match shipping address"}
       shipping:   # Global Priority from China; EU-warehouse items ship free in 2-5 working days
-        EU: {duties_included: true, cost: null, note: "Global Priority from EUR 10 (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
-        UK: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and import VAT, refunds any charges"}
-        US: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and import costs, refunds any charges"}
-        AU: {duties_included: true, cost: null, note: "Global Priority from EUR 10, 10-14 working days; store covers customs and GST, refunds any charges"}
+        EU: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout) (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
+        UK: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import VAT, refunds any charges"}
+        US: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import costs, refunds any charges"}
+        AU: {duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and GST, refunds any charges"}
       watch:
         - {url: "https://tradingshenzhen.com/en/content/customs-and-duties", expect: "no customs duty and no import VAT"}
         - {url: "https://tradingshenzhen.com/en/content/payment-regulations", expect: "about 4%"}
@@ -127,12 +131,13 @@ stores:
         paypal: {fee_pct: 0, note: "Charged in USD"}
         card: {fee_pct: 0, note: "Cards via PayPal"}
       shipping:
-        EU: {duties_included: true, cost: null, note: "Weight-based, shown in cart; EU duties/VAT paid by Giztop (IOSS)"}
-        UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK duties/VAT"}
-        US: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays US duties"}
+        EU: {duties_included: null, cost: null, note: "Weight-based, shown in cart. Giztop says it pays EU duties/VAT through IOSS, but IOSS only covers parcels up to EUR 150 and its own customs page says customs may charge the buyer for smartphones; buyers report paying on delivery (Trustpilot, 2026)"}
+        UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
+        US: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays US duties. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
         AU: {duties_included: false, cost: null, note: "Weight-based, shown in cart; prices exclude import tax, buyer pays AU GST/duties"}
       watch:
         - {url: "https://www.giztop.com/payment/", expect: "Wired Transfer"}
+        - {url: "https://www.giztop.com/customs-duty", expect: "IOSS"}
 
   banggood:
     label: Banggood

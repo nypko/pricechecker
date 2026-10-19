@@ -43,6 +43,15 @@ def test_australia_shipping():
 
 def test_duties_included():
     assert terms.duties_included(STORES["mobilemarvel"], "AU") is True
-    assert terms.duties_included(STORES["giztop"], "EU") is True        # IOSS
+    assert terms.duties_included(STORES["giztop"], "EU") is None   # IOSS covers parcels up to EUR 150 only; buyers report charges
     assert terms.duties_included(STORES["giztop"], "AU") is False
     assert terms.duties_included(STORES["wonda"], "EU") is None         # not stated
+
+
+def test_minimum_shipping_is_marked():
+    from pricechecker import terms
+    cfg = {"terms": {"shipping": {"EU": {"cost": None, "cost_min": 10, "currency": "EUR"}}}}
+    offer = {"currency": "EUR", "price": 1000.0}
+    out = terms.shipping(cfg, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7})
+    assert out["min"] == 1 and out["eur"] == 10.0
+    assert terms.shipping({"terms": {"shipping": {"EU": {"cost": None}}}}, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7}) is None

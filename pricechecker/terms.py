@@ -21,6 +21,13 @@ def payment_pct(cfg: dict, method: str) -> float | None:
     return None if t.get("fee_pct") is None else float(t["fee_pct"])
 
 
+def promo(cfg: dict) -> dict | None:
+    """Store-wide automatic discount, e.g. {'pct': 2, 'label': 'Summer sale', 'stacks_with_bank': False, 'note': ...}."""
+    p = (cfg.get("terms") or {}).get("promo")
+    return {"pct": float(p["pct"]), "label": p.get("label", "Store discount"), "stacks_with_bank": bool(p.get("stacks_with_bank")),
+            "note": p.get("note", "")} if p and p.get("pct") else None
+
+
 def min_order_usd(cfg: dict, method: str) -> float | None:
     """Smallest order (USD) for which the store accepts this payment method, e.g. Giztop wires only over $1,500."""
     t = (cfg.get("terms") or {}).get("payment", {}).get(METHODS[method]) or {}
@@ -36,10 +43,11 @@ def shipping(cfg: dict, region: str, offer: dict, rates: dict) -> dict | None:
     """Shipping cost in each site currency, or None when the store doesn't list it. Uses the store's own
     exchange rate (from its prices) when the cost is in the offer's currency, else ECB."""
     t = (cfg.get("terms") or {}).get("shipping", {}).get(region) or {}
-    if t.get("cost") is None:
+    minimum = t.get("cost") is None and t.get("cost_min") is not None   # "from EUR 10": used as a floor, marked as such
+    if t.get("cost") is None and not minimum:
         return None
-    cost, cur = float(t["cost"]), t.get("currency", offer["currency"])
-    out = {}
+    cost, cur = float(t["cost_min" if minimum else "cost"]), t.get("currency", offer["currency"])
+    out = {"min": 1} if minimum else {}
     for c in CURRENCIES:
         own = (offer.get("prices") or {}).get(c)
         if cur == offer["currency"] and own is not None and offer["price"]:

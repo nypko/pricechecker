@@ -4,68 +4,54 @@
 {% block main %}
 {% set connected = stores|rejectattr("ok", "none")|list %}
 <section class="intro">
-  <h1>Flagship phone prices, checked every hour</h1>
-  <p>{{ phones|length }} phones · {{ connected|length }} stores · Global and China versions side by side, so the price gap is easy to spot.</p>
+  <h1>What a flagship phone really costs, delivered</h1>
+  <p>{{ phones|length }} phones, newest first, from {{ connected|length }} import stores, with payment fees, shipping and estimated import tax worked in. Checked every hour.</p>
   {{ explain.editions(["global", "china"]) }}
 </section>
 
-<div class="filters">
-  <input id="q" type="search" placeholder="Search phones…" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
+<div class="list-tools">
+  <input id="q" type="search" placeholder="Search phones, e.g. “x9 ultra”" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
   <div class="chips" role="group" aria-label="Brand">
-    <button class="chip" data-brand="" aria-pressed="false">All</button>
+    <button class="chip" data-brand="" aria-pressed="true">All brands</button>
     {% for b in brands %}<button class="chip" data-brand="{{ b|lower }}" aria-pressed="false">{{ b }}</button>{% endfor %}
   </div>
 </div>
 
-<p class="pick-hint">Pick a brand, or <strong>All</strong>, to see the prices.</p>
+<div class="list-head">
+  <p class="list-meta"><span class="count">{{ phones|length }}</span> phones · delivered to <strong class="for-region">the EU</strong>
+    <button type="button" class="link-btn" data-prefs>Change</button></p>
+  <div class="seg seg-sm sort" role="group" aria-label="Sort by">
+    <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
+  </div>
+</div>
 
-<section class="gaps" hidden>
-  <h2>Biggest Global vs China gaps today</h2>
-  <ol class="gap-list"></ol>
-  <p class="muted small">Cheapest listed price of each version at the same RAM/storage, before shipping and import tax.</p>
-</section>
+<p class="nojs-only muted small">Without JavaScript these are store prices, before shipping, payment fees and import tax.</p>
 
 <div class="no-results" id="no-results" hidden>
   <p>No phones match “<span class="nr-q"></span>”.</p>
   <button type="button" class="chip" id="clear-search">Clear search</button>
 </div>
 
-<ul class="grid" id="phones">
+<ol class="plist" id="phones">
 {% for p in phones %}
-  <li class="card{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}"
+  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}" data-date="{{ p.announced }}"
       {% if p.best %}data-offers="{{ p.offers_json }}"{% endif %}>
-    <a class="card-link" href="phones/{{ p.slug }}"><span class="name">{{ p.name }}</span></a>
-    {% if p.offers %}
-      <ul class="eds">
-      {% for e in p.eds %}
-        <li class="ed" data-ed="{{ e.edition }}">
-          <span class="badge {{ e.edition }}">{{ e.label }}</span>
-          {% if e.best %}
-            <span class="ed-price">{{ price(e.best.money) }}</span>
-            <span class="spec">{{ e.best.storage|spec or "RAM/storage not listed" }}</span>
-            <span class="where">at {{ e.best.store_label }}</span>
-          {% else %}
-            <span class="muted small">{{ "out of stock" if e.listed else "no store lists it" }}</span>
-          {% endif %}
-        </li>
-      {% endfor %}
-      </ul>
-      <p class="diff" hidden></p>
-    {% endif %}
-    {% if p.best %}
-      <p class="card-note">Listed prices, before shipping and import tax</p>
-      <div class="actions">
-        <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View cheapest deal<span class="sr-only"> (opens store site)</span></a>
-        <a class="compare" href="phones/{{ p.slug }}">Compare totals at {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}</a>
-      </div>
-    {% elif p.offers %}
-      <p class="best none">Out of stock everywhere</p>
-    {% else %}
-      <p class="best none">No store prices yet</p>
-    {% endif %}
+    <a class="prow-link" href="phones/{{ p.slug }}">
+      <span class="prow-name">{{ p.name }}{% if p.announced %} <time class="prow-date" datetime="{{ p.announced }}">{{ p.announced|month }}</time>{% endif %}</span>
+      {% if p.best %}
+      <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
+        <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span></span>
+      <span class="prow-price"><span class="prow-v">{{ price(p.best.money) }}</span><span class="prow-plus"></span></span>
+      <span class="prow-gap" hidden></span>
+      {% elif p.offers %}
+      <span class="prow-sub muted">Out of stock everywhere</span>
+      {% else %}
+      <span class="prow-sub muted">No store prices yet</span>
+      {% endif %}
+    </a>
   </li>
 {% endfor %}
-</ul>
+</ol>
 
 <section class="status" id="terms">
   <details class="explain terms-box">
@@ -89,7 +75,9 @@
       </tbody>
     </table>
     </div>
-    <p class="muted small">Taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.</p>
+    <p class="muted small">Taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.
+      Where buyers' experience differs from a store's promise (reviews on Trustpilot and XDA forums), the note says so.
+      Courier fees and import tax rules: courier and tax-office guidance, checked October 2026.</p>
   </details>
 </section>
 {% endblock %}

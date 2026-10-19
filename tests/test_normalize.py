@@ -81,3 +81,11 @@ def test_tradingshenzhen_titles():
     assert model_id(title_model("Vivo X300 FE - 12GB/512GB - Global HK Edition - EU Warehouse")) == "vivo-x300-fe"
     assert edition_of("Vivo X300 FE - 12GB/512GB - Global HK Edition - EU Warehouse") == "global"
     assert slug_model("https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15-16gb512gb-eu-warehouse") == "oneplus-15"
+
+
+def test_pixels_are_never_china_editions():
+    from pricechecker.normalize import edition_of, model_id
+    assert edition_of("Google Pixel 11 Pro XL 16GB 512GB") == "global"
+    assert edition_of("Pixel 11 Pro Fold 16GB/256GB (JP version)") == "global"
+    assert model_id("Google Pixel 11 Pro XL 16GB 512GB") == "google-pixel-11-pro-xl"
+    assert edition_of("Xiaomi 17 Ultra 16GB 512GB") == "china"          # unchanged for brands with China editions

@@ -55,7 +55,7 @@
     {% if p.best %}
       <p class="card-note">Listed prices, before shipping and import tax</p>
       <div class="actions">
-        <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View cheapest deal<span class="sr-only"> (opens store site)</span></a>
+        <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View {{ edition_label[p.best.edition] }} version deal<span class="sr-only"> (opens store site)</span></a>
         <a class="compare" href="phones/{{ p.slug }}">Compare totals at {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}</a>
       </div>
     {% elif p.offers %}

@@ -117,6 +117,32 @@
     });
     return best;
   }
+  // Index cards compare like with like: both versions at the same RAM/storage (the cheapest one both are sold in),
+  // or, when no configuration is sold in both, the closest pair (e.g. Global 12/512 vs China 16/512).
+  function size(s) { var p = (s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; }
+  function distance(a, b) {
+    var x = size(a), y = size(b);
+    if (!x || !y) return 99;   // RAM/storage not listed: only used when nothing better exists
+    return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
+  }
+  function match(offers) {
+    var G = byEdition(offers, "global"), C = byEdition(offers, "china");
+    if (!G.length || !C.length) return null;
+    var d = gap(offers, cheapest);
+    if (d) return { g: d.g, c: d.c, storage: d.storage, same: true };
+    var gs = {}, cs = {}, best = null;
+    G.forEach(function (o) { gs[o.storage] = 1; });
+    C.forEach(function (o) { cs[o.storage] = 1; });
+    Object.keys(gs).forEach(function (a) {
+      Object.keys(cs).forEach(function (b) {
+        var g = cheapest(G.filter(function (o) { return o.storage === a; })), c = cheapest(C.filter(function (o) { return o.storage === b; }));
+        var dist = distance(a, b), low = Math.min(g.k.total, c.k.total);
+        if (!best || dist < best.dist || (dist === best.dist && low < best.low)) best = { g: g, c: c, dist: dist, low: low, same: false };
+      });
+    });
+    return best;
+  }
+
   function gapText(d, withStorage) {
     var diff = d.c.k.total - d.g.k.total, approx = d.g.k.approx || d.c.k.approx;
     var where = withStorage && d.storage !== "base" ? " (" + d.storage.replace("/", " + ") + " GB)" : "";
@@ -198,22 +224,26 @@
     // index cards: the stores' listed prices (payment/shipping/tax are on the phone pages)
     var gaps = [];
     document.querySelectorAll(".card[data-offers]").forEach(function (card) {
-      var offers = JSON.parse(card.dataset.offers), top = cheapest(offers);
+      var offers = JSON.parse(card.dataset.offers), m = match(offers);
+      var picks = m ? { global: m.g, china: m.c } : {}, top = m ? (m.c.k.total < m.g.k.total ? m.c : m.g) : cheapest(offers);
       card.querySelectorAll(".ed").forEach(function (li) {
-        var b = cheapest(byEdition(offers, li.dataset.ed));
+        var b = picks[li.dataset.ed] || cheapest(byEdition(offers, li.dataset.ed));
         if (!b) return;
         li.querySelector(".price").textContent = fmt(b.k.total, b.k.approx);
         li.querySelector(".spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
         li.querySelector(".where").textContent = "at " + b.o.store_label;
-        li.classList.toggle("cheapest", b.o === top.o && card.querySelectorAll(".ed .price").length > 1);
+        li.classList.toggle("cheapest", !!m && b === top);
       });
-      var d = gap(offers, cheapest), el = card.querySelector(".diff");
-      el.hidden = !d;
-      if (d) {
-        el.textContent = gapText(d, true);
-        gaps.push({ d: d, abs: Math.abs(d.c.k.total - d.g.k.total), name: card.querySelector(".name").textContent, slug: card.dataset.slug });
+      var el = card.querySelector(".diff");
+      el.hidden = !m;
+      if (m) {
+        el.textContent = gapText(m, m.same) + (m.same ? "" : " · closest RAM/storage");
+        if (m.same) gaps.push({ d: m, abs: Math.abs(m.c.k.total - m.g.k.total), name: card.querySelector(".name").textContent, slug: card.dataset.slug });
       }
-      if (top) card.querySelector(".deal").href = top.o.link;
+      // the button names what it opens: the cheaper of the two compared versions (or the only one sold)
+      var deal = card.querySelector(".deal");
+      deal.href = top.o.link;
+      deal.firstChild.textContent = "View " + (top.o.edition === "china" ? "China" : "Global") + " version deal";
     });
     // index, before a brand is picked: the three biggest Global vs China gaps
     var gl = document.querySelector(".gap-list");

@@ -14,6 +14,20 @@ OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
 EDITIONS = ["global", "china"]
 EDITION_LABEL = {"global": "Global", "china": "China"}
+_GOOGLE: dict = {}
+
+
+def _google() -> dict:
+    """config/google.yaml: Google Play on each brand's China version, and what we call that version."""
+    if not _GOOGLE:
+        _GOOGLE.update(yaml.safe_load(Path("config/google.yaml").read_text()))
+    return _GOOGLE
+
+
+def ed_labels(brand: str) -> dict:
+    """{"global": "Global", "china": "China"} - or "Asia" for brands whose model numbers cover China, Hong Kong and Taiwan."""
+    b = _google()["brands"].get(brand.lower(), {})
+    return {**EDITION_LABEL, "china": b.get("china_label", EDITION_LABEL["china"])}
 STORE_COLORS = ["#2a78d6", "#e3742c", "#1fa37a", "#b0479c", "#c9a227", "#6d4c41", "#d64545", "#3fa7b5"]
 
 
@@ -47,6 +61,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     from xml.sax.saxutils import escape
     base = (site_cfg.get("base_url") or "https://doorprice.app").rstrip("/")
     names = {p["id"]: p["name"] for p in phones}
+    labels = {p["id"]: p["ed_label"] for p in phones}
     sym = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$", "HKD": "HK$"}
     money = lambda v, c: f"{sym.get(c, c + ' ')}{v:,.0f}"
     last: dict[tuple, dict] = {}
@@ -61,7 +76,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
             continue
         last[key] = r
         label = stores_cfg.get(r["store"], {}).get("label", r["store"])
-        what = f"{names[r['model_id']]} {EDITION_LABEL[r['edition']]}" + (f" {spec(r['storage'])}" if "/" in r["storage"] else "")
+        what = f"{names[r['model_id']]} {labels[r['model_id']][r['edition']]}" + (f" {spec(r['storage'])}" if "/" in r["storage"] else "")
         if r["available"] and not prev["available"]:
             change = f"back in stock at {money(r['price'], r['currency'])}"
         elif not r["available"]:
@@ -111,7 +126,7 @@ LABELS: dict[str, str] = {}   # store key -> name shown in chart readouts; set b
 
 
 def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, str], now: datetime | None = None,
-           cur: str = "USD") -> str:
+           cur: str = "USD", labels: dict = EDITION_LABEL) -> str:
     """Inline SVG line chart in `cur`, one line per (store, edition) - China editions dashed; empty if no history yet.
     Drawn at phone width (400 units) so the axis text stays readable when the page shrinks it."""
     pts = [(t, p) for s in series.values() for t, p in s]
@@ -144,7 +159,7 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
         d = f"M{x(s[0][0]):.1f} {y(s[0][1]):.1f}" + "".join(  # step line: price holds until the next change
             f" H{x(t):.1f} V{y(p):.1f}" for t, p in s[1:])
         dash = ' stroke-dasharray="6 4"' if edition == "china" else ""
-        name = f"{LABELS.get(store, store)} ({EDITION_LABEL[edition]})"
+        name = f"{LABELS.get(store, store)} ({labels[edition]})"
         steps = ";".join(f"{x(t):.1f}:{SYMBOL[cur]}{p:,.0f}" for t, p in s[:-1])
         parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash} data-ed="{edition}" '
                      f'data-name="{name}" data-steps="{steps}"><title>{name}</title></path>')
@@ -172,7 +187,7 @@ def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = No
 def _charts(rows: list[dict], model: dict, rates: dict, colors: dict, now: datetime | None, storage: str | None = None) -> dict:
     """The chart once per site currency ({"usd": svg, ...}; {} if no history yet), so it follows the visitor's currency.
     History records each store's own price; other currencies are converted at the current ECB rate."""
-    out = {c.lower(): _chart(_series(rows, model, rates, storage, c), colors, now, c) for c in CURRENCIES}
+    out = {c.lower(): _chart(_series(rows, model, rates, storage, c), colors, now, c, ed_labels(model["brand"])) for c in CURRENCIES}
     return out if all(out.values()) else {}
 
 
@@ -362,7 +377,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
-    google = yaml.safe_load(Path("config/google.yaml").read_text())   # Google Play on each brand's China version
+    google = _google()   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
@@ -382,12 +397,14 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
                                    "buyers": buyers.get(store),
+                                   "gplay": stores_cfg[store].get("google_play") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("google_play")
+                                            if o["edition"] == "china" else None,
                                    "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
                                    "trend": _trend(rows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay")}
         # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
         lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
@@ -398,7 +415,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
             o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
             by_storage[o["storage"]].append(o)
         storages = sorted(by_storage, key=_storage_key)
-        eds = [{"edition": e, "label": EDITION_LABEL[e],
+        eds = [{"edition": e, "label": ed_labels(m["brand"])[e],
                 "best": next((o for o in in_stock if o["edition"] == e), None),
                 "listed": any(o["edition"] == e for o in offers)} for e in m["editions"]]
         # Global vs China at the same configuration: the browser picks the cheapest total in each cell
@@ -414,6 +431,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "title_price": _title_price(offers, tax_eu),
                        "ld": _product_ld(m, in_stock, site_cfg),
                        "specs": _specs(specs.get(m["id"])),
+                       "ed_label": ed_labels(m["brand"]),
                        "google": {**google["brands"].get(m["brand"].lower(), google["brands"]["default"]),
                                   "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""},
                        "chart": _charts(rows, m, rates, colors, updated_at),
@@ -423,7 +441,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
     # end of each phone page: the same brand's other phones (newest first) and the nearest in price from other brands
-    card = lambda q: {"name": q["name"], "slug": q["slug"], "announced": q["announced"], "editions": q["editions"],
+    card = lambda q: {"name": q["name"], "slug": q["slug"], "announced": q["announced"], "editions": q["editions"], "ed_label": q["ed_label"],
                       "money": q["best"]["money"] if q["best"] else None}
     for ph in phones:
         same = [q for q in phones if q["brand"] == ph["brand"] and q is not ph][:4]

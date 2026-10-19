@@ -39,12 +39,12 @@
 
 <ol class="plist" id="phones">
 {% for p in phones %}
-  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}" data-date="{{ p.announced }}"
+  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}" data-date="{{ p.announced }}" data-cl="{{ p.ed_label.china }}"
       {% if p.best %}data-offers="{{ p.offers_json }}"{% endif %}>
     <a class="prow-link" href="phones/{{ p.slug }}">
       <span class="prow-name">{{ p.name }}{% if p.announced %} <time class="prow-date" datetime="{{ p.announced }}">{{ p.announced|month }}</time>{% endif %}</span>
       {% if p.best %}
-      <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
+      <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ p.ed_label[p.best.edition] }}</span>
         <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span><span class="prow-count"></span> <span class="pill prow-trend" hidden></span> <span class="pill prow-watch" hidden></span></span>
       <span class="prow-price"><span class="prow-v">{{ price(p.best.money) }}</span><span class="prow-plus"></span></span>
       <span class="prow-or"></span>

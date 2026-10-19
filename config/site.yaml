@@ -1,0 +1,5 @@
+# Site-wide details shown on the About and Privacy pages.
+# contact_email: the public address networks, stores and visitors can write to (e.g. hello@doorprice.app once the
+# domain is bought). Leave empty until it works - the pages then say an address is coming instead of showing a fake one.
+contact_email: ""
+country: Bulgaria

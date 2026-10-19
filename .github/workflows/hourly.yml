@@ -48,7 +48,10 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "Store promotions to review ($(date -u +%Y-%m-%d))" --body-file .promo_report.md
+        run: |   # one open review issue at a time: later reports are added to it as comments
+          n=$(gh issue list --state open --search 'in:title "Store promotions to review"' --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file .promo_report.md
+          else gh issue create --title "Store promotions to review ($(date -u +%Y-%m-%d))" --body-file .promo_report.md; fi
       - name: Commit price history
         if: always()   # also after a timeout: keeps the caches (store rates, pages) so the next run is shorter
         run: |
@@ -56,9 +59,10 @@ jobs:
           git config user.email "price-checker-bot@users.noreply.github.com"
           git add data/
           git diff --cached --quiet || git commit -m "Prices $(date -u +%Y-%m-%dT%H:%MZ)"
-          git pull --rebase --quiet && git push
+          # another run may have pushed prices meanwhile: on a data conflict keep this run's (newer) files
+          git pull --rebase --quiet -X theirs && git push
       - name: Create the Cloudflare Pages project (first run only)
-        if: env.HAS_CLOUDFLARE == 'true'
+        if: always() && env.HAS_CLOUDFLARE == 'true' && hashFiles('build/index.html') != ''
         continue-on-error: true   # fails harmlessly once the project exists
         uses: cloudflare/wrangler-action@v3
         with:
@@ -66,7 +70,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages project create ${{ env.CF_PAGES_PROJECT }} --production-branch=main
       - name: Deploy to Cloudflare Pages
-        if: env.HAS_CLOUDFLARE == 'true'
+        if: always() && env.HAS_CLOUDFLARE == 'true' && hashFiles('build/index.html') != ''   # deploy even if saving history failed
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

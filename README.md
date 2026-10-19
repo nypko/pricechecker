@@ -67,6 +67,27 @@ which an affiliate site is. Cloudflare Pages allows commercial use on the free p
 4. Actions → "Hourly price check" → Run workflow. The first run creates the Pages project; the site is at
    `https://<project>.pages.dev`. A custom domain can be added in Cloudflare → Workers & Pages → the project → Custom domains.
 
+## Buyer reports (delivery time and import tax, from real orders)
+
+Two sources, each reviewed by hand before it counts (`pricechecker/buyer_reports.py`, weekly workflow `buyer-reports.yml`):
+
+- **Reddit, official Data API only** (Reddit's robots.txt blocks crawlers, so no scraping). Create a "script" app at
+  https://www.reddit.com/prefs/apps and request API access; then add repository secrets `REDDIT_CLIENT_ID`,
+  `REDDIT_CLIENT_SECRET` and the variable `REDDIT_USERNAME`. First run: Actions → Weekly buyer reports → Run workflow
+  with days = 62 to look two months back.
+- **The form on each phone page** (`functions/api/report.js`, deployed with the site). In Cloudflare: Workers & Pages →
+  KV → create a namespace (e.g. `doorprice-reports`); pricechecker → Settings → Bindings → add KV namespace binding
+  `REPORTS`; Settings → Variables and secrets → add secret `REPORTS_ADMIN_KEY` (any long random string). Add the same
+  value as the GitHub secret `REPORTS_ADMIN_KEY`.
+
+New reports land in one GitHub issue, "Buyer reports to review". Open the links, then:
+
+    python -m pricechecker.buyer_reports approve t1_abc123 f_1792...   # -> config/buyer_reports.yaml, shown on the site
+    python -m pricechecker.buyer_reports reject t3_xyz789
+
+and commit `config/buyer_reports.yaml` and `data/buyer_reports_*.json`. Only links, dates and the facts (country, days,
+tax, amount, courier) are kept, never a post's text.
+
 ## Still to do
 
 1. **Affiliate links** – Wonda (`ref=`) and Trading Shenzhen (`affp=`) are set; The Mobile Marvel and Giztop still

@@ -158,6 +158,15 @@
     if (t.returns_days) x.push(t.returns_days + "-day returns");
     return x.join(" · ");
   }
+  // Approved buyer reports for the chosen Ship-to: "12 buyers to the EU: 8–21 days (typically 11) · 3 of 10 paid import tax"
+  function buyersText(o) {
+    var b = o.buyers && o.buyers[state.region];
+    if (!b || !b.n) return "";
+    var x = [];
+    if (b.nd) x.push((b.dmin === b.dmax ? b.dmin : b.dmin + "–" + b.dmax) + " days" + (b.nd > 2 ? " (typically " + b.dmed + ")" : ""));
+    if (b.tk) x.push(b.tx + " of " + b.tk + " paid import tax");
+    return x.length ? b.n + (b.n === 1 ? " buyer" : " buyers") + " to " + REGION_NAME[state.region] + ": " + x.join(" · ") : "";
+  }
   // Price movement from the hourly history: "↓ €40 this week" / "↓ €40 since 16 Oct" / "Lowest in 30 days"
   function trendText(o, k) {
     var t = o.trend;
@@ -351,6 +360,7 @@
     body.appendChild(dl);
     if (couponText(o)) body.appendChild(el("p", "coupon", couponText(o)));
     if (trustText(o)) body.appendChild(el("p", "st-trust", trustText(o)));
+    if (buyersText(o)) body.appendChild(el("p", "st-buyers", buyersText(o)));
     var go = el("a", "go secondary", (o.available ? "Go to " : "Check ") + o.store_label);
     go.href = o.link; go.rel = "sponsored nofollow noopener"; go.target = "_blank";
     go.appendChild(el("span", "sr-only", " (opens store site)"));
@@ -439,6 +449,11 @@
     var at = ans.querySelector(".ans-trust");
     at.textContent = trustText(b.o);   // right under the store name, so it needs no name of its own
     at.hidden = !at.textContent;
+    var ab = ans.querySelector(".ans-buyers");
+    ab.textContent = buyersText(b.o);
+    ab.hidden = !ab.textContent;
+    var rs = document.getElementById("rf-store");
+    if (rs && !rs.dataset.touched) rs.value = b.o.store;   // the report form starts on the store shown
     var tr = ans.querySelector(".ans-trend");
     tr.textContent = b.k.payOk ? trendText(b.o, b.k) : "";
     tr.hidden = !tr.textContent;
@@ -530,6 +545,37 @@
       renderPhone();   // records today's price as the starting point
       showWatch();
     });
+  }
+  // Buyer report form: sent in the background; without JavaScript it posts normally and comes back with #report-thanks
+  var rf = document.querySelector(".report-form");
+  if (rf) {
+    var status = rf.querySelector(".rf-status"), amt = rf.querySelector(".rf-amount");
+    var taxNow = function () { var c = rf.querySelector("input[name=tax]:checked"); amt.hidden = !c || c.value !== "yes"; };
+    rf.querySelectorAll("input[name=tax]").forEach(function (x) { x.addEventListener("change", taxNow); });
+    taxNow();
+    document.getElementById("rf-store").addEventListener("change", function (ev) { ev.target.dataset.touched = "1"; });
+    var cc = document.getElementById("rf-country");
+    if (!cc.value) cc.value = { UK: "GB", US: "US", AU: "AU" }[state.region] || "";
+    rf.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var data = {};
+      new FormData(rf).forEach(function (v, k) { data[k] = v; });
+      if (!data.days && !data.tax) { status.className = "rf-status err"; status.textContent = "Add the days or whether you paid import tax."; return; }
+      status.className = "rf-status"; status.textContent = "Sending…";
+      fetch(rf.getAttribute("action"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.ok, j: j }; }); })
+        .then(function (x) {
+          status.className = "rf-status " + (x.ok ? "ok" : "err");
+          status.textContent = x.ok ? "Thanks! We check each report before it counts." : (x.j.error || "Couldn't send it. Please try again.");
+          if (x.ok) { rf.querySelector(".rf-send").disabled = true; }
+        })
+        .catch(function () { status.className = "rf-status err"; status.textContent = "Couldn't send it. Check your connection and try again."; });
+    });
+    if (location.hash === "#report-thanks" || location.hash === "#report-error") {
+      document.querySelector(".report-box").open = true;
+      status.className = "rf-status " + (location.hash === "#report-thanks" ? "ok" : "err");
+      status.textContent = location.hash === "#report-thanks" ? "Thanks! We check each report before it counts." : "Please check the store, country and days, then send again.";
+    }
   }
   var hv = document.getElementById("hist-var");
   if (hv) hv.addEventListener("change", function () { histSel = hv.value; showHist(histSel); });

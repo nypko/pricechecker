@@ -65,6 +65,7 @@
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
   <p class="ans-trust" hidden></p>
   <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
+  <p class="ans-buyers" hidden></p>
   <p class="ans-or" hidden></p>
   <p class="ans-alt" hidden></p>
   <p class="coupon ans-coupon" hidden></p>
@@ -82,6 +83,31 @@
   <ol class="store-list"></ol>
   <p class="others-none muted" hidden>No other store sells this version at this RAM/storage.</p>
   <details class="oos" hidden><summary></summary><ol class="store-list oos-list"></ol></details>
+</section>
+
+<section class="report-sec" id="report">
+  <details class="explain report-box">
+    <summary>Bought this phone? Tell other buyers how your order arrived</summary>
+    <form class="report-form panel" method="post" action="../api/report">
+      <p class="muted small">Two minutes, no account. We check every report before it counts, and we don't store your name, email or IP address.</p>
+      <input type="hidden" name="phone" value="{{ p.slug }}">
+      <p class="hp" aria-hidden="true"><label>Leave empty <input name="website" tabindex="-1" autocomplete="off"></label></p>
+      <div class="rf-grid">
+        <label>Store <select name="store" id="rf-store" required>{% for s in report_stores %}<option value="{{ s.name }}">{{ s.label }}</option>{% endfor %}</select></label>
+        <label>Delivered to <select name="country" id="rf-country" required><option value="">Choose country</option>{% for code, name in report_countries %}<option value="{{ code }}">{{ name }}</option>{% endfor %}</select></label>
+        <label>Days from order to your door <input name="days" id="rf-days" type="number" min="1" max="120" inputmode="numeric" placeholder="e.g. 12"></label>
+        <label>Shipping <select name="courier" id="rf-courier"><option value="">Not sure</option><option>Global Priority</option><option>EU warehouse</option><option>DHL</option><option>UPS</option><option>FedEx</option><option>Royal Mail</option><option>USPS</option><option>Other</option></select></label>
+      </div>
+      <fieldset class="rf-tax"><legend>Did you pay import tax or customs on delivery?</legend>
+        <label><input type="radio" name="tax" value="no"> No</label>
+        <label><input type="radio" name="tax" value="yes"> Yes</label>
+        <label><input type="radio" name="tax" value="" checked> Not sure</label>
+        <span class="rf-amount"><label>How much <input name="amount" id="rf-amount" type="number" min="0" max="5000" step="0.01" inputmode="decimal"></label>
+          <select name="currency" aria-label="Currency"><option>EUR</option><option>GBP</option><option>USD</option><option>AUD</option></select></span>
+      </fieldset>
+      <p class="rf-actions"><button type="submit" class="btn-quiet rf-send">Send report</button> <span class="rf-status" role="status"></span></p>
+    </form>
+  </details>
 </section>
 
 <section class="hist-sec">

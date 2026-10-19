@@ -18,6 +18,7 @@
 stores:
   wonda:
     label: Wonda Mobile
+    mentions: ["wondamobile", "wonda mobile"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: shopify
     base_url: https://wondamobile.com
     currency: USD
@@ -43,6 +44,7 @@ stores:
 
   mobilemarvel:
     label: The Mobile Marvel
+    mentions: ["mobile marvel", "themobilemarvel"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: shopify
     base_url: https://www.themobilemarvel.com
     currency: HKD
@@ -80,6 +82,7 @@ stores:
 
   tradingshenzhen:
     label: Trading Shenzhen
+    mentions: ["tradingshenzhen", "trading shenzhen"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: sitemap         # 2026-10-16: answers PriceCheckerBot again (was 403); one product page per phone + storage
     sitemap_url: https://tradingshenzhen.com/sitemap-products-en.xml
     promo_pages: ["https://tradingshenzhen.com/en/"]   # read daily for promotion text (pricechecker/promos.py)
@@ -129,6 +132,7 @@ stores:
 
   giztop:
     label: Giztop
+    mentions: ["giztop"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: magento         # walks the phone category, then reads variant prices from each tracked phone's page
     base_url: https://www.giztop.com
     categories: [/phones.html]

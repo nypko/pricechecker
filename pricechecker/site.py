@@ -2,13 +2,13 @@
 import json
 import shutil
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import affiliate, fx, history, promos, terms
+from . import affiliate, buyer_reports, fx, history, promos, terms
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
@@ -362,6 +362,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
+    buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
         offers = []
@@ -379,12 +380,13 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                                              if stores_cfg[store].get("part_of") else stores_cfg[store]),
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
+                                   "buyers": buyers.get(store),
                                    "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
                                    "trend": _trend(rows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers")}
         # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
         lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
@@ -444,6 +446,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "month": updated_at.strftime("%B %Y") if updated_at else "",   # "October 2026" in page titles
            "site": site_cfg,
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
+           "report_stores": [{"name": s, "label": c.get("label", s)} for s, c in stores_cfg.items() if c.get("enabled", True)],
+           "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
            "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
     if OUT.exists():

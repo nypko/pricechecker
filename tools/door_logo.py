@@ -24,8 +24,8 @@ def mark(detail, uid, ink="currentColor", glass_attr='class="dp-glass"', extra="
     full = detail == "full"
     # mask: white = ink stays, black = cut through to the page
     m = [rect(0, 0, ADV, CAP, fill="white"),
-         f'<clipPath id="{uid}c"><path d="{COUNTER}"/></clipPath>',
-         f'<g clip-path="url(#{uid}c)">' + rect(X0 + FRAME, Y0 + FRAME, W - 2 * FRAME, H - 2 * FRAME, fill="black") + "</g>"]
+         # the door sits on top: its surface is cut through the letter in full, even where it overlaps the D's bowl
+         rect(X0 + FRAME, Y0 + FRAME, W - 2 * FRAME, H - 2 * FRAME, fill="black")]
     wx, wy, ww, wh = box(.15, .07, .70, .40)
     m.append(rect(wx, wy, ww, wh, fill="white"))                       # window frame and mullions stay ink
     panes = []

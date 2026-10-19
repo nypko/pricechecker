@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
 {% import "_explain.html" as explain %}
-{% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – DoorPrice{% endblock %}
-{% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, delivered to your country, updated hourly.{% endblock %}
+{#- search-friendly: the cheapest total (EU, card) in the title; "delivered" only when shipping and import tax are settled -#}
+{% set tp = p.title_price %}
+{% block title %}{{ p.name }} price{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
+{% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} import store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../">All phones</a>

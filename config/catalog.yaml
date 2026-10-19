@@ -28,6 +28,7 @@ phones:
   - {id: motorola-razr-70-ultra, edition: china, name: "Motorola Razr 70 Ultra", announced: 2026-04-29}
   - {id: motorola-razr-fold, edition: china, name: "Motorola Razr Fold", announced: 2026-01-07}
   - {id: oneplus-15, edition: global, name: "OnePlus 15", announced: 2025-10-27}
+  - {id: oneplus-16, edition: china, name: "OnePlus 16", announced: 2026-10-12}   # China-only launch; stores' Global-ROM units are picked up as they appear
   - {id: oppo-find-n5, edition: global, name: "Oppo Find N5", announced: 2025-02-20}
   - {id: oppo-find-n6, edition: china, name: "Oppo Find N6", announced: 2026-03-17}
   - {id: oppo-find-n6, edition: global, name: "Oppo Find N6", announced: 2026-03-17}

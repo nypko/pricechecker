@@ -103,6 +103,28 @@ def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors
             "china": any(e == "china" for _, e in series)}
 
 
+def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
+    """Cheapest total for the page title and search snippet: shipping to the EU, paying by card, in EUR - the same sum
+    the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
+    price excludes it). Returns (total, complete); complete = shipping known and import tax settled either way."""
+    best = None
+    for o in offers:
+        if not o["available"] or not (o.get("pay_ok") or {}).get("card", True):
+            continue
+        base = o["money"]["eur"]
+        if o.get("promo"):
+            base -= base * o["promo"]["pct"] / 100
+        adj = (o["pay"].get("card") or 0) * base / 100
+        ship = (o["ship"] or {}).get("EU")
+        ship_amt = ship["eur"] if ship else 0
+        duties = (o.get("duties") or {}).get("EU")
+        tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
+        total, complete = base + adj + ship_amt + tax, ship is not None and duties is not None
+        if best is None or total < best[0]:
+            best = (total, complete)
+    return best
+
+
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
     """Every recorded price/stock change for the phone, newest first, for the table on its history page."""
     out = []
@@ -166,6 +188,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         updated_at = datetime.strptime(latest.get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
     except ValueError:
         updated_at = None
+    tax_eu = (yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"].get("EU") or {}).get("rate_pct")
     phones = []
     for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
         offers = []
@@ -205,6 +228,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "all_json": json.dumps([full(o) for o in offers], separators=(",", ":")),
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
+                       "title_price": _title_price(offers, tax_eu),
                        "chart": _chart(_series(rows, m, rates), colors, updated_at),
                        "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
@@ -226,6 +250,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "pay_min": {m: _usd_money(terms.min_order_usd(c, m), rates) for m in terms.METHODS},
                        "ship_notes": _ship_notes(terms.notes(c)["ship"])}
                       for s, c in stores_cfg.items() if c.get("enabled", True)],
+           "month": updated_at.strftime("%B %Y") if updated_at else "",   # "October 2026" in page titles
            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
            "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
     if OUT.exists():

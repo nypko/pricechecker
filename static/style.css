@@ -528,3 +528,10 @@ footer p { max-width: 62ch; }
   .cmp-row { display: grid; grid-template-columns: 160px 1fr; gap: 10px; align-items: start; }
   .cmp-label { margin: 2px 0 0; font-size: .82rem; }
 }
+.cmp-cfg { display: block; width: 100%; text-align: left; margin: 0 0 4px; min-height: 34px; padding: 4px 8px; font: inherit; font-size: .88rem;
+           font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+           border-radius: 8px; cursor: pointer; }
+.cmp-cfg[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+.cmp-cfg.near[aria-pressed="true"] { border-style: dashed; }
+.cmp-cfg:disabled { color: var(--muted); font-weight: 400; text-decoration: line-through; cursor: default; background: transparent; }
+.cmp-near { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 2px; }

@@ -670,10 +670,25 @@
   var CMP = null;
   try { CMP = JSON.parse(document.getElementById("compare-data").textContent); } catch (e) {}
   var cmpBox = document.getElementById("compare");
+  // URL hash: "#slug,slug,slug" plus "@12-512" once a RAM/storage option is picked, so the view can be shared
+  function cmpCfg() { var m = /@(\d+)-(\d+)$/.exec(location.hash); return m ? m[1] + "/" + m[2] : ""; }
+  function cmpGo(slugs, cfg) {
+    var h = slugs.join(",") + (slugs.length && cfg ? "@" + cfg.replace("/", "-") : "");
+    history.replaceState(null, "", h ? "#" + h : location.pathname);
+    renderCompare();
+  }
+  // the phone's offers at `cfg`, or at the nearest RAM/storage it is in stock in: {offers, storage, exact}
+  function cmpAt(q, cfg) {
+    var exact = at(q.o, cfg);
+    if (exact.length) return { offers: exact, storage: cfg, exact: true };
+    var near = null;
+    q.o.forEach(function (o) { if (!near || distance(o.storage, cfg) < distance(near, cfg)) near = o.storage; });
+    return near ? { offers: at(q.o, near), storage: near, exact: false } : { offers: [], storage: "", exact: false };
+  }
   function cmpChosen() {
     var by = {};
     (CMP || []).forEach(function (q) { by[q.s] = q; });
-    return decodeURIComponent(location.hash.slice(1)).split(",").filter(function (s, i, a) { return by[s] && a.indexOf(s) === i; })
+    return decodeURIComponent(location.hash.slice(1)).replace(/@.*$/, "").split(",").filter(function (s, i, a) { return by[s] && a.indexOf(s) === i; })
       .slice(0, 3).map(function (s) { return by[s]; });
   }
   function firstNum(sp, label) {   // "7,200 mAh" -> 7200, for marking the biggest battery / fastest charging
@@ -687,7 +702,9 @@
     var rows = cmpBox.querySelector(".cmp-rows");
     rows.textContent = "";
     cmpBox.querySelector(".cmp-note").hidden = chosen.length < 2;
-    var best = chosen.map(function (q) { return q.o.length ? pick(q.o) : null; });
+    var cfg = cmpCfg();
+    var sets = chosen.map(function (q) { return cfg ? cmpAt(q, cfg) : { offers: q.o, storage: "", exact: true }; });
+    var best = sets.map(function (x) { return x.offers.length ? pick(x.offers) : null; });
     var totals = best.map(function (b) { return b && b.k.payOk ? b.k.total : Infinity; });
     var low = Math.min.apply(null, totals);
     function row(label, fill, top) {   // top: index of the phone that wins this row (marked), or -1
@@ -720,8 +737,23 @@
     head.appendChild(hc);
     rows.appendChild(head);
     if (!chosen.length) return;
-    row("Lowest delivered price", function (c, q, i) {
+    // RAM + storage: tap one to price every phone at it (or at its nearest option); tap again for the cheapest of any
+    row("RAM + storage", function (c, q, i) {
+      if (!q.st.length) { c.appendChild(el("span", "muted", "None listed")); return; }
+      var inStock = {};
+      q.o.forEach(function (o) { inStock[o.storage] = 1; });
+      q.st.forEach(function (st) {
+        var b = el("button", "cmp-cfg" + (cfg && sets[i].storage === st && !sets[i].exact ? " near" : ""), short(st) || st);
+        b.type = "button";
+        b.setAttribute("aria-pressed", cfg && sets[i].storage === st ? "true" : "false");
+        if (!inStock[st]) { b.disabled = true; b.title = "Out of stock"; b.appendChild(el("span", "sr-only", " (out of stock)")); }
+        b.addEventListener("click", function () { cmpGo(chosen.map(function (x) { return x.s; }), cfg === st ? "" : st); });
+        c.appendChild(b);
+      });
+    }, -1);
+    row(cfg ? "Lowest delivered price at " + short(cfg) : "Lowest delivered price (any RAM + storage)", function (c, q, i) {
       var b = best[i];
+      if (cfg && b && !sets[i].exact) c.appendChild(el("span", "cmp-near", "No " + short(cfg) + " in stock; closest: " + short(sets[i].storage)));
       if (!b || !b.k.payOk) { c.appendChild(el("span", "muted", b ? "Not payable by " + PAY_LABEL[state.pay] : "Not in stock")); return; }
       c.appendChild(el("span", "cmp-price", fmt(b.k.total, b.k.approx)));
       c.appendChild(el("span", "cmp-sub", partial(b.k) ? extras(b.k) : "delivered"));
@@ -735,10 +767,6 @@
     }, isFinite(low) && totals.filter(function (t) { return t === low; }).length === 1 ? totals.indexOf(low) : -1);
     row("Versions sold", function (c, q) {
       c.textContent = q.e.map(function (e) { return e === "china" ? q.cl : ED.global; }).join(" and ");
-    }, -1);
-    row("RAM + storage", function (c, q) {
-      if (!q.st.length) { c.appendChild(el("span", "muted", "None listed")); return; }
-      q.st.forEach(function (s) { c.appendChild(el("span", "cmp-line", short(s) || s)); });
     }, -1);
     ["Chip", "Screen", "Battery", "Charging"].forEach(function (label) {
       var top = label === "Battery" || label === "Charging" ? argmax(chosen.map(function (q) { return firstNum(q.sp, label); })) : -1;
@@ -769,8 +797,7 @@
       var slugs = chosen.map(function (x) { return x.s; });
       if (s.value === "-") slugs.splice(i, 1);
       else if (s.value) slugs[i] = s.value;
-      history.replaceState(null, "", slugs.length ? "#" + slugs.join(",") : location.pathname);
-      renderCompare();
+      cmpGo(slugs, cmpCfg());
     });
     return s;
   }

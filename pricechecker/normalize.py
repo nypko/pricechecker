@@ -12,8 +12,13 @@ _NOISE = [
 _STORAGE = re.compile(r"(\d{1,2})\s*(?:gb\s*(?:ram)?\s*[+/,\s-]|\+|/)\s*-?\s*(\d{2,4}\s*(?:gb|tb)|[12]\s*tb)", re.I)
 
 
+# Brands with no China edition: their phones are "global" even when a listing doesn't say so
+# (Pixels are sold as US/JP/EU models, never as a China version).
+_NO_CHINA_EDITION = re.compile(r"\b(?:google|pixel)\b", re.I)
+
+
 def edition_of(title: str) -> str:
-    return "global" if re.search(r"global", title, re.I) else "china"
+    return "global" if re.search(r"global", title, re.I) or _NO_CHINA_EDITION.search(title) else "china"
 
 
 def model_id(title: str) -> str:

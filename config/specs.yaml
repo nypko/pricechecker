@@ -20,7 +20,7 @@ phones:
   huawei-pura-90-pro:     {chip: Kirin 9030S, screen: 6.6, battery: "6,000 mAh", charging: "66 W"}   # added 2026-10-20: GSMArena, 91mobiles, Gizmochina; a few listings give other screen sizes
   huawei-pura-90-pro-max: {chip: Kirin 9030S, screen: 6.9, battery: "6,000 mAh", charging: "100 W"}
   huawei-pura-90s-pro:    {chip: Kirin 9030S, screen: 6.6, battery: "6,000 mAh / 5,500 mAh (EU)", charging: "66 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
-  huawei-pura-90s-pro-max: {chip: Kirin 9030S, screen: 6.9, battery: "6,000 mAh", charging: "100 W"}
+  huawei-pura-90s-pro-max: {chip: Kirin 9030S, screen: 6.9, charging: "100 W"}   # battery left out 2026-10-20: Global units reported as 6,000, 5,270 (rated) or 5,400 mAh; re-add once Huawei's global page settles it
   huawei-pura-x-max:      {chip: Kirin 9030 Pro, screen: "7.7 inside", battery: "5,300 mAh", charging: "66 W"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   huawei-pura-x-view:     {chip: Kirin 9030S, screen: 6.39, battery: "7,000 mAh", charging: "66 W"}
   motorola-razr-70-ultra: {chip: Snapdragon 8 Elite, screen: "6.96 inside", battery: "5,000 mAh", charging: "68 W"}

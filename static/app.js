@@ -252,8 +252,8 @@
     else {
       var d = ob.k.total - b.k.total;
       var lead = Math.abs(d) < 1 ? "Both versions cost about the same here" + gapNote(ob.k, b.k) + ". " :
-        ED[other] + " version: " + fmt(ob.k.total, ob.k.approx) + (partial(ob.k) ? " " + extras(ob.k) : "") + ", " +
-        fmt(Math.abs(d), ob.k.approx || b.k.approx) + (d > 0 ? " more" : " less") + gapNote(ob.k, b.k) + ". ";
+        ED[other] + " version costs " + fmt(Math.abs(d), ob.k.approx || b.k.approx) + (d > 0 ? " more" : " less") +
+        gapNote(ob.k, b.k) + " (" + fmt(ob.k.total, ob.k.approx) + "). ";   // "Global version costs ≈€215 more before shipping and tax (€1,312)."
       text = lead + (sel.ed === "china" ? "With the China version: " : "The China version has ") + lose + ". ";
     }
     t.appendChild(document.createTextNode(text));

@@ -65,3 +65,35 @@ def test_delivery_days_come_from_store_terms():
     from pricechecker import terms
     cfg = {"terms": {"shipping": {"EU": {"days": [2, 5]}, "UK": {"cost": 0}}}}
     assert terms.delivery(cfg, "EU") == [2, 5] and terms.delivery(cfg, "UK") is None
+
+
+def test_specs_config_uses_catalog_ids():
+    import yaml
+    from pathlib import Path
+    ids = {p["id"] for p in yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]}
+    specs = yaml.safe_load(Path("config/specs.yaml").read_text())["phones"]
+    assert set(specs) <= ids, set(specs) - ids
+    assert site._specs({"chip": "X", "screen": "8.12 inside", "battery": "5,600 mAh"}) == [("Chip", "X"), ("Screen", "8.12″ inside"), ("Battery", "5,600 mAh")]
+
+
+def test_buyer_report_parsing():
+    from pricechecker.buyer_reports import parse
+    assert parse("Ordered from Giztop, arrived in Germany after 9 days with DHL. Had to pay €187 import VAT.") == \
+        {"country": "DE", "courier": "DHL", "days": 9, "tax": True, "amount": 187.0, "currency": "EUR"}
+    assert parse("Tradingshenzhen Global Priority to France took 3 weeks, no customs at all.") == \
+        {"country": "FR", "courier": "Global Priority", "days": 21, "tax": False}
+    assert parse("giztop is great, love the phone") == {}
+
+
+def test_buyer_summary_groups_by_store_and_region(tmp_path, monkeypatch):
+    from datetime import datetime, timezone
+    from pricechecker import buyer_reports
+    f = tmp_path / "r.yaml"
+    f.write_text("reports:\n"
+                 "- {id: a, store: giztop, date: 2026-09-01, country: DE, days: 9, tax: true}\n"
+                 "- {id: b, store: giztop, date: 2026-09-10, country: FR, days: 21, tax: false}\n"
+                 "- {id: c, store: giztop, date: 2026-09-12, country: IT, days: 12}\n"
+                 "- {id: d, store: giztop, date: 2024-01-01, country: DE, days: 40, tax: true}\n")   # older than a year: left out
+    monkeypatch.setattr(buyer_reports, "APPROVED", f)
+    s = buyer_reports.summary(datetime(2026, 10, 19, tzinfo=timezone.utc))
+    assert s == {"giztop": {"EU": {"n": 3, "dmin": 9, "dmax": 21, "dmed": 12, "nd": 3, "tk": 2, "tx": 1}}}

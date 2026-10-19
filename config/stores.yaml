@@ -11,11 +11,14 @@
 #       Trading Shenzhen: 10-14 days transit + 2-5 days processing (stated on its EU terms; processing is the same everywhere)
 #       duties_included: true if the price already covers the destination's import duties + VAT/GST, false if the
 #       buyer pays them on delivery, omit if the store doesn't say (the site then shows "import tax not stated")
+#   trust: review score (source, count), warranty_months, returns_days - entered by hand with the date checked;
+#     shown next to the store on phone pages. An EU warehouse (part_of) shows its store's.
 #     watch: pages re-checked daily; if `expect` (regex) is no longer found, the site flags the terms for review
 
 stores:
   wonda:
     label: Wonda Mobile
+    mentions: ["wondamobile", "wonda mobile"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: shopify
     base_url: https://wondamobile.com
     currency: USD
@@ -37,15 +40,18 @@ stores:
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
     affiliate_link: "{url}{sep}ref={id}"   # referral link from the dashboard: https://www.wondamobile.com?ref=ivaylo_kirov
     affiliate_id: ivaylo_kirov
+    trust: {reviews: {score: 4.8, count: 3377, source: Trustpilot, url: "https://www.trustpilot.com/review/wondamobile.com"}, warranty_months: 12, returns_days: 7, checked: 2026-10-19}   # "up to 12 months warranty" (warranty policy); 7 days from arrival (refund policy)
 
   mobilemarvel:
     label: The Mobile Marvel
+    mentions: ["mobile marvel", "themobilemarvel"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: shopify
     base_url: https://www.themobilemarvel.com
     currency: HKD
     exclude_title: "used|kit|demo|refurb|lens|case|cover|charger|cable|watch|buds|pad|tablet|protector|strap"
     affiliate_link: "{url}{sep}ref={id}"
     affiliate_id: YOUR_MOBILEMARVEL_ID
+    trust: {reviews: {score: 4.8, count: 164, source: Trustpilot, url: "https://www.trustpilot.com/review/themobilemarvel.com"}, warranty_months: 12, returns_days: 7, checked: 2026-10-19}   # "12-Month Warranty Protection" (homepage); 7 days non-faulty, 10 days faulty
     terms:   # verified 2026-10-16 from /pages/shipping, /pages/custom-duties, /apps/frequently-asked-questions
       payment:
         bank_transfer: {discount_pct: 4.75, note: "Bank transfers 4.75% off all orders (manual confirmation)"}
@@ -76,6 +82,7 @@ stores:
 
   tradingshenzhen:
     label: Trading Shenzhen
+    mentions: ["tradingshenzhen", "trading shenzhen"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: sitemap         # 2026-10-16: answers PriceCheckerBot again (was 403); one product page per phone + storage
     sitemap_url: https://tradingshenzhen.com/sitemap-products-en.xml
     promo_pages: ["https://tradingshenzhen.com/en/"]   # read daily for promotion text (pricechecker/promos.py)
@@ -89,6 +96,7 @@ stores:
     currency: EUR
     affiliate_link: "{url}{sep}affp={id}"   # from the affiliate dashboard: .../gift-coupon/10-voucher?affp=313618
     affiliate_id: "313618"
+    trust: {reviews: {score: 4.7, count: 11216, source: Trustpilot, url: "https://www.trustpilot.com/review/tradingshenzhen.com"}, checked: 2026-10-19}   # warranty and returns pages are behind a bot check: not stated here
     terms:   # verified 2026-10-16 from /en/content/payment-regulations, /customs-and-duties, /transportation-regulation
       payment:
         bank_transfer: {discount_pct: 0, note: "Only via EPS (AT), iDEAL (NL), P24 (PL), Giropay, Bancontact; no discount"}
@@ -124,6 +132,7 @@ stores:
 
   giztop:
     label: Giztop
+    mentions: ["giztop"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
     type: magento         # walks the phone category, then reads variant prices from each tracked phone's page
     base_url: https://www.giztop.com
     categories: [/phones.html]
@@ -132,6 +141,7 @@ stores:
     currency: USD
     affiliate_link: "{url}{sep}ref={id}"
     affiliate_id: YOUR_GIZTOP_ID
+    trust: {reviews: {score: 4.0, count: 2134, source: Trustpilot, url: "https://www.trustpilot.com/review/giztop.com"}, warranty_months: 12, returns_days: 14, checked: 2026-10-19}   # "default product warranty period is one year" (its heading says 2 years); 14 days if unopened
     terms:   # verified 2026-10-16 from /payment/, /giztop-shipping-options/, /customs-duty/
       payment:
         bank_transfer: {discount_pct: 0, min_order_usd: 1500, note: "Wire transfer only for orders over $1,500 (request by ticket), no discount"}

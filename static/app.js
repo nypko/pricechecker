@@ -12,6 +12,10 @@
   function store(key, val) {
     try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); } catch (e) { return null; }
   }
+  // Watched phones, kept on this device: {slug: {k: "EU|card|eur", v: headline total when last seen}}
+  function watched() { try { return JSON.parse(store("pc-watch") || "{}") || {}; } catch (e) { return {}; } }
+  function setWatched(w) { store("pc-watch", JSON.stringify(w)); }
+  function prefKey() { return state.region + "|" + state.pay + "|" + state.cur; }
   function fmt(v, approx) {
     return (approx ? "≈" : "") + SYMBOL[state.cur] + Math.round(v).toLocaleString("en-US");
   }
@@ -87,7 +91,7 @@
       shipMin: !!(ship && ship.min),   // the store publishes only a starting price ("from EUR 10")
       complete: adj != null && !!ship,
       duties: duties,
-      payNote: o.notes.pay[state.pay], shipNote: o.notes.ship[state.region]
+      payNote: o.notes ? o.notes.pay[state.pay] : "", shipNote: o.notes ? o.notes.ship[state.region] : ""   // index offers carry no notes
     };
   }
 
@@ -143,6 +147,25 @@
     var d = o.days && o.days[state.region];
     if (!d) return "";
     return d[0] == null ? "up to " + d[1] + " working days" : d[0] + "–" + d[1] + " working days";
+  }
+  // "★ 4.7 on Trustpilot (11,216 reviews) · 12-month warranty · 7-day returns", from stores.yaml (entered by hand, dated)
+  function trustText(o) {
+    var t = o.trust;
+    if (!t) return "";
+    var x = [];
+    if (t.reviews) x.push("★ " + t.reviews.score.toFixed(1) + " on " + t.reviews.source + " (" + t.reviews.count.toLocaleString("en-US") + " reviews)");
+    if (t.warranty_months) x.push(t.warranty_months + "-month store warranty");
+    if (t.returns_days) x.push(t.returns_days + "-day returns");
+    return x.join(" · ");
+  }
+  // Approved buyer reports for the chosen Ship-to: "12 buyers to the EU: 8–21 days (typically 11) · 3 of 10 paid import tax"
+  function buyersText(o) {
+    var b = o.buyers && o.buyers[state.region];
+    if (!b || !b.n) return "";
+    var x = [];
+    if (b.nd) x.push((b.dmin === b.dmax ? b.dmin : b.dmin + "–" + b.dmax) + " days" + (b.nd > 2 ? " (typically " + b.dmed + ")" : ""));
+    if (b.tk) x.push(b.tx + " of " + b.tk + " paid import tax");
+    return x.length ? b.n + (b.n === 1 ? " buyer" : " buyers") + " to " + REGION_NAME[state.region] + ": " + x.join(" · ") : "";
   }
   // Price movement from the hourly history: "↓ €40 this week" / "↓ €40 since 16 Oct" / "Lowest in 30 days"
   function trendText(o, k) {
@@ -323,6 +346,7 @@
     var li = el("li"), d = el("details", "st"), s = el("summary");
     var name = el("span", "st-name", o.store_label);
     if (o.stale) name.appendChild(el("span", "st-stale", " · last known price"));
+    if (o.trust && o.trust.reviews) name.appendChild(el("span", "st-stars", " ★ " + o.trust.reviews.score.toFixed(1)));
     s.appendChild(name);
     var tot = el("span", "st-total", !o.available ? "out of stock" : k.payOk ? fmt(k.total, k.approx) : "–");
     if (o.available && k.payOk && partial(k)) tot.appendChild(el("span", "plus", " " + extras(k)));
@@ -335,6 +359,8 @@
     breakdown(dl, k);
     body.appendChild(dl);
     if (couponText(o)) body.appendChild(el("p", "coupon", couponText(o)));
+    if (trustText(o)) body.appendChild(el("p", "st-trust", trustText(o)));
+    if (buyersText(o)) body.appendChild(el("p", "st-buyers", buyersText(o)));
     var go = el("a", "go secondary", (o.available ? "Go to " : "Check ") + o.store_label);
     go.href = o.link; go.rel = "sponsored nofollow noopener"; go.target = "_blank";
     go.appendChild(el("span", "sr-only", " (opens store site)"));
@@ -376,6 +402,8 @@
       c.classList.toggle("best", c === overall && overall._b.k.payOk);
       c.dataset.tag = partial(overall._b.k) ? "Lowest before " + (overall._b.k.ship == null ? "shipping" : "tax") : "Cheapest delivered";
     });
+    var w = watched(), slug = layout.dataset.slug;
+    if (w[slug] && overall._b.k.payOk) { w[slug] = { k: prefKey(), v: Math.round(overall._b.k.total) }; setWatched(w); }
     var payable = null;   // the cheapest cell you can actually pay for with the chosen method
     cells.forEach(function (c) { if (c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
     var found = sel && Array.prototype.some.call(cells, function (c) { return c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
@@ -418,6 +446,14 @@
     var dv = ans.querySelector(".ans-days");
     dv.textContent = b.k.payOk && delivery(b.o) ? "Arrives in " + delivery(b.o) + " after you order" : "";
     dv.hidden = !dv.textContent;
+    var at = ans.querySelector(".ans-trust");
+    at.textContent = trustText(b.o);   // right under the store name, so it needs no name of its own
+    at.hidden = !at.textContent;
+    var ab = ans.querySelector(".ans-buyers");
+    ab.textContent = buyersText(b.o);
+    ab.hidden = !ab.textContent;
+    var rs = document.getElementById("rf-store");
+    if (rs && !rs.dataset.touched) rs.value = b.o.store;   // the report form starts on the store shown
     var tr = ans.querySelector(".ans-trend");
     tr.textContent = b.k.payOk ? trendText(b.o, b.k) : "";
     tr.hidden = !tr.textContent;
@@ -493,6 +529,54 @@
     svg.addEventListener("pointerdown", function (ev) { readout(svg, ev); });
     svg.addEventListener("pointerleave", function (ev) { if (ev.pointerType === "mouse") readout(svg, { clientX: -1e6 }); });
   });
+  var wb = document.querySelector(".watch");
+  function showWatch() {
+    var on = !!watched()[wb.dataset.slug];
+    wb.setAttribute("aria-pressed", on ? "true" : "false");
+    wb.textContent = on ? "Watching" : "Watch";
+    document.querySelector(".watch-note").hidden = !on;
+  }
+  if (wb) {
+    showWatch();
+    wb.addEventListener("click", function () {
+      var w = watched();
+      if (w[wb.dataset.slug]) delete w[wb.dataset.slug]; else w[wb.dataset.slug] = { k: "", v: 0 };
+      setWatched(w);
+      renderPhone();   // records today's price as the starting point
+      showWatch();
+    });
+  }
+  // Buyer report form: sent in the background; without JavaScript it posts normally and comes back with #report-thanks
+  var rf = document.querySelector(".report-form");
+  if (rf) {
+    var status = rf.querySelector(".rf-status"), amt = rf.querySelector(".rf-amount");
+    var taxNow = function () { var c = rf.querySelector("input[name=tax]:checked"); amt.hidden = !c || c.value !== "yes"; };
+    rf.querySelectorAll("input[name=tax]").forEach(function (x) { x.addEventListener("change", taxNow); });
+    taxNow();
+    document.getElementById("rf-store").addEventListener("change", function (ev) { ev.target.dataset.touched = "1"; });
+    var cc = document.getElementById("rf-country");
+    if (!cc.value) cc.value = { UK: "GB", US: "US", AU: "AU" }[state.region] || "";
+    rf.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var data = {};
+      new FormData(rf).forEach(function (v, k) { data[k] = v; });
+      if (!data.days && !data.tax) { status.className = "rf-status err"; status.textContent = "Add the days or whether you paid import tax."; return; }
+      status.className = "rf-status"; status.textContent = "Sending…";
+      fetch(rf.getAttribute("action"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.ok, j: j }; }); })
+        .then(function (x) {
+          status.className = "rf-status " + (x.ok ? "ok" : "err");
+          status.textContent = x.ok ? "Thanks! We check each report before it counts." : (x.j.error || "Couldn't send it. Please try again.");
+          if (x.ok) { rf.querySelector(".rf-send").disabled = true; }
+        })
+        .catch(function () { status.className = "rf-status err"; status.textContent = "Couldn't send it. Check your connection and try again."; });
+    });
+    if (location.hash === "#report-thanks" || location.hash === "#report-error") {
+      document.querySelector(".report-box").open = true;
+      status.className = "rf-status " + (location.hash === "#report-thanks" ? "ok" : "err");
+      status.textContent = location.hash === "#report-thanks" ? "Thanks! We check each report before it counts." : "Please check the store, country and days, then send again.";
+    }
+  }
   var hv = document.getElementById("hist-var");
   if (hv) hv.addEventListener("change", function () { histSel = hv.value; showHist(histSel); });
   var ht = document.querySelector(".hist-toggle");
@@ -506,9 +590,11 @@
   // ---------- index: one row per phone, ranked ----------
   var sortBy = "date";
   var globalOnly = store("pc-global") === "1";   // "Global version only" chip on the index, remembered on this device
+  var WATCH = {};
   function renderIndex() {
     var list = document.getElementById("phones");
     if (!list) return;
+    WATCH = watched();
     list.querySelectorAll(".prow[data-offers]").forEach(function (row) {
       var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
       var offers = globalOnly ? byEdition(all, "global") : all;
@@ -531,6 +617,11 @@
       pill.textContent = b.k.payOk ? trendText(b.o, b.k) : "";
       pill.hidden = !pill.textContent;
       row._drop = b.o.trend && b.o.trend.drop ? b.k.list * b.o.trend.drop : 0;
+      var seen = WATCH[row.dataset.slug], wl = row.querySelector(".prow-watch"), diff = seen && seen.k === prefKey() && !globalOnly ? Math.round(b.k.total) - seen.v : 0;
+      row._watched = !!seen;
+      wl.hidden = !seen;
+      wl.className = "pill prow-watch" + (diff > 0 ? " up" : diff < 0 ? "" : " flat");
+      wl.textContent = !seen ? "" : Math.abs(diff) >= 1 ? (diff < 0 ? "↓ " : "↑ ") + fmt(Math.abs(diff)) + " since your last visit" : "Watching";
       row.querySelector(".prow-link").href = "phones/" + row.dataset.slug + "#" + b.o.storage.replace("/", "-") + "-" + b.o.edition;
       var gp = row.querySelector(".prow-gap");
       row._price = b.k.payOk ? b.k.total : Infinity;
@@ -645,7 +736,7 @@
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
-      c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) &&
+      c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
                    words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
     });
@@ -669,6 +760,18 @@
     else filter();
   });
   // "Global version only": rank each phone by its Global offers and hide phones sold only as a China version
+  // "Watched": only the phones watched on this device; the chip shows once there is at least one
+  var watchOnly = false, wchip = document.getElementById("watch-only");
+  if (wchip) {
+    var nw = Object.keys(watched()).length;
+    wchip.hidden = !nw;
+    wchip.querySelector(".n").textContent = nw;
+    wchip.addEventListener("click", function () {
+      watchOnly = !watchOnly;
+      wchip.setAttribute("aria-pressed", watchOnly ? "true" : "false");
+      filter();
+    });
+  }
   var gchip = document.getElementById("global-only");
   if (gchip) {
     gchip.setAttribute("aria-pressed", globalOnly ? "true" : "false");
@@ -679,6 +782,27 @@
       renderIndex(); filter();
     });
     if (globalOnly) filter();
+  }
+  // Header search (every page but the list): a suggested name opens that phone; anything else opens the list, filtered
+  var hs = document.querySelector(".hsearch");
+  if (hs) {
+    var hq = document.getElementById("hq");
+    var slugFor = function (v) {
+      var o = Array.prototype.find.call(document.querySelectorAll("#phone-names option"), function (x) { return x.value.toLowerCase() === v.trim().toLowerCase(); });
+      return o ? o.dataset.slug : null;
+    };
+    var go = function (ev) {
+      var slug = slugFor(hq.value);
+      if (slug) { if (ev) ev.preventDefault(); location.href = hs.dataset.root + "phones/" + slug; }
+    };
+    hq.addEventListener("change", function () { go(); });
+    hs.addEventListener("submit", go);   // no exact match: the form opens the list with ?q=...
+  }
+  // The list, opened from header search: ?q=... fills the search, #search puts the cursor in it
+  if (q) {
+    var qp = new URLSearchParams(location.search).get("q");
+    if (qp) { q.value = qp; filter(); }
+    if (location.hash === "#search" || qp) q.focus({ preventScroll: !!qp });
   }
   var clear = document.getElementById("clear-search");
   if (clear) clear.addEventListener("click", function () { q.value = ""; filter(); q.focus(); });

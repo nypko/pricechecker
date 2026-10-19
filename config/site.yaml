@@ -7,3 +7,6 @@ domain_live: true
 # contact_email: shown on About and Privacy. Leave empty until mail to it actually arrives.
 contact_email: hello@doorprice.app
 country: Bulgaria
+# reports_live: true once Cloudflare KV is bound as REPORTS (README: Buyer reports). Shows the "How did your order
+# arrive?" form on phone pages; until then it would only answer "not switched on yet".
+reports_live: false

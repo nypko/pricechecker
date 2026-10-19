@@ -1,0 +1,58 @@
+name: Weekly buyer reports
+
+# Collects buyer reports (how long orders took, whether import tax was charged) for review:
+#   - Reddit, through the official Data API (secrets REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET; variable REDDIT_USERNAME)
+#   - the "How did your order arrive?" form on DoorPrice (secret REPORTS_ADMIN_KEY; variable REPORTS_URL)
+# Each source is skipped until its settings are added. New reports go into one open GitHub issue; approve them with
+# `python -m pricechecker.buyer_reports approve <id> ...` and they appear on the site with the next hourly build.
+on:
+  schedule:
+    - cron: "40 6 * * 1"   # Mondays 06:40 UTC
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many days back to look (first run: 62 for two months)"
+        default: "7"
+
+permissions:
+  contents: write   # commit the review queue (data/buyer_reports_pending.json)
+  issues: write     # file new reports for review
+
+concurrency:
+  group: price-check   # shares the hourly job's lock: both commit to data/
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Collect buyer reports
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USERNAME: ${{ vars.REDDIT_USERNAME }}
+          REPORTS_URL: ${{ vars.REPORTS_URL || 'https://doorprice.app' }}
+          REPORTS_ADMIN_KEY: ${{ secrets.REPORTS_ADMIN_KEY }}
+        run: python -m pricechecker.buyer_reports collect --days "${{ inputs.days || '7' }}"
+      - name: File new reports for review
+        if: hashFiles('.buyer_report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |   # one open review issue at a time: later reports are added to it as comments
+          n=$(gh issue list --state open --search 'in:title "Buyer reports to review"' --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file .buyer_report.md
+          else gh issue create --title "Buyer reports to review ($(date -u +%Y-%m-%d))" --body-file .buyer_report.md; fi
+      - name: Commit the review queue
+        run: |
+          git config user.name "price-checker-bot"
+          git config user.email "price-checker-bot@users.noreply.github.com"
+          git add data/buyer_reports_pending.json
+          git diff --cached --quiet || git commit -m "Buyer reports $(date -u +%Y-%m-%d)"
+          git pull --rebase --quiet -X theirs && git push

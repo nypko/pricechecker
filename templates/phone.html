@@ -6,21 +6,26 @@
 {% set tp = p.title_price %}
 {% block title %}{{ p.name }} price{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
 {% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} import store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
-{% block head %}{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../">All phones</a>
-  <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
+  <div class="page-actions">
+    {% if p.best %}<button type="button" class="btn-quiet watch" data-slug="{{ p.slug }}" aria-pressed="false">Watch</button>{% endif %}
+    <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
+  </div>
 </div>
+<p class="watch-note muted small" hidden>Watching: the list shows how this phone's price has moved since your last visit. Saved on this device only.</p>
 
 <header class="ph-head">
   <h1>{{ p.name }}</h1>
   <div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
+  {% if p.specs %}<dl class="specs">{% for k, v in p.specs %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
   {{ explain.editions(p.editions, p.brand|lower) }}
 </header>
 
 {% if p.best %}
-<div class="ph-layout" data-brand="{{ p.brand|lower }}">
+<div class="ph-layout" data-brand="{{ p.brand|lower }}" data-slug="{{ p.slug }}">
 
 <section class="picker" aria-labelledby="pick-h">
   <div class="sec-head">
@@ -58,7 +63,9 @@
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
   <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ edition_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
+  <p class="ans-trust" hidden></p>
   <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
+  <p class="ans-buyers" hidden></p>
   <p class="ans-or" hidden></p>
   <p class="ans-alt" hidden></p>
   <p class="coupon ans-coupon" hidden></p>
@@ -77,6 +84,33 @@
   <p class="others-none muted" hidden>No other store sells this version at this RAM/storage.</p>
   <details class="oos" hidden><summary></summary><ol class="store-list oos-list"></ol></details>
 </section>
+
+{% if site.reports_live %}
+<section class="report-sec" id="report">
+  <details class="explain report-box">
+    <summary>Bought this phone? Tell other buyers how your order arrived</summary>
+    <form class="report-form panel" method="post" action="../api/report">
+      <p class="muted small">Two minutes, no account. We check every report before it counts, and we don't store your name, email or IP address.</p>
+      <input type="hidden" name="phone" value="{{ p.slug }}">
+      <p class="hp" aria-hidden="true"><label>Leave empty <input name="website" tabindex="-1" autocomplete="off"></label></p>
+      <div class="rf-grid">
+        <label>Store <select name="store" id="rf-store" required>{% for s in report_stores %}<option value="{{ s.name }}">{{ s.label }}</option>{% endfor %}</select></label>
+        <label>Delivered to <select name="country" id="rf-country" required><option value="">Choose country</option>{% for code, name in report_countries %}<option value="{{ code }}">{{ name }}</option>{% endfor %}</select></label>
+        <label>Days from order to your door <input name="days" id="rf-days" type="number" min="1" max="120" inputmode="numeric" placeholder="e.g. 12"></label>
+        <label>Shipping <select name="courier" id="rf-courier"><option value="">Not sure</option><option>Global Priority</option><option>EU warehouse</option><option>DHL</option><option>UPS</option><option>FedEx</option><option>Royal Mail</option><option>USPS</option><option>Other</option></select></label>
+      </div>
+      <fieldset class="rf-tax"><legend>Did you pay import tax or customs on delivery?</legend>
+        <label><input type="radio" name="tax" value="no"> No</label>
+        <label><input type="radio" name="tax" value="yes"> Yes</label>
+        <label><input type="radio" name="tax" value="" checked> Not sure</label>
+        <span class="rf-amount"><label>How much <input name="amount" id="rf-amount" type="number" min="0" max="5000" step="0.01" inputmode="decimal"></label>
+          <select name="currency" aria-label="Currency"><option>EUR</option><option>GBP</option><option>USD</option><option>AUD</option></select></span>
+      </fieldset>
+      <p class="rf-actions"><button type="submit" class="btn-quiet rf-send">Send report</button> <span class="rf-status" role="status"></span></p>
+    </form>
+  </details>
+</section>
+{% endif %}
 
 <section class="hist-sec">
   <button type="button" class="hist-toggle" aria-expanded="false" aria-controls="hist-box">Price history</button>
@@ -101,12 +135,24 @@
       {% endif %}
       </div>
     {% endfor %}
-      <p class="small hist-more"><a href="../history/{{ p.slug }}">Every recorded change for this phone</a></p>
+      <p class="small hist-more"><a href="../history/{{ p.slug }}">Every recorded change for this phone</a> · <a href="../feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
     </div>
   </div>
 </section>
 
 </div>
+
+{% macro rel_list(items) %}<ul class="rel-list">{% for q in items %}
+  <li><a href="{{ q.slug }}"><span class="rel-name">{{ q.name }}</span>
+    <span class="rel-sub">{% if q.announced %}{{ q.announced|month }} · {% endif %}{% for e in q.editions %}{{ edition_label[e] }}{{ " / " if not loop.last }}{% endfor %}{% if q.money %} · store price from {{ price(q.money) }}{% endif %}</span></a></li>
+{% endfor %}</ul>{% endmacro %}
+{% if p.related.brand or p.related.near %}
+<section class="related" aria-labelledby="rel-h">
+  <h2 id="rel-h" class="sr-only">Related phones</h2>
+  {% if p.related.brand %}<div><h3>More from {{ p.brand }}</h3>{{ rel_list(p.related.brand) }}</div>{% endif %}
+  {% if p.related.near %}<div><h3>Similar price, other brands</h3>{{ rel_list(p.related.near) }}</div>{% endif %}
+</section>
+{% endif %}
 
 <noscript>
   <section class="others">

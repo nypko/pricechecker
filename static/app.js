@@ -137,6 +137,12 @@
       lead.querySelector(".lead-what").textContent = "(" + (b.o.edition === "china" ? "China" : "Global") + " version" +
         (b.o.storage !== "base" ? ", " + spec(b.o.storage) : "") + (b.k.payOk ? "" : "; " + PAY_LABEL[state.pay] + " not offered") + ")";
       lead.querySelector(".deal").href = b.o.link;
+      var bar = document.querySelector(".sticky-deal");   // the phone-only bottom bar mirrors the best price
+      if (bar) {
+        bar.querySelector(".price").textContent = fmt(b.k.total, b.k.approx);
+        bar.querySelector(".sd-store").textContent = "at " + b.o.store_label;
+        bar.querySelector(".deal").href = b.o.link;
+      }
     });
     // phone page: Global vs China table
     document.querySelectorAll(".cmp-row").forEach(function (row) {
@@ -217,6 +223,18 @@
   render();
 
   // Brand chips + search on the index page
+  // Phone pages: show the bottom "best deal" bar once the big best-price box has scrolled out of view
+  var box = document.querySelector(".best-box"), bar = document.querySelector(".sticky-deal");
+  if (box && bar && "IntersectionObserver" in window) {
+    document.body.classList.add("has-sticky");
+    new IntersectionObserver(function (entries) {
+      var hidden = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
+      bar.classList.toggle("show", hidden);
+      bar.setAttribute("aria-hidden", hidden ? "false" : "true");
+      bar.querySelector(".deal").tabIndex = hidden ? 0 : -1;
+    }).observe(box);
+  }
+
   // Index page: until a brand (or All) is picked only the store terms are shown; picking one reveals the
   // phone list above them. A chip can't be un-picked - there is always one active filter after the first choice.
   var brand = null, q = document.getElementById("q"), phones = document.getElementById("phones");

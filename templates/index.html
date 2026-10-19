@@ -4,18 +4,18 @@
 <section class="intro">
   <h1>Flagship phone prices, checked every hour</h1>
   {% set n_stores = stores|selectattr("count")|list|length %}
-  <p>{{ phones|length }} phones across {{ n_stores }} store{{ "s" if n_stores != 1 }}. Global and China versions are shown side by side – they differ in software (Google services, languages) and warranty, so compare the price gap before you pick.</p>
+  <p>{{ phones|length }} phones · {{ n_stores }} stores · Global and China versions side by side, so the price gap is easy to spot.</p>
 </section>
 
 <div class="filters">
-  <input id="q" type="search" placeholder="Search phones…" aria-label="Search phones">
+  <input id="q" type="search" placeholder="Search phones…" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
   <div class="chips" role="group" aria-label="Brand">
     <button class="chip" data-brand="" aria-pressed="false">All</button>
     {% for b in brands %}<button class="chip" data-brand="{{ b|lower }}" aria-pressed="false">{{ b }}</button>{% endfor %}
   </div>
 </div>
 
-<p class="pick-hint">Pick a brand above, or <strong>All</strong>, to see the prices.</p>
+<p class="pick-hint">Pick a brand, or <strong>All</strong>, to see the prices.</p>
 
 <ul class="grid" id="phones">
 {% for p in phones %}
@@ -56,24 +56,24 @@
 <section class="status" id="terms">
   <h2>Stores, payment &amp; shipping terms</h2>
   <div class="panel">
-  <table>
+  <table class="terms">
     <thead><tr><th>Store</th><th>Prices</th><th>Bank transfer</th><th>PayPal</th><th>Card</th><th>Shipping</th></tr></thead>
     <tbody>
     {% for s in stores %}
       <tr>
-        <td><span class="dot {{ 'ok' if s.ok else ('bad' if s.ok == false else 'off') }}"></span>{{ s.label }}
+        <td class="t-store"><span class="dot {{ 'ok' if s.ok else ('bad' if s.ok == false else 'off') }}"></span>{{ s.label }}
           {% if not s.terms_ok %}<span class="warn" title="The store's terms page changed since we last verified it">terms need review</span>{% endif %}</td>
-        <td class="muted">{% if s.ok %}{{ s.count }}{% elif s.ok == false %}last check failed{% else %}not connected{% endif %}</td>
+        <td class="muted" data-label="Prices"><span>{% if s.ok %}{{ s.count }}{% elif s.ok == false %}last check failed{% else %}not connected{% endif %}</span></td>
         {% for m in ["bank", "paypal", "card"] %}
         {% set v = s.pay[m] %}
-        <td title="{{ s.notes.pay[m] }}">{% if s.pay_min[m] %}<span class="muted">orders over ${{ "{:,.0f}".format(s.pay_min[m]) }} only</span>{% elif v is none %}<span class="muted">unknown</span>{% elif v < 0 %}<strong class="good">{{ v|round(2) }}%</strong>{% elif v > 0 %}<span class="bad">+{{ v|round(2) }}%</span>{% else %}no fee{% endif %}</td>
+        <td title="{{ s.notes.pay[m] }}" data-label="{{ {'bank': 'Bank transfer', 'paypal': 'PayPal', 'card': 'Card'}[m] }}"><span>{% if s.pay_min[m] %}<span class="muted">orders over ${{ "{:,.0f}".format(s.pay_min[m]) }} only</span>{% elif v is none %}<span class="muted">unknown</span>{% elif v < 0 %}<strong class="good">{{ v|round(2) }}%</strong>{% elif v > 0 %}<span class="bad">+{{ v|round(2) }}%</span>{% else %}no fee{% endif %}</span></td>
         {% endfor %}
-        <td class="muted small">{% for note, regions in s.ship_notes %}<div><strong>{{ regions|join(" / ") }}:</strong> {{ note }}</div>{% else %}unknown{% endfor %}</td>
+        <td class="muted small t-ship" data-label="Shipping">{% for note, regions in s.ship_notes %}<div><strong>{{ regions|join(" / ") }}:</strong> {{ note }}</div>{% else %}unknown{% endfor %}</td>
       </tr>
     {% endfor %}
     </tbody>
   </table>
   </div>
-  <p class="muted small">Terms are taken from each store's payment, shipping and customs pages and re-checked daily. Hover a value for details.</p>
+  <p class="muted small">Terms are taken from each store's payment, shipping and customs pages and re-checked daily. Tap or hover a value for details.</p>
 </section>
 {% endblock %}

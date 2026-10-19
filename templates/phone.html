@@ -3,12 +3,17 @@
 {% block title %}{{ p.name }} price comparison{% if p.editions|length > 1 %} – Global vs China version{% endif %} – PriceChecker{% endblock %}
 {% block description %}Compare {{ p.name }} prices across stores{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, updated hourly.{% endblock %}
 {% block main %}
-<p class="crumb"><a href="../">← All phones</a></p>
-<h1>{{ p.name }} {% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }}</span> {% endfor %}</h1>
+<p class="crumb"><a href="../">‹ All phones</a></p>
+<h1>{{ p.name }}</h1>
+<div class="title-badges">{% for e in p.eds %}<span class="badge {{ e.edition }}">{{ e.label }} version</span>{% endfor %}</div>
 {% if p.best %}
-<p class="lead" data-offers="{{ p.offers_json }}">Best price now: {{ price(p.best.money) }} at <strong class="lead-store">{{ p.best.store_label }}</strong>
-  <span class="lead-what">({{ edition_label[p.best.edition] }} version{% if p.best.storage != "base" %}, {{ p.best.storage|spec }}{% endif %})</span>
-  <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View deal</a></p>
+<div class="best-box lead" data-offers="{{ p.offers_json }}">
+  <span class="label">Best price now</span>
+  {{ price(p.best.money) }}
+  <span class="lead-meta">at <strong class="lead-store">{{ p.best.store_label }}</strong>
+    <span class="lead-what">({{ edition_label[p.best.edition] }} version{% if p.best.storage != "base" %}, {{ p.best.storage|spec }}{% endif %})</span></span>
+  <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank">View deal</a>
+</div>
 {% endif %}
 
 {% if p.offers %}
@@ -19,7 +24,7 @@
   <label>Ship to
     <select id="region"><option value="EU">EU</option><option value="UK">UK</option><option value="US">US</option><option value="AU">Australia</option></select>
   </label>
-  <span class="muted small">Totals include each store's payment discount or fee, shipping, and the estimated import tax (≈) where the store's price doesn't include it. Hover a note for details.</span>
+  <p class="muted small order-note">Totals include payment fees or discounts, shipping, and estimated import tax (≈) where a store's price excludes it.</p>
 </div>
 {% endif %}
 
@@ -54,19 +59,20 @@
 {% for storage, offers in p.by_storage %}
 <section class="panel">
   <h2>{{ storage|spec or "RAM/storage not specified" }}</h2>
-  <table>
+  <table class="offers">
     <thead><tr><th>Store</th><th>Version</th><th>Price</th><th class="c-pay">Payment</th><th>Shipping</th><th>Total</th><th>Stock</th><th></th></tr></thead>
     <tbody>
     {% for o in offers %}
       <tr class="offer-row {{ '' if o.available else 'out' }}" data-offer='{{ {"money": o.money, "pay": o.pay, "pay_ok": o.pay_ok, "ship": o.ship, "notes": o.notes, "duties": o.duties}|tojson }}'>
-        <td>{{ o.store_label }}{% if o.stale %} <span class="muted" title="Last check failed">(last known)</span>{% endif %}</td>
-        <td><span class="badge {{ o.edition }}">{{ edition_label[o.edition] }}</span></td>
-        <td>{{ price(o.money) }}{% if o.currency not in ["USD", "EUR", "GBP", "AUD"] %} <span class="muted">({{ "{:,.0f}".format(o.price) }} {{ o.currency }})</span>{% endif %}</td>
-        <td class="c-pay muted">–</td>
-        <td class="c-ship muted">–</td>
-        <td class="c-total"><strong>–</strong></td>
-        <td>{{ "In stock" if o.available else "Out of stock" }}</td>
-        <td><a href="{{ o.link }}" rel="sponsored nofollow noopener" target="_blank">Go to store</a></td>
+        <td class="c-store"><span>{{ o.store_label }}{% if o.stale %} <span class="muted small" title="Last check failed">(last known)</span>{% endif %}</span>
+          <span class="badge {{ o.edition }} m-only">{{ edition_label[o.edition] }}</span></td>
+        <td class="d-only" data-label="Version"><span class="badge {{ o.edition }}">{{ edition_label[o.edition] }}</span></td>
+        <td data-label="Price"><span>{{ price(o.money) }}{% if o.currency not in ["USD", "EUR", "GBP", "AUD"] %} <span class="muted">({{ "{:,.0f}".format(o.price) }} {{ o.currency }})</span>{% endif %}</span></td>
+        <td class="c-pay muted" data-label="Payment">–</td>
+        <td class="c-ship muted" data-label="Shipping">–</td>
+        <td class="c-total" data-label="Total"><strong>–</strong></td>
+        <td data-label="Stock"><span class="{{ 'good' if o.available else 'muted' }}">{{ "In stock" if o.available else "Out of stock" }}</span></td>
+        <td class="c-go"><a class="go" href="{{ o.link }}" rel="sponsored nofollow noopener" target="_blank">Go to store</a></td>
       </tr>
     {% endfor %}
     </tbody>
@@ -75,4 +81,11 @@
 {% else %}
 <p>No store currently lists this phone.</p>
 {% endfor %}
+
+{% if p.best %}
+<div class="sticky-deal" aria-hidden="true">
+  <span class="sd-text"><span class="sd-price">{{ price(p.best.money) }}</span><span class="sd-store">at {{ p.best.store_label }}</span></span>
+  <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank" tabindex="-1">View deal</a>
+</div>
+{% endif %}
 {% endblock %}

@@ -9,7 +9,7 @@ from . import fx, http
 
 STATUS = Path("data/terms_status.json")
 METHODS = {"card": "card", "paypal": "paypal", "bank": "bank_transfer"}
-REGIONS = ["EU", "UK", "US", "AU"]
+REGIONS = ["EU", "UK", "US", "AU", "Global"]   # Global = any other country
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
 
 

@@ -9,3 +9,4 @@ regions:
   UK: {rate_pct: 20, name: "import VAT", note: "UK VAT 20% on goods + shipping; phones have 0% customs duty. The courier adds a handling fee: about GBP 11-12 or 2.5% of the tax (DHL, UPS, FedEx), GBP 8 with Royal Mail."}
   AU: {rate_pct: 10, name: "GST", note: "10% GST on goods + shipping; phones have no customs duty. Up to AUD 1,000 the seller should charge GST at checkout; above that it is collected at the border and the courier adds clearance charges."}
   US: {rate_pct: null, name: "import tariffs", note: "Sources disagree on the current tariff for China-made phones (from 0% to about 37.5% in October 2026), so we add no estimate - check before buying. Couriers add a brokerage fee."}
+  Global: {rate_pct: null, name: "import tax", note: "Import tax and duty on phones depend on your country, so we add no estimate - check your country's rules before buying. Couriers usually add a clearance fee."}

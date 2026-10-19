@@ -85,6 +85,7 @@
   <details class="oos" hidden><summary></summary><ol class="store-list oos-list"></ol></details>
 </section>
 
+{% if site.reports_live %}
 <section class="report-sec" id="report">
   <details class="explain report-box">
     <summary>Bought this phone? Tell other buyers how your order arrived</summary>
@@ -109,6 +110,7 @@
     </form>
   </details>
 </section>
+{% endif %}
 
 <section class="hist-sec">
   <button type="button" class="hist-toggle" aria-expanded="false" aria-controls="hist-box">Price history</button>

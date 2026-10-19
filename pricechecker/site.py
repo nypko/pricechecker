@@ -67,11 +67,17 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     """Inline SVG line chart in `cur`, one line per (store, edition) - China editions dashed; empty if no history yet.
     Drawn at phone width (400 units) so the axis text stays readable when the page shrinks it."""
     pts = [(t, p) for s in series.values() for t, p in s]
-    if len({t for t, _ in pts}) < 2:
+    if not pts:
         return ""
     W, H, L, R, T, B = 400, 240, 52, 8, 10, 26
-    t0, t1 = min(t for t, _ in pts), max([t for t, _ in pts] + ([now] if now else []))   # lines run up to the last check
-    ticks = _ticks(min(p for _, p in pts), max(p for _, p in pts))
+    # lines run up to the last check, so a price that never changed is still a line from when it was first seen
+    t0, t1 = min(t for t, _ in pts), max([t for t, _ in pts] + ([now] if now else []))
+    if t1 <= t0:
+        return ""
+    p0, p1 = min(p for _, p in pts), max(p for _, p in pts)
+    if p1 == p0:   # one flat price: give the axis some room around it
+        p0, p1 = p0 - p1 * 0.05, p1 + p1 * 0.05
+    ticks = _ticks(p0, p1)
     lo, hi = ticks[0], ticks[-1]
     x = lambda t: L + (t - t0).total_seconds() / max((t1 - t0).total_seconds(), 1) * (W - L - R)
     y = lambda p: T + (hi - p) / (hi - lo) * (H - T - B)

@@ -41,6 +41,20 @@ def _ticks(lo: float, hi: float, n: int = 4) -> list[float]:
     return out
 
 
+def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
+    """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
+    base = (site_cfg.get("base_url") or "").rstrip("/")
+    live = bool(site_cfg.get("domain_live") and base)
+    robots = "User-agent: *\nAllow: /\n" + (f"Sitemap: {base}/sitemap.xml\n" if live else "")
+    (OUT / "robots.txt").write_text(robots)
+    if not live:
+        return
+    paths = ["", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
+    (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+                                     f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
+
+
 def _usd_money(usd: float | None, rates: dict) -> dict | None:
     return _money({"price": usd, "currency": "USD"}, rates) if usd else None
 
@@ -260,10 +274,11 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
-    (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", **ctx))
+    (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))
     for p in phones:
-        (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", **ctx))
-        (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", **ctx))
+        (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", path=f'phones/{p["slug"]}', **ctx))
+        (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", path=f'history/{p["slug"]}', **ctx))
     for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
-        (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", **ctx))
+        (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
+    _seo_files(ctx["site"], phones)
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

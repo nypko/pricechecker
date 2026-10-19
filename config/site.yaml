@@ -1,5 +1,10 @@
-# Site-wide details shown on the About and Privacy pages.
-# contact_email: the public address networks, stores and visitors can write to (e.g. hello@doorprice.app once the
-# domain is bought). Leave empty until it works - the pages then say an address is coming instead of showing a fake one.
+# Site-wide details shown on the About and Privacy pages, and the site's own address.
+base_url: https://doorprice.app
+# domain_live: true once https://doorprice.app serves this site. Then pages name it as their canonical address,
+# visitors on the old pricechecker-87q.pages.dev address are sent to the same page on doorprice.app, and
+# sitemap.xml / robots.txt use it. Keep false until it works, or visitors are sent to a dead address.
+domain_live: false
+# contact_email: shown on About and Privacy. Leave empty until mail to it actually arrives.
 contact_email: ""
+pending_contact_email: hello@doorprice.app   # set as contact_email once Cloudflare Email Routing forwards it
 country: Bulgaria

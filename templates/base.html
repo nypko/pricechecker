@@ -10,6 +10,11 @@
 <link rel="icon" href="{{ root }}static/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="{{ root }}static/icons/apple-touch-icon.png">
 <link rel="manifest" href="{{ root }}static/site.webmanifest">
+{% if site.domain_live and site.base_url %}
+<link rel="canonical" href="{{ site.base_url.rstrip('/') }}/{{ path }}">
+{#- the old pages.dev address forwards to the same page on the real domain -#}
+<script>if (/\.pages\.dev$/.test(location.hostname)) location.replace({{ site.base_url.rstrip('/')|tojson }} + location.pathname + location.search + location.hash);</script>
+{% endif %}
 <meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
 <link rel="stylesheet" href="{{ root }}static/style.css">
 </head>

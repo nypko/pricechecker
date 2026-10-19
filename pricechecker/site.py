@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import affiliate, fx, history, terms
+from . import affiliate, fx, history, promos, terms
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
@@ -178,7 +178,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                    "pay": {k: terms.payment_pct(stores_cfg[store], k) for k in terms.METHODS},
                                    "pay_ok": {k: terms.payment_available(stores_cfg[store], k, usd) for k in terms.METHODS},
                                    "ship": {r: terms.shipping(stores_cfg[store], r, o, rates) for r in terms.REGIONS},
-                                   "notes": terms.notes(stores_cfg[store]), "promo": terms.promo(stores_cfg[store]),
+                                   "notes": terms.notes(stores_cfg[store]), "promo": terms.promo(stores_cfg[store]) if promos.active(store, stores_cfg[store]) else None,
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))

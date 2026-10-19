@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write   # commit data/ (price history + caches)
+  issues: write     # file new/ended store promotions for review (pricechecker/promos.py)
 
 concurrency:
   group: price-check
@@ -42,6 +43,12 @@ jobs:
           ALIEXPRESS_TRACKING_ID: ${{ secrets.ALIEXPRESS_TRACKING_ID }}
         run: |   # exit 3 = no store answered this hour; still publish the last known prices. Anything else fails the job.
           python -m pricechecker.run || [ $? -eq 3 ]
+      - name: Report store promotions
+        if: always() && hashFiles('.promo_report.md') != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Store promotions to review ($(date -u +%Y-%m-%d))" --body-file .promo_report.md
       - name: Commit price history
         if: always()   # also after a timeout: keeps the caches (store rates, pages) so the next run is shorter
         run: |

@@ -9,6 +9,10 @@ on:
         description: "Also post a test message to the channel"
         type: boolean
         default: false
+      welcome:
+        description: "Post and pin the channel's introduction (once)"
+        type: boolean
+        default: false
 
 jobs:
   check:
@@ -24,4 +28,6 @@ jobs:
       - env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_BOT_SYSTEM }}
           TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID || secrets.TELEGRAM_CHAT_ID }}
-        run: python -m pricechecker.telegram --check ${{ inputs.post && '--post-test' || '' }}
+        run: |
+          python -m pricechecker.telegram --check ${{ inputs.post && '--post-test' || '' }}
+          ${{ inputs.welcome && 'python -m pricechecker.telegram --welcome' || 'true' }}

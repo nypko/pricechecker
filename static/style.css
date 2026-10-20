@@ -600,3 +600,4 @@ footer p { max-width: 62ch; }
 .nf-search input { flex: 1; min-width: 0; font: inherit; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;
                    background: var(--surface); color: var(--text); }
 .nowrap { white-space: nowrap; }   /* a short link that reads badly when split across two lines */
+footer .foot-tg a { font-weight: 700; }   /* first line of the footer: the channel, above the small print */

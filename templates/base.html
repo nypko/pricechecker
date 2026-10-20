@@ -79,6 +79,7 @@
 </header>
 <main>{% block main %}{% endblock %}</main>
 <footer>
+  {% if site.telegram %}<p class="foot-tg"><a href="https://t.me/{{ site.telegram }}" rel="noopener">Price drops on Telegram</a>: a post when a phone gets cheaper or is new on DoorPrice</p>{% endif %}
   <p><strong>Affiliate disclosure:</strong> some links on this site are affiliate links. If you buy through them we may earn a
      commission, at no extra cost to you. It never affects which store is listed as cheapest.</p>
   <p>Prices are checked every hour and can change at any time – always confirm the final price at the store.

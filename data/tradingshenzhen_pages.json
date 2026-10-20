@@ -963,5 +963,435 @@
 "currency": "EUR",
 "available": true
 }
+},
+"https://tradingshenzhen.com/en/xiaomi-17-series/xiaomi-17-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Xiaomi 17 - 16GB/512GB",
+"price": 777.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/xiaomi-17-series/xiaomi-17-12gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Xiaomi 17 - 12GB/512GB",
+"price": 737.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/xiaomi-17-series/xiaomi-17-12gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Xiaomi 17 - 12GB/256GB",
+"price": 687.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300-16gb1024gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300 - 16GB/1024GB",
+"price": 807.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300 - 16GB/512GB",
+"price": 717.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300-12gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300 - 12GB/512GB",
+"price": 707.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300-16gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300 - 16GB/256GB",
+"price": 677.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/honor-magic-8-series/honor-magic-8-16gb1tb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Honor Magic 8 - 16GB/1TB",
+"price": 777.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/honor-magic-8-series/honor-magic-8-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Honor Magic 8 - 16GB/512GB",
+"price": 687.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/honor-magic-8-series/honor-magic-8-12gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Honor Magic 8 - 12GB/256GB",
+"price": 577.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oppo-find-x9-series/oppo-find-x9-16gb1tb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Oppo Find X9 - 16GB/1TB",
+"price": 807.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oppo-find-x9-series/oppo-find-x9-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Oppo Find X9 - 16GB/512GB",
+"price": 717.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oppo-find-x9-series/oppo-find-x9-16gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Oppo Find X9 - 16GB/256GB",
+"price": 647.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oppo-find-x9-series/oppo-find-x9-12gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Oppo Find X9 - 12GB/256GB",
+"price": 597.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-16gb1tb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 - 16GB/1TB",
+"price": 767.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 - 16GB/512GB",
+"price": 727.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-16gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 - 16GB/256GB",
+"price": 657.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-12gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 - 12GB/256GB",
+"price": 647.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/realme-gt-8-series/realme-gt8-pro-16gb1024gb": {
+"lastmod": "2026-09-08",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Realme GT8 Pro - 16GB/1024GB",
+"price": 727.0,
+"currency": "EUR",
+"available": false
+}
+},
+"https://tradingshenzhen.com/en/realme-gt-8-series/realme-gt8-pro-16gb512gb": {
+"lastmod": "2026-09-08",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Realme GT8 Pro - 16GB/512GB",
+"price": 677.0,
+"currency": "EUR",
+"available": false
+}
+},
+"https://tradingshenzhen.com/en/realme-gt-8-series/realme-gt8-pro-16gb256gb": {
+"lastmod": "2026-09-08",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Realme GT8 Pro - 16GB/256GB",
+"price": 607.0,
+"currency": "EUR",
+"available": false
+}
+},
+"https://tradingshenzhen.com/en/redmi-k90-series/redmi-k90-pro-max-16gb1024gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K90 Pro Max - 16GB/1024GB",
+"price": 747.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k90-series/redmi-k90-pro-max-16gb512gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K90 Pro Max - 16GB/512GB",
+"price": 717.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k90-series/redmi-k90-pro-max-12gb256gb": {
+"lastmod": "2026-08-06",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K90 Pro Max - 12GB/256GB",
+"price": 667.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-ultra-24gb1024gb": {
+"lastmod": "2026-09-15",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 Ultra - 24GB/1024GB",
+"price": 1097.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-ultra-16gb1024gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 Ultra - 16GB/1024GB",
+"price": 967.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/-vivo-iqoo-15-ultra-16gb512gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 Ultra - 16GB/512GB",
+"price": 837.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-15-series/vivo-iqoo-15-ultra-16gb256gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 15 Ultra - 16GB/256GB",
+"price": 797.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-16gb1024gb": {
+"lastmod": "2026-10-05",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "OnePlus 15T - 16GB/1024GB",
+"price": 917.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-16gb512gb": {
+"lastmod": "2026-10-05",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "OnePlus 15T - 16GB/512GB",
+"price": 817.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-12gb256gb": {
+"lastmod": "2026-10-05",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "OnePlus 15T - 12GB/256GB",
+"price": 627.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300s-16gb1024gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300s - 16GB/1024GB",
+"price": 967.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300s-16gb512gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300s - 16GB/512GB",
+"price": 907.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300s-12gb512gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300s - 12GB/512GB",
+"price": 797.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-x300-series/vivo-x300s-12gb256gb": {
+"lastmod": "2026-08-11",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo X300s - 12GB/256GB",
+"price": 707.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-max-16gb1024gb": {
+"lastmod": "2026-09-16",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K100 Pro Max - 16GB/1024GB",
+"price": 887.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-max-16gb512gb": {
+"lastmod": "2026-09-16",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K100 Pro Max - 16GB/512GB",
+"price": 777.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-max-16gb256gb": {
+"lastmod": "2026-09-16",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K100 Pro Max - 16GB/256GB",
+"price": 707.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-max-12gb256gb": {
+"lastmod": "2026-09-16",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Redmi K100 Pro Max - 12GB/256GB",
+"price": 677.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-16-series/vivo-iqoo-16-12gb-256gb": {
+"lastmod": "2026-10-07",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 16 - 12GB / 256GB",
+"price": 867.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-16-series/vivo-iqoo-16-12gb-512gb": {
+"lastmod": "2026-10-07",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 16 - 12GB / 512GB",
+"price": 1047.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-16-series/vivo-iqoo-16-16gb-512gb": {
+"lastmod": "2026-10-07",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 16 - 16GB / 512GB",
+"price": 1137.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/vivo-iqoo-16-series/vivo-iqoo-16-16gb-1024gb": {
+"lastmod": "2026-10-07",
+"fetched": "2026-10-20T23:26:16+00:00",
+"info": {
+"name": "Vivo IQOO 16 - 16GB / 1024GB",
+"price": 1407.0,
+"currency": "EUR",
+"available": true
+}
 }
 }

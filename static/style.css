@@ -543,7 +543,7 @@ footer p { max-width: 62ch; }
 .cmp-add { width: 100%; min-height: var(--tap); border-style: dashed; }
 .cmp-label { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
 .cmp-cell { min-width: 0; font-size: .9rem; line-height: 1.35; overflow-wrap: anywhere; padding: 6px 8px; border-radius: 8px; }
-.cmp-top { background: var(--save-soft); }
+/* the winning value in a row (lowest price, biggest battery, fastest charging): green text only, no tinted box */
 .cmp-top .cmp-price, .cmp-top > .cmp-line { color: var(--save); }
 .cmp-name { display: block; font-weight: 700; text-decoration: none; }
 .cmp-price { display: block; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }

@@ -1,8 +1,8 @@
 {
- "updated": "2026-10-19T23:39:29Z",
+ "updated": "2026-10-20T00:21:31Z",
  "stores": {
   "wonda": {
-   "checked": "2026-10-19T23:39:29Z",
+   "checked": "2026-10-20T00:21:31Z",
    "ok": true,
    "offers": [
     {
@@ -2813,7 +2813,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-10-19T23:39:29Z",
+   "checked": "2026-10-20T00:21:31Z",
    "ok": true,
    "offers": [
     {
@@ -2829,7 +2829,7 @@
      "prices": {
       "USD": 1287.0,
       "EUR": 1147.95,
-      "GBP": 968.0,
+      "GBP": 967.0,
       "AUD": 1844.0
      }
     },
@@ -2863,8 +2863,8 @@
      "prices": {
       "USD": 1508.0,
       "EUR": 1344.95,
-      "GBP": 1134.0,
-      "AUD": 2161.0
+      "GBP": 1133.0,
+      "AUD": 2160.0
      }
     },
     {
@@ -2881,7 +2881,7 @@
       "USD": 1573.0,
       "EUR": 1402.95,
       "GBP": 1182.0,
-      "AUD": 2254.0
+      "AUD": 2253.0
      }
     },
     {
@@ -2897,8 +2897,8 @@
      "prices": {
       "USD": 1833.0,
       "EUR": 1634.95,
-      "GBP": 1378.0,
-      "AUD": 2626.0
+      "GBP": 1377.0,
+      "AUD": 2625.0
      }
     },
     {
@@ -2965,7 +2965,7 @@
      "prices": {
       "USD": 2405.0,
       "EUR": 2144.95,
-      "GBP": 1808.0,
+      "GBP": 1807.0,
       "AUD": 3445.0
      }
     },
@@ -3016,7 +3016,7 @@
      "prices": {
       "USD": 1170.0,
       "EUR": 1043.95,
-      "GBP": 880.0,
+      "GBP": 879.0,
       "AUD": 1676.0
      }
     },
@@ -3034,7 +3034,7 @@
       "USD": 1300.0,
       "EUR": 1159.95,
       "GBP": 977.0,
-      "AUD": 1863.0
+      "AUD": 1862.0
      }
     },
     {
@@ -3050,8 +3050,8 @@
      "prices": {
       "USD": 1222.0,
       "EUR": 1089.95,
-      "GBP": 919.0,
-      "AUD": 1751.0
+      "GBP": 918.0,
+      "AUD": 1750.0
      }
     },
     {
@@ -3068,7 +3068,7 @@
       "USD": 1300.0,
       "EUR": 1159.95,
       "GBP": 977.0,
-      "AUD": 1863.0
+      "AUD": 1862.0
      }
     },
     {
@@ -3085,7 +3085,7 @@
       "USD": 1376.0,
       "EUR": 1226.95,
       "GBP": 1034.0,
-      "AUD": 1971.0
+      "AUD": 1970.0
      }
     },
     {
@@ -3119,7 +3119,7 @@
       "USD": 1131.0,
       "EUR": 1008.95,
       "GBP": 850.0,
-      "AUD": 1621.0
+      "AUD": 1620.0
      }
     },
     {
@@ -3170,7 +3170,7 @@
       "USD": 1593.0,
       "EUR": 1419.95,
       "GBP": 1197.0,
-      "AUD": 2282.0
+      "AUD": 2281.0
      }
     },
     {
@@ -3221,7 +3221,7 @@
       "USD": 1573.0,
       "EUR": 1402.95,
       "GBP": 1182.0,
-      "AUD": 2254.0
+      "AUD": 2253.0
      }
     },
     {
@@ -3306,7 +3306,7 @@
       "USD": 1359.0,
       "EUR": 1211.95,
       "GBP": 1021.0,
-      "AUD": 1947.0
+      "AUD": 1946.0
      }
     },
     {
@@ -3357,7 +3357,7 @@
       "USD": 1437.0,
       "EUR": 1281.95,
       "GBP": 1080.0,
-      "AUD": 2059.0
+      "AUD": 2058.0
      }
     },
     {
@@ -3374,7 +3374,7 @@
       "USD": 1593.0,
       "EUR": 1419.95,
       "GBP": 1197.0,
-      "AUD": 2282.0
+      "AUD": 2281.0
      }
     },
     {
@@ -3442,7 +3442,7 @@
       "USD": 1320.0,
       "EUR": 1176.95,
       "GBP": 992.0,
-      "AUD": 1891.0
+      "AUD": 1890.0
      }
     },
     {
@@ -3458,8 +3458,8 @@
      "prices": {
       "USD": 1491.0,
       "EUR": 1329.95,
-      "GBP": 1121.0,
-      "AUD": 2136.0
+      "GBP": 1120.0,
+      "AUD": 2135.0
      }
     },
     {
@@ -3493,7 +3493,7 @@
       "USD": 1644.0,
       "EUR": 1465.95,
       "GBP": 1235.0,
-      "AUD": 2355.0
+      "AUD": 2354.0
      }
     },
     {
@@ -3510,7 +3510,7 @@
       "USD": 2357.0,
       "EUR": 2101.95,
       "GBP": 1771.0,
-      "AUD": 3377.0
+      "AUD": 3376.0
      }
     },
     {
@@ -3527,7 +3527,7 @@
       "USD": 1911.0,
       "EUR": 1703.95,
       "GBP": 1436.0,
-      "AUD": 2738.0
+      "AUD": 2737.0
      }
     },
     {
@@ -3561,7 +3561,7 @@
       "USD": 2214.0,
       "EUR": 1974.95,
       "GBP": 1664.0,
-      "AUD": 3172.0
+      "AUD": 3171.0
      }
     },
     {
@@ -3577,8 +3577,8 @@
      "prices": {
       "USD": 2494.0,
       "EUR": 2224.95,
-      "GBP": 1875.0,
-      "AUD": 3574.0
+      "GBP": 1874.0,
+      "AUD": 3573.0
      }
     },
     {
@@ -3595,7 +3595,7 @@
       "USD": 1198.0,
       "EUR": 1067.95,
       "GBP": 900.0,
-      "AUD": 1716.0
+      "AUD": 1715.0
      }
     },
     {
@@ -3612,7 +3612,7 @@
       "USD": 1351.0,
       "EUR": 1204.95,
       "GBP": 1015.0,
-      "AUD": 1935.0
+      "AUD": 1934.0
      }
     },
     {
@@ -3629,7 +3629,7 @@
       "USD": 1593.0,
       "EUR": 1419.95,
       "GBP": 1197.0,
-      "AUD": 2282.0
+      "AUD": 2281.0
      }
     },
     {
@@ -3662,7 +3662,7 @@
      "prices": {
       "USD": 1132.0,
       "EUR": 1008.95,
-      "GBP": 851.0,
+      "GBP": 850.0,
       "AUD": 1621.0
      }
     },
@@ -3697,7 +3697,7 @@
       "USD": 1402.0,
       "EUR": 1249.95,
       "GBP": 1053.0,
-      "AUD": 2008.0
+      "AUD": 2007.0
      }
     },
     {
@@ -3731,7 +3731,7 @@
       "USD": 1593.0,
       "EUR": 1419.95,
       "GBP": 1197.0,
-      "AUD": 2282.0
+      "AUD": 2281.0
      }
     },
     {
@@ -3747,7 +3747,7 @@
      "prices": {
       "USD": 1726.0,
       "EUR": 1539.95,
-      "GBP": 1298.0,
+      "GBP": 1297.0,
       "AUD": 2473.0
      }
     },
@@ -3765,7 +3765,7 @@
       "USD": 1083.0,
       "EUR": 965.95,
       "GBP": 814.0,
-      "AUD": 1552.0
+      "AUD": 1551.0
      }
     },
     {
@@ -3782,7 +3782,7 @@
       "USD": 1198.0,
       "EUR": 1067.95,
       "GBP": 900.0,
-      "AUD": 1716.0
+      "AUD": 1715.0
      }
     },
     {
@@ -3815,8 +3815,8 @@
      "prices": {
       "USD": 1338.0,
       "EUR": 1192.95,
-      "GBP": 1006.0,
-      "AUD": 1917.0
+      "GBP": 1005.0,
+      "AUD": 1916.0
      }
     },
     {
@@ -3832,7 +3832,7 @@
      "prices": {
       "USD": 1484.0,
       "EUR": 1323.95,
-      "GBP": 1116.0,
+      "GBP": 1115.0,
       "AUD": 2126.0
      }
     },
@@ -3849,8 +3849,8 @@
      "prices": {
       "USD": 1847.0,
       "EUR": 1647.95,
-      "GBP": 1389.0,
-      "AUD": 2647.0
+      "GBP": 1388.0,
+      "AUD": 2646.0
      }
     },
     {
@@ -3866,8 +3866,8 @@
      "prices": {
       "USD": 1898.0,
       "EUR": 1692.95,
-      "GBP": 1427.0,
-      "AUD": 2720.0
+      "GBP": 1426.0,
+      "AUD": 2719.0
      }
     },
     {
@@ -3884,7 +3884,7 @@
       "USD": 1911.0,
       "EUR": 1703.95,
       "GBP": 1436.0,
-      "AUD": 2738.0
+      "AUD": 2737.0
      }
     },
     {
@@ -3901,7 +3901,7 @@
       "USD": 2064.0,
       "EUR": 1840.95,
       "GBP": 1551.0,
-      "AUD": 2957.0
+      "AUD": 2956.0
      }
     },
     {
@@ -3917,7 +3917,7 @@
      "prices": {
       "USD": 2198.0,
       "EUR": 1959.95,
-      "GBP": 1652.0,
+      "GBP": 1651.0,
       "AUD": 3148.0
      }
     },
@@ -3935,7 +3935,7 @@
       "USD": 2389.0,
       "EUR": 2129.95,
       "GBP": 1795.0,
-      "AUD": 3422.0
+      "AUD": 3421.0
      }
     },
     {
@@ -3985,8 +3985,8 @@
      "prices": {
       "USD": 1695.0,
       "EUR": 1510.95,
-      "GBP": 1274.0,
-      "AUD": 2428.0
+      "GBP": 1273.0,
+      "AUD": 2427.0
      }
     },
     {
@@ -4002,7 +4002,7 @@
      "prices": {
       "USD": 1784.0,
       "EUR": 1590.95,
-      "GBP": 1341.0,
+      "GBP": 1340.0,
       "AUD": 2555.0
      }
     },
@@ -4020,7 +4020,7 @@
       "USD": 1650.0,
       "EUR": 1471.95,
       "GBP": 1240.0,
-      "AUD": 2364.0
+      "AUD": 2363.0
      }
     },
     {
@@ -4036,8 +4036,8 @@
      "prices": {
       "USD": 1898.0,
       "EUR": 1692.95,
-      "GBP": 1427.0,
-      "AUD": 2720.0
+      "GBP": 1426.0,
+      "AUD": 2719.0
      }
     },
     {
@@ -4053,8 +4053,8 @@
      "prices": {
       "USD": 1758.0,
       "EUR": 1567.95,
-      "GBP": 1322.0,
-      "AUD": 2519.0
+      "GBP": 1321.0,
+      "AUD": 2518.0
      }
     },
     {
@@ -4070,8 +4070,8 @@
      "prices": {
       "USD": 1847.0,
       "EUR": 1647.95,
-      "GBP": 1389.0,
-      "AUD": 2647.0
+      "GBP": 1388.0,
+      "AUD": 2646.0
      }
     },
     {
@@ -4088,7 +4088,7 @@
       "USD": 1975.0,
       "EUR": 1760.95,
       "GBP": 1484.0,
-      "AUD": 2829.0
+      "AUD": 2828.0
      }
     },
     {
@@ -4122,7 +4122,7 @@
       "USD": 1561.0,
       "EUR": 1391.95,
       "GBP": 1173.0,
-      "AUD": 2236.0
+      "AUD": 2235.0
      }
     },
     {
@@ -4156,7 +4156,7 @@
       "USD": 1832.0,
       "EUR": 1633.95,
       "GBP": 1377.0,
-      "AUD": 2625.0
+      "AUD": 2624.0
      }
     },
     {
@@ -4173,7 +4173,7 @@
       "USD": 1995.0,
       "EUR": 1778.95,
       "GBP": 1499.0,
-      "AUD": 2858.0
+      "AUD": 2857.0
      }
     },
     {
@@ -4189,8 +4189,8 @@
      "prices": {
       "USD": 1338.0,
       "EUR": 1192.95,
-      "GBP": 1006.0,
-      "AUD": 1917.0
+      "GBP": 1005.0,
+      "AUD": 1916.0
      }
     },
     {
@@ -4223,8 +4223,8 @@
      "prices": {
       "USD": 1450.0,
       "EUR": 1292.95,
-      "GBP": 1090.0,
-      "AUD": 2077.0
+      "GBP": 1089.0,
+      "AUD": 2076.0
      }
     },
     {
@@ -4241,7 +4241,7 @@
       "USD": 1593.0,
       "EUR": 1419.95,
       "GBP": 1197.0,
-      "AUD": 2282.0
+      "AUD": 2281.0
      }
     },
     {
@@ -4326,7 +4326,7 @@
       "USD": 1131.0,
       "EUR": 1008.95,
       "GBP": 850.0,
-      "AUD": 1621.0
+      "AUD": 1620.0
      }
     },
     {
@@ -4343,7 +4343,7 @@
       "USD": 1274.0,
       "EUR": 1136.95,
       "GBP": 958.0,
-      "AUD": 1826.0
+      "AUD": 1825.0
      }
     },
     {
@@ -4360,7 +4360,7 @@
       "USD": 1551.0,
       "EUR": 1382.95,
       "GBP": 1166.0,
-      "AUD": 2222.0
+      "AUD": 2221.0
      }
     },
     {
@@ -4394,7 +4394,7 @@
       "USD": 1272.0,
       "EUR": 1133.95,
       "GBP": 956.0,
-      "AUD": 1822.0
+      "AUD": 1821.0
      }
     },
     {
@@ -4411,7 +4411,7 @@
       "USD": 1261.0,
       "EUR": 1124.95,
       "GBP": 948.0,
-      "AUD": 1807.0
+      "AUD": 1806.0
      }
     },
     {
@@ -4427,7 +4427,7 @@
      "prices": {
       "USD": 1277.0,
       "EUR": 1138.95,
-      "GBP": 960.0,
+      "GBP": 959.0,
       "AUD": 1829.0
      }
     },
@@ -4496,7 +4496,7 @@
       "USD": 1154.0,
       "EUR": 1028.95,
       "GBP": 867.0,
-      "AUD": 1653.0
+      "AUD": 1652.0
      }
     },
     {
@@ -4513,7 +4513,7 @@
       "USD": 884.0,
       "EUR": 788.95,
       "GBP": 665.0,
-      "AUD": 1267.0
+      "AUD": 1266.0
      }
     },
     {
@@ -4529,7 +4529,7 @@
      "prices": {
       "USD": 949.0,
       "EUR": 846.95,
-      "GBP": 714.0,
+      "GBP": 713.0,
       "AUD": 1360.0
      }
     },
@@ -4598,7 +4598,7 @@
       "USD": 1044.0,
       "EUR": 930.95,
       "GBP": 785.0,
-      "AUD": 1496.0
+      "AUD": 1495.0
      }
     },
     {
@@ -4615,7 +4615,7 @@
       "USD": 1157.0,
       "EUR": 1031.95,
       "GBP": 870.0,
-      "AUD": 1658.0
+      "AUD": 1657.0
      }
     },
     {
@@ -4716,7 +4716,7 @@
      "prices": {
       "USD": 949.0,
       "EUR": 846.95,
-      "GBP": 714.0,
+      "GBP": 713.0,
       "AUD": 1360.0
      }
     },
@@ -4751,7 +4751,7 @@
       "USD": 1534.0,
       "EUR": 1367.95,
       "GBP": 1153.0,
-      "AUD": 2198.0
+      "AUD": 2197.0
      }
     },
     {
@@ -4768,7 +4768,7 @@
       "USD": 1599.0,
       "EUR": 1425.95,
       "GBP": 1202.0,
-      "AUD": 2291.0
+      "AUD": 2290.0
      }
     },
     {
@@ -4784,7 +4784,7 @@
      "prices": {
       "USD": 1840.0,
       "EUR": 1640.95,
-      "GBP": 1383.0,
+      "GBP": 1382.0,
       "AUD": 2635.0
      }
     },
@@ -4802,7 +4802,7 @@
       "USD": 1365.0,
       "EUR": 1217.95,
       "GBP": 1026.0,
-      "AUD": 1956.0
+      "AUD": 1955.0
      }
     },
     {
@@ -4819,7 +4819,7 @@
       "USD": 1495.0,
       "EUR": 1332.95,
       "GBP": 1124.0,
-      "AUD": 2142.0
+      "AUD": 2141.0
      }
     },
     {
@@ -4835,7 +4835,7 @@
      "prices": {
       "USD": 1625.0,
       "EUR": 1448.95,
-      "GBP": 1222.0,
+      "GBP": 1221.0,
       "AUD": 2328.0
      }
     },
@@ -4852,14 +4852,2162 @@
      "prices": {
       "USD": 1625.0,
       "EUR": 1448.95,
-      "GBP": 1222.0,
+      "GBP": 1221.0,
       "AUD": 2328.0
      }
     }
    ]
   },
+  "averagedad": {
+   "checked": "2026-10-20T00:21:31Z",
+   "ok": true,
+   "offers": [
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-16",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OnePlus 16 - Black / 12GB/256GB",
+     "price": 1126.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-16?variant=55091037274450",
+     "prices": {
+      "USD": 1126.0,
+      "EUR": 1003.95,
+      "GBP": 829.0,
+      "AUD": 1612.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-16",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OnePlus 16 - Black / 12GB/512GB",
+     "price": 1248.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-16?variant=55091037307218",
+     "prices": {
+      "USD": 1248.0,
+      "EUR": 1112.95,
+      "GBP": 919.0,
+      "AUD": 1787.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-16",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OnePlus 16 - Black / 16GB/512GB",
+     "price": 1357.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-16?variant=55091037339986",
+     "prices": {
+      "USD": 1357.0,
+      "EUR": 1209.95,
+      "GBP": 999.0,
+      "AUD": 1943.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-16",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OnePlus 16 - Black / 16GB/1TB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-16?variant=55091037372754",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find X10 Pro Max (Global) - Titanium / 16GB/512GB",
+     "price": 1859.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x10-pro-max-global?variant=55042303656274",
+     "prices": {
+      "USD": 1859.0,
+      "EUR": 1657.95,
+      "GBP": 1369.0,
+      "AUD": 2662.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Vivo X500 Pro Max (Global) - Black / 12GB/512GB",
+     "price": 1832.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max-global?variant=55037391733074",
+     "prices": {
+      "USD": 1832.0,
+      "EUR": 1633.95,
+      "GBP": 1349.0,
+      "AUD": 2624.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-90-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Huawei Mate 90 Pro Max - Black / 12GB/512GB",
+     "price": 1873.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-90-pro-max?variant=54942900486482",
+     "prices": {
+      "USD": 1873.0,
+      "EUR": 1669.95,
+      "GBP": 1379.0,
+      "AUD": 2682.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-90-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 90 Pro Max - Black / 16GB/512GB",
+     "price": 2035.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-90-pro-max?variant=54942900519250",
+     "prices": {
+      "USD": 2035.0,
+      "EUR": 1814.95,
+      "GBP": 1499.0,
+      "AUD": 2915.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-90-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Mate 90 Pro Max - Black / 16GB/1TB Collectors Edition",
+     "price": 2511.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-90-pro-max?variant=54942900584786",
+     "prices": {
+      "USD": 2511.0,
+      "EUR": 2238.95,
+      "GBP": 1849.0,
+      "AUD": 3596.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x-fold-6",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Vivo X Fold 6 (Global) - Black / 12GB/512GB",
+     "price": 2103.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x-fold-6-global?variant=54942380851538",
+     "prices": {
+      "USD": 2103.0,
+      "EUR": 1875.95,
+      "GBP": 1549.0,
+      "AUD": 3012.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 9 Pro Max - Black / 12GB/256GB",
+     "price": 1221.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-9-pro-max?variant=54896478978386",
+     "prices": {
+      "USD": 1221.0,
+      "EUR": 1088.95,
+      "GBP": 899.0,
+      "AUD": 1749.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Honor Magic 9 Pro Max - Black / 12GB/512GB",
+     "price": 1316.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-9-pro-max?variant=54896479011154",
+     "prices": {
+      "USD": 1316.0,
+      "EUR": 1173.95,
+      "GBP": 969.0,
+      "AUD": 1885.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 9 Pro Max - Black / 16GB/512GB",
+     "price": 1397.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-9-pro-max?variant=54896479043922",
+     "prices": {
+      "USD": 1397.0,
+      "EUR": 1245.95,
+      "GBP": 1029.0,
+      "AUD": 2001.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-9-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 9 Pro Max - Black / 16GB/1TB",
+     "price": 1560.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-9-pro-max?variant=54896479076690",
+     "prices": {
+      "USD": 1560.0,
+      "EUR": 1391.95,
+      "GBP": 1149.0,
+      "AUD": 2235.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Pro - Black / 12GB/256GB",
+     "price": 1139.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro?variant=54828335497554",
+     "prices": {
+      "USD": 1139.0,
+      "EUR": 1015.95,
+      "GBP": 839.0,
+      "AUD": 1632.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Pro - Black / 12GB/512GB",
+     "price": 1316.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro?variant=54828335530322",
+     "prices": {
+      "USD": 1316.0,
+      "EUR": 1173.95,
+      "GBP": 969.0,
+      "AUD": 1885.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Pro - Black / 16GB/512GB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro?variant=54828335563090",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Pro - Black / 16GB/1TB",
+     "price": 1628.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro?variant=54828335595858",
+     "prices": {
+      "USD": 1628.0,
+      "EUR": 1451.95,
+      "GBP": 1199.0,
+      "AUD": 2332.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Pro Max - Black / 12GB/256GB",
+     "price": 1316.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro-max?variant=54825070133586",
+     "prices": {
+      "USD": 1316.0,
+      "EUR": 1173.95,
+      "GBP": 969.0,
+      "AUD": 1885.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Pro Max - Black / 12GB/512GB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro-max?variant=54825070166354",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Pro Max - Black / 16GB/512GB",
+     "price": 1628.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro-max?variant=54825070199122",
+     "prices": {
+      "USD": 1628.0,
+      "EUR": 1451.95,
+      "GBP": 1199.0,
+      "AUD": 2332.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Pro Max - Black / 16GB/1TB",
+     "price": 1805.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-pro-max?variant=54825070231890",
+     "prices": {
+      "USD": 1805.0,
+      "EUR": 1608.95,
+      "GBP": 1329.0,
+      "AUD": 2585.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X10 - Blue / 12GB/256GB",
+     "price": 1017.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x10?variant=54823835795794",
+     "prices": {
+      "USD": 1017.0,
+      "EUR": 906.95,
+      "GBP": 749.0,
+      "AUD": 1457.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X10 - Blue / 12GB/512GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x10?variant=54823835828562",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X10 - Blue / 16GB/512GB",
+     "price": 1221.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x10?variant=54823835861330",
+     "prices": {
+      "USD": 1221.0,
+      "EUR": 1088.95,
+      "GBP": 899.0,
+      "AUD": 1749.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X10 - Blue / 16GB/1TB",
+     "price": 1357.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x10?variant=54823835894098",
+     "prices": {
+      "USD": 1357.0,
+      "EUR": 1209.95,
+      "GBP": 999.0,
+      "AUD": 1943.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500 - Black / 12GB/256GB",
+     "price": 1044.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500?variant=54803536544082",
+     "prices": {
+      "USD": 1044.0,
+      "EUR": 931.95,
+      "GBP": 769.0,
+      "AUD": 1496.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500 - Black / 12GB/512GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500?variant=54803536576850",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500 - Black / 12GB/1TB",
+     "price": 1357.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500?variant=54803536609618",
+     "prices": {
+      "USD": 1357.0,
+      "EUR": 1209.95,
+      "GBP": 999.0,
+      "AUD": 1943.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500 Pro - Black / 12GB/256GB",
+     "price": 1221.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro?variant=54803398132050",
+     "prices": {
+      "USD": 1221.0,
+      "EUR": 1088.95,
+      "GBP": 899.0,
+      "AUD": 1749.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500 Pro - Black / 12GB/512GB",
+     "price": 1397.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro?variant=54803398164818",
+     "prices": {
+      "USD": 1397.0,
+      "EUR": 1245.95,
+      "GBP": 1029.0,
+      "AUD": 2001.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X500 Pro - Black / 16GB/512GB",
+     "price": 1465.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro?variant=54818694168914",
+     "prices": {
+      "USD": 1465.0,
+      "EUR": 1306.95,
+      "GBP": 1079.0,
+      "AUD": 2099.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500 Pro - Black / 12GB/1TB",
+     "price": 1560.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro?variant=54803398197586",
+     "prices": {
+      "USD": 1560.0,
+      "EUR": 1391.95,
+      "GBP": 1149.0,
+      "AUD": 2235.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X500 Pro - Black / 16GB/1TB",
+     "price": 1696.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro?variant=54818694201682",
+     "prices": {
+      "USD": 1696.0,
+      "EUR": 1512.95,
+      "GBP": 1249.0,
+      "AUD": 2429.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X10 Pro Max - Orange / 12GB/256GB",
+     "price": 1289.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-x10-pro-max?variant=54812699754834",
+     "prices": {
+      "USD": 1289.0,
+      "EUR": 1148.95,
+      "GBP": 949.0,
+      "AUD": 1846.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "OPPO Find X10 Pro Max - Orange / 12GB/512GB",
+     "price": 1452.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-x10-pro-max?variant=54812699787602",
+     "prices": {
+      "USD": 1452.0,
+      "EUR": 1294.95,
+      "GBP": 1069.0,
+      "AUD": 2079.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X10 Pro Max - Orange / 16GB/512GB",
+     "price": 1560.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-x10-pro-max?variant=54812699820370",
+     "prices": {
+      "USD": 1560.0,
+      "EUR": 1391.95,
+      "GBP": 1149.0,
+      "AUD": 2235.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x10-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X10 Pro Max - Orange / 16GB/1TB",
+     "price": 1764.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-x10-pro-max?variant=54812699853138",
+     "prices": {
+      "USD": 1764.0,
+      "EUR": 1572.95,
+      "GBP": 1299.0,
+      "AUD": 2526.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X500 Pro Max - Black / 12GB/256GB",
+     "price": 1316.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max?variant=54795158323538",
+     "prices": {
+      "USD": 1316.0,
+      "EUR": 1173.95,
+      "GBP": 969.0,
+      "AUD": 1885.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Vivo X500 Pro Max - Black / 12GB/512GB",
+     "price": 1520.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max?variant=54795158356306",
+     "prices": {
+      "USD": 1520.0,
+      "EUR": 1354.95,
+      "GBP": 1119.0,
+      "AUD": 2176.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X500 Pro Max - Black / 16GB/512GB",
+     "price": 1615.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max?variant=54795158389074",
+     "prices": {
+      "USD": 1615.0,
+      "EUR": 1439.95,
+      "GBP": 1189.0,
+      "AUD": 2312.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "12/1024",
+     "title": "Vivo X500 Pro Max - Black / 12GB/1TB",
+     "price": 1696.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max?variant=54795158421842",
+     "prices": {
+      "USD": 1696.0,
+      "EUR": 1512.95,
+      "GBP": 1249.0,
+      "AUD": 2429.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x500-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X500 Pro Max - Grey / 16GB/1TB Creators Kit",
+     "price": 2619.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x500-pro-max?variant=54829987791186",
+     "prices": {
+      "USD": 2619.0,
+      "EUR": 2335.95,
+      "GBP": 1929.0,
+      "AUD": 3751.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Xiaomi 18 Fold - Black / 12GB/256GB",
+     "price": 1968.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-fold?variant=54598122701138",
+     "prices": {
+      "USD": 1968.0,
+      "EUR": 1754.95,
+      "GBP": 1449.0,
+      "AUD": 2818.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 18 Fold - Black / 12GB/512GB",
+     "price": 2130.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-fold?variant=54598122733906",
+     "prices": {
+      "USD": 2130.0,
+      "EUR": 1899.95,
+      "GBP": 1569.0,
+      "AUD": 3051.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 18 Fold - Black / 16GB/512GB",
+     "price": 2280.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-fold?variant=54598122766674",
+     "prices": {
+      "USD": 2280.0,
+      "EUR": 2032.95,
+      "GBP": 1679.0,
+      "AUD": 3265.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-18-fold",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 18 Fold - Black / 16GB/1TB",
+     "price": 2619.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-18-fold?variant=54598122799442",
+     "prices": {
+      "USD": 2619.0,
+      "EUR": 2335.95,
+      "GBP": 1929.0,
+      "AUD": 3751.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "HUAWEI Pura X View - Black / 12GB/256GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-view?variant=54472580661586",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "HUAWEI Pura X View - Black / 12GB/512GB",
+     "price": 1357.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-view?variant=54472580694354",
+     "prices": {
+      "USD": 1357.0,
+      "EUR": 1209.95,
+      "GBP": 999.0,
+      "AUD": 1943.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-view",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "HUAWEI Pura X View - Black / 16GB/1TB",
+     "price": 1601.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-view?variant=54472580727122",
+     "prices": {
+      "USD": 1601.0,
+      "EUR": 1427.95,
+      "GBP": 1179.0,
+      "AUD": 2293.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Samsung Z Fold 8 Ultra - Dark Purple / 12GB/512GB",
+     "price": 2511.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/samsung-z-fold-8-ultra?variant=54118031786322",
+     "prices": {
+      "USD": 2511.0,
+      "EUR": 2238.95,
+      "GBP": 1849.0,
+      "AUD": 3596.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Samsung Z Fold 8 Ultra - Dark Purple / 16GB/1TB",
+     "price": 2782.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/samsung-z-fold-8-ultra?variant=54118031819090",
+     "prices": {
+      "USD": 2782.0,
+      "EUR": 2480.95,
+      "GBP": 2049.0,
+      "AUD": 3985.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "samsung-galaxy-z-fold-8",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Samsung Z Fold 8 - Graphite / 12GB/512GB",
+     "price": 2198.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/samsung-z-fold-8?variant=54117658067282",
+     "prices": {
+      "USD": 2198.0,
+      "EUR": 1960.95,
+      "GBP": 1619.0,
+      "AUD": 3149.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "samsung-galaxy-z-fold-8",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Samsung Z Fold 8 - lavender / 16GB/1TB",
+     "price": 2511.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/samsung-z-fold-8?variant=54117658165586",
+     "prices": {
+      "USD": 2511.0,
+      "EUR": 2238.95,
+      "GBP": 1849.0,
+      "AUD": 3596.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90s-pro",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Huawei Pura 90s Pro (Global) - Black / 12GB/256GB",
+     "price": 1017.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90s-pro?variant=54107553661266",
+     "prices": {
+      "USD": 1017.0,
+      "EUR": 906.95,
+      "GBP": 749.0,
+      "AUD": 1457.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90s-pro",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Huawei Pura 90s Pro (Global) - Black / 12GB/512GB",
+     "price": 1126.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90s-pro?variant=54107553694034",
+     "prices": {
+      "USD": 1126.0,
+      "EUR": 1003.95,
+      "GBP": 829.0,
+      "AUD": 1612.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90s-pro-max",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Huawei Pura 90s Pro Max (Global) - Black / 12GB/512GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90s-pro-max?variant=54036309279058",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-pro",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Vivo X300 Pro (Global) - Black / 16GB/512GB",
+     "price": 1262.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-pro-global?variant=51925154365778",
+     "prices": {
+      "USD": 1262.0,
+      "EUR": 1124.95,
+      "GBP": 929.0,
+      "AUD": 1807.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X Fold 6 - Black / 12GB/256GB",
+     "price": 1357.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x-fold-6?variant=53794790932818",
+     "prices": {
+      "USD": 1357.0,
+      "EUR": 1209.95,
+      "GBP": 999.0,
+      "AUD": 1943.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X Fold 6 - Black / 16GB/512GB",
+     "price": 1628.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x-fold-6?variant=53794790965586",
+     "prices": {
+      "USD": 1628.0,
+      "EUR": 1451.95,
+      "GBP": 1199.0,
+      "AUD": 2332.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x-fold-6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X Fold 6 - Black / 16GB/1TB",
+     "price": 1764.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x-fold-6?variant=53794790998354",
+     "prices": {
+      "USD": 1764.0,
+      "EUR": 1572.95,
+      "GBP": 1299.0,
+      "AUD": 2526.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-v6",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Honor Magic V6 (Global) - Black / 16GB/1TB",
+     "price": 2035.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-v6-global?variant=53643573395794",
+     "prices": {
+      "USD": 2035.0,
+      "EUR": 1814.95,
+      "GBP": 1499.0,
+      "AUD": 2915.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-v6",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Honor Magic V6 (Global) - Black / 16GB/512GB",
+     "price": 1900.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-v6-global?variant=53643573363026",
+     "prices": {
+      "USD": 1900.0,
+      "EUR": 1693.95,
+      "GBP": 1399.0,
+      "AUD": 2721.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-fe",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Vivo X300 fe (Global) - Black / 12GB/256GB",
+     "price": 1221.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-fe?variant=53510091473234",
+     "prices": {
+      "USD": 1221.0,
+      "EUR": 1088.95,
+      "GBP": 899.0,
+      "AUD": 1749.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-fe",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Vivo X300 fe (Global) - Black / 12GB/512GB",
+     "price": 1316.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-fe?variant=53510091506002",
+     "prices": {
+      "USD": 1316.0,
+      "EUR": 1173.95,
+      "GBP": 969.0,
+      "AUD": 1885.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "sony-xperia-1-viii",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Sony Xperia 1 VIII - Black / 12GB/256GB",
+     "price": 1737.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/sony-xperia-1-viii?variant=53441393164626",
+     "prices": {
+      "USD": 1737.0,
+      "EUR": 1548.95,
+      "GBP": 1279.0,
+      "AUD": 2487.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "sony-xperia-1-viii",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Sony Xperia 1 VIII - Black / 12GB/512GB",
+     "price": 1873.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/sony-xperia-1-viii?variant=53441393197394",
+     "prices": {
+      "USD": 1873.0,
+      "EUR": 1669.95,
+      "GBP": 1379.0,
+      "AUD": 2682.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Pura 90 Pro - Black / 12GB/256GB",
+     "price": 1112.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro?variant=53324144017746",
+     "prices": {
+      "USD": 1112.0,
+      "EUR": 991.95,
+      "GBP": 819.0,
+      "AUD": 1593.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura 90 Pro - Black / 16GB/512GB",
+     "price": 1248.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro?variant=53324144083282",
+     "prices": {
+      "USD": 1248.0,
+      "EUR": 1112.95,
+      "GBP": 919.0,
+      "AUD": 1787.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Pura 90 Pro - Black / 16GB/1TB",
+     "price": 1465.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro?variant=53324144148818",
+     "prices": {
+      "USD": 1465.0,
+      "EUR": 1306.95,
+      "GBP": 1079.0,
+      "AUD": 2099.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Pura 90 Pro Max - Black / 12GB/256GB",
+     "price": 1248.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro-max?variant=53319128383826",
+     "prices": {
+      "USD": 1248.0,
+      "EUR": 1112.95,
+      "GBP": 919.0,
+      "AUD": 1787.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura 90 Pro Max - Black / 16GB/512GB",
+     "price": 1465.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro-max?variant=53319128449362",
+     "prices": {
+      "USD": 1465.0,
+      "EUR": 1306.95,
+      "GBP": 1079.0,
+      "AUD": 2099.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-90-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Pura 90 Pro Max - Black / 16GB/1TB",
+     "price": 1615.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-90-pro-max?variant=53319128514898",
+     "prices": {
+      "USD": 1615.0,
+      "EUR": 1439.95,
+      "GBP": 1189.0,
+      "AUD": 2312.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-max",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Pura X Max - Black / 12GB/256GB",
+     "price": 1968.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-max?variant=53264627695954",
+     "prices": {
+      "USD": 1968.0,
+      "EUR": 1754.95,
+      "GBP": 1449.0,
+      "AUD": 2818.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Pura X Max - Black / 16GB/512GB",
+     "price": 2239.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-max?variant=53264627761490",
+     "prices": {
+      "USD": 2239.0,
+      "EUR": 1996.95,
+      "GBP": 1649.0,
+      "AUD": 3207.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-x-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Pura X Max - Black / 16GB/1TB",
+     "price": 2443.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-x-max?variant=53264627827026",
+     "prices": {
+      "USD": 2443.0,
+      "EUR": 2177.95,
+      "GBP": 1799.0,
+      "AUD": 3499.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X9 Ultra - Brown / 12GB/256GB",
+     "price": 1289.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra?variant=53223966310738",
+     "prices": {
+      "USD": 1289.0,
+      "EUR": 1148.95,
+      "GBP": 949.0,
+      "AUD": 1846.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X9 Ultra - Brown / 16GB/512GB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra?variant=53223765377362",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Ultra - Brown / 16GB/1TB",
+     "price": 1696.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra?variant=53223765442898",
+     "prices": {
+      "USD": 1696.0,
+      "EUR": 1512.95,
+      "GBP": 1249.0,
+      "AUD": 2429.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "china",
+     "storage": "base",
+     "title": "OPPO Find X9 Ultra - Brown / Ultra Hasselblad Earth Explorer Master Set 1TB",
+     "price": 2443.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra?variant=53303971381586",
+     "prices": {
+      "USD": 2443.0,
+      "EUR": 2177.95,
+      "GBP": 1799.0,
+      "AUD": 3499.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Vivo X300 Ultra (Global) - Black / 16GB/512GB",
+     "price": 1737.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-ultra-global?variant=53214657610066",
+     "prices": {
+      "USD": 1737.0,
+      "EUR": 1548.95,
+      "GBP": 1279.0,
+      "AUD": 2487.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Vivo X300 Ultra (Global) - Black / 16GB/1TB",
+     "price": 1886.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-ultra-global?variant=53214657675602",
+     "prices": {
+      "USD": 1886.0,
+      "EUR": 1681.95,
+      "GBP": 1389.0,
+      "AUD": 2701.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "OPPO Find X9 Ultra (Global) - Orange / 12GB/512GB",
+     "price": 1601.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra-global?variant=53215059214674",
+     "prices": {
+      "USD": 1601.0,
+      "EUR": 1427.95,
+      "GBP": 1179.0,
+      "AUD": 2293.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Ultra (Global) - Orange / 16GB/1TB",
+     "price": 1873.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-ultra-global?variant=53215059280210",
+     "prices": {
+      "USD": 1873.0,
+      "EUR": 1669.95,
+      "GBP": 1379.0,
+      "AUD": 2682.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Vivo X300 Ultra - Black / 12GB/256GB",
+     "price": 1272.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-ultra?variant=53048327766354",
+     "prices": {
+      "USD": 1272.0,
+      "EUR": 1134.95,
+      "GBP": 937.0,
+      "AUD": 1822.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Vivo X300 Ultra - Black / 16GB/512GB",
+     "price": 1425.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-ultra?variant=53048327831890",
+     "prices": {
+      "USD": 1425.0,
+      "EUR": 1269.95,
+      "GBP": 1049.0,
+      "AUD": 2040.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "vivo-x300-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Vivo X300 Ultra - Black / 16GB/1TB",
+     "price": 1601.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/vivo-x300-ultra?variant=53048327897426",
+     "prices": {
+      "USD": 1601.0,
+      "EUR": 1427.95,
+      "GBP": 1179.0,
+      "AUD": 2293.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-n6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find N6 - Black / 16GB/1TB",
+     "price": 1968.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-n6?variant=52980838760786",
+     "prices": {
+      "USD": 1968.0,
+      "EUR": 1754.95,
+      "GBP": 1449.0,
+      "AUD": 2818.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-n6",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find N6 (Global) - Titanium / 16GB/512GB",
+     "price": 1900.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-n6-global?variant=52919360061778",
+     "prices": {
+      "USD": 1900.0,
+      "EUR": 1693.95,
+      "GBP": 1399.0,
+      "AUD": 2721.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic V6 - Black / 12GB/256GB",
+     "price": 1601.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-v6?variant=52911551086930",
+     "prices": {
+      "USD": 1601.0,
+      "EUR": 1427.95,
+      "GBP": 1179.0,
+      "AUD": 2293.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic V6 - Black / 16GB/512GB",
+     "price": 1873.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-v6?variant=52908277596498",
+     "prices": {
+      "USD": 1873.0,
+      "EUR": 1669.95,
+      "GBP": 1379.0,
+      "AUD": 2682.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-v6",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic V6 - Black / 16GB/1TB",
+     "price": 2035.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-v6?variant=52908277662034",
+     "prices": {
+      "USD": 2035.0,
+      "EUR": 1814.95,
+      "GBP": 1499.0,
+      "AUD": 2915.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra (Global) - Black / 16GB/512GB",
+     "price": 1384.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra-global?variant=52794950222162",
+     "prices": {
+      "USD": 1384.0,
+      "EUR": 1233.95,
+      "GBP": 1019.0,
+      "AUD": 1982.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra (Global) - Black / 16GB/1TB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra-global?variant=52794950287698",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 8 Pro Air - Black / 12GB/256GB",
+     "price": 841.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro-air?variant=52520954102098",
+     "prices": {
+      "USD": 841.0,
+      "EUR": 749.95,
+      "GBP": 619.0,
+      "AUD": 1204.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 8 Pro Air - Black / 16GB/512GB",
+     "price": 974.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro-air?variant=52520954167634",
+     "prices": {
+      "USD": 974.0,
+      "EUR": 868.95,
+      "GBP": 717.0,
+      "AUD": 1395.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro-air",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 8 Pro Air - Black / 16GB/1TB",
+     "price": 1055.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro-air?variant=52520954200402",
+     "prices": {
+      "USD": 1055.0,
+      "EUR": 940.95,
+      "GBP": 777.0,
+      "AUD": 1511.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra-leica-edition",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra (Leica Edition) - Black / 16GB/512GB",
+     "price": 1425.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra-leica-edition?variant=52363604132178",
+     "prices": {
+      "USD": 1425.0,
+      "EUR": 1269.95,
+      "GBP": 1049.0,
+      "AUD": 2040.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra-leica-edition",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra (Leica Edition) - Black / 16GB/1TB",
+     "price": 1601.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra-leica-edition?variant=52363604164946",
+     "prices": {
+      "USD": 1601.0,
+      "EUR": 1427.95,
+      "GBP": 1179.0,
+      "AUD": 2293.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Ultra - Black / 12GB/512GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra?variant=52363468702034",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra - Black / 16GB/512GB",
+     "price": 1194.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra?variant=52363468734802",
+     "prices": {
+      "USD": 1194.0,
+      "EUR": 1064.95,
+      "GBP": 879.0,
+      "AUD": 1710.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra - Black / 16GB/1TB",
+     "price": 1330.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-ultra?variant=52363468767570",
+     "prices": {
+      "USD": 1330.0,
+      "EUR": 1185.95,
+      "GBP": 979.0,
+      "AUD": 1904.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-80",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Huawei Mate 80 - Black / 12GB/256GB",
+     "price": 963.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-80?variant=52151384998226",
+     "prices": {
+      "USD": 963.0,
+      "EUR": 858.95,
+      "GBP": 709.0,
+      "AUD": 1379.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-80",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80 - Black / 16GB/512GB",
+     "price": 1017.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-80?variant=52151279190354",
+     "prices": {
+      "USD": 1017.0,
+      "EUR": 906.95,
+      "GBP": 749.0,
+      "AUD": 1457.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-80-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80 Pro - Black / 16GB/512GB",
+     "price": 1492.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-80-pro?variant=52151130325330",
+     "prices": {
+      "USD": 1492.0,
+      "EUR": 1330.95,
+      "GBP": 1099.0,
+      "AUD": 2137.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-80-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Huawei Mate 80 Pro Max - Black / 16GB/512GB",
+     "price": 1289.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-80-pro-max?variant=52151102865746",
+     "prices": {
+      "USD": 1289.0,
+      "EUR": 1148.95,
+      "GBP": 949.0,
+      "AUD": 1846.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-mate-80-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Huawei Mate 80 Pro Max - Black / 16GB/1TB",
+     "price": 1560.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-mate-80-pro-max?variant=52151102898514",
+     "prices": {
+      "USD": 1560.0,
+      "EUR": 1391.95,
+      "GBP": 1149.0,
+      "AUD": 2235.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Honor Magic 8 Pro (Global) - Black / 12GB/512GB",
+     "price": 1153.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro-global?variant=52013948928338",
+     "prices": {
+      "USD": 1153.0,
+      "EUR": 1027.95,
+      "GBP": 849.0,
+      "AUD": 1651.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Honor Magic 8 Pro (Global) - Black / 16GB/1TB",
+     "price": 1289.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro-global?variant=52219917992274",
+     "prices": {
+      "USD": 1289.0,
+      "EUR": 1148.95,
+      "GBP": 949.0,
+      "AUD": 1846.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-15",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OnePlus 15 - Black / 12GB/256GB",
+     "price": 814.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-15?variant=51893549007186",
+     "prices": {
+      "USD": 814.0,
+      "EUR": 725.95,
+      "GBP": 599.0,
+      "AUD": 1165.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-15",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OnePlus 15 - Black / 16GB/512GB",
+     "price": 949.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-15?variant=51893549039954",
+     "prices": {
+      "USD": 949.0,
+      "EUR": 846.95,
+      "GBP": 699.0,
+      "AUD": 1360.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oneplus-15",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OnePlus 15 - Black / 16GB/1TB",
+     "price": 1044.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oneplus-15?variant=51893549072722",
+     "prices": {
+      "USD": 1044.0,
+      "EUR": 931.95,
+      "GBP": 769.0,
+      "AUD": 1496.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "Honor Magic 8 Pro - Black / 12GB/256GB",
+     "price": 1044.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro?variant=51869939302738",
+     "prices": {
+      "USD": 1044.0,
+      "EUR": 931.95,
+      "GBP": 769.0,
+      "AUD": 1496.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Honor Magic 8 Pro - Black / 16/512GB",
+     "price": 1126.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro?variant=51869939335506",
+     "prices": {
+      "USD": 1126.0,
+      "EUR": 1003.95,
+      "GBP": 829.0,
+      "AUD": 1612.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "honor-magic-8-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Honor Magic 8 Pro - Black / 16GB/1TB",
+     "price": 1207.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/honor-magic-8-pro?variant=51869939368274",
+     "prices": {
+      "USD": 1207.0,
+      "EUR": 1076.95,
+      "GBP": 889.0,
+      "AUD": 1729.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "12/256",
+     "title": "OPPO Find X9 Pro - Red / 12GB/256GB",
+     "price": 990.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-pro?variant=51792537420114",
+     "prices": {
+      "USD": 990.0,
+      "EUR": 882.95,
+      "GBP": 729.0,
+      "AUD": 1418.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "OPPO Find X9 Pro - Red / 16GB/512GB",
+     "price": 1085.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-pro?variant=51792537452882",
+     "prices": {
+      "USD": 1085.0,
+      "EUR": 967.95,
+      "GBP": 799.0,
+      "AUD": 1554.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Pro - Red / 16GB/1TB",
+     "price": 1221.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/oppo-find-x9-pro?variant=51792537485650",
+     "prices": {
+      "USD": 1221.0,
+      "EUR": 1088.95,
+      "GBP": 899.0,
+      "AUD": 1749.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Pro Max - Black / 12GB/512GB",
+     "price": 1072.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro-max?variant=51603112362322",
+     "prices": {
+      "USD": 1072.0,
+      "EUR": 955.95,
+      "GBP": 789.0,
+      "AUD": 1535.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Pro Max - Black / 16GB/512GB",
+     "price": 1139.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro-max?variant=51603112395090",
+     "prices": {
+      "USD": 1139.0,
+      "EUR": 1015.95,
+      "GBP": 839.0,
+      "AUD": 1632.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro-max",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Pro Max - Black / 16GB/1TB",
+     "price": 1275.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro-max?variant=51603112427858",
+     "prices": {
+      "USD": 1275.0,
+      "EUR": 1136.95,
+      "GBP": 939.0,
+      "AUD": 1826.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "12/512",
+     "title": "Xiaomi 17 Pro - Black / 12GB/512GB",
+     "price": 977.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro?variant=51603027263826",
+     "prices": {
+      "USD": 977.0,
+      "EUR": 870.95,
+      "GBP": 719.0,
+      "AUD": 1399.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Pro - Black / 16GB/512GB",
+     "price": 1044.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro?variant=51603027296594",
+     "prices": {
+      "USD": 1044.0,
+      "EUR": 931.95,
+      "GBP": 769.0,
+      "AUD": 1496.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "xiaomi-17-pro",
+     "edition": "china",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Pro - Black / 16GB/1TB",
+     "price": 1180.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/xiaomi-17-pro?variant=51603027329362",
+     "prices": {
+      "USD": 1180.0,
+      "EUR": 1052.95,
+      "GBP": 869.0,
+      "AUD": 1690.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-80-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Huawei Pura 80 Ultra (GLOBAL) - Black / 16GB/512GB",
+     "price": 1560.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-80-ultra?variant=50980718674258",
+     "prices": {
+      "USD": 1560.0,
+      "EUR": 1391.95,
+      "GBP": 1149.0,
+      "AUD": 2235.0
+     }
+    },
+    {
+     "store": "averagedad",
+     "model_id": "huawei-pura-80-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Huawei Pura 80 Ultra (GLOBAL) - Black / 16GB/1TB (China Version)",
+     "price": 1696.0,
+     "currency": "USD",
+     "available": true,
+     "url": "https://averagedadofficial.com/products/huawei-pura-80-ultra?variant=51415685005650",
+     "prices": {
+      "USD": 1696.0,
+      "EUR": 1512.95,
+      "GBP": 1249.0,
+      "AUD": 2429.0
+     }
+    }
+   ]
+  },
   "tradingshenzhen": {
-   "checked": "2026-10-19T23:39:29Z",
+   "checked": "2026-10-20T00:21:31Z",
    "ok": true,
    "offers": [
     {
@@ -6153,7 +8301,7 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-10-19T23:39:29Z",
+   "checked": "2026-10-20T00:21:31Z",
    "ok": true,
    "offers": [
     {
@@ -6201,7 +8349,7 @@
    ]
   },
   "giztop": {
-   "checked": "2026-10-19T23:39:29Z",
+   "checked": "2026-10-20T00:21:31Z",
    "ok": true,
    "offers": [
     {

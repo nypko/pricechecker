@@ -9,6 +9,7 @@
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../phones/{{ p.slug }}">{{ p.name }} prices</a>
+  <div class="page-actions"><button type="button" class="btn-quiet share" hidden>Share</button></div>
 </div>
 <h1>{{ p.name }} price history</h1>
 {% set first = p.changes[-1].time if p.changes else none %}

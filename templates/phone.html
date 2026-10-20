@@ -14,7 +14,8 @@
   <a class="crumb" href="../">All phones</a>
   <div class="page-actions">
     {% if p.best %}<button type="button" class="btn-quiet watch" data-slug="{{ p.slug }}" aria-pressed="false">Watch</button>{% endif %}
-    <a class="btn-quiet" href="../history/{{ p.slug }}">Price history</a>
+    <a class="btn-quiet" href="../history/{{ p.slug }}">History<span class="sr-only"> of prices</span></a>
+    <button type="button" class="btn-quiet share" hidden>Share</button>
   </div>
 </div>
 <p class="watch-note muted small" hidden>Watching: the list shows how this phone's price has moved since your last visit. Saved on this device only.</p>

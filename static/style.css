@@ -191,6 +191,12 @@ p > .link-btn, .order-for .link-btn, .list-meta .link-btn { min-height: var(--ta
 .spec-tag { font-weight: 400; font-size: .75rem; color: var(--muted); }
 .cmp-link { margin: 4px 0 0; font-size: .9rem; }
 .page-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+@media (min-width: 340px) and (max-width: 420px) {   /* All phones · Watch · History · Share on one row (below 340px they wrap) */
+  .page-nav { gap: 6px; }
+  .page-nav .crumb { white-space: nowrap; gap: 6px; }
+  .page-actions { gap: 6px; flex-wrap: nowrap; }
+  .page-actions .btn-quiet { padding: 0 11px; }
+}
 .watch[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
 .no-js .watch { display: none; }
 .watch-note { margin: 4px 0 0; }

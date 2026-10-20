@@ -97,6 +97,16 @@ stores:
         - {url: "https://averagedadofficial.com/policies/shipping-policy", expect: "29\\.99"}
         - {url: "https://averagedadofficial.com/policies/refund-policy", expect: "14 day"}
 
+  etoren:
+    label: Etoren
+    type: sitemap
+    enabled: false        # 2026-10-20: robots.txt allows /products/ (Crawl-delay: 10, no ?page=), but product pages answer
+                          # PriceCheckerBot with a Cloudflare challenge (403 "Just a moment"). Enable once they allowlist the
+                          # bot or provide a product feed. Regional storefronts: www (USD, worldwide), eu., uk., au., de. ...
+    sitemap_url: https://ww.etoren.com/sitemap/sitemap_ww.xml
+    currency: USD
+    trust: {reviews: {score: 4.5, count: 2200, source: Trustpilot, url: "https://www.trustpilot.com/review/etoren.com"}, checked: 2026-10-20}   # approximate, from search results - re-check before enabling
+
   trinity:
     label: Trinity Electronic
     type: webpage

@@ -1,0 +1,27 @@
+name: Telegram check
+
+# Run by hand (Actions -> Telegram check -> Run workflow): checks the bot token and that the bot may post in the
+# channel, without posting anything. Tick "post" to also send one test message.
+on:
+  workflow_dispatch:
+    inputs:
+      post:
+        description: "Also post a test message to the channel"
+        type: boolean
+        default: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_BOT_SYSTEM }}
+          TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID || secrets.TELEGRAM_CHAT_ID }}
+        run: python -m pricechecker.telegram --check ${{ inputs.post && '--post-test' || '' }}

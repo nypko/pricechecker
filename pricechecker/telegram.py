@@ -100,9 +100,46 @@ def send(token: str, chat: str, text: str, preview_url: str | None) -> None:
         raise RuntimeError(f"Telegram {r.status_code}: {r.text[:200]}")
 
 
+def check(token: str, chat: str, post: bool) -> int:
+    """The setup, without posting: the token works, the channel exists, the bot is an admin there that may post.
+    Prints what's wrong in plain words; exit 1 if something is."""
+    api = f"https://api.telegram.org/bot{token}"
+    def call(method, **params):
+        r = requests.get(f"{api}/{method}", params=params, timeout=20).json()
+        if not r.get("ok"):
+            raise RuntimeError(f"{method}: {r.get('description')}")
+        return r["result"]
+    if not token:
+        print("TELEGRAM_BOT_TOKEN is empty: add the token from @BotFather as a repository secret")
+        return 1
+    if not chat:
+        print("TELEGRAM_CHAT_ID is empty: add the channel's @username as a repository variable or secret")
+        return 1
+    try:
+        me = call("getMe")
+        print(f"token OK: bot @{me['username']}")
+        ch = call("getChat", chat_id=chat)
+        print(f"channel OK: {ch.get('title')} ({'@' + ch['username'] if ch.get('username') else 'private'}, type {ch['type']})")
+        member = call("getChatMember", chat_id=chat, user_id=me["id"])
+        if member["status"] not in ("administrator", "creator") or member.get("can_post_messages") is False:
+            print(f"the bot is '{member['status']}' in the channel: make it an administrator with 'Post messages'")
+            return 1
+        print("bot is an administrator and may post")
+    except Exception as e:
+        print(f"FAILED {e}")
+        return 1
+    if post:
+        send(token, chat, "✅ DoorPrice price-drop bot is connected. Price drops and new phones will appear here.", None)
+        print("test message posted")
+    return 0
+
+
 def main(argv=None) -> int:
-    dry = "--dry" in (argv if argv is not None else sys.argv[1:])
+    args = argv if argv is not None else sys.argv[1:]
+    dry = "--dry" in args
     token, chat = os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", "")
+    if "--check" in args:
+        return check(token, chat, "--post-test" in args)
     if not (token and chat) and not dry:
         print("  [telegram] TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set: skipped")
         return 0

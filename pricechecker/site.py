@@ -109,7 +109,13 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) 
     """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
     live = bool(site_cfg.get("domain_live") and base)
-    robots = "User-agent: *\nAllow: /\n" + (f"Sitemap: {base}/sitemap.xml\n" if live else "")
+    # AI crawlers that collect pages to train models (and send no visitors) are asked to stay out; search engines,
+    # AI search assistants that link their sources (OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot...)
+    # and link-preview fetchers (Telegram, Reddit, WhatsApp, Facebook) keep full access under "*".
+    training = ["GPTBot", "ClaudeBot", "anthropic-ai", "CCBot", "Google-Extended", "Applebot-Extended", "Bytespider",
+                "meta-externalagent", "cohere-training-data-crawler", "Diffbot", "Omgilibot", "ImagesiftBot"]
+    robots = ("".join(f"User-agent: {b}\n" for b in training) + "Disallow: /\n\n"
+              "User-agent: *\nAllow: /\n" + (f"\nSitemap: {base}/sitemap.xml\n" if live else ""))
     (OUT / "robots.txt").write_text(robots)
     if not live:
         return

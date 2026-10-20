@@ -163,6 +163,37 @@ def check(token: str, chat: str, post: bool) -> int:
     return 0
 
 
+WELCOME = ("👋 <b>DoorPrice price drops</b>\n\n"
+           "DoorPrice compares flagship phone prices at specialist import stores, with shipping, payment fees and import "
+           "tax worked in, Global and China versions side by side. Prices are checked every hour.\n\n"
+           "Here you get a post when a phone's delivered price drops by 3% or more, and when a new phone is added. "
+           "Posts show the price delivered to the EU, paying by card; the site works it out for your country, "
+           "currency and payment method.\n\n"
+           "🔗 <a href=\"{base}\">{host}</a>")
+
+
+def welcome(token: str, chat: str, base: str) -> int:
+    """Post the channel's introduction (with the site's share card as preview) and pin it, without a notification."""
+    try:
+        r = requests.post(f"https://api.telegram.org/bot{token}/sendMessage", timeout=20, json={
+            "chat_id": chat, "text": WELCOME.format(base=base, host=base.split("//")[-1]), "parse_mode": "HTML",
+            "link_preview_options": {"url": base, "prefer_large_media": True}}).json()
+        if not r.get("ok"):
+            raise RuntimeError(r.get("description"))
+        mid = r["result"]["message_id"]
+        print(f"welcome message posted (id {mid})")
+        p = requests.post(f"https://api.telegram.org/bot{token}/pinChatMessage", timeout=20,
+                          json={"chat_id": chat, "message_id": mid, "disable_notification": True}).json()
+        if not p.get("ok"):
+            print(f"posted but not pinned: {p.get('description')} - give the bot the 'Edit messages' right, or pin it by hand")
+            return 1
+        print("pinned")
+        return 0
+    except Exception as e:
+        print(f"FAILED {e}")
+        return 1
+
+
 def main(argv=None) -> int:
     args = argv if argv is not None else sys.argv[1:]
     dry = "--dry" in args
@@ -170,6 +201,9 @@ def main(argv=None) -> int:
     chat = chat_id(chat) if chat.strip() else ""
     if "--check" in args:
         return check(token, chat, "--post-test" in args)
+    if "--welcome" in args:
+        site = yaml.safe_load(Path("config/site.yaml").read_text()) or {}
+        return welcome(token, chat, (site.get("base_url") or "https://doorprice.app").rstrip("/"))
     if not (token and chat) and not dry:
         print("  [telegram] TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set: skipped")
         return 0

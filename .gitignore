@@ -5,3 +5,4 @@ venv/
 .env
 .pytest_cache/
 .promo_report.md
+.terms_report.md

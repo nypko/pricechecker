@@ -52,6 +52,15 @@ jobs:
           n=$(gh issue list --state open --search 'in:title "Store promotions to review"' --json number -q '.[0].number')
           if [ -n "$n" ]; then gh issue comment "$n" --body-file .promo_report.md
           else gh issue create --title "Store promotions to review ($(date -u +%Y-%m-%d))" --body-file .promo_report.md; fi
+      - name: Report changed store terms
+        if: always() && hashFiles('.terms_report.md') != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |   # one open review issue at a time, like promotions
+          n=$(gh issue list --state open --search 'in:title "Store terms changed"' --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file .terms_report.md
+          else gh issue create --title "Store terms changed ($(date -u +%Y-%m-%d))" --body-file .terms_report.md; fi
       - name: Commit price history
         if: always()   # also after a timeout: keeps the caches (store rates, pages) so the next run is shorter
         run: |

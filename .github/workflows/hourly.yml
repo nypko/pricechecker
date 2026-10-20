@@ -76,6 +76,16 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy build --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main --commit-dirty=true
+      - name: Post price drops to the Telegram channel
+        if: success() && env.HAS_CLOUDFLARE == 'true'   # after the deploy, so the linked pages already show the new price
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+        run: |   # skipped inside the script until both are set; saves what the channel last saw (data/telegram.json)
+          python -m pricechecker.telegram
+          git add data/telegram.json 2>/dev/null || true
+          git diff --cached --quiet || { git commit -m "Telegram $(date -u +%Y-%m-%dT%H:%MZ)" && git pull --rebase --quiet -X theirs && git push; }
       - name: Tell search engines which pages changed (IndexNow)
         if: success() && env.HAS_CLOUDFLARE == 'true'   # only after a successful deploy, so the new prices are live
         continue-on-error: true

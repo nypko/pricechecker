@@ -380,13 +380,14 @@ def _tax_config(rates: dict) -> dict:
     return regions
 
 
-def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool, str] | None:
+def _title_price(offers: list[dict], tax_eu_pct: float | None, with_offer: bool = False) -> tuple | None:
     """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
     price excludes it). Returns (total, complete, left out): complete = shipping known and import tax settled either way,
     left out = "shipping", "import tax" or "shipping and import tax" when it isn't.
     Ranked like the page (app.js better()): fewer unknowns first - unlisted shipping counts 2, import tax that may be
-    due 1 (a "from €10" shipping floor is a known, approximate cost) - then the lower total."""
+    due 1 (a "from €10" shipping floor is a known, approximate cost) - then the lower total.
+    with_offer: (total, complete, left out, the offer) - for the deals list the Telegram channel posts from."""
     best = None
     for o in offers:
         if not o["available"] or o.get("old") or not (o.get("pay_ok") or {}).get("card", True):
@@ -401,10 +402,10 @@ def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, b
         tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
         total = base + adj + ship_amt + tax
         unknown = (2 if ship is None else 0) + (0 if duties is True or tax else 1)
-        if best is None or (unknown, total) < best[3:]:
+        if best is None or (unknown, total) < best[3:5]:
             left = " and ".join(x for x, gone in (("shipping", ship is None), ("import tax", not (duties is True or tax))) if gone)
-            best = (total, not left, left, unknown, total)
-    return best[:3] if best else None
+            best = (total, not left, left, unknown, total, o)
+    return (best[:3] + ((best[5],) if with_offer else ())) if best else None
 
 
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
@@ -476,6 +477,14 @@ def _share_cards(phones: list[dict], ctx: dict) -> None:
         eds = [(e, p["ed_label"][e]) for e in p["editions"]]
         cards.phone_card(OUT / "cards" / f'{p["slug"]}.png', p["name"], eds, price, note, p["n_stores"])
         p["card_v"] = hashlib.sha256(f'{p["name"]}|{eds}|{price}|{note}|{p["n_stores"]}'.encode()).hexdigest()[:8]
+    # each phone's headline price, for the Telegram price-drop channel (pricechecker/telegram.py) - not linked from any page
+    deals = []
+    for p in phones:
+        tp, o = p["title_price"], p["title_offer"]
+        if tp and o:
+            deals.append({"slug": p["slug"], "name": p["name"], "eur": round(tp[0], 2), "left": tp[2], "store": o["store_label"],
+                          "edition": p["ed_label"][o["edition"]], "storage": o["storage"], "n_stores": p["n_stores"]})
+    (OUT / "deals.json").write_text(json.dumps({"updated": ctx["updated"], "phones": deals}, ensure_ascii=False, indent=0))
 
 
 def _too_old(checked: str | None, updated_at: datetime | None) -> bool:
@@ -567,6 +576,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
                        "title_price": _title_price(offers, tax_eu),
+                       "title_offer": (_title_price(offers, tax_eu, with_offer=True) or [None] * 4)[3],
                        "ld": _product_ld(m, in_stock, site_cfg),
                        "specs": _specs(specs.get(m["id"])),
                        "ed_label": ed_labels(m["brand"]),

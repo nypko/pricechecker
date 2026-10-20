@@ -140,6 +140,22 @@ def check(token: str, chat: str, post: bool) -> int:
         print("bot is an administrator and may post")
     except Exception as e:
         print(f"FAILED {e}")
+        if "chat not found" in str(e):   # show the channels the bot has seen, so a private one can be used by its id
+            try:
+                seen = {}
+                for u in call("getUpdates", allowed_updates='["channel_post","my_chat_member"]'):
+                    c = (u.get("channel_post") or u.get("my_chat_member") or {}).get("chat") or {}
+                    if c.get("type") == "channel":
+                        seen[c["id"]] = (c.get("title"), c.get("username"))
+                if seen:
+                    print("channels this bot can see (use the id, or @username if it has one, as TELEGRAM_CHAT_ID):")
+                    for cid, (title, user) in seen.items():
+                        print(f"  {title}: id {cid}" + (f", @{user}" if user else " (private)"))
+                else:
+                    print("the bot hasn't seen any channel yet: add it to the channel as an administrator, post any message "
+                          "in the channel, then run this check again")
+            except Exception as e2:
+                print(f"could not list channels: {e2}")
         return 1
     if post:
         send(token, chat, "✅ DoorPrice price-drop bot is connected. Price drops and new phones will appear here.", None)

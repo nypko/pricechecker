@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Page not found – DoorPrice{% endblock %}
+{% block description %}This page doesn't exist on DoorPrice. Search the phones we compare, or start from the full list.{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block main %}
+<section class="intro">
+  <h1>We can't find that page</h1>
+  <p>The address may be mistyped, or the phone may no longer be on the site. Search for it, or start from the full list.</p>
+  <form class="nf-search" action="/" method="get" role="search">
+    <input id="nf-q" name="q" type="search" list="phone-names" placeholder="Search phones, e.g. “x9 ultra”" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
+    <button type="submit" class="prefs-done">Search</button>
+  </form>
+  <p><a href="/">All phones</a> · <a href="/compare">Compare phones</a> · <a href="/stores">Stores compared</a></p>
+</section>
+{% endblock %}

@@ -4,6 +4,8 @@
 {% block title %}{{ p.name }} price history – DoorPrice{% endblock %}
 {% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
 {% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% endblock %}
+{% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
+{% block og_alt %}{{ p.name }} on DoorPrice: price history{% endblock %}
 {% block main %}
 <div class="page-nav">
   <a class="crumb" href="../phones/{{ p.slug }}">{{ p.name }} prices</a>

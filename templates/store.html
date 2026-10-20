@@ -2,7 +2,7 @@
 {% from "_price.html" import price %}
 {% set t = sp.trust %}
 {% block title %}{{ sp.label }} review: shipping, import tax, warranty and prices [{{ month }}] – DoorPrice{% endblock %}
-{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping cost and time to the EU, UK, US and Australia, who pays import tax, payment fees, warranty and returns, and its prices on {{ sp.phones|length }} flagship phones, checked hourly.{% endblock %}
+{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, payment fees, warranty and returns, and its prices on {{ sp.phones|length }} flagship phones, checked hourly.{% endblock %}
 {% block main %}
 <div class="page-nav"><a class="crumb" href="../stores">All stores</a></div>
 <h1>{{ sp.label }}</h1>

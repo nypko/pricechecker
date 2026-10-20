@@ -44,7 +44,7 @@ COURIERS = ["Global Priority", "EU warehouse", "DHL", "UPS", "FedEx", "Royal Mai
 
 
 def region_of(code: str) -> str:
-    return "EU" if code in EU else {"GB": "UK", "US": "US", "AU": "AU"}.get(code, "Global")
+    return "EU" if code in EU else {"GB": "UK", "US": "US", "CA": "CA", "AU": "AU"}.get(code, "Global")
 
 
 # ---------- reading a post ----------
@@ -56,14 +56,14 @@ _NO_TAX = re.compile(rf"\b(?:no|didn'?t (?:have to )?pay|did not (?:have to )?pa
                      rf"|\b{_TAXWORD}\b[^.!?\n]{{0,20}}\b(?:free|included|covered|paid by (?:the )?(?:seller|store)|none)\b", re.I)
 _TAX = re.compile(rf"\b(?:paid|pay|charged|had to pay|got hit|billed|asked (?:me )?(?:to pay|for))\b[^.!?\n]{{0,40}}\b{_TAXWORD}\b"
                   rf"|\b{_TAXWORD}\b[^.!?\n]{{0,25}}\b(?:of|was|were|cost|came to)\b[^.!?\n]{{0,10}}\d", re.I)
-_MONEY = re.compile(r"(€|eur|euros?|£|gbp|\$|usd|aud|a\$)\s?(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s?(€|eur\b|euros?\b|£|gbp\b|usd\b|aud\b|\$)", re.I)
+_MONEY = re.compile(r"(€|eur|euros?|£|gbp|c\$|cad|\$|usd|aud|a\$)\s?(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s?(€|eur\b|euros?\b|£|gbp\b|cad\b|usd\b|aud\b|\$)", re.I)
 _DAYS = re.compile(r"\b(\d{1,2})\s*(?:business |working |calendar )?(days?|weeks?)\b", re.I)
 _DELIVERY = re.compile(r"\b(?:arriv|deliver|receiv|took|got it|got my|came|shipping|shipped|transit|to get here|door)", re.I)
 
 
 def _currency(sym: str) -> str:
     s = sym.lower()
-    return "EUR" if s in ("€", "eur", "euro", "euros") else "GBP" if s in ("£", "gbp") else "AUD" if s in ("aud", "a$") else "USD"
+    return "EUR" if s in ("€", "eur", "euro", "euros") else "GBP" if s in ("£", "gbp") else "AUD" if s in ("aud", "a$") else "CAD" if s in ("cad", "c$") else "USD"
 
 
 def parse(text: str) -> dict:

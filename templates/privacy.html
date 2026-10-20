@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Privacy – DoorPrice{% endblock %}
-{% block description %}DoorPrice sets no cookies and uses no analytics or tracking. What is stored on your device and what happens when you visit a store.{% endblock %}
+{% block description %}DoorPrice sets no cookies and runs no advertising trackers; it counts visits with cookieless Cloudflare Web Analytics. What is stored on your device and what happens when you visit a store.{% endblock %}
 {% block main %}
 <article class="prose">
   <h1>Privacy</h1>
-  <p class="lede">Short version: DoorPrice sets no cookies, runs no analytics or advertising trackers, and has no accounts,
-    so it collects no personal data about you.</p>
+  <p class="lede">Short version: DoorPrice sets no cookies, runs no advertising trackers and has no accounts, so it collects
+    no personal data about you. Visits are counted with Cloudflare Web Analytics, which doesn't use cookies or identify you.</p>
 
   <h2>What is stored on your device</h2>
   <p>Your choices for currency, ship-to country and payment method are saved in your browser's local storage so the
@@ -26,6 +26,12 @@
   <p>The site is hosted on Cloudflare Pages. Like any web host, Cloudflare processes technical data such as your IP address
     to deliver pages and protect against abuse; see <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>.
     Fonts and all other files are served from DoorPrice itself, not from third-party services.</p>
+
+  <h2>Visit statistics</h2>
+  <p>To see which pages are read and which links bring people here, Cloudflare adds its Web Analytics script to every page.
+    It counts page views, the referring site, browser and country, and page-load speed. It sets no cookies, doesn't use local
+    storage, doesn't fingerprint your device and doesn't follow you to other sites; we only see totals, never a single visitor.
+    See <a href="https://www.cloudflare.com/web-analytics/">Cloudflare Web Analytics</a>.</p>
 
   <h2>When you click through to a store</h2>
   <p>Store links open the store's own website. Some are affiliate links, so the store or its affiliate network may set

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
 {% block title %}Import phone stores compared: {% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} – DoorPrice{% endblock %}
-{% block description %}{% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} side by side: reviews, warranty, returns, shipping cost and time to the EU, UK, US and Australia, who pays import tax, and which store is cheapest for each phone.{% endblock %}
+{% block description %}{% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} side by side: reviews, warranty, returns, shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, and which store is cheapest for each phone.{% endblock %}
 {% block main %}
 <div class="page-nav"><a class="crumb" href="./">All phones</a></div>
 <h1>Import phone stores compared</h1>
@@ -34,7 +34,7 @@
     <tr><th scope="row">Reviews</th>{% for sp in store_pages %}<td>{% if sp.trust.reviews %}★ {{ "%.1f"|format(sp.trust.reviews.score) }} <span class="muted">{{ sp.trust.reviews.source }}, {{ "{:,}".format(sp.trust.reviews.count) }}</span>{% else %}<span class="muted">–</span>{% endif %}</td>{% endfor %}</tr>
     <tr><th scope="row">Store warranty</th>{% for sp in store_pages %}<td>{% if sp.trust.warranty_months %}{{ sp.trust.warranty_months }} months{% else %}<span class="muted">not stated</span>{% endif %}</td>{% endfor %}</tr>
     <tr><th scope="row">Returns</th>{% for sp in store_pages %}<td>{% if sp.trust.returns_days %}{{ sp.trust.returns_days }} days{% else %}<span class="muted">not stated</span>{% endif %}</td>{% endfor %}</tr>
-    {% for i in range(5) %}
+    {% for i in range(store_pages[0].ship|length) %}
     <tr><th scope="row">Shipping to {{ store_pages[0].ship[i].label }}</th>{% for sp in store_pages %}{% set c = sp.ship[i] %}<td>{{ c.cost }}{% if c.days %}<br><span class="muted small">{{ c.days }}</span>{% endif %}<br><span class="small {{ 'good' if c.duties else 'muted' }}">{{ "tax included" if c.duties else ("you pay tax on delivery" if c.duties == false else "tax not stated") }}</span></td>{% endfor %}</tr>
     {% endfor %}
     <tr><th scope="row">Phones in stock</th>{% for sp in store_pages %}<td>{{ sp.phones|length }}</td>{% endfor %}</tr>

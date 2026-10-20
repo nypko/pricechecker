@@ -9,8 +9,8 @@ from . import fx, http
 
 STATUS = Path("data/terms_status.json")
 METHODS = {"card": "card", "paypal": "paypal", "bank": "bank_transfer"}
-REGIONS = ["EU", "UK", "US", "AU", "Global"]   # Global = any other country
-CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
+REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"]   # Global = any other country
+CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]
 
 
 def payment_pct(cfg: dict, method: str) -> float | None:

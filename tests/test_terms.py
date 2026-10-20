@@ -65,3 +65,13 @@ def test_canada_terms_and_tax_config():
     assert terms.duties_included(STORES["mobilemarvel"], "CA") is True     # "fully landed" for Canada
     assert terms.duties_included(STORES["giztop"], "CA") is False
     assert terms.shipping(STORES["wonda"], "CA", {"price": 1129, "currency": "USD"}, RATES)["cad"] == 0
+
+
+def test_terms_page_wording_and_diff():
+    html = ("<header><a>Cart 3 items in your basket now</a></header><main><h1>Customs</h1>"
+            "<p>Canada: few duties and taxes, we usually declare a lower value.</p><p>EU: IOSS covers it.</p></main>")
+    lines = terms.policy_lines(html)
+    assert lines == ["Canada: few duties and taxes, we usually declare a lower value.", "EU: IOSS covers it."]   # header and "Customs" out
+    new = terms.policy_lines(html.replace("few duties", "duties and GST"))
+    assert terms.page_diff(lines, new) == ["-Canada: few duties and taxes, we usually declare a lower value.",
+                                           "+Canada: duties and GST and taxes, we usually declare a lower value."]

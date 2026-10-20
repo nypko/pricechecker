@@ -151,6 +151,7 @@ stores:
       watch:
         - {url: "https://tradingshenzhen.com/en/content/customs-and-duties", expect: "no customs duty and no import VAT"}
         - {url: "https://tradingshenzhen.com/en/content/payment-regulations", expect: "about 4%"}
+      pages: ["https://tradingshenzhen.com/en/content/transportation-regulation"]
 
   tradingshenzhen_eu:
     label: Trading Shenzhen (EU warehouse)
@@ -201,6 +202,7 @@ stores:
       watch:
         - {url: "https://www.giztop.com/payment/", expect: "Wired Transfer"}
         - {url: "https://www.giztop.com/customs-duty", expect: "IOSS"}
+      pages: ["https://www.giztop.com/giztop-shipping-options/"]   # also kept as text; wording changes are reported
 
   banggood:
     label: Banggood

@@ -3,6 +3,6 @@ __pycache__/
 .venv/
 venv/
 .env
-data/untracked.txt
 .pytest_cache/
 .promo_report.md
+.terms_report.md

@@ -1,5 +1,9 @@
-"""Payment and shipping terms per store (config/stores.yaml `terms:`), plus a daily check that the pages they
-came from still say the same thing."""
+"""Payment and shipping terms per store (config/stores.yaml `terms:`), plus a daily check of the pages they came from:
+  - `watch`: a phrase each page must still contain (else the store shows "terms changed" until reviewed)
+  - every watched page and the extra `pages` (customs, shipping, payment, returns) is kept as text in
+    data/terms_pages.json; when a page's wording changes, the change is written to .terms_report.md, which the workflow
+    files as a GitHub issue. Nothing is applied automatically: store wording needs a person to turn it into terms."""
+import difflib
 import json
 import re
 from datetime import datetime, timedelta, timezone
@@ -8,6 +12,8 @@ from pathlib import Path
 from . import fx, http
 
 STATUS = Path("data/terms_status.json")
+PAGES = Path("data/terms_pages.json")
+REPORT = Path(".terms_report.md")   # filed as a GitHub issue by the workflow; not committed
 METHODS = {"card": "card", "paypal": "paypal", "bank": "bank_transfer"}
 REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"]   # Global = any other country
 CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]
@@ -74,30 +80,62 @@ def notes(cfg: dict) -> dict:
             "ship": {r: (t.get("shipping", {}).get(r) or {}).get("note", "") for r in REGIONS}}
 
 
+def policy_lines(html: str) -> list[str]:
+    """The wording of a terms page: the <main> part where there is one (no menus, footers or carts), as lines of
+    four or more words, so a changed price in a product carousel or a cart counter isn't reported as a new policy."""
+    from .promos import text_of
+    m = re.search(r"(?is)<main\b.*?</main>", html)
+    return [ln for ln in text_of(m.group(0) if m else html) if len(ln.split()) >= 4]
+
+
+def page_diff(old: list[str], new: list[str], limit: int = 40) -> list[str]:
+    """Removed (-) and added (+) lines, at most `limit`."""
+    out = [ln for ln in difflib.unified_diff(old, new, lineterm="", n=0) if ln[:1] in "+-" and ln[:3] not in ("+++", "---")]
+    return out[:limit] + ([f"... {len(out) - limit} more changed lines"] if len(out) > limit else [])
+
+
 def check_pages(stores_cfg: dict, force: bool = False) -> dict:
-    """Once a day: fetch each `watch` URL and confirm the expected text is still there."""
+    """Once a day: fetch each store's terms pages, confirm each `watch` phrase is still there, and report any
+    change in a page's wording since the last check (first sight: recorded only)."""
     status = json.loads(STATUS.read_text()) if STATUS.exists() else {}
+    snaps = json.loads(PAGES.read_text()) if PAGES.exists() else {}
     now = datetime.now(timezone.utc)
     last = status.get("_checked")
     if not force and last and now - datetime.fromisoformat(last) < timedelta(hours=20):
         return status
+    report = []
     for name, cfg in stores_cfg.items():
-        watch = (cfg.get("terms") or {}).get("watch") or []
-        if not cfg.get("enabled", True) or not watch:
+        t = cfg.get("terms") or {}
+        watch = t.get("watch") or []
+        urls = list(dict.fromkeys([w["url"] for w in watch] + list(t.get("pages") or [])))
+        if not cfg.get("enabled", True) or not urls:
             continue
-        problems = []
+        problems, texts = [], {}
         if cfg.get("type") == "shopify":
             from .stores.shopify import _space_requests
             _space_requests(cfg["base_url"].rstrip("/"))
-        for w in watch:
+        for u in urls:   # each page once, even when several phrases are watched on it
             try:
-                text = re.sub(r"<[^>]+>", " ", http.get(w["url"]).text)
-                if not re.search(w["expect"], text, re.I):
-                    problems.append(f"'{w['expect']}' no longer on {w['url']}")
+                texts[u] = http.get(u).text
             except Exception as e:
-                problems.append(f"could not read {w['url']}: {type(e).__name__}")
+                problems.append(f"could not read {u}: {type(e).__name__}")
+        for w in watch:
+            if w["url"] in texts and not re.search(w["expect"], re.sub(r"<[^>]+>", " ", texts[w["url"]]), re.I):
+                problems.append(f"'{w['expect']}' no longer on {w['url']}")
+        for u, html in texts.items():
+            lines, old = policy_lines(html), snaps.get(u)
+            if old is not None and old["lines"] != lines:
+                diff = page_diff(old["lines"], lines)
+                if diff:
+                    report += [f"**{cfg.get('label', name)}**: {u} (last read {old['checked'][:10]})", "", "```diff", *diff, "```", ""]
+            snaps[u] = {"lines": lines, "checked": now.isoformat(timespec="seconds")}
         status[name] = {"ok": not problems, "problems": problems, "checked": now.isoformat(timespec="seconds")}
         print(f"  [terms] {name}: {'unchanged' if not problems else 'NEEDS REVIEW - ' + '; '.join(problems)}")
     status["_checked"] = now.isoformat(timespec="seconds")
     STATUS.write_text(json.dumps(status, indent=1))
+    PAGES.write_text(json.dumps(snaps, indent=0, ensure_ascii=False))
+    if report:
+        REPORT.write_text("A store changed the wording of a terms page (customs, shipping, payment or returns). Check whether "
+                          "`config/stores.yaml` still matches, then close this issue.\n\n" + "\n".join(report) + "\n")
+        print(f"  [terms] wording changed on {sum(1 for x in report if x.startswith('**'))} page(s): see the GitHub issue")
     return status

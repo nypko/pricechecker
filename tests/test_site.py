@@ -182,5 +182,5 @@ def test_title_price_prefers_known_shipping_over_a_slightly_lower_unknown():
                                   "ship": {"EU": ship}, "duties": {"EU": duties}}
     giztop = mk(1137, None, None)              # shipping not listed, tax not stated
     wonda = mk(1145, {"eur": 0}, None)         # free shipping, tax not stated
-    assert site._title_price([giztop, wonda], 21) == (1145, False)
-    assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], 21) == (1145, False)
+    assert site._title_price([giztop, wonda], 21) == (1145, False, "import tax")
+    assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], 21) == (1145, False, "import tax")

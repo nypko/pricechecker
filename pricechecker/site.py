@@ -10,7 +10,7 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import affiliate, buyer_reports, fx, history, promos, terms
+from . import affiliate, buyer_reports, cards, fx, history, promos, terms
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
@@ -380,10 +380,11 @@ def _tax_config(rates: dict) -> dict:
     return regions
 
 
-def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
+def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool, str] | None:
     """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
-    price excludes it). Returns (total, complete); complete = shipping known and import tax settled either way.
+    price excludes it). Returns (total, complete, left out): complete = shipping known and import tax settled either way,
+    left out = "shipping", "import tax" or "shipping and import tax" when it isn't.
     Ranked like the page (app.js better()): fewer unknowns first - unlisted shipping counts 2, import tax that may be
     due 1 (a "from €10" shipping floor is a known, approximate cost) - then the lower total."""
     best = None
@@ -400,9 +401,10 @@ def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, b
         tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
         total = base + adj + ship_amt + tax
         unknown = (2 if ship is None else 0) + (0 if duties is True or tax else 1)
-        if best is None or (unknown, total) < best[2:]:
-            best = (total, ship is not None and (duties is True or bool(tax)), unknown, total)
-    return best[:2] if best else None
+        if best is None or (unknown, total) < best[3:]:
+            left = " and ".join(x for x, gone in (("shipping", ship is None), ("import tax", not (duties is True or tax))) if gone)
+            best = (total, not left, left, unknown, total)
+    return best[:3] if best else None
 
 
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
@@ -458,6 +460,22 @@ def _storage_key(s: str) -> tuple:
 
 
 OLD_AFTER = timedelta(hours=48)
+
+
+def _share_cards(phones: list[dict], ctx: dict) -> None:
+    """Link-preview images: cards/<slug>.png per phone with its cheapest delivered price (EU, card, in EUR - the page
+    title's number) and cards/site.png for every other page. ?v= changes with the card's text, so a new share shows
+    the new price instead of a platform's cached image."""
+    n_stores = len({s["name"] for s in ctx["stores"] if s["ok"] is not None and not s["part_of"]})
+    cards.site_card(OUT / "cards" / "site.png", len(phones), n_stores)
+    ctx["site_card_v"] = hashlib.sha256(f"{len(phones)}/{n_stores}".encode()).hexdigest()[:8]
+    for p in phones:
+        tp = p["title_price"]
+        price = f"from €{tp[0]:,.0f}" if tp else None
+        note = ("delivered to the EU" if tp[1] else f"+ {tp[2]}, " + ("to the EU" if "shipping" in tp[2] else "delivered to the EU")) if tp else ""
+        eds = [(e, p["ed_label"][e]) for e in p["editions"]]
+        cards.phone_card(OUT / "cards" / f'{p["slug"]}.png', p["name"], eds, price, note, p["n_stores"])
+        p["card_v"] = hashlib.sha256(f'{p["name"]}|{eds}|{price}|{note}|{p["n_stores"]}'.encode()).hexdigest()[:8]
 
 
 def _too_old(checked: str | None, updated_at: datetime | None) -> bool:
@@ -612,7 +630,10 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                   "/static/icons/*\n  Cache-Control: public, max-age=2592000\n")
     if site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{site_cfg["indexnow_key"]}.txt').write_text(site_cfg["indexnow_key"])
+    _share_cards(phones, ctx)
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))
+    # a real 404 (Cloudflare Pages serves /404.html with status 404), so a mistyped address isn't indexed as a page
+    (OUT / "404.html").write_text(env.get_template("404.html").render(root="/", path="404", **ctx))
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", path=f'phones/{p["slug"]}', **ctx))
         (OUT / "history" / f'{p["slug"]}.html').write_text(env.get_template("history.html").render(p=p, root="../", path=f'history/{p["slug"]}', **ctx))

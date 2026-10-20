@@ -610,6 +610,26 @@
     svg.addEventListener("pointerdown", function (ev) { readout(svg, ev); });
     svg.addEventListener("pointerleave", function (ev) { if (ev.pointerType === "mouse") readout(svg, { clientX: -1e6 }); });
   });
+  // Share (phone and history pages): the device's own share sheet where there is one (WhatsApp, Telegram, Messenger…),
+  // otherwise copy the link and say so ("Link copied"). The link carries the chosen RAM/storage + version (#12-256-china); the preview image
+  // is the phone's share card.
+  document.querySelectorAll(".share").forEach(function (btn) {
+    var canon = document.querySelector('link[rel="canonical"]');
+    var copy = navigator.clipboard && window.isSecureContext;
+    if (!navigator.share && !copy) return;   // nothing we can do: leave the button hidden
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      var url = (canon ? canon.href : location.href.split("#")[0]) + location.hash;
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: url }).catch(function () {});   // closed without sharing: fine
+        return;
+      }
+      navigator.clipboard.writeText(url).then(function () {
+        btn.textContent = "Link copied";
+        setTimeout(function () { btn.textContent = "Share"; }, 2000);
+      });
+    });
+  });
   var wb = document.querySelector(".watch");
   function showWatch() {
     var on = !!watched()[wb.dataset.slug];

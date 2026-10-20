@@ -1,5 +1,6 @@
 # Phones shown on the site. id + edition must match how the code normalizes store titles
 # (run `python -m pricechecker.run` and check data/untracked.txt for models seen but not listed).
+# also: other names stores use for the same phone (normalized ids), e.g. "Mate 90 RS Ultimate Design" for the Mate 90 RS.
 # offers: product page URLs for 'webpage' stores (Giztop, Banggood, Geekbuying). Optional storage: "16/512".
 # Shopify and feed stores are matched automatically by id + edition.
 
@@ -75,8 +76,8 @@ phones:
   - {id: honor-magic-8, edition: china, name: "Honor Magic 8", announced: 2025-10-15}
   - {id: huawei-pura-90, edition: china, name: "Huawei Pura 90", announced: 2026-04-20}
   - {id: huawei-mate-x7, edition: china, name: "Huawei Mate X7", announced: 2025-11-25}
-  - {id: huawei-mate-xt-2-ultimate-design, edition: china, name: "Huawei Mate XT 2 Ultimate Design", announced: 2026-09-07}
-  - {id: huawei-mate-90-rs, edition: china, name: "Huawei Mate 90 RS", announced: 2026-10-01}
+  - {id: huawei-mate-xt-2-ultimate-design, edition: china, name: "Huawei Mate XT 2 Ultimate Design", announced: 2026-09-07, also: [huawei-mate-xt-2]}
+  - {id: huawei-mate-90-rs, edition: china, name: "Huawei Mate 90 RS", announced: 2026-10-01, also: [huawei-mate-90-rs-ultimate, huawei-mate-90-rs-ultimate-design]}
   - {id: xiaomi-mix-flip-2, edition: china, name: "Xiaomi Mix Flip 2", announced: 2025-06-26}
   - {id: honor-magic-v5, edition: china, name: "Honor Magic V5", announced: 2025-07-02}
   - {id: iqoo-15, edition: china, name: "iQOO 15", announced: 2025-10-20, brand: iQOO}

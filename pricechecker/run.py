@@ -35,6 +35,7 @@ def main(argv=None) -> int:
         site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
         return 0
     tracked = {p["id"] for p in catalog}   # by model: any edition a store sells is shown (Global and China side by side)
+    also = {name: p["id"] for p in catalog for name in p.get("also") or []}
     only = set(args.only.split(",")) if args.only else None
     results, failures, untracked_lines = {}, {}, []
     had = {s: len(st.get("offers", [])) for s, st in history.load_latest()["stores"].items()}   # offers each store had last time
@@ -63,6 +64,8 @@ def main(argv=None) -> int:
                 if sub_cfg.get("part_of") == name:
                     failures[sub] = failures[name]
             continue
+        for o in offers:   # a store's own name for a catalog phone ("Mate 90 RS Ultimate") -> the catalog id
+            o.model_id = also.get(o.model_id, o.model_id)
         kept = [o for o in offers if o.model_id in tracked]
         untracked = Counter(o.model_id + "/" + o.edition for o in offers if o.model_id not in tracked)
         print(f"  {len(offers)} offers, {len(kept)} for tracked phones" + (f"; untracked models: {len(untracked)}" if untracked else ""))

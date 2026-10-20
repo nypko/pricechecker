@@ -107,7 +107,7 @@ def variants(page: str) -> list[tuple[str, float]] | None:
 def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     base = cfg["base_url"].rstrip("/")
     tracked = {p["id"] for p in catalog}
-    aliases = cfg.get("aliases") or {}
+    aliases = {**{n: c["id"] for c in catalog for n in c.get("also") or []}, **(cfg.get("aliases") or {})}   # catalog `also` + store aliases
     exclude = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
     cache_file = Path(f"data/{store}_pages.json")
     cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}

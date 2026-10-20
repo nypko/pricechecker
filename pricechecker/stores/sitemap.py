@@ -32,7 +32,7 @@ def slug_model(url: str) -> str:
 
 def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     tracked = {p["id"] for p in catalog}
-    aliases = cfg.get("aliases") or {}
+    aliases = {**{n: c["id"] for c in catalog for n in c.get("also") or []}, **(cfg.get("aliases") or {})}   # catalog `also` + store aliases
     skip_url = re.compile(cfg["exclude_url"], re.I) if cfg.get("exclude_url") else None
     skip_title = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
     if cfg.get("request_spacing_sec"):

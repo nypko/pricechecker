@@ -100,6 +100,18 @@ def send(token: str, chat: str, text: str, preview_url: str | None) -> None:
         raise RuntimeError(f"Telegram {r.status_code}: {r.text[:200]}")
 
 
+def chat_id(raw: str) -> str:
+    """The channel as Telegram's API wants it, from what people paste: "@name", "name", "t.me/name",
+    "https://t.me/name" -> "@name"; a numeric id ("-100123…") stays as it is."""
+    v = raw.strip().rstrip("/")
+    for prefix in ("https://", "http://", "t.me/", "telegram.me/"):
+        if v.lower().startswith(prefix):
+            v = v[len(prefix):]
+    if v.lstrip("-").isdigit():
+        return v
+    return "@" + v.lstrip("@")
+
+
 def check(token: str, chat: str, post: bool) -> int:
     """The setup, without posting: the token works, the channel exists, the bot is an admin there that may post.
     Prints what's wrong in plain words; exit 1 if something is."""
@@ -118,6 +130,7 @@ def check(token: str, chat: str, post: bool) -> int:
     try:
         me = call("getMe")
         print(f"token OK: bot @{me['username']}")
+        print(f"looking for channel {chat[:3]}… ({len(chat)} characters)")   # the value is a secret: only a hint
         ch = call("getChat", chat_id=chat)
         print(f"channel OK: {ch.get('title')} ({'@' + ch['username'] if ch.get('username') else 'private'}, type {ch['type']})")
         member = call("getChatMember", chat_id=chat, user_id=me["id"])
@@ -137,7 +150,8 @@ def check(token: str, chat: str, post: bool) -> int:
 def main(argv=None) -> int:
     args = argv if argv is not None else sys.argv[1:]
     dry = "--dry" in args
-    token, chat = os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", "")
+    token, chat = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip(), os.environ.get("TELEGRAM_CHAT_ID", "")
+    chat = chat_id(chat) if chat.strip() else ""
     if "--check" in args:
         return check(token, chat, "--post-test" in args)
     if not (token and chat) and not dry:

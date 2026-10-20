@@ -1,5 +1,9 @@
 {
  "phones": {
+  "honor-magic-8": {
+   "left": "",
+   "ref": 587.0
+  },
   "honor-magic-8-pro": {
    "left": "",
    "ref": 747.0
@@ -20,9 +24,13 @@
    "left": "import tax",
    "ref": 786.08
   },
+  "honor-magic-v5": {
+   "left": "",
+   "ref": 1208.45
+  },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1412.29
+   "ref": 1413.27
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -34,7 +42,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1162.39
+   "ref": 1163.37
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -46,11 +54,27 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1616.13
+   "ref": 1617.11
+  },
+  "huawei-mate-90-rs": {
+   "left": "shipping and import tax",
+   "ref": 2625.62
+  },
+  "huawei-mate-x7": {
+   "left": "",
+   "ref": 1941.49
+  },
+  "huawei-mate-xt-2-ultimate-design": {
+   "left": "shipping and import tax",
+   "ref": 3501.12
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1388.77
+   "ref": 1389.75
+  },
+  "huawei-pura-90": {
+   "left": "import tax",
+   "ref": 876.67
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
@@ -58,7 +82,7 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1095.75
+   "ref": 1096.73
   },
   "huawei-pura-90s-pro": {
    "left": "",
@@ -70,11 +94,23 @@
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1718.05
+   "ref": 1719.03
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1095.75
+   "ref": 1096.73
+  },
+  "iqoo-15": {
+   "left": "",
+   "ref": 657.0
+  },
+  "iqoo-15-ultra": {
+   "left": "",
+   "ref": 807.0
+  },
+  "iqoo-16": {
+   "left": "",
+   "ref": 877.0
   },
   "motorola-razr-70-ultra": {
    "left": "import tax",
@@ -88,9 +124,13 @@
    "left": "",
    "ref": 697.0
   },
+  "oneplus-15t": {
+   "left": "",
+   "ref": 637.0
+  },
   "oneplus-16": {
    "left": "",
-   "ref": 1083.01
+   "ref": 1083.99
   },
   "oppo-find-n5": {
    "left": "",
@@ -108,6 +148,10 @@
    "left": "",
    "ref": 987.0
   },
+  "oppo-find-x9": {
+   "left": "",
+   "ref": 607.0
+  },
   "oppo-find-x9-pro": {
    "left": "",
    "ref": 757.0
@@ -119,6 +163,18 @@
   "oppo-find-x9s-pro": {
    "left": "",
    "ref": 707.0
+  },
+  "realme-gt-8-pro": {
+   "left": "shipping and import tax",
+   "ref": 576.95
+  },
+  "redmi-k100-pro-max": {
+   "left": "",
+   "ref": 687.0
+  },
+  "redmi-k90-pro-max": {
+   "left": "",
+   "ref": 677.0
   },
   "samsung-galaxy-s26": {
    "left": "import tax",
@@ -148,6 +204,10 @@
    "left": "",
    "ref": 1137.0
   },
+  "vivo-x300": {
+   "left": "",
+   "ref": 687.0
+  },
   "vivo-x300-fe": {
    "left": "",
    "ref": 737.0
@@ -160,6 +220,10 @@
    "left": "",
    "ref": 977.0
   },
+  "vivo-x300s": {
+   "left": "",
+   "ref": 717.0
+  },
   "vivo-x500": {
    "left": "",
    "ref": 867.0
@@ -171,6 +235,10 @@
   "vivo-x500-pro-max": {
    "left": "",
    "ref": 1017.0
+  },
+  "xiaomi-17": {
+   "left": "",
+   "ref": 697.0
   },
   "xiaomi-17-max": {
    "left": "",
@@ -192,6 +260,14 @@
    "left": "",
    "ref": 1147.0
   },
+  "xiaomi-17t": {
+   "left": "shipping and import tax",
+   "ref": 471.89
+  },
+  "xiaomi-17t-pro": {
+   "left": "",
+   "ref": 774.31
+  },
   "xiaomi-18-fold": {
    "left": "",
    "ref": 1687.0
@@ -203,7 +279,11 @@
   "xiaomi-18-pro-max": {
    "left": "",
    "ref": 997.0
+  },
+  "xiaomi-mix-flip-2": {
+   "left": "",
+   "ref": 902.69
   }
  },
- "updated": "2026-10-20T22:36:17Z"
+ "updated": "2026-10-20T23:32:17Z"
 }

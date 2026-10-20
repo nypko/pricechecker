@@ -510,6 +510,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
+    if site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
+        (OUT / f'{site_cfg["indexnow_key"]}.txt').write_text(site_cfg["indexnow_key"])
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", path=f'phones/{p["slug"]}', **ctx))

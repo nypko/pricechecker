@@ -16,8 +16,9 @@
   function watched() { try { return JSON.parse(store("pc-watch") || "{}") || {}; } catch (e) { return {}; } }
   function setWatched(w) { store("pc-watch", JSON.stringify(w)); }
   function prefKey() { return state.region + (state.country ? "-" + state.country : "") + "|" + state.pay + "|" + state.cur; }
+  var NUM = new Intl.NumberFormat("en-US");   // one formatter: toLocaleString builds a new one per call (slow over thousands of prices)
   function fmt(v, approx) {
-    return (approx ? "≈" : "") + SYMBOL[state.cur] + Math.round(v).toLocaleString("en-US");
+    return (approx ? "≈" : "") + SYMBOL[state.cur] + NUM.format(Math.round(v));
   }
   // "12/256" -> "12 GB RAM · 256 GB storage" (same as spec() in site.py)
   function spec(storage) {
@@ -75,7 +76,12 @@
   function placeName() { return state.region === "EU" && EU_C[state.country] ? EU_C[state.country].name : REGION_NAME[state.region]; }
   // The import tax rule for the chosen destination: {rate, name, fee, note}. EU: the picked country's VAT and, where the
   // courier publishes it, its clearance fee; no country picked: the EU average.
+  var taxMemo = {};
   function taxRule() {
+    var key = prefKey();
+    return taxMemo[key] || (taxMemo[key] = taxRule1());
+  }
+  function taxRule1() {
     var t = TAX[state.region] || {}, c = state.region === "EU" ? EU_C[state.country] : null;
     if (!c) return { rate: t.rate_pct, name: t.name || "import tax", fee: null, note: t.note || "" };
     var fee = c.fee || null;
@@ -89,7 +95,13 @@
   // store price +/- payment adjustment + shipping + estimated import VAT/GST when the store's price excludes it.
   // pay% unknown -> treated as 0 but flagged; shipping unknown -> excluded from total but flagged;
   // import tax not stated by the store -> shown as a possible amount but not added.
+  // cost() is called many times per offer in one render (pick, match, lowerOpen): keep the answer per settings
   function cost(o) {
+    var key = prefKey();
+    if (o._kk !== key) { o._k = cost1(o); o._kk = key; }
+    return o._k;
+  }
+  function cost1(o) {
     var c = state.cur, list = o.money[c], adj = o.pay[state.pay], ship = o.ship[state.region];
     // store-wide automatic discount (e.g. a summer sale); with bank transfer only the larger discount counts unless they combine
     var pr = o.promo, promoPct = !pr ? 0 : (state.pay === "bank" && adj != null && adj < 0 && !pr.stacks_with_bank) ?
@@ -112,6 +124,7 @@
       approx: o.money[c + "_approx"] === 1 || taxAdded > 0 || !!(ship && ship.min),
       shipMin: !!(ship && ship.min),   // the store publishes only a starting price ("from EUR 10")
       complete: adj != null && !!ship,
+      old: !!o.old,   // the store hasn't answered for days: its price ranks after current ones
       duties: duties,
       payNote: o.notes ? o.notes.pay[state.pay] : "", shipNote: o.notes ? o.notes.ship[state.region] : ""   // index offers carry no notes
     };
@@ -140,6 +153,14 @@
     return x.length ? "+ " + x.join(long ? " and " : ", ") : "";
   }
   function partial(k) { return k.ship == null || maybeTax(k); }
+  // One vocabulary everywhere: a complete total is "delivered"; one that leaves something open is "before shipping",
+  // "before tax" or "before shipping and tax"
+  function openWhat(k) {
+    var x = [];
+    if (k.ship == null) x.push("shipping");
+    if (maybeTax(k)) x.push("tax");
+    return x.length ? "before " + x.join(" and ") : "";
+  }
   // "≈£301 less", "before shipping" / "before tax" when either side's total leaves something out
   function gapNote(a, b) {
     var x = [];
@@ -150,9 +171,14 @@
 
   // Cheapest offer for the current choices. Stores that don't take the chosen payment method rank last, and a total we can
   // fully work out leads over a lower one that leaves shipping or import tax open (that one is shown as "or €X + shipping").
+  // Among totals that leave something open, fewer unknowns lead: unlisted shipping weighs more than import tax that
+  // may be due, so €8 cheaper with shipping unknown doesn't beat free shipping. A "from €10" shipping floor is a
+  // known (≈) cost, not an unknown.
+  function unknowns(k) { return (k.ship == null ? 2 : 0) + (maybeTax(k) ? 1 : 0); }
   function better(k, b) {
     if (k.payOk !== b.payOk) return k.payOk;
-    if (partial(k) !== partial(b)) return !partial(k);
+    if (k.old !== b.old) return !k.old;
+    if (unknowns(k) !== unknowns(b)) return unknowns(k) < unknowns(b);
     return k.total < b.total;
   }
   // The cheapest total that leaves something open, when it's lower than the complete one that leads
@@ -160,9 +186,9 @@
     var low = null;
     offers.forEach(function (o) {
       var k = cost(o);
-      if (k.payOk && partial(k) && k.total < best.k.total && (!low || k.total < low.k.total)) low = { o: o, k: k };
+      if (k.payOk && !k.old && unknowns(k) > unknowns(best.k) && k.total < best.k.total && (!low || k.total < low.k.total)) low = { o: o, k: k };
     });
-    return best && !partial(best.k) ? low : null;
+    return best ? low : null;
   }
   // "Arrives in 12–19 working days" / "up to 8 working days" from the store's terms for the chosen Ship-to
   function delivery(o) {
@@ -375,7 +401,7 @@
   function storeRow(o, k, best) {
     var li = el("li"), d = el("details", "st"), s = el("summary");
     var name = el("span", "st-name", o.store_label);
-    if (o.stale) name.appendChild(el("span", "st-stale", " · last known price"));
+    if (o.stale || o.old) name.appendChild(el("span", "st-stale", " · last known price"));
     if (o.trust && o.trust.reviews) name.appendChild(el("span", "st-stars", " ★ " + o.trust.reviews.score.toFixed(1)));
     s.appendChild(name);
     var tot = el("span", "st-total", !o.available ? "out of stock" : k.payOk ? fmt(k.total, k.approx) : "–");
@@ -412,8 +438,19 @@
       r.hidden = storage !== "all" && r.dataset.storage !== storage;
     });
   }
+  // A short settle on the total when the visitor changes something (not on load). Web Animations, so restarting it
+  // needs no forced layout.
+  var settleNext = false, calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function settle(ans) {
+    settleNext = false;
+    if (calm || !ans.animate) return;
+    ans.querySelectorAll(".ans-total, .bar").forEach(function (e) {
+      e.animate([{ opacity: .35, transform: "translateY(3px)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.16,1,.3,1)" });
+    });
+  }
   function choose(c) {
     sel = c;
+    settleNext = true;
     stickyPicked();   // on phones, the deal bar comes up as soon as a choice is made
     histSel = null;   // the price history follows the grid until a variant is picked in its own menu
     renderPhone();
@@ -434,7 +471,7 @@
     });
     cells.forEach(function (c) {
       c.classList.toggle("best", c === overall && overall._b.k.payOk);
-      c.dataset.tag = partial(overall._b.k) ? "Lowest before " + (overall._b.k.ship == null ? "shipping" : "tax") : "Cheapest delivered";
+      c.dataset.tag = partial(overall._b.k) ? "Lowest " + openWhat(overall._b.k) : "Cheapest delivered";
     });
     var w = watched(), slug = layout.dataset.slug;
     if (w[slug] && overall._b.k.payOk) { w[slug] = { k: prefKey(), v: Math.round(overall._b.k.total) }; setWatched(w); }
@@ -452,8 +489,11 @@
     var b = cur._b, ans = document.querySelector(".answer");
     var label = ans.querySelector(".ans-label");
     label.textContent = !b.k.payOk ? "Not available paying by " + PAY_LABEL[state.pay] :
-      cur === overall ? (partial(b.k) ? "Lowest delivered price we can work out" : "Cheapest delivered price") : "Cheapest for this choice";
+      cur === overall ? (partial(b.k) ? "Lowest price " + openWhat(b.k) : "Cheapest delivered price") :
+      (partial(b.k) ? "Lowest for this choice, " + openWhat(b.k) : "Cheapest delivered for this choice");
     label.classList.toggle("warn", !b.k.payOk);
+    label.classList.toggle("open", b.k.payOk && partial(b.k));
+    ans.querySelector(".ans-total").classList.toggle("open", b.k.payOk && partial(b.k));
     ans.classList.toggle("nopay", !b.k.payOk);
     var v = ans.querySelector(".ans-v .price");
     v.textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "–";
@@ -476,7 +516,7 @@
     var badge = ans.querySelector(".ans-ed");
     badge.className = "ans-ed badge " + b.o.edition; badge.textContent = ED[b.o.edition];
     ans.querySelector(".ans-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
-    ans.querySelector(".ans-store").textContent = b.o.store_label + (b.o.stale ? " (last known price)" : "");
+    ans.querySelector(".ans-store").textContent = b.o.store_label + (b.o.stale || b.o.old ? " (last known price)" : "");
     var dv = ans.querySelector(".ans-days");
     dv.textContent = b.k.payOk && delivery(b.o) ? "Arrives in " + delivery(b.o) + " after you order" : "";
     dv.hidden = !dv.textContent;
@@ -489,6 +529,10 @@
     var ab = ans.querySelector(".ans-buyers");
     ab.textContent = buyersText(b.o);
     ab.hidden = !ab.textContent;
+    var more = ans.querySelector(".ans-more");   // reviews, warranty, Google Play setup, buyer reports: one tap away
+    more.hidden = at.hidden && ag.hidden && ab.hidden;
+    more.querySelector("summary").textContent = "About " + b.o.store_label + ": " +
+      [at.hidden ? "" : "reviews and warranty", ag.hidden ? "" : "Google Play", ab.hidden ? "" : "buyers' deliveries"].filter(Boolean).join(", ");
     var rs = document.getElementById("rf-store");
     if (rs && !rs.dataset.touched) rs.value = b.o.store;   // the report form starts on the store shown
     var tr = ans.querySelector(".ans-trend");
@@ -504,7 +548,7 @@
     deal.href = b.o.link;
     deal.className = b.k.payOk ? "deal" : "btn-quiet deal-off";
     deal.querySelector(".deal-t").textContent = b.k.payOk ? "View deal at " + b.o.store_label : "See " + b.o.store_label + "'s payment options";
-    ans.classList.remove("settle"); void ans.offsetWidth; ans.classList.add("settle");   // a short settle when the answer changes
+    if (settleNext) settle(ans);
     // the other stores for the same choice, cheapest first
     var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o; });
     var live = others.filter(function (o) { return o.available; }).map(function (o) { return { o: o, k: cost(o) }; });
@@ -637,7 +681,7 @@
       var offers = globalOnly ? byEdition(all, "global") : all;
       row._noGlobal = !offers.length;
       if (!offers.length) return;
-      var b = pick(offers), m = globalOnly ? null : match(offers), low = lowerOpen(offers, b);
+      var b = pick(offers), m = globalOnly ? null : match(offers);
       var badge = row.querySelector(".prow-sub .badge");
       badge.className = "badge " + b.o.edition; badge.textContent = b.o.edition === "china" && row.dataset.cl ? row.dataset.cl : ED[b.o.edition];
       row.querySelector(".prow-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
@@ -645,8 +689,9 @@
       var pv = row.querySelector(".prow-v .price");
       pv.textContent = fmt(b.k.total, b.k.approx);
       setNote(pv, "");
-      row.querySelector(".prow-plus").textContent = partial(b.k) ? extras(b.k) : "delivered";
-      row.querySelector(".prow-or").textContent = low ? "or " + fmt(low.k.total, low.k.approx) + " " + extras(low.k) + " at " + low.o.store_label : "";
+      var plus = row.querySelector(".prow-plus");   // a lower total that leaves more open is named on the phone page
+      plus.textContent = partial(b.k) ? extras(b.k) : "delivered";
+      plus.classList.toggle("open", partial(b.k));
       var n = {};
       offers.forEach(function (o) { n[o.store_label] = 1; });
       row.querySelector(".prow-count").textContent = " · " + Object.keys(n).length + (Object.keys(n).length === 1 ? " store" : " stores");
@@ -662,6 +707,7 @@
       row.querySelector(".prow-link").href = "phones/" + row.dataset.slug + "#" + b.o.storage.replace("/", "-") + "-" + b.o.edition;
       var gp = row.querySelector(".prow-gap");
       row._price = b.k.payOk ? b.k.total : Infinity;
+      row._unk = b.k.payOk ? unknowns(b.k) : 9;   // "Cheapest" ranks like the phone page: fewer unknown costs first
       row._gap = -Infinity;
       gp.hidden = !m;
       if (m) {
@@ -681,6 +727,7 @@
       var ao = a.dataset.offers ? 0 : 1, bo = b.dataset.offers ? 0 : 1;
       if (sortBy === "date" && a.dataset.date !== b.dataset.date) return a.dataset.date < b.dataset.date ? 1 : -1;
       if (ao !== bo) return ao - bo;
+      if (sortBy === "price" && a._unk !== b._unk) return a._unk - b._unk;
       if (sortBy === "price" && a._price !== b._price) return a._price - b._price;
       if (sortBy === "gap" && a._gap !== b._gap) return b._gap - a._gap;
       if (sortBy === "drop" && a._drop !== b._drop) return b._drop - a._drop;
@@ -765,7 +812,7 @@
     }
     head.appendChild(hc);
     rows.appendChild(head);
-    if (!chosen.length) return;
+    if (!chosen.length) { rows.appendChild(cmpStarters(chosen)); return; }
     // RAM + storage: tap one to price every phone at it (or at its nearest option); tap again for the cheapest of any
     row("RAM + storage", function (c, q, i) {
       if (!q.st.length) { c.appendChild(el("span", "muted", "None listed")); return; }
@@ -813,6 +860,34 @@
       if (q.e.indexOf("global") >= 0) c.appendChild(el("span", "cmp-sub", "Global: installed"));
       if (q.g) c.appendChild(el("span", "cmp-sub", (q.e.length > 1 ? q.cl + ": " : "") + q.g.charAt(0).toUpperCase() + q.g.slice(1)));
     }, -1);
+    if (chosen.length < 2) rows.appendChild(cmpStarters(chosen));
+  }
+  // Nothing (or one phone) chosen yet: one-tap comparisons to start from, instead of a lone menu
+  function cmpStarters(chosen) {
+    var box = el("div", "cmp-start"), list = el("ul", "cmp-start-list"), out = [];
+    box.appendChild(el("p", "cmp-start-h", chosen.length ? "Or compare " + chosen[0].n + " with:" : "Start with one of these"));
+    var newest = CMP.slice().sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+    if (chosen.length) {   // same brand's other newest phones, then the newest from other brands
+      var q0 = chosen[0];
+      newest.filter(function (q) { return q.s !== q0.s && q.b === q0.b; }).slice(0, 2)
+        .concat(newest.filter(function (q) { return q.b !== q0.b; }).slice(0, 1))
+        .forEach(function (q) { out.push({ t: q.n, s: [q0.s, q.s] }); });
+    } else {
+      out.push({ t: "The three newest phones", s: newest.slice(0, 3).map(function (q) { return q.s; }) });
+      var brands = {};   // each brand's two newest phones, for the brands with the most phones
+      newest.forEach(function (q) { (brands[q.b] = brands[q.b] || []).push(q); });
+      Object.keys(brands).filter(function (b) { return brands[b].length > 1; })
+        .sort(function (a, b) { return brands[b].length - brands[a].length; }).slice(0, 3)
+        .forEach(function (b) { out.push({ t: brands[b][0].n + " vs " + brands[b][1].n, s: [brands[b][0].s, brands[b][1].s] }); });
+    }
+    out.forEach(function (x) {
+      var li = el("li"), btn = el("button", "chip", x.t);
+      btn.type = "button";
+      btn.addEventListener("click", function () { cmpGo(x.s, ""); });
+      li.appendChild(btn); list.appendChild(li);
+    });
+    box.appendChild(list);
+    return box;
   }
   // a column's menu: "Change" (or "Remove") for a chosen phone, "Add a phone" for the next free column
   function cmpMenu(i, q, chosen) {
@@ -860,7 +935,7 @@
     renderCompare();
   }
 
-  function set(key, val) { state[key] = val; store("pc-" + key, val); render(); }
+  function set(key, val) { state[key] = val; store("pc-" + key, val); settleNext = true; render(); }
   var countrySel = document.getElementById("p-country");
   if (countrySel) countrySel.addEventListener("change", function () { set("country", countrySel.value); });
 
@@ -1000,4 +1075,7 @@
   var chips = document.querySelector(".chips");
   function chipFade() { if (chips) chips.classList.toggle("at-end", chips.scrollLeft + chips.clientWidth >= chips.scrollWidth - 4); }
   if (chips) { chips.addEventListener("scroll", chipFade, { passive: true }); window.addEventListener("resize", chipFade); chipFade(); }
+  var sortRow = document.querySelector(".list-head .sort");
+  function sortFade() { sortRow.classList.toggle("more", sortRow.scrollLeft + sortRow.clientWidth < sortRow.scrollWidth - 4); }
+  if (sortRow) { sortRow.addEventListener("scroll", sortFade, { passive: true }); window.addEventListener("resize", sortFade); sortFade(); }
 })();

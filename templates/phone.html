@@ -56,27 +56,30 @@
     </tbody>
   </table>
   <p class="grid-note">Each price is the cheapest total for that choice: phone, payment fee, shipping and import tax where we know them.
-    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number.
+    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number; a total with fewer of them ranks first.
     {%- if p.made %} “Not offered”: the brand doesn't make that version with this RAM/storage; “no offers”: none of our stores lists it.{% endif %}</p>
   <p class="nojs-only grid-note">These are store prices, before shipping, payment fees and import tax. Turn on JavaScript to see delivered totals.</p>
 </section>
 
 <section class="answer" aria-labelledby="ans-h">
-  <h2 id="ans-h" class="ans-label">Lowest store price</h2>
+  <h2 id="ans-h" class="ans-label">Store price</h2>
   <p class="ans-total"><span class="ans-v">{{ price(p.best.money) }}</span> <span class="ans-plus"></span></p>
   <p class="ans-what"><span class="ans-ed badge {{ p.best.edition }}">{{ p.ed_label[p.best.edition] }}</span>
     <span class="ans-spec">{{ p.best.storage|spec }}</span> · at <strong class="ans-store">{{ p.best.store_label }}</strong></p>
-  <p class="ans-trust" hidden></p>
-  <p class="ans-gplay" hidden></p>
   <p class="ans-meta"><span class="ans-days" hidden></span> <span class="pill ans-trend" hidden></span></p>
-  <p class="ans-buyers" hidden></p>
   <p class="ans-or" hidden></p>
   <p class="ans-alt" hidden></p>
-  <p class="coupon ans-coupon" hidden></p>
   <div class="bar" aria-hidden="true"></div>
   <dl class="breakdown"></dl>
-  <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank"><span class="deal-t">View deal at {{ p.best.store_label }}</span><span class="sr-only"> (opens store site)</span></a>
+  {#- what you give up with this version, read before the button, not after it -#}
   <p class="tradeoff" hidden></p>
+  <p class="coupon ans-coupon" hidden></p>
+  <a class="deal" href="{{ p.best.link }}" rel="sponsored nofollow noopener" target="_blank"><span class="deal-t">View deal at {{ p.best.store_label }}</span><span class="sr-only"> (opens store site)</span></a>
+  <details class="ans-more" hidden><summary></summary>
+    <p class="ans-trust" hidden></p>
+    <p class="ans-gplay" hidden></p>
+    <p class="ans-buyers" hidden></p>
+  </details>
   <p class="ans-foot">Checked hourly · last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
     Affiliate link: we may earn a commission; it never changes the order.</p>
   {{ explain.totals() }}

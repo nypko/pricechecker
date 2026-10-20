@@ -131,7 +131,7 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
            cur: str = "USD", labels: dict = EDITION_LABEL) -> str:
     """Inline SVG line chart in `cur`, one line per (store, edition) - China editions dashed; empty if no history yet.
     Drawn at phone width (400 units) so the axis text stays readable when the page shrinks it."""
-    pts = [(t, p) for s in series.values() for t, p in s]
+    pts = [(t, p) for s in series.values() for t, p in s if p is not None]
     if not pts:
         return ""
     W, H, L, R, T, B = 400, 240, 52, 8, 10, 26
@@ -157,12 +157,18 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     for (store, edition), s in series.items():
         if not s:
             continue
-        s = s + [(t1, s[-1][1])]  # extend the last known price to "now"
-        d = f"M{x(s[0][0]):.1f} {y(s[0][1]):.1f}" + "".join(  # step line: price holds until the next change
-            f" H{x(t):.1f} V{y(p):.1f}" for t, p in s[1:])
+        s = s + [(t1, s[-1][1])]  # extend the last price to "now" (a sold-out line stays cut off)
+        d, prev = "", None   # step line: price holds until the next change; None (sold out) ends it until it's back
+        for t, p in s:
+            if prev is not None:
+                d += f" H{x(t):.1f}"
+            if p is not None:
+                d += f" V{y(p):.1f}" if prev is not None else f" M{x(t):.1f} {y(p):.1f}"
+            prev = p
+        d = d.strip()
         dash = ' stroke-dasharray="6 4"' if edition == "china" else ""
         name = f"{LABELS.get(store, store)} ({labels[edition]})"
-        steps = ";".join(f"{x(t):.1f}:{SYMBOL[cur]}{p:,.0f}" for t, p in s[:-1])
+        steps = ";".join(f"{x(t):.1f}:" + (f"{SYMBOL[cur]}{p:,.0f}" if p is not None else "") for t, p in s[:-1])
         parts.append(f'<path d="{d}" fill="none" stroke="{colors[store]}" stroke-width="2"{dash} data-ed="{edition}" '
                      f'data-name="{name}" data-steps="{steps}"><title>{name}</title></path>')
     parts.append("</svg>")
@@ -171,18 +177,21 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
 
 def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = None, cur: str = "USD") -> dict:
     """Per (store, edition): that store's lowest in-stock price for the phone at every change, in `cur` -
-    across all RAM/storage options, or for one (storage="12/512")."""
+    across all RAM/storage options, or for one (storage="12/512"). A point with price None = sold out from then on."""
     state: dict[tuple, float | None] = {}
     out: dict[tuple, list] = defaultdict(list)
     for r in rows:
         if r["model_id"] != model["id"] or r["edition"] not in model["editions"] or (storage and r["storage"] != storage):
             continue
+        if r["store"] not in LABELS:   # a store since removed from stores.yaml
+            continue
         line = (r["store"], r["edition"])
         state[(line, r["storage"])] = fx.convert(r["price"], r["currency"], cur, rates) if r["available"] else None
         t = datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ")
         best = min((p for (l, _), p in state.items() if l == line and p is not None), default=None)
-        if best is not None and (not out[line] or out[line][-1][1] != best):
-            out[line].append((t, best))
+        if out[line] or best is not None:   # a line starts at its first in-stock price
+            if not out[line] or out[line][-1][1] != best:
+                out[line].append((t, best))
     return out
 
 
@@ -246,8 +255,12 @@ def _stats(series: dict, now: datetime | None, cur: str) -> dict | None:
             for tt, p in s:
                 if tt == t:
                     level[line] = p
-        steps.append((t, min(level.values())))
-    span = [(t, p, ((steps[i + 1][0] if i + 1 < len(steps) else now) - t).total_seconds()) for i, (t, p) in enumerate(steps)]
+        live = [p for p in level.values() if p is not None]   # stores that sold out don't count
+        steps.append((t, min(live) if live else None))
+    if steps[-1][1] is None:   # nothing in stock now: no "Now" price to show
+        return None
+    span = [(t, p, ((steps[i + 1][0] if i + 1 < len(steps) else now) - t).total_seconds()) for i, (t, p) in enumerate(steps) if p is not None]
+    steps = [st for st in steps if st[1] is not None]
     total = sum(w for _, _, w in span)
     lo = min(steps, key=lambda x: x[1])
     hi = max(steps, key=lambda x: x[1])
@@ -336,11 +349,11 @@ def _store_pages(phones: list[dict], stores_cfg: dict, rates: dict, buyers: dict
         parts = [name] + [n for n, c in stores_cfg.items() if c.get("part_of") == name and c.get("enabled", True)]
         listed = []
         for p in phones:
-            mine = [o for o in p["offers"] if o["store"] in parts and o["available"]]
+            mine = [o for o in p["offers"] if o["store"] in parts and o["available"] and not o["old"]]
             if not mine:
                 continue
             best = min(mine, key=lambda o: o["usd"])
-            low = min(o["usd"] for o in p["offers"] if o["available"])
+            low = min(o["usd"] for o in p["offers"] if o["available"] and not o["old"])
             listed.append({"name": p["name"], "slug": p["slug"], "money": best["money"], "storage": best["storage"],
                            "edition": best["edition"], "ed_label": p["ed_label"], "cheapest": best["usd"] <= low + 0.5,
                            "gap_pct": round((best["usd"] / low - 1) * 100) if low else 0, "n": len(mine)})
@@ -370,10 +383,12 @@ def _tax_config(rates: dict) -> dict:
 def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
     """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
-    price excludes it). Returns (total, complete); complete = shipping known and import tax settled either way."""
+    price excludes it). Returns (total, complete); complete = shipping known and import tax settled either way.
+    Ranked like the page (app.js better()): fewer unknowns first - unlisted shipping counts 2, import tax that may be
+    due 1 (a "from €10" shipping floor is a known, approximate cost) - then the lower total."""
     best = None
     for o in offers:
-        if not o["available"] or not (o.get("pay_ok") or {}).get("card", True):
+        if not o["available"] or o.get("old") or not (o.get("pay_ok") or {}).get("card", True):
             continue
         base = o["money"]["eur"]
         if o.get("promo"):
@@ -383,10 +398,11 @@ def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, b
         ship_amt = ship["eur"] if ship else 0
         duties = (o.get("duties") or {}).get("EU")
         tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
-        total, complete = base + adj + ship_amt + tax, ship is not None and duties is not None
-        if best is None or (not complete, total) < (not best[1], best[0]):   # a complete total leads, as on the page
-            best = (total, complete)
-    return best
+        total = base + adj + ship_amt + tax
+        unknown = (2 if ship is None else 0) + (0 if duties is True or tax else 1)
+        if best is None or (unknown, total) < best[2:]:
+            best = (total, ship is not None and (duties is True or bool(tax)), unknown, total)
+    return best[:2] if best else None
 
 
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
@@ -441,6 +457,20 @@ def _storage_key(s: str) -> tuple:
     return tuple(int(x) for x in s.split("/")) if "/" in s else (0, 0)
 
 
+OLD_AFTER = timedelta(hours=48)
+
+
+def _too_old(checked: str | None, updated_at: datetime | None) -> bool:
+    """True when a store's last successful check is more than OLD_AFTER before this run: its prices are then shown
+    as "last checked …" and never lead a ranking, the page title or search data."""
+    if not checked or not updated_at:
+        return False
+    try:
+        return updated_at - datetime.strptime(checked, "%Y-%m-%dT%H:%M:%SZ") > OLD_AFTER
+    except ValueError:
+        return False
+
+
 def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: dict | None = None) -> None:
     rates = rates_info["rates"]
     terms_status = terms_status or {}
@@ -460,32 +490,41 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
     google = _google()   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region
+    # only stores still enabled in stores.yaml: a switched-off or removed store's last prices must not show as current
+    live_stores = {s: st for s, st in latest["stores"].items() if s in stores_cfg and stores_cfg[s].get("enabled", True)}
+    old = {s: _too_old(st.get("checked"), updated_at) for s, st in live_stores.items()}
+    by_model = defaultdict(list)   # history rows per phone, so each phone's charts and trends scan only its own rows
+    for r in rows:
+        by_model[r["model_id"]].append(r)
     phones = []
-    for m in _models(catalog, [o for st in latest["stores"].values() for o in st["offers"]]):
+    for m in _models(catalog, [o for st in live_stores.values() for o in st["offers"]]):
+        mrows = by_model[m["id"]]
         offers = []
-        for store, st in latest["stores"].items():
+        for store, st in live_stores.items():
+            # an EU-warehouse section (part_of) shares its store's promotions, coupons and their watch state
+            shop = stores_cfg[store]["part_of"] if stores_cfg[store].get("part_of") in stores_cfg else store
             for o in st["offers"]:
                 if o["model_id"] == m["id"] and o["edition"] in m["editions"]:
                     usd = (o.get("prices") or {}).get("USD") or fx.convert(o["price"], o["currency"], "USD", rates)
-                    offers.append({**o, "store_label": stores_cfg[store].get("label", store), "stale": not st.get("ok", True),
+                    offers.append({**o, "store_label": stores_cfg[store].get("label", store), "stale": not st.get("ok", True), "old": old[store],
                                    "link": affiliate.link(o["url"], stores_cfg[store]), "money": _money(o, rates), "usd": usd,
                                    "pay": {k: terms.payment_pct(stores_cfg[store], k) for k in terms.METHODS},
                                    "pay_ok": {k: terms.payment_available(stores_cfg[store], k, usd) for k in terms.METHODS},
                                    "ship": {r: terms.shipping(stores_cfg[store], r, o, rates) for r in terms.REGIONS},
-                                   "notes": terms.notes(stores_cfg[store]), "promo": terms.promo(stores_cfg[store]) if promos.active(store, stores_cfg[store]) else None,
-                                   "coupons": promos.coupons(store, stores_cfg.get(stores_cfg[store].get("part_of"), stores_cfg[store])
-                                                             if stores_cfg[store].get("part_of") else stores_cfg[store]),
+                                   "notes": terms.notes(stores_cfg[store]), "promo": terms.promo(stores_cfg[shop]) if promos.active(shop, stores_cfg[shop]) else None,
+                                   "coupons": promos.coupons(shop, stores_cfg[shop]),
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
                                    "buyers": buyers.get(store),
                                    "gplay": stores_cfg[store].get("google_play") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("google_play")
                                             if o["edition"] == "china" else None,
                                    "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
-                                   "trend": _trend(rows, m["id"], {**o, "store": store}, updated_at),
+                                   "trend": _trend(mrows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
-        in_stock = [o for o in offers if o["available"]]
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay")}
+        offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last
+        in_stock = [o for o in offers if o["available"] and not o["old"]]   # what the index, compare, title and search data rank
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old")}
         # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
         lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
@@ -515,10 +554,10 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "ed_label": ed_labels(m["brand"]),
                        "google": {**google["brands"].get(m["brand"].lower(), google["brands"]["default"]),
                                   "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""},
-                       "chart": _charts(rows, m, rates, colors, updated_at),
-                       "chart_stats": _all_stats(rows, m, rates, updated_at),
-                       "tier_charts": {s: _tier_chart(rows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(rows, m, stores_cfg, rates),
-                       "series_stores": sorted({s for s, _ in _series(rows, m, rates)})})
+                       "chart": _charts(mrows, m, rates, colors, updated_at),
+                       "chart_stats": _all_stats(mrows, m, rates, updated_at),
+                       "tier_charts": {s: _tier_chart(mrows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(mrows, m, stores_cfg, rates),
+                       "series_stores": sorted({s for s, _ in _series(mrows, m, rates)})})
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
     # end of each phone page: the same brand's other phones (newest first) and the nearest in price from other brands
@@ -565,6 +604,12 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
+    # Cloudflare Pages caching: app.js and style.css are linked with ?v=<content hash>, so a year is safe; fonts and
+    # icons keep their names when they change, so a month. Pages themselves keep the default (revalidate every visit).
+    (OUT / "_headers").write_text("/static/app.js\n  Cache-Control: public, max-age=31536000, immutable\n"
+                                  "/static/style.css\n  Cache-Control: public, max-age=31536000, immutable\n"
+                                  "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
+                                  "/static/icons/*\n  Cache-Control: public, max-age=2592000\n")
     if site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{site_cfg["indexnow_key"]}.txt').write_text(site_cfg["indexnow_key"])
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))

@@ -12,6 +12,7 @@ export async function onRequestPost({ request, env }) {
   } catch (e) {
     return reply(html, request, 400, "That didn't look like a report.");
   }
+  if (!f || typeof f !== "object") return reply(html, request, 400, "That didn't look like a report.");
   if (f.website) return reply(html, request, 200, "ok");   // honeypot field: people never fill it in
   const r = {
     phone: String(f.phone || "").slice(0, 60),

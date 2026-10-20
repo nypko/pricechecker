@@ -8,7 +8,26 @@
 <p class="lede">The {{ store_pages|length }} stores DoorPrice checks every hour, side by side. Terms come from each store's own
   pages and are dated; prices are the stores' lowest in-stock prices, before shipping and tax.</p>
 
-<div class="table-wrap">
+{#- phones: one card per store (a five-column table doesn't fit); wider screens get the side-by-side table -#}
+<ul class="store-cards">
+{% for sp in store_pages %}
+  <li class="store-card">
+    <h2><a href="stores/{{ sp.name }}">{{ sp.label }}</a></h2>
+    <p class="sc-trust">{% if sp.trust.reviews %}★ {{ "%.1f"|format(sp.trust.reviews.score) }} <span class="muted">{{ sp.trust.reviews.source }}, {{ "{:,}".format(sp.trust.reviews.count) }} reviews</span>{% endif %}
+      {%- if sp.trust.warranty_months %}{{ " · " if sp.trust.reviews }}{{ sp.trust.warranty_months }}-month warranty{% endif %}
+      {%- if sp.trust.returns_days %} · {{ sp.trust.returns_days }}-day returns{% endif %}</p>
+    <dl class="sc-ship">
+    {% for c in sp.ship %}
+      <div><dt>{{ c.label }}</dt><dd>{{ c.cost }}{% if c.days %} <span class="muted">· {{ c.days }}</span>{% endif %}
+        <span class="small {{ 'good' if c.duties else 'muted' }}">· {{ "tax included" if c.duties else ("you pay tax on delivery" if c.duties == false else "tax not stated") }}</span></dd></div>
+    {% endfor %}
+    </dl>
+    <p class="sc-count muted small">{{ sp.phones|length }} phones in stock · lowest store price on {{ sp.n_cheapest }}</p>
+  </li>
+{% endfor %}
+</ul>
+
+<div class="table-wrap stores-table">
 <table class="cmp-table">
   <thead><tr><th scope="col"></th>{% for sp in store_pages %}<th scope="col"><a href="stores/{{ sp.name }}">{{ sp.label }}</a></th>{% endfor %}</tr></thead>
   <tbody>

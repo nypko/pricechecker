@@ -88,6 +88,23 @@ New reports land in one GitHub issue, "Buyer reports to review". Open the links,
 and commit `config/buyer_reports.yaml` and `data/buyer_reports_*.json`. Only links, dates and the facts (country, days,
 tax, amount, courier) are kept, never a post's text.
 
+## Telegram price-drop channel
+
+After each deploy, `python -m pricechecker.telegram` posts to a Telegram channel when a phone's cheapest delivered price
+(shipping to the EU, card, in EUR: the number in its page title) drops by at least 3% and €20 from what the channel last
+saw, and when a phone is new on the site. At most 5 messages per run; further drops go out as one digest. Each post links
+the phone page, whose share card becomes the large preview. The first run only records prices.
+`--dry` prints the messages instead of sending them. State: `data/telegram.json`.
+
+Setup (once):
+1. In Telegram, message **@BotFather** → `/newbot` → pick a name and a username ending in `bot`. Copy the token.
+2. Create a **public channel** (e.g. `@doorprice`), open its settings → Administrators → add the bot, with "Post messages".
+3. GitHub → repository Settings → Secrets and variables → Actions:
+   - **Secret** `TELEGRAM_BOT_TOKEN` = the token
+   - **Variable** `TELEGRAM_CHAT_ID` = `@yourchannel` (the channel's @username)
+
+Until both are set the step does nothing.
+
 ## Still to do
 
 1. **Affiliate links** – Wonda (`ref=`) and Trading Shenzhen (`affp=`) are set; The Mobile Marvel and Giztop still

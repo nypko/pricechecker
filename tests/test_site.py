@@ -184,3 +184,20 @@ def test_title_price_prefers_known_shipping_over_a_slightly_lower_unknown():
     wonda = mk(1145, {"eur": 0}, None)         # free shipping, tax not stated
     assert site._title_price([giztop, wonda], 21) == (1145, False, "import tax")
     assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], 21) == (1145, False, "import tax")
+
+
+def test_telegram_posts_real_drops_only():
+    from pricechecker import telegram
+    d = lambda slug, eur, left="": {"slug": slug, "name": slug, "eur": eur, "left": left, "store": "S", "edition": "China",
+                                    "storage": "12/256", "n_stores": 2}
+    drops, new, st = telegram.changes([d("a", 1000)], {})
+    assert not drops and not new and st["a"]["ref"] == 1000                      # first run: record only
+    drops, new, st = telegram.changes([d("a", 990), d("b", 500)], st)
+    assert not drops and [x["slug"] for x in new] == ["b"] and st["a"]["ref"] == 1000   # 1% dip: not news
+    drops, _, st = telegram.changes([d("a", 1040), d("b", 500)], st)
+    assert st["a"]["ref"] == 1040                                                 # rises raise the reference
+    drops, _, st = telegram.changes([d("a", 1000), d("b", 500)], st)
+    assert [x["was"] for x in drops] == [1040] and st["a"]["ref"] == 1000         # −€40, −3.8%: posted
+    drops, _, st = telegram.changes([d("a", 900, "import tax"), d("b", 500)], st)
+    assert not drops and st["a"] == {"ref": 900, "left": "import tax"}            # total covers something else: reset
+    assert "€1,000" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x") and "−€40" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x")

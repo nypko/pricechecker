@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}How DoorPrice works out delivered prices and import tax – DoorPrice{% endblock %}
-{% block description %}How DoorPrice calculates the delivered price of an imported phone: payment fees, shipping, import VAT for every EU country, the UK, Australia and the US, courier fees, and how stores are ranked.{% endblock %}
+{% block description %}How DoorPrice calculates the delivered price of an imported phone: payment fees, shipping, import VAT for every EU country, the UK, Canada's provinces, Australia and the US, courier fees, and how stores are ranked.{% endblock %}
 {% block main %}
 {% set eu = tax_regions.EU %}
 <article class="prose">
@@ -25,9 +25,9 @@
     shipping cost, and "tax?" means the store doesn't say whether import tax is included.</p>
 
   <h2>Import tax by destination</h2>
-  <p>Phones (customs code 8517.13) have 0% customs duty in the EU, the UK and Australia, so only VAT or GST is due. A phone
-    costs more than every low-value limit (€150 in the EU, £135 in the UK, A$1,000 in Australia), so the tax is always
-    charged on import, normally collected by the courier before delivery.</p>
+  <p>Phones (customs code 8517.13) have 0% customs duty in the EU, the UK, Canada and Australia, so only VAT, GST or HST is due.
+    A phone costs more than every low-value limit (€150 in the EU, £135 in the UK, C$20 in Canada, A$1,000 in Australia), so the
+    tax is always charged on import, normally collected by the courier before delivery.</p>
 
   <h3 id="eu">European Union</h3>
   <p>{{ eu.note }} Pick your country under <button type="button" class="link-btn" data-prefs>Ship to</button> for its exact
@@ -48,6 +48,11 @@
 
   <h3 id="uk">United Kingdom</h3>
   <p>{{ tax_regions.UK.note }}</p>
+
+  <h3 id="ca">Canada</h3>
+  <p>{{ tax_regions.CA.note }} Rates the Canada Border Services Agency collects (Memorandum D2-3-6, April 2026):</p>
+  <ul class="plain-list">{% for code, c in ca_provinces %}<li>{{ c.name }}: {{ c.rate }}% {{ c.tax }}</li>{% endfor %}</ul>
+  <p>Until you pick a province under Ship to, totals use Ontario's 13% HST.</p>
 
   <h3 id="au">Australia</h3>
   <p>{{ tax_regions.AU.note }}</p>

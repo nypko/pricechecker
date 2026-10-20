@@ -13,7 +13,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from . import affiliate, buyer_reports, cards, fx, history, promos, terms
 
 OUT = Path("build")
-CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
+CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]   # CAD: always an ECB conversion (marked ≈)
 EDITIONS = ["global", "china"]
 EDITION_LABEL = {"global": "Global", "china": "China"}
 _GOOGLE: dict = {}
@@ -64,7 +64,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     base = (site_cfg.get("base_url") or "https://doorprice.app").rstrip("/")
     names = {p["id"]: p["name"] for p in phones}
     labels = {p["id"]: p["ed_label"] for p in phones}
-    sym = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$", "HKD": "HK$"}
+    sym = {"USD": "$", "EUR": "€", "GBP": "£", "CAD": "C$", "AUD": "A$", "HKD": "HK$"}
     money = lambda v, c: f"{sym.get(c, c + ' ')}{v:,.0f}"
     last: dict[tuple, dict] = {}
     entries = []
@@ -123,7 +123,7 @@ def _usd_money(usd: float | None, rates: dict) -> dict | None:
     return _money({"price": usd, "currency": "USD"}, rates) if usd else None
 
 
-SYMBOL = {"USD": "$", "EUR": "€", "GBP": "£", "AUD": "A$"}
+SYMBOL = {"USD": "$", "EUR": "€", "GBP": "£", "CAD": "C$", "AUD": "A$"}
 LABELS: dict[str, str] = {}   # store key -> name shown in chart readouts; set by build()
 
 
@@ -317,8 +317,8 @@ def _trust(t: dict | None) -> dict | None:
     return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
 
 
-REGION_CUR = {"EU": "EUR", "UK": "GBP", "US": "USD", "AU": "AUD", "Global": "USD"}   # shipping shown in each region's currency
-REGION_LABEL = {"EU": "EU", "UK": "UK", "US": "US", "AU": "Australia", "Global": "Rest of world"}
+REGION_CUR = {"EU": "EUR", "UK": "GBP", "US": "USD", "CA": "CAD", "AU": "AUD", "Global": "USD"}   # shipping shown in each region's currency
+REGION_LABEL = {"EU": "EU", "UK": "UK", "US": "US", "CA": "Canada", "AU": "Australia", "Global": "Rest of world"}
 
 
 def _ship_cell(cfg: dict, region: str, rates: dict) -> dict:
@@ -613,6 +613,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
            "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
+           "ca_provinces": sorted(tax_cfg["CA"]["provinces"].items(), key=lambda kv: kv[1]["name"]),
            "store_page_map": json.dumps({n: c.get("part_of") or n for n, c in stores_cfg.items() if c.get("enabled", True)
                                          and (c.get("terms") or {}).get("shipping")}),
            "tax_regions": tax_cfg, "import_tax_json": json.dumps(tax_cfg)}

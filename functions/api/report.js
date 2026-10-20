@@ -1,7 +1,7 @@
 // POST /api/report: one buyer's "how did your order arrive?" report, from the form on phone pages.
 // Stored in Cloudflare KV (binding REPORTS) for review; nothing is published until a person approves it
 // (pricechecker/buyer_reports.py). No names, emails or IP addresses are kept.
-const CURRENCIES = ["EUR", "GBP", "USD", "AUD"];
+const CURRENCIES = ["EUR", "GBP", "USD", "CAD", "AUD"];
 const COURIERS = ["Global Priority", "EU warehouse", "DHL", "UPS", "FedEx", "Royal Mail", "USPS", "Other", ""];
 
 export async function onRequestPost({ request, env }) {

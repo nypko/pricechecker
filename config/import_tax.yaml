@@ -2,7 +2,8 @@
 # when a store's price doesn't include it (stores.yaml: shipping.<region>.duties_included: false).
 #
 # How it is worked out (checked 2026-10-20, notes in research "DoorPrice growth plan"):
-#   tax = rate_pct × (phone + shipping)            customs value; phones (HS 8517.13) have 0% duty in the EU, UK and AU
+#   tax = rate_pct × (phone + shipping)            customs value; phones (HS 8517.13) have 0% duty in the EU, UK, AU and CA
+#                                                  (Canada: phone only, ship_taxed: false)
 #   fee = max(pct × tax, min)                      the courier's clearance fee, only where the courier publishes it
 # A €600–€2,000 phone is above every low-value rule (EU €150 IOSS limit and the €3 duty of Reg. (EU) 2026/382,
 # UK £135, AU A$1,000 seller-collected GST), so none of those apply and import VAT/GST is due on delivery.
@@ -43,6 +44,29 @@ regions:
       ES: {name: Spain, vat: 21}
       SE: {name: Sweden, vat: 25}
   UK: {rate_pct: 20, name: "import VAT", note: "UK VAT 20% on the phone plus shipping (above £135 it is collected at import); phones have 0% customs duty. The courier adds a handling fee: £8 with Royal Mail, about £11–17 with DHL or FedEx."}
+  # Canada (CBSA Memorandum D2-3-6, Appendix A, 8 Apr 2026): the CBSA collects GST/HST - and in BC, MB, SK and QC the
+  # provincial tax - on imports for personal use. Phones (8517.13) have 0% duty (MFN rate free). Canada values imports
+  # without the international shipping (value for duty excludes transport to Canada), so shipping isn't taxed: ship_taxed: false.
+  # Couriers charge a brokerage / duty-advancement fee they don't publish for Canada, so none is added.
+  CA:
+    rate_pct: 13          # until a province is picked: Ontario's HST, the most common rate (about 4 in 10 Canadians)
+    name: "GST/HST"
+    ship_taxed: false
+    note: "Canada charges GST/HST at your province's rate on the phone's price (not on international shipping); phones have 0% duty. The courier may add a brokerage fee, which isn't published, so it isn't in the estimate."
+    provinces:
+      AB: {name: Alberta, rate: 5, tax: "GST"}
+      BC: {name: British Columbia, rate: 12, tax: "GST + PST"}
+      MB: {name: Manitoba, rate: 12, tax: "GST + PST"}
+      NB: {name: New Brunswick, rate: 15, tax: "HST"}
+      NL: {name: Newfoundland and Labrador, rate: 15, tax: "HST"}
+      NS: {name: Nova Scotia, rate: 14, tax: "HST"}     # 15% until April 2025
+      NT: {name: Northwest Territories, rate: 5, tax: "GST"}
+      NU: {name: Nunavut, rate: 5, tax: "GST"}
+      ON: {name: Ontario, rate: 13, tax: "HST"}
+      PE: {name: Prince Edward Island, rate: 15, tax: "HST"}
+      QC: {name: Quebec, rate: 14.975, tax: "GST + QST"}
+      SK: {name: Saskatchewan, rate: 11, tax: "GST + PST"}
+      YT: {name: Yukon, rate: 5, tax: "GST"}
   AU: {rate_pct: 10, name: "GST", note: "10% GST on the phone plus shipping; phones have no customs duty. Up to A$1,000 the store should charge GST at checkout; above that it is collected at the border, with a processing charge (about A$50) and the courier's clearance fee on top."}
   US: {rate_pct: null, name: "import duty", checked: "20 Oct 2026", note: "As of 20 Oct 2026 phones from China and Hong Kong look duty-free: the 12.5% Section 301 tariff in force since 24 Jul 2026 appears to exempt smartphones, but we haven't confirmed that in the official text yet, so we add no estimate. The $800 duty-free limit is suspended, so every parcel goes through customs and the courier charges a brokerage fee."}
   Global: {rate_pct: null, name: "import tax", note: "Import tax and duty on phones depend on your country, so we add no estimate - check your country's rules before buying. Couriers usually add a clearance fee."}

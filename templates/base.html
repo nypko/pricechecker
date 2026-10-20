@@ -54,15 +54,19 @@
     <div class="prefs-inner">
       <div class="seg-group"><span class="seg-label" id="l-region">Ship to</span>
         <div class="seg" role="group" aria-labelledby="l-region" data-pref="region">
-          <button type="button" data-val="EU">EU</button><button type="button" data-val="UK">UK</button><button type="button" data-val="US">US</button><button type="button" data-val="AU">Australia</button><button type="button" data-val="Global">Global</button>
+          <button type="button" data-val="EU">EU</button><button type="button" data-val="UK">UK</button><button type="button" data-val="US">US</button><button type="button" data-val="CA">Canada</button><button type="button" data-val="AU">Australia</button><button type="button" data-val="Global">Global</button>
         </div></div>
       {#- EU only: the member state sets the VAT rate in tax estimates (config/import_tax.yaml); app.js shows it when EU is picked -#}
       <div class="seg-group" hidden><label class="seg-label" for="p-country">Country</label>
         <select id="p-country" class="pref-select"><option value="">EU average ({{ eu_avg_vat }}% VAT)</option>
           {%- for code, c in eu_countries %}<option value="{{ code }}">{{ c.name }} ({{ c.vat }}% VAT)</option>{% endfor %}</select></div>
+      {#- Canada only: the province sets GST/HST (+ PST/QST) in tax estimates; app.js shows it when Canada is picked -#}
+      <div class="seg-group" hidden><label class="seg-label" for="p-prov">Province</label>
+        <select id="p-prov" class="pref-select"><option value="">Not picked (Ontario's {{ tax_regions.CA.rate_pct }}% HST)</option>
+          {%- for code, c in ca_provinces %}<option value="{{ code }}">{{ c.name }} ({{ c.rate }}% {{ c.tax }})</option>{% endfor %}</select></div>
       <div class="seg-group"><span class="seg-label" id="l-cur">Currency</span>
         <div class="seg" role="group" aria-labelledby="l-cur" data-pref="cur">
-          <button type="button" data-val="eur">EUR €</button><button type="button" data-val="gbp">GBP £</button><button type="button" data-val="usd">USD $</button><button type="button" data-val="aud">AUD A$</button>
+          <button type="button" data-val="eur">EUR €</button><button type="button" data-val="gbp">GBP £</button><button type="button" data-val="usd">USD $</button><button type="button" data-val="cad">CAD C$</button><button type="button" data-val="aud">AUD A$</button>
         </div></div>
       <div class="seg-group"><span class="seg-label" id="l-pay">Pay with</span>
         <div class="seg" role="group" aria-labelledby="l-pay" data-pref="pay">

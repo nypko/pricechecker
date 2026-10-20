@@ -5,7 +5,7 @@ import yaml
 from pricechecker import terms
 
 STORES = yaml.safe_load((Path(__file__).parent.parent / "config/stores.yaml").read_text())["stores"]
-RATES = {"EUR": 1.0, "USD": 1.16, "GBP": 0.87, "HKD": 9.05, "AUD": 1.80}
+RATES = {"EUR": 1.0, "USD": 1.16, "GBP": 0.87, "HKD": 9.05, "AUD": 1.80, "CAD": 1.60}
 
 
 def test_payment_adjustments():
@@ -22,7 +22,7 @@ def test_shipping_uses_store_rate_when_available():
     s = terms.shipping(STORES["mobilemarvel"], "UK", offer, RATES)
     assert s["usd"] == round(300 * 1773.0 / 13800.0, 2)        # Mobile Marvel's own HKD->USD rate
     assert s["gbp"] == round(300 / 9.05 * 0.87, 2)             # no own GBP price -> ECB
-    assert terms.shipping(STORES["wonda"], "EU", {"price": 1129, "currency": "USD"}, RATES) == {"usd": 0, "eur": 0, "gbp": 0, "aud": 0}
+    assert terms.shipping(STORES["wonda"], "EU", {"price": 1129, "currency": "USD"}, RATES) == {"usd": 0, "eur": 0, "gbp": 0, "cad": 0, "aud": 0}
     assert terms.shipping(STORES["giztop"], "EU", {"price": 949, "currency": "USD"}, RATES) is None
 
 
@@ -52,6 +52,16 @@ def test_minimum_shipping_is_marked():
     from pricechecker import terms
     cfg = {"terms": {"shipping": {"EU": {"cost": None, "cost_min": 10, "currency": "EUR"}}}}
     offer = {"currency": "EUR", "price": 1000.0}
-    out = terms.shipping(cfg, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7})
+    out = terms.shipping(cfg, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7, "CAD": 1.6})
     assert out["min"] == 1 and out["eur"] == 10.0
-    assert terms.shipping({"terms": {"shipping": {"EU": {"cost": None}}}}, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7}) is None
+    assert terms.shipping({"terms": {"shipping": {"EU": {"cost": None}}}}, "EU", offer, {"EUR": 1.0, "USD": 1.1, "GBP": 0.87, "AUD": 1.7, "CAD": 1.6}) is None
+
+
+def test_canada_terms_and_tax_config():
+    import yaml
+    from pathlib import Path
+    tax = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]["CA"]
+    assert tax["ship_taxed"] is False and tax["provinces"]["QC"]["rate"] == 14.975 and tax["provinces"]["AB"]["rate"] == 5
+    assert terms.duties_included(STORES["mobilemarvel"], "CA") is True     # "fully landed" for Canada
+    assert terms.duties_included(STORES["giztop"], "CA") is False
+    assert terms.shipping(STORES["wonda"], "CA", {"price": 1129, "currency": "USD"}, RATES)["cad"] == 0

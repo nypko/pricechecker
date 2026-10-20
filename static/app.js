@@ -1013,10 +1013,10 @@
   }
   function chooseBrand(b) {
     brand = b.dataset.brand;
-    document.querySelectorAll(".chips .chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    document.querySelectorAll(".chips .chip[data-brand]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
     filter();
   }
-  document.querySelectorAll(".chips .chip").forEach(function (b) {
+  document.querySelectorAll(".chips .chip[data-brand]").forEach(function (b) {
     b.addEventListener("click", function () { chooseBrand(b); });
   });
   // Typing searches every brand: a brand chosen before would otherwise hide the match without saying why

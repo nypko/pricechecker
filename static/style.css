@@ -545,3 +545,13 @@ footer p { max-width: 62ch; }
 .cmp-cfg.near[aria-pressed="true"] { border-style: dashed; }
 .cmp-cfg:disabled { color: var(--muted); font-weight: 400; text-decoration: line-through; cursor: default; background: transparent; }
 .cmp-near { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 2px; }
+
+/* stores comparison table: one column per store, scrolls sideways on phones */
+.cmp-table { border-collapse: collapse; font-size: .88rem; min-width: 640px; width: 100%; margin: 8px 0 12px; }
+.cmp-table th, .cmp-table td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); }
+.cmp-table thead th { font-size: .95rem; }
+.cmp-table tbody th { font-weight: 600; color: var(--muted); font-size: .82rem; width: 150px; position: sticky; left: 0; background: var(--bg); }
+@media (max-width: 719px) { .cmp-table tbody th { width: 96px; } }
+.tax-table .note-row td { padding-top: 0; border-bottom: 1px solid var(--line); }
+.tax-table tr:has(+ .note-row) th, .tax-table tr:has(+ .note-row) td { border-bottom: 0; }
+.st-about { margin: 6px 0 0; font-size: .82rem; }

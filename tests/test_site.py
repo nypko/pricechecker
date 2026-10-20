@@ -141,3 +141,11 @@ def test_indexnow_only_real_changes(tmp_path):
     assert indexnow.changed_slugs(h, l) == ["phone-a", "phone-c", "phone-d"]   # phone-b moved 0.1%: skipped
     u = indexnow.urls({"base_url": "https://x.app"}, ["phone-a", "gone"], {"phone-a"})
     assert u == ["https://x.app/", "https://x.app/compare", "https://x.app/phones/phone-a", "https://x.app/history/phone-a"]
+
+
+def test_ship_cell_starting_price():
+    from pricechecker import site
+    rates = {"EUR": 1.0, "USD": 1.08, "GBP": 0.86, "AUD": 1.65}
+    c = site._ship_cell({"currency": "EUR", "terms": {"shipping": {"EU": {"cost": None, "cost_min": 10, "currency": "EUR", "days": [12, 19]}}}}, "EU", rates)
+    assert (c["cost"], c["days"]) == ("from €10", "12–19 working days")
+    assert site._ship_cell({"terms": {"shipping": {"UK": {"cost": 0}}}}, "UK", rates)["cost"] == "free"

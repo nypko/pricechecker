@@ -281,6 +281,8 @@
   var layout = document.querySelector(".ph-layout");
   var BRAND = layout ? layout.dataset.brand : "";
   var GOOGLE = (layout && layout.dataset.google) || "no Google Play preinstalled";   // config/google.yaml, per brand
+  var STORE_PAGES = {};   // store -> its /stores/<page> (an EU warehouse links to its store's page)
+  try { STORE_PAGES = JSON.parse((layout && layout.dataset.storePages) || "{}"); } catch (e) {}
   if (layout && layout.dataset.cl) ED.china = layout.dataset.cl;   // "Asia" for Samsung and Sony (config/google.yaml)
   (function () {   // shared links keep the chosen cell: #16-512-china
     var m = /^#(\d+)-(\d+)-(global|china)$/.exec(location.hash);
@@ -389,6 +391,8 @@
     if (couponText(o)) body.appendChild(el("p", "coupon", couponText(o)));
     if (trustText(o)) body.appendChild(el("p", "st-trust", trustText(o)));
     if (o.gplay) body.appendChild(el("p", "st-gplay", o.gplay));
+    if (STORE_PAGES[o.store]) { var ab = el("a", null, "About " + o.store_label + ": shipping, tax, warranty");
+      ab.href = "../stores/" + STORE_PAGES[o.store]; var abp = el("p", "st-about"); abp.appendChild(ab); body.appendChild(abp); }
     if (buyersText(o)) body.appendChild(el("p", "st-buyers", buyersText(o)));
     var go = el("a", "go secondary", (o.available ? "Go to " : "Check ") + o.store_label);
     go.href = o.link; go.rel = "sponsored nofollow noopener"; go.target = "_blank";

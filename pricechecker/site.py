@@ -281,7 +281,7 @@ def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:
     base = (site_cfg.get("base_url") or "").rstrip("/")
     if site_cfg.get("domain_live") and base:
         ld["url"] = f"{base}/phones/{model['id']}"
-        ld["image"] = f"{base}/static/icons/icon-512.png"
+        ld["image"] = f'{base}/cards/{model["id"]}.png'   # the phone's share card (name, versions, delivered price)
     return json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
 

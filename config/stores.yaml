@@ -72,6 +72,31 @@ stores:
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "4\\.75%"}
         - {url: "https://www.themobilemarvel.com/pages/shipping", expect: "300 HKD"}
 
+  averagedad:
+    label: Average Dad Tech
+    mentions: ["average dad", "averagedad"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
+    type: shopify         # robots.txt (2026-10-20) allows /products, /policies and meta.json; no bot challenge
+    base_url: https://averagedadofficial.com
+    currency: GBP         # UK business (Trustpilot contact details); phones ship from China / Hong Kong
+    exclude_title: "used|kit|demo|refurb|lens|case|cover|screen|charger|cable|watch|buds|pad|tablet|protector|strap|accessor"
+    trust: {reviews: {score: 4.7, count: 268, source: Trustpilot, url: "https://www.trustpilot.com/review/averagedadofficial.com"}, warranty_months: 12, returns_days: 14, checked: 2026-10-20}   # /pages/warranty: 12 months, buyer ships in; /policies/refund-policy: 14 days unused and sealed, buyer pays return shipping, 20% restocking fee once opened
+    terms:   # verified 2026-10-20 from /policies/shipping-policy, /policies/refund-policy, /pages/warranty
+      payment:
+        card: {fee_pct: 0, note: "UK store: card surcharges on consumer cards are banned in the UK (Payment Surcharges Regulations)"}
+        paypal: {fee_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
+        bank_transfer: {discount_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
+      shipping:   # "Global shipping costs are set to £29.99" (incl. UK and EU); USA flat $59.99. DHL Express, UPS or FedEx, phones 5-8 business days.
+        # Import tax: the store "will do our best to mitigate and remove all customs/VAT fees ... not always possible in countries
+        # such as Greece, Hungary and Ireland" and for high fees "typically split the bill 50/50" - not stated as included, so omitted.
+        EU: {days: [5, 8], cost: 29.99, note: "£29.99 to the EU from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, but not always (it names Greece, Hungary and Ireland) and may split high fees 50/50."}
+        UK: {days: [5, 8], cost: 29.99, note: "£29.99 from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, and may split high fees 50/50."}
+        US: {days: [5, 8], cost: 59.99, currency: USD, note: "Flat $59.99 to the US, and you must give a FedEx account number at checkout, so duties and brokerage are billed to your FedEx account. 5-8 business days."}
+        AU: {days: [5, 8], cost: 29.99, note: "£29.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. GST isn't stated as included."}
+        Global: {days: [5, 8], cost: 29.99, note: "£29.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import tax isn't stated as included."}
+      watch:
+        - {url: "https://averagedadofficial.com/policies/shipping-policy", expect: "29\\.99"}
+        - {url: "https://averagedadofficial.com/policies/refund-policy", expect: "14 day"}
+
   trinity:
     label: Trinity Electronic
     type: webpage

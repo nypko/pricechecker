@@ -50,6 +50,10 @@
         <div class="seg" role="group" aria-labelledby="l-region" data-pref="region">
           <button type="button" data-val="EU">EU</button><button type="button" data-val="UK">UK</button><button type="button" data-val="US">US</button><button type="button" data-val="AU">Australia</button><button type="button" data-val="Global">Global</button>
         </div></div>
+      {#- EU only: the member state sets the VAT rate in tax estimates (config/import_tax.yaml); app.js shows it when EU is picked -#}
+      <div class="seg-group" hidden><label class="seg-label" for="p-country">Country</label>
+        <select id="p-country" class="pref-select"><option value="">EU average ({{ eu_avg_vat }}% VAT)</option>
+          {%- for code, c in eu_countries %}<option value="{{ code }}">{{ c.name }} ({{ c.vat }}% VAT)</option>{% endfor %}</select></div>
       <div class="seg-group"><span class="seg-label" id="l-cur">Currency</span>
         <div class="seg" role="group" aria-labelledby="l-cur" data-pref="cur">
           <button type="button" data-val="eur">EUR €</button><button type="button" data-val="gbp">GBP £</button><button type="button" data-val="usd">USD $</button><button type="button" data-val="aud">AUD A$</button>
@@ -71,7 +75,7 @@
      Prices are the store's own price in the selected currency where the store sets one; prices marked ≈ are
      converted with European Central Bank rates{% if fx_date %} ({{ fx_date }}){% endif %} and are approximate.
      Last update: <time datetime="{{ updated }}">{{ updated_label }}</time>.</p>
-  <p class="foot-links"><a href="{{ root }}compare">Compare phones</a> · <a href="{{ root }}about">About DoorPrice</a> · <a href="{{ root }}privacy">Privacy</a></p>
+  <p class="foot-links"><a href="{{ root }}compare">Compare phones</a> · <a href="{{ root }}methodology">How prices are worked out</a> · <a href="{{ root }}about">About DoorPrice</a> · <a href="{{ root }}privacy">Privacy</a></p>
 </footer>
 <script type="application/json" id="import-tax">{{ import_tax_json|safe }}</script>
 <script src="{{ root }}static/app.js?v={{ asset_v['app.js'] }}"></script>

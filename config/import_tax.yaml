@@ -1,12 +1,48 @@
 # Estimated import tax the buyer pays on delivery, per Ship-to destination. Shown (and added to the total, marked ≈)
 # when a store's price doesn't include it (stores.yaml: shipping.<region>.duties_included: false).
-# Charged on goods + shipping, the way customs values an import. Mobile phones have 0% customs duty in the EU, UK
-# and Australia, so only VAT/GST counts. rate_pct: null = no estimate shown (rules too variable to state a number).
-# Courier fees and thresholds checked 2026-10-19: DHL Express Germany customs terms (dhl.de), UK courier fee guides
-# (worldfirst.com, vatcalculators.org.uk), Australian low-value GST guides; US tariff trackers disagree (tariffstool.com, ustariffrates.com).
+#
+# How it is worked out (checked 2026-10-20, notes in research "DoorPrice growth plan"):
+#   tax = rate_pct × (phone + shipping)            customs value; phones (HS 8517.13) have 0% duty in the EU, UK and AU
+#   fee = max(pct × tax, min)                      the courier's clearance fee, only where the courier publishes it
+# A €600–€2,000 phone is above every low-value rule (EU €150 IOSS limit and the €3 duty of Reg. (EU) 2026/382,
+# UK £135, AU A$1,000 seller-collected GST), so none of those apply and import VAT/GST is due on delivery.
+# rate_pct: null = no estimate added to totals (rules too uncertain to state a number).
 regions:
-  EU: {rate_pct: 21, name: "import VAT", note: "We estimate 21%, the EU average; VAT is 17-27% depending on the country. Phones have 0% customs duty. The courier also charges a clearance fee (e.g. DHL Germany: 2% of the tax, at least EUR 12.50)."}
-  UK: {rate_pct: 20, name: "import VAT", note: "UK VAT 20% on goods + shipping; phones have 0% customs duty. The courier adds a handling fee: about GBP 11-12 or 2.5% of the tax (DHL, UPS, FedEx), GBP 8 with Royal Mail."}
-  AU: {rate_pct: 10, name: "GST", note: "10% GST on goods + shipping; phones have no customs duty. Up to AUD 1,000 the seller should charge GST at checkout; above that it is collected at the border and the courier adds clearance charges."}
-  US: {rate_pct: null, name: "import tariffs", note: "Sources disagree on the current tariff for China-made phones (from 0% to about 37.5% in October 2026), so we add no estimate - check before buying. Couriers add a brokerage fee."}
+  EU:
+    rate_pct: 21          # used until a country is picked, and for page titles: about the EU average
+    name: "import VAT"
+    note: "VAT is charged at your country's rate on the phone plus shipping; phones have 0% customs duty. The courier also charges a clearance fee."
+    # Standard VAT rates, all 27 member states (European Commission rates table, updated 2026-09-28; no changes voted for 2027).
+    # fee: the courier's own published clearance fee (DHL Express), in EUR; other countries: fee not published, not added.
+    countries:
+      AT: {name: Austria, vat: 20}
+      BE: {name: Belgium, vat: 21, fee: {pct: 2.75, min: 15, by: "DHL Express Belgium"}}
+      BG: {name: Bulgaria, vat: 20}
+      HR: {name: Croatia, vat: 25}
+      CY: {name: Cyprus, vat: 19}
+      CZ: {name: Czechia, vat: 21}
+      DK: {name: Denmark, vat: 25}
+      EE: {name: Estonia, vat: 24}      # 22% until June 2025
+      FI: {name: Finland, vat: 25.5}    # 24% until August 2024
+      FR: {name: France, vat: 20}
+      DE: {name: Germany, vat: 19, fee: {pct: 2, min: 15, by: "DHL Express Germany"}}
+      GR: {name: Greece, vat: 24}
+      HU: {name: Hungary, vat: 27}
+      IE: {name: Ireland, vat: 23}
+      IT: {name: Italy, vat: 22}
+      LV: {name: Latvia, vat: 21}
+      LT: {name: Lithuania, vat: 21}
+      LU: {name: Luxembourg, vat: 17}
+      MT: {name: Malta, vat: 18}
+      NL: {name: Netherlands, vat: 21}
+      PL: {name: Poland, vat: 23}
+      PT: {name: Portugal, vat: 23}
+      RO: {name: Romania, vat: 21}      # 19% until July 2025
+      SK: {name: Slovakia, vat: 23}     # 20% until 2024
+      SI: {name: Slovenia, vat: 22}
+      ES: {name: Spain, vat: 21}
+      SE: {name: Sweden, vat: 25}
+  UK: {rate_pct: 20, name: "import VAT", note: "UK VAT 20% on the phone plus shipping (above £135 it is collected at import); phones have 0% customs duty. The courier adds a handling fee: £8 with Royal Mail, about £11–17 with DHL or FedEx."}
+  AU: {rate_pct: 10, name: "GST", note: "10% GST on the phone plus shipping; phones have no customs duty. Up to A$1,000 the store should charge GST at checkout; above that it is collected at the border, with a processing charge (about A$50) and the courier's clearance fee on top."}
+  US: {rate_pct: null, name: "import duty", checked: "20 Oct 2026", note: "As of 20 Oct 2026 phones from China and Hong Kong look duty-free: the 12.5% Section 301 tariff in force since 24 Jul 2026 appears to exempt smartphones, but we haven't confirmed that in the official text yet, so we add no estimate. The $800 duty-free limit is suspended, so every parcel goes through customs and the courier charges a brokerage fee."}
   Global: {rate_pct: null, name: "import tax", note: "Import tax and duty on phones depend on your country, so we add no estimate - check your country's rules before buying. Couriers usually add a clearance fee."}

@@ -113,7 +113,7 @@ def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
     (OUT / "robots.txt").write_text(robots)
     if not live:
         return
-    paths = ["", "compare", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "compare", "methodology", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
                                      f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
@@ -304,6 +304,16 @@ def _trust(t: dict | None) -> dict | None:
     return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
 
 
+def _tax_config(rates: dict) -> dict:
+    """config/import_tax.yaml regions, with each courier fee's minimum (EUR) also in the other display currencies,
+    since the browser works out the fee in whatever currency the visitor picked."""
+    regions = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]
+    for c in (regions.get("EU") or {}).get("countries", {}).values():
+        if c.get("fee"):
+            c["fee"]["min_m"] = {cur.lower(): round(fx.convert(c["fee"]["min"], "EUR", cur, rates), 2) for cur in CURRENCIES}
+    return regions
+
+
 def _title_price(offers: list[dict], tax_eu_pct: float | None) -> tuple[float, bool] | None:
     """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
     the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
@@ -390,7 +400,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         updated_at = datetime.strptime(latest.get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
     except ValueError:
         updated_at = None
-    tax_eu = (yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"].get("EU") or {}).get("rate_pct")
+    tax_cfg = _tax_config(rates)
+    tax_eu = (tax_cfg.get("EU") or {}).get("rate_pct")
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
@@ -491,7 +502,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "report_stores": [{"name": s, "label": c.get("label", s)} for s, c in stores_cfg.items() if c.get("enabled", True)],
            "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
-           "import_tax_json": json.dumps(yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"])}
+           "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
+           "tax_regions": tax_cfg, "import_tax_json": json.dumps(tax_cfg)}
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "phones").mkdir(parents=True)
@@ -510,7 +522,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            for p in sorted(phones, key=lambda q: q["name"])]
     (OUT / "compare.html").write_text(env.get_template("compare.html").render(
         root="", path="compare", cmp_phones=cmp, cmp_json=json.dumps(cmp, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"), **ctx))
-    for page in ("about", "privacy"):   # /about and /privacy (affiliate networks look for both)
+    for page in ("about", "methodology", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
     _seo_files(ctx["site"], phones)
     _feeds(ctx["site"], phones, rows, stores_cfg, updated_at)

@@ -99,6 +99,8 @@ def scan(stores_cfg: dict, force: bool = False) -> dict:
         promo = (cfg.get("terms") or {}).get("promo")
         if promo:
             active = promo_active(promo, "\n".join(texts) if texts else None, now.date())
+            if errors and active is False:   # a page didn't load: the banner may be on it, so keep the last answer
+                active = None
             was = prev.get("promo_active")
             rec["promo_active"] = was if active is None else active
             if was is not None and active is not None and was != active:
@@ -107,6 +109,8 @@ def scan(stores_cfg: dict, force: bool = False) -> dict:
         for c in _coupons(cfg):   # coupon hints expire the same way
             was = (prev.get("coupons") or {}).get(c["code"])
             now_on = promo_active(c, "\n".join(texts) if texts else None, now.date())
+            if errors and now_on is False:
+                now_on = None
             rec.setdefault("coupons", {})[c["code"]] = was if now_on is None else now_on
             if was and now_on is False:
                 ended.append(f"{cfg.get('label', name)}: coupon {c['code']} is no longer shown - its hint is hidden")

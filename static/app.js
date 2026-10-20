@@ -16,8 +16,9 @@
   function watched() { try { return JSON.parse(store("pc-watch") || "{}") || {}; } catch (e) { return {}; } }
   function setWatched(w) { store("pc-watch", JSON.stringify(w)); }
   function prefKey() { return state.region + (state.country ? "-" + state.country : "") + "|" + state.pay + "|" + state.cur; }
+  var NUM = new Intl.NumberFormat("en-US");   // one formatter: toLocaleString builds a new one per call (slow over thousands of prices)
   function fmt(v, approx) {
-    return (approx ? "≈" : "") + SYMBOL[state.cur] + Math.round(v).toLocaleString("en-US");
+    return (approx ? "≈" : "") + SYMBOL[state.cur] + NUM.format(Math.round(v));
   }
   // "12/256" -> "12 GB RAM · 256 GB storage" (same as spec() in site.py)
   function spec(storage) {
@@ -75,7 +76,12 @@
   function placeName() { return state.region === "EU" && EU_C[state.country] ? EU_C[state.country].name : REGION_NAME[state.region]; }
   // The import tax rule for the chosen destination: {rate, name, fee, note}. EU: the picked country's VAT and, where the
   // courier publishes it, its clearance fee; no country picked: the EU average.
+  var taxMemo = {};
   function taxRule() {
+    var key = prefKey();
+    return taxMemo[key] || (taxMemo[key] = taxRule1());
+  }
+  function taxRule1() {
     var t = TAX[state.region] || {}, c = state.region === "EU" ? EU_C[state.country] : null;
     if (!c) return { rate: t.rate_pct, name: t.name || "import tax", fee: null, note: t.note || "" };
     var fee = c.fee || null;
@@ -89,7 +95,13 @@
   // store price +/- payment adjustment + shipping + estimated import VAT/GST when the store's price excludes it.
   // pay% unknown -> treated as 0 but flagged; shipping unknown -> excluded from total but flagged;
   // import tax not stated by the store -> shown as a possible amount but not added.
+  // cost() is called many times per offer in one render (pick, match, lowerOpen): keep the answer per settings
   function cost(o) {
+    var key = prefKey();
+    if (o._kk !== key) { o._k = cost1(o); o._kk = key; }
+    return o._k;
+  }
+  function cost1(o) {
     var c = state.cur, list = o.money[c], adj = o.pay[state.pay], ship = o.ship[state.region];
     // store-wide automatic discount (e.g. a summer sale); with bank transfer only the larger discount counts unless they combine
     var pr = o.promo, promoPct = !pr ? 0 : (state.pay === "bank" && adj != null && adj < 0 && !pr.stacks_with_bank) ?
@@ -112,6 +124,7 @@
       approx: o.money[c + "_approx"] === 1 || taxAdded > 0 || !!(ship && ship.min),
       shipMin: !!(ship && ship.min),   // the store publishes only a starting price ("from EUR 10")
       complete: adj != null && !!ship,
+      old: !!o.old,   // the store hasn't answered for days: its price ranks after current ones
       duties: duties,
       payNote: o.notes ? o.notes.pay[state.pay] : "", shipNote: o.notes ? o.notes.ship[state.region] : ""   // index offers carry no notes
     };
@@ -150,9 +163,14 @@
 
   // Cheapest offer for the current choices. Stores that don't take the chosen payment method rank last, and a total we can
   // fully work out leads over a lower one that leaves shipping or import tax open (that one is shown as "or €X + shipping").
+  // Among totals that leave something open, fewer unknowns lead: unlisted shipping weighs more than import tax that
+  // may be due, so €8 cheaper with shipping unknown doesn't beat free shipping. A "from €10" shipping floor is a
+  // known (≈) cost, not an unknown.
+  function unknowns(k) { return (k.ship == null ? 2 : 0) + (maybeTax(k) ? 1 : 0); }
   function better(k, b) {
     if (k.payOk !== b.payOk) return k.payOk;
-    if (partial(k) !== partial(b)) return !partial(k);
+    if (k.old !== b.old) return !k.old;
+    if (unknowns(k) !== unknowns(b)) return unknowns(k) < unknowns(b);
     return k.total < b.total;
   }
   // The cheapest total that leaves something open, when it's lower than the complete one that leads
@@ -160,9 +178,9 @@
     var low = null;
     offers.forEach(function (o) {
       var k = cost(o);
-      if (k.payOk && partial(k) && k.total < best.k.total && (!low || k.total < low.k.total)) low = { o: o, k: k };
+      if (k.payOk && !k.old && unknowns(k) > unknowns(best.k) && k.total < best.k.total && (!low || k.total < low.k.total)) low = { o: o, k: k };
     });
-    return best && !partial(best.k) ? low : null;
+    return best ? low : null;
   }
   // "Arrives in 12–19 working days" / "up to 8 working days" from the store's terms for the chosen Ship-to
   function delivery(o) {
@@ -412,8 +430,19 @@
       r.hidden = storage !== "all" && r.dataset.storage !== storage;
     });
   }
+  // A short settle on the total when the visitor changes something (not on load). Web Animations, so restarting it
+  // needs no forced layout.
+  var settleNext = false, calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function settle(ans) {
+    settleNext = false;
+    if (calm || !ans.animate) return;
+    ans.querySelectorAll(".ans-total, .bar").forEach(function (e) {
+      e.animate([{ opacity: .35, transform: "translateY(3px)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.16,1,.3,1)" });
+    });
+  }
   function choose(c) {
     sel = c;
+    settleNext = true;
     stickyPicked();   // on phones, the deal bar comes up as soon as a choice is made
     histSel = null;   // the price history follows the grid until a variant is picked in its own menu
     renderPhone();
@@ -504,7 +533,7 @@
     deal.href = b.o.link;
     deal.className = b.k.payOk ? "deal" : "btn-quiet deal-off";
     deal.querySelector(".deal-t").textContent = b.k.payOk ? "View deal at " + b.o.store_label : "See " + b.o.store_label + "'s payment options";
-    ans.classList.remove("settle"); void ans.offsetWidth; ans.classList.add("settle");   // a short settle when the answer changes
+    if (settleNext) settle(ans);
     // the other stores for the same choice, cheapest first
     var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o; });
     var live = others.filter(function (o) { return o.available; }).map(function (o) { return { o: o, k: cost(o) }; });
@@ -860,7 +889,7 @@
     renderCompare();
   }
 
-  function set(key, val) { state[key] = val; store("pc-" + key, val); render(); }
+  function set(key, val) { state[key] = val; store("pc-" + key, val); settleNext = true; render(); }
   var countrySel = document.getElementById("p-country");
   if (countrySel) countrySel.addEventListener("change", function () { set("country", countrySel.value); });
 

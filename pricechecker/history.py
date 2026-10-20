@@ -20,8 +20,9 @@ def load_latest() -> dict:
 def save(results: dict[str, list[Offer]], failures: dict[str, str]) -> dict:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     prev = load_latest()
-    prev_prices = {(s, o["model_id"], o["edition"], o["storage"]): (o["price"], o["available"])
-                   for s, st in prev["stores"].items() for o in st["offers"]}
+    # compare with the last recorded row per offer, not with latest.json: an offer that drops out of a store's listing
+    # for a run and comes back at the same price is no change
+    prev_prices = {(r["store"], r["model_id"], r["edition"], r["storage"]): (r["price"], r["available"]) for r in load_history()}
     new_rows = []
     stores = {s: st for s, st in prev["stores"].items() if s not in results and s not in failures}  # not checked this run
     for store, offers in results.items():
@@ -33,13 +34,17 @@ def save(results: dict[str, list[Offer]], failures: dict[str, str]) -> dict:
         old = prev["stores"].get(store)
         stores[store] = {**(old or {"offers": []}), "ok": False, "error": err, "last_attempt": now}
     latest = {"updated": now, "stores": stores}
-    LATEST.write_text(json.dumps(latest, indent=1))
+    # history first, then latest.json (via a temp file): if the run dies in between, the next run sees the same
+    # changes again instead of losing them
     new_file = not HISTORY.exists()
     with HISTORY.open("a", newline="") as f:
         w = csv.writer(f)
         if new_file:
             w.writerow(FIELDS)
         w.writerows(new_rows)
+    tmp = LATEST.with_suffix(".tmp")
+    tmp.write_text(json.dumps(latest, indent=1))
+    tmp.replace(LATEST)
     print(f"  history: {len(new_rows)} price changes recorded")
     return latest
 

@@ -254,8 +254,6 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .st-body .coupon { margin: 0 0 10px; }
 .ans-alt .link-btn { padding: 0; text-align: left; line-height: 1.4; }
 .answer .deal-off { width: 100%; justify-content: center; margin-top: 16px; min-height: var(--tap); }
-.answer.settle .ans-total, .answer.settle .bar { animation: settle .32s cubic-bezier(.16, 1, .3, 1); }
-@keyframes settle { from { opacity: .35; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 .ans-total { margin: 0; font-size: 2.4rem; font-weight: 700; line-height: 1.05; letter-spacing: -.025em; }
 .ans-total .price { font-weight: inherit; }
 .ans-plus { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
@@ -512,7 +510,6 @@ footer p { max-width: 62ch; }
 }
 @media (prefers-reduced-motion: reduce) {
   .prefs-toggle::after, .explain summary::after, .hist-toggle::after, .oos > summary::after, .tier-hist, .sticky-deal, .cell { transition: none; }
-  .answer.settle .ans-total, .answer.settle .bar { animation: none; }
 }
 
 /* ---------- compare: up to three phones side by side ----------

@@ -149,3 +149,38 @@ def test_ship_cell_starting_price():
     c = site._ship_cell({"currency": "EUR", "terms": {"shipping": {"EU": {"cost": None, "cost_min": 10, "currency": "EUR", "days": [12, 19]}}}}, "EU", rates)
     assert (c["cost"], c["days"]) == ("from €10", "12–19 working days")
     assert site._ship_cell({"terms": {"shipping": {"UK": {"cost": 0}}}}, "UK", rates)["cost"] == "free"
+
+
+def test_sold_out_store_leaves_the_chart_and_stats():
+    from datetime import datetime
+    site.LABELS.setdefault("wonda", "Wonda")
+    site.LABELS.setdefault("giztop", "Giztop")
+    model = {"id": "x", "editions": ["china"], "brand": "Oppo"}
+    rates = {"USD": 1.0}
+    rows = [_row("2026-10-16T00:00:00Z", 900.0), _row("2026-10-16T00:00:00Z", 1000.0, store="giztop"),
+            _row("2026-10-18T00:00:00Z", 900.0, ok=False)]
+    s = site._series(rows, model, rates)
+    assert s[("wonda", "china")][-1][1] is None   # sold out from 18 Oct
+    st = site._stats(s, datetime(2026, 10, 20), "USD")
+    assert st["now"] == "$1,000" and st["low"] == "$900"
+    svg = site._chart(s, {"wonda": "#111", "giztop": "#222"}, datetime(2026, 10, 20), "USD")
+    assert "data-steps=\"" in svg and ":;" not in svg.split("Wonda")[0][-5:]
+    rows.append(_row("2026-10-19T00:00:00Z", 1000.0, ok=False, store="giztop"))
+    assert site._stats(site._series(rows, model, rates), datetime(2026, 10, 20), "USD") is None   # nothing in stock
+
+
+def test_store_prices_older_than_two_days_are_old():
+    from datetime import datetime
+    now = datetime(2026, 10, 20, 12)
+    assert site._too_old("2026-10-18T11:00:00Z", now) and not site._too_old("2026-10-19T12:00:00Z", now)
+    assert not site._too_old(None, now)
+
+
+def test_title_price_prefers_known_shipping_over_a_slightly_lower_unknown():
+    money = lambda v: {"eur": v}
+    mk = lambda v, ship, duties: {"available": True, "money": money(v), "pay": {"card": 0}, "pay_ok": {"card": True},
+                                  "ship": {"EU": ship}, "duties": {"EU": duties}}
+    giztop = mk(1137, None, None)              # shipping not listed, tax not stated
+    wonda = mk(1145, {"eur": 0}, None)         # free shipping, tax not stated
+    assert site._title_price([giztop, wonda], 21) == (1145, False)
+    assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], 21) == (1145, False)

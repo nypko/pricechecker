@@ -37,6 +37,7 @@ def main(argv=None) -> int:
     tracked = {p["id"] for p in catalog}   # by model: any edition a store sells is shown (Global and China side by side)
     only = set(args.only.split(",")) if args.only else None
     results, failures, untracked_lines = {}, {}, []
+    had = {s: len(st.get("offers", [])) for s, st in history.load_latest()["stores"].items()}   # offers each store had last time
     for name, cfg in stores.items():
         if not cfg.get("enabled", True) or cfg.get("part_of") or (only and name not in only):
             continue   # part_of: filled in by its parent store's check (e.g. an EU-warehouse section)
@@ -49,6 +50,15 @@ def main(argv=None) -> int:
         except Exception as e:
             print(f"  FAILED: {type(e).__name__}: {e}")
             failures[name] = f"{type(e).__name__}: {e}"[:300]
+            for sub, sub_cfg in stores.items():
+                if sub_cfg.get("part_of") == name:
+                    failures[sub] = failures[name]
+            continue
+        if not offers and had.get(name):
+            # an answer with nothing in it (a changed page layout, a half-written sitemap) is a failure, not a sold-out store:
+            # keep the last prices, marked stale, rather than wiping the store off the site
+            print("  FAILED: no offers returned (had %d last run)" % had[name])
+            failures[name] = "no offers returned"
             for sub, sub_cfg in stores.items():
                 if sub_cfg.get("part_of") == name:
                     failures[sub] = failures[name]

@@ -47,7 +47,6 @@
       <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ p.ed_label[p.best.edition] }}</span>
         <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span><span class="prow-count"></span> <span class="pill prow-trend" hidden></span> <span class="pill prow-watch" hidden></span></span>
       <span class="prow-price"><span class="prow-v">{{ price(p.best.money) }}</span><span class="prow-plus"></span></span>
-      <span class="prow-or"></span>
       <span class="prow-gap" hidden></span>
       {% elif p.offers %}
       <span class="prow-sub muted">Out of stock everywhere</span>

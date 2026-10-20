@@ -84,7 +84,8 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .brand-b { color: var(--brand); }
 
 .prefs-toggle { font: inherit; font-size: .85rem; font-weight: 700; color: var(--brand); background: var(--brand-soft); border: 0;
-                border-radius: 999px; min-height: 40px; padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+                border-radius: 999px; min-height: var(--tap); padding: 0 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.prefs-toggle .prefs-ico { flex: 0 0 auto; margin-right: -2px; }   /* sliders: this pill sets Ship to, currency and payment */
 .prefs-toggle::after, .explain summary::after, .hist-toggle::after, .oos > summary::after {
   content: ""; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0; flex: 0 0 auto;
   transform: translateY(-2px) rotate(45deg); transition: transform .2s cubic-bezier(.16, 1, .3, 1); }
@@ -100,9 +101,11 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
               border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .seg-sm { gap: 0; background: var(--surface-2); border-radius: 10px; padding: 3px; flex-wrap: nowrap; }
-.seg-sm button { min-height: 36px; font-size: .85rem; padding: 0 12px; border: 0; background: transparent; color: var(--muted); border-radius: 8px; white-space: nowrap; flex: 0 0 auto; }
+.seg-sm button { min-height: 40px; font-size: .85rem; padding: 0 12px; border: 0; background: transparent; color: var(--muted); border-radius: 8px; white-space: nowrap; flex: 0 0 auto; }
 /* the index sort row scrolls sideways on narrow screens instead of breaking its labels */
 .list-head .sort { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+/* like the brand chips: a fade at the right edge says there is more to scroll to ("A–Z" sits off-screen on phones) */
+.list-head .sort.more { mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
 .list-head .sort::-webkit-scrollbar { display: none; }
 .seg-sm button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(16, 24, 40, .12); }
 .prefs-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; }
@@ -110,6 +113,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
               background: var(--brand); color: var(--on-brand); cursor: pointer; }
 .link-btn { font: inherit; font-weight: 600; color: var(--brand); background: none; border: 0; padding: 0 4px; min-height: 32px; cursor: pointer;
             text-decoration: underline; text-underline-offset: 3px; }
+p > .link-btn, .order-for .link-btn, .list-meta .link-btn { min-height: var(--tap); margin: -6px 0; }   /* full tap height without growing the line */
 
 /* ---------- badges, buttons ---------- */
 .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; vertical-align: 1px; letter-spacing: .01em; line-height: 1.6; }
@@ -143,7 +147,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
          mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
 .chips.at-end { mask-image: none; -webkit-mask-image: none; }
 .chips::-webkit-scrollbar { display: none; }
-.chip { flex: 0 0 auto; scroll-snap-align: start; font: inherit; font-size: .88rem; font-weight: 600; min-height: 38px; padding: 0 14px;
+.chip { flex: 0 0 auto; scroll-snap-align: start; font: inherit; font-size: .88rem; font-weight: 600; min-height: var(--tap); padding: 0 14px;
         border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); }
 .list-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 8px 0 10px; }
@@ -155,7 +159,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .plist { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
          box-shadow: var(--shadow); overflow: hidden; }
 .prow + .prow { border-top: 1px solid var(--line); }
-.prow-link { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name price" "sub sub" "or or" "gap gap"; align-items: baseline;
+.prow-link { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name price" "sub sub" "gap gap"; align-items: baseline;
              gap: 2px 16px; padding: 14px 16px; text-decoration: none; color: var(--text); min-height: 64px; }
 .prow-link:hover { background: var(--surface-2); }
 .prow-name { grid-area: name; font-weight: 700; font-size: 1.02rem; line-height: 1.3; }
@@ -164,10 +168,9 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .prow-sub .badge { margin-right: 4px; }
 .prow-price { grid-area: price; text-align: right; font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; white-space: nowrap; }
 .prow-price .price { font-weight: 700; }
-.prow-plus { display: block; font-size: .75rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+.prow-plus { display: block; font-size: .8rem; font-weight: 600; color: var(--save); letter-spacing: 0; }
+.prow-plus.open { color: var(--text); }   /* what the number leaves out reads as part of the price, not as small print */
 .prow-plus:empty { display: none; }
-.prow-or { grid-area: or; font-size: .78rem; color: var(--muted); line-height: 1.35; }
-.prow-or:empty { display: none; }
 /* small state pills: price movement from the hourly history */
 .pill { display: inline-block; font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; line-height: 1.6;
         background: var(--save-soft); color: var(--save); vertical-align: 1px; white-space: nowrap; }
@@ -257,6 +260,9 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .ans-total { margin: 0; font-size: 2.4rem; font-weight: 700; line-height: 1.05; letter-spacing: -.025em; }
 .ans-total .price { font-weight: inherit; }
 .ans-plus { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+/* a total that leaves shipping or tax open: what's missing sits on its own line at reading size, in text colour */
+.ans-total.open .ans-plus { display: block; margin-top: 6px; font-size: 1.1rem; line-height: 1.3; color: var(--text); }
+.ans-label.open { color: var(--text); }
 .ans-or { margin: -8px 0 12px; font-size: .86rem; color: var(--muted); }
 .ans-what { margin: 8px 0 14px; font-size: .92rem; color: var(--muted); }
 .ans-trust { margin: -10px 0 10px; font-size: .82rem; color: var(--muted); }
@@ -289,6 +295,10 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 12px; }
 .tradeoff { margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); font-size: .88rem; line-height: 1.5; }
 .tradeoff .link-btn { padding: 0; min-height: 0; }
 .answer .deal { margin-top: 16px; }
+.answer .ans-coupon { margin: 12px 0 0; }
+.ans-more { margin: 12px 0 0; font-size: .85rem; color: var(--muted); }
+.ans-more > summary { cursor: pointer; font-weight: 600; color: var(--brand); min-height: var(--tap); display: flex; align-items: center; }
+.ans-more > p { margin: 0 0 6px; }
 .ans-foot { margin: 10px 0 0; font-size: .78rem; color: var(--muted); }
 .answer .explain { margin: 8px 0 0; }
 .answer .explain-body { border: 0; background: var(--surface-2); }
@@ -549,6 +559,24 @@ footer p { max-width: 62ch; }
 .cmp-table thead th { font-size: .95rem; }
 .cmp-table tbody th { font-weight: 600; color: var(--muted); font-size: .82rem; width: 150px; position: sticky; left: 0; background: var(--bg); }
 @media (max-width: 719px) { .cmp-table tbody th { width: 96px; } }
+/* /stores: cards on phones, the table from 720px */
+.store-cards { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 12px; }
+.store-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.store-card h2 { margin: 0 0 4px; font-size: 1.1rem; }
+.store-card h2 a { color: var(--text); }
+.sc-trust { margin: 0 0 8px; font-size: .88rem; }
+.sc-ship { margin: 0; display: grid; }
+.sc-ship > div { display: grid; grid-template-columns: 5.5rem 1fr; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: .86rem; }
+.sc-ship dt { color: var(--muted); font-weight: 600; }
+.sc-ship dd { margin: 0; }
+.sc-count { margin: 8px 0 0; }
+.stores-table { display: none; }
+@media (min-width: 720px) { .store-cards { display: none; } .stores-table { display: block; } }
 .tax-table .note-row td { padding-top: 0; border-bottom: 1px solid var(--line); }
 .tax-table tr:has(+ .note-row) th, .tax-table tr:has(+ .note-row) td { border-bottom: 0; }
 .st-about { margin: 6px 0 0; font-size: .82rem; }
+/* /compare before two phones are picked: starter comparisons */
+.cmp-start { margin: 16px 0 0; }
+.cmp-start-h { margin: 0 0 8px; font-weight: 600; }
+.cmp-start-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cmp-start-list .chip { white-space: normal; text-align: left; line-height: 1.3; padding: 8px 14px; }

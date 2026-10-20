@@ -89,3 +89,10 @@ def test_pixels_are_never_china_editions():
     assert edition_of("Pixel 11 Pro Fold 16GB/256GB (JP version)") == "global"
     assert model_id("Google Pixel 11 Pro XL 16GB 512GB") == "google-pixel-11-pro-xl"
     assert edition_of("Xiaomi 17 Ultra 16GB 512GB") == "china"          # unchanged for brands with China editions
+
+
+def test_sub_brands_and_realme_gt_match_across_stores():
+    from pricechecker.normalize import model_id
+    assert model_id("vivo iQOO 15") == model_id("iQOO 15") == "iqoo-15"
+    assert model_id("Xiaomi Redmi K90 Pro Max") == model_id("Redmi K90 Pro Max") == "redmi-k90-pro-max"
+    assert model_id("Realme GT8 Pro") == model_id("Realme GT 8 Pro") == "realme-gt-8-pro"

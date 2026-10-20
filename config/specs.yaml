@@ -56,3 +56,24 @@ phones:
   xiaomi-18-fold:         {chip: XRING O3, screen: "7.58 inside", battery: "6,000 mAh", charging: "67 W"}
   xiaomi-18-pro:          {chip: Snapdragon 8 Elite Gen 6, screen: 6.4, battery: "7,000 mAh", charging: "100 W"}
   xiaomi-18-pro-max:      {chip: Snapdragon 8 Elite Extreme Gen 6, screen: 6.9, battery: "8,500 mAh", charging: "100 W"}
+  # added 2026-10-21 from GSMArena's spec pages (battery is the China unit's unless noted)
+  oneplus-15t:            {chip: Snapdragon 8 Elite Gen 5, screen: 6.32, battery: "7,500 mAh", charging: "100 W"}
+  oppo-find-x9:           {chip: Dimensity 9500, screen: 6.59, battery: "7,025 mAh", charging: "80 W"}
+  vivo-x300:              {chip: Dimensity 9500, screen: 6.31, battery: "6,040 mAh / 5,360 mAh (EU)", charging: "90 W"}
+  vivo-x300s:             {chip: Dimensity 9500, screen: 6.78, battery: "7,100 mAh", charging: "90 W"}
+  xiaomi-17:              {chip: Snapdragon 8 Elite Gen 5, screen: 6.3, battery: "7,000 mAh (China) / 6,330 mAh (Global)", charging: "100 W"}
+  honor-magic-8:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.58, battery: "7,000 mAh", charging: "90 W"}
+  huawei-pura-90:         {chip: Kirin 9010S, screen: 6.8, battery: "6,500 mAh", charging: "100 W"}
+  huawei-mate-x7:         {chip: Kirin 9030 Pro, screen: "8.0 inside", battery: "5,600 mAh (5,525 mAh on 12 GB models)", charging: "66 W"}
+  huawei-mate-xt-2-ultimate-design: {chip: Kirin 9050 Pro, screen: "10.2 unfolded", battery: "5,600 mAh", charging: "66 W"}
+  huawei-mate-90-rs:      {chip: Kirin 9050 Pro, screen: 6.9, battery: "6,800 mAh", charging: "100 W"}
+  xiaomi-mix-flip-2:      {chip: Snapdragon 8 Elite, screen: "6.86 inside", battery: "5,165 mAh", charging: "67 W"}
+  honor-magic-v5:         {chip: Snapdragon 8 Elite, screen: "7.95 inside", battery: "5,820 mAh", charging: "66 W"}
+  iqoo-15:                {chip: Snapdragon 8 Elite Gen 5, screen: 6.85, battery: "7,000 mAh", charging: "100 W"}
+  iqoo-15-ultra:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.85, battery: "7,400 mAh", charging: "100 W"}
+  iqoo-16:                {chip: Snapdragon 8 Elite Extreme Gen 6, screen: 6.85, battery: "8,400 mAh", charging: "100 W"}
+  realme-gt-8-pro:        {chip: Snapdragon 8 Elite Gen 5, screen: 6.79, battery: "7,000 mAh", charging: "120 W"}
+  redmi-k90-pro-max:      {chip: Snapdragon 8 Elite Gen 5, screen: 6.9, battery: "7,560 mAh", charging: "100 W"}
+  redmi-k100-pro-max:     {chip: Snapdragon 8 Elite Gen 5, screen: 6.9, battery: "9,070 mAh", charging: "100 W"}
+  xiaomi-17t:             {chip: Dimensity 8500 Ultra, screen: 6.59, battery: "7,000 mAh (China) / 6,500 mAh (Global)", charging: "67 W"}
+  xiaomi-17t-pro:         {chip: Dimensity 9500, screen: 6.83, battery: "7,000 mAh", charging: "100 W"}

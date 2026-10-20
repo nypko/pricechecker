@@ -65,3 +65,25 @@ phones:
   - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro", announced: 2026-09-23}
   - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max", announced: 2026-09-23}
   - {id: xiaomi-17-max, edition: china, name: "Xiaomi 17 Max", announced: 2026-05-28}
+  # added 2026-10-21 (announced dates from GSMArena's spec pages, checked that day): base models of tracked lines,
+  # foldables and specials, flagship sub-brands (iQOO, Realme, Redmi) and the Xiaomi 17T pair
+  - {id: oneplus-15t, edition: china, name: "OnePlus 15T", announced: 2026-03-24}
+  - {id: oppo-find-x9, edition: china, name: "Oppo Find X9", announced: 2025-10-16}
+  - {id: vivo-x300, edition: china, name: "Vivo X300", announced: 2025-10-13}
+  - {id: vivo-x300s, edition: china, name: "Vivo X300s", announced: 2026-03-30}
+  - {id: xiaomi-17, edition: china, name: "Xiaomi 17", announced: 2025-09-25}
+  - {id: honor-magic-8, edition: china, name: "Honor Magic 8", announced: 2025-10-15}
+  - {id: huawei-pura-90, edition: china, name: "Huawei Pura 90", announced: 2026-04-20}
+  - {id: huawei-mate-x7, edition: china, name: "Huawei Mate X7", announced: 2025-11-25}
+  - {id: huawei-mate-xt-2-ultimate-design, edition: china, name: "Huawei Mate XT 2 Ultimate Design", announced: 2026-09-07}
+  - {id: huawei-mate-90-rs, edition: china, name: "Huawei Mate 90 RS", announced: 2026-10-01}
+  - {id: xiaomi-mix-flip-2, edition: china, name: "Xiaomi Mix Flip 2", announced: 2025-06-26}
+  - {id: honor-magic-v5, edition: china, name: "Honor Magic V5", announced: 2025-07-02}
+  - {id: iqoo-15, edition: china, name: "iQOO 15", announced: 2025-10-20, brand: iQOO}
+  - {id: iqoo-15-ultra, edition: china, name: "iQOO 15 Ultra", announced: 2026-02-04, brand: iQOO}
+  - {id: iqoo-16, edition: china, name: "iQOO 16", announced: 2026-09-29, brand: iQOO}
+  - {id: realme-gt-8-pro, edition: china, name: "Realme GT 8 Pro", announced: 2025-10-21}
+  - {id: redmi-k90-pro-max, edition: china, name: "Redmi K90 Pro Max", announced: 2025-10-23}
+  - {id: redmi-k100-pro-max, edition: china, name: "Redmi K100 Pro Max", announced: 2026-08-11}
+  - {id: xiaomi-17t, edition: china, name: "Xiaomi 17T", announced: 2026-05-28}
+  - {id: xiaomi-17t-pro, edition: china, name: "Xiaomi 17T Pro", announced: 2026-05-28}

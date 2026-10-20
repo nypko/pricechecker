@@ -38,6 +38,15 @@ brands:
     model_note: "same model number as the Hong Kong and Taiwan units; the store doesn't say which software it ships."
     short: "Google Play not confirmed for this model (the store doesn't say which software it ships)"
     long: "Sony's model for Hong Kong, Taiwan and China. We couldn't confirm Google Play on it; ask the store which software it ships."
+  iqoo:     # vivo's sub-brand, same OriginOS software and Google switch as vivo
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software (vivo's OriginOS) has a switch for it: search Settings for \"Google\", turn on Google services, then install Google Play from the app store."
+  redmi:    # Xiaomi's sub-brand, same HyperOS switch as Xiaomi
+    short: "Google Play switched off at first (it can be turned on in Settings)"
+    long: "Google Play is not set up, but the software (Xiaomi's HyperOS) has a switch for it: Settings › Additional settings › Account & sync › Basic Google services, then install Google Play from GetApps."
+  realme:   # China realme UI is built on Oppo's ColorOS; owners report the same Google services switch - not confirmed by realme
+    short: "Google Play switched off at first (owners report a switch in Settings)"
+    long: "Google Play is not set up. realme's China software is built on Oppo's ColorOS, and owners report the same switch: search Settings for \"Google\". realme doesn't document it, so ask the store if you need Google apps."
   default:
     short: "no Google Play preinstalled"
     long: "Chinese software without Google Play. It can often be added, but some apps may not work fully."

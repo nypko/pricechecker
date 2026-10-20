@@ -32,6 +32,10 @@ def model_id(title: str) -> str:
         words[0] = BRAND_ALIASES[words[0]]
     if words[:2] == ["motorola", "moto"]:          # "Motorola Moto Razr 70 Ultra"
         del words[1]
+    if words[:2] in (["vivo", "iqoo"], ["xiaomi", "redmi"]):   # sub-brands: "vivo iQOO 15" = "iQOO 15", "Xiaomi Redmi K90" = "Redmi K90"
+        del words[0]
+    if words[:1] == ["realme"]:                    # "Realme GT8 Pro" (Trading Shenzhen) = "Realme GT 8 Pro" (Giztop)
+        words = [w2 for w in words for w2 in (re.match(r"(gt)(\d+)$", w).groups() if re.match(r"gt\d+$", w) else (w,))]
     if len(words) > 1 and words[0] == "samsung" and words[1] != "galaxy":
         words.insert(1, "galaxy")
     return "-".join(words)

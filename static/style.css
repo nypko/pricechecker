@@ -594,3 +594,4 @@ footer p { max-width: 62ch; }
 .nf-search { display: flex; gap: 8px; margin: 16px 0 12px; max-width: 520px; }
 .nf-search input { flex: 1; min-width: 0; font: inherit; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;
                    background: var(--surface); color: var(--text); }
+.nowrap { white-space: nowrap; }   /* a short link that reads badly when split across two lines */

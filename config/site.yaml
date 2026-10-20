@@ -14,4 +14,6 @@ reports_live: false
 # (pricechecker/indexnow.py). The key is public by design: it is served at /<key>.txt to prove we own the domain.
 # telegram: the price-drop channel's @username (pricechecker/telegram.py posts there); linked in every page's footer.
 telegram: DoorPriceDeals
+# reddit: the community's name without r/ (orders, customs experiences, feedback); linked in every page's footer.
+reddit: DoorPrice
 indexnow_key: d3e0a819ceb48999304d7402a5579dd0

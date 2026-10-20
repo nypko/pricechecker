@@ -126,3 +126,26 @@ def test_tax_config_covers_all_eu_countries():
     from pathlib import Path
     eu = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]["EU"]["countries"]
     assert len(eu) == 27 and all(17 <= c["vat"] <= 27 for c in eu.values())
+
+
+def test_indexnow_only_real_changes(tmp_path):
+    import json
+    from pricechecker import indexnow
+    h = tmp_path / "h.csv"
+    h.write_text("time,store,model_id,edition,storage,price,currency,available\n"
+                 "T0,a,phone-a,china,12/256,1000,USD,1\nT0,a,phone-b,china,12/256,1000,USD,1\nT0,a,phone-c,china,12/256,1000,USD,1\n"
+                 "T1,a,phone-a,china,12/256,990,USD,1\nT1,a,phone-b,china,12/256,999,USD,1\nT1,a,phone-c,china,12/256,1000,USD,0\n"
+                 "T1,a,phone-d,china,12/256,800,USD,1\n")
+    l = tmp_path / "l.json"
+    l.write_text(json.dumps({"updated": "T1"}))
+    assert indexnow.changed_slugs(h, l) == ["phone-a", "phone-c", "phone-d"]   # phone-b moved 0.1%: skipped
+    u = indexnow.urls({"base_url": "https://x.app"}, ["phone-a", "gone"], {"phone-a"})
+    assert u == ["https://x.app/", "https://x.app/compare", "https://x.app/phones/phone-a", "https://x.app/history/phone-a"]
+
+
+def test_ship_cell_starting_price():
+    from pricechecker import site
+    rates = {"EUR": 1.0, "USD": 1.08, "GBP": 0.86, "AUD": 1.65}
+    c = site._ship_cell({"currency": "EUR", "terms": {"shipping": {"EU": {"cost": None, "cost_min": 10, "currency": "EUR", "days": [12, 19]}}}}, "EU", rates)
+    assert (c["cost"], c["days"]) == ("from €10", "12–19 working days")
+    assert site._ship_cell({"terms": {"shipping": {"UK": {"cost": 0}}}}, "UK", rates)["cost"] == "free"

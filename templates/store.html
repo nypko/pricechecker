@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "_price.html" import price %}
+{% set t = sp.trust %}
+{% block title %}{{ sp.label }} review: shipping, import tax, warranty and prices [{{ month }}] – DoorPrice{% endblock %}
+{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping cost and time to the EU, UK, US and Australia, who pays import tax, payment fees, warranty and returns, and its prices on {{ sp.phones|length }} flagship phones, checked hourly.{% endblock %}
+{% block main %}
+<div class="page-nav"><a class="crumb" href="../stores">All stores</a></div>
+<h1>{{ sp.label }}</h1>
+<p class="lede">{% if t.reviews %}★ {{ "%.1f"|format(t.reviews.score) }} on <a href="{{ t.reviews.url }}" rel="nofollow noopener">{{ t.reviews.source }}</a>
+  ({{ "{:,}".format(t.reviews.count) }} reviews){% endif %}{% if t.warranty_months %} · {{ t.warranty_months }}-month store warranty{% endif %}{% if t.returns_days %} · {{ t.returns_days }}-day returns{% endif %}.
+  {% if sp.phones %}Lowest store price on {{ sp.n_cheapest }} of the {{ sp.phones|length }} phones it has in stock.{% else %}Prices appear here after the next hourly check.{% endif %}
+  {% if t.checked %}<span class="muted">Terms checked {{ t.checked }}.</span>{% endif %}</p>
+{% if sp.google_play %}<p>{{ sp.label }}: {{ sp.google_play[0]|lower }}{{ sp.google_play[1:] }} on China-version phones.</p>{% endif %}
+
+<h2>Shipping and import tax</h2>
+<div class="table-wrap">
+<table class="tax-table">
+  <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
+  <tbody>{% for c in sp.ship %}
+    <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or "not stated" }}</td>
+      <td class="{{ 'good' if c.duties else '' }}">{{ "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
+    {% if c.note %}<tr class="note-row"><td colspan="4" class="muted small">{{ c.note }}</td></tr>{% endif %}
+  {% endfor %}</tbody>
+</table>
+</div>
+{% for x in sp.extra %}
+<h3>{{ x.label }}</h3>
+<div class="table-wrap">
+<table class="tax-table">
+  <tbody>{% for c in x.ship if c.cost != "not listed" or c.note %}
+    <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or "not stated" }}</td>
+      <td>{{ "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
+  {% endfor %}</tbody>
+</table>
+</div>
+{% endfor %}
+<p class="muted small">Import tax is estimated per country on each phone's page. <a href="../methodology">How it is worked out</a>.</p>
+
+<h2>Paying</h2>
+<ul class="plain-list">{% for m in sp.pay %}
+  <li><strong>{{ m.method }}:</strong> {% if m.pct is none %}fee not published{% elif m.pct < 0 %}{{ -m.pct }}% discount{% elif m.pct > 0 %}{{ m.pct }}% fee{% else %}no fee{% endif %}{% if m.note %} <span class="muted small">– {{ m.note }}</span>{% endif %}</li>
+{% endfor %}</ul>
+
+{% if sp.phones %}
+<h2>Phones at {{ sp.label }}</h2>
+<p class="muted small">Its lowest in-stock price for each phone, before shipping and tax, against the cheapest store we check.</p>
+<div class="table-wrap">
+<table class="tax-table store-phones">
+  <thead><tr><th scope="col">Phone</th><th scope="col">Lowest price</th><th scope="col">vs cheapest store</th></tr></thead>
+  <tbody>{% for x in sp.phones %}
+    <tr><th scope="row"><a href="../phones/{{ x.slug }}">{{ x.name }}</a> <span class="muted small">{{ x.ed_label[x.edition] }} · {{ x.storage|spec }}</span></th>
+      <td>{{ price(x.money) }}</td>
+      <td class="{{ 'good' if x.cheapest }}">{{ "cheapest" if x.cheapest else ("under 1% more" if x.gap_pct < 1 else "+" ~ x.gap_pct ~ "%") }}</td></tr>
+  {% endfor %}</tbody>
+</table>
+</div>
+{% endif %}
+<p class="muted small">DoorPrice may earn a commission from some stores; it never changes the order. <a href="../about">About DoorPrice</a>.</p>
+{% endblock %}

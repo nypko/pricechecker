@@ -76,3 +76,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy build --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main --commit-dirty=true
+      - name: Tell search engines which pages changed (IndexNow)
+        if: success() && env.HAS_CLOUDFLARE == 'true'   # only after a successful deploy, so the new prices are live
+        continue-on-error: true
+        run: python -m pricechecker.indexnow

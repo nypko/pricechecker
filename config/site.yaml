@@ -10,3 +10,6 @@ country: Bulgaria
 # reports_live: true once Cloudflare KV is bound as REPORTS (README: Buyer reports). Shows the "How did your order
 # arrive?" form on phone pages; until then it would only answer "not switched on yet".
 reports_live: false
+# IndexNow (Bing, Yandex, Seznam, Naver...): after each deploy, pages whose prices changed are submitted
+# (pricechecker/indexnow.py). The key is public by design: it is served at /<key>.txt to prove we own the domain.
+indexnow_key: d3e0a819ceb48999304d7402a5579dd0

@@ -105,7 +105,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     write(OUT / "feeds" / "all.xml", "Phone price changes – DoorPrice", f"{base}/", entries)
 
 
-def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
+def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) -> None:
     """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
     live = bool(site_cfg.get("domain_live") and base)
@@ -113,7 +113,7 @@ def _seo_files(site_cfg: dict, phones: list[dict]) -> None:
     (OUT / "robots.txt").write_text(robots)
     if not live:
         return
-    paths = ["", "compare", "methodology", "about", "privacy"] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
                                      f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
@@ -302,6 +302,59 @@ def _spec_parts(v: str) -> list[tuple[str, str]]:
 def _trust(t: dict | None) -> dict | None:
     """stores.yaml trust block, JSON-ready (YAML reads the checked date as a date)."""
     return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
+
+
+REGION_CUR = {"EU": "EUR", "UK": "GBP", "US": "USD", "AU": "AUD", "Global": "USD"}   # shipping shown in each region's currency
+REGION_LABEL = {"EU": "EU", "UK": "UK", "US": "US", "AU": "Australia", "Global": "Rest of world"}
+
+
+def _ship_cell(cfg: dict, region: str, rates: dict) -> dict:
+    """One store's shipping terms for a region, for the store pages: cost in the region's currency, days, who pays tax."""
+    t = ((cfg.get("terms") or {}).get("shipping", {}).get(region)) or {}
+    cur, to = t.get("currency", cfg.get("currency", "USD")), REGION_CUR[region]
+    amount = t["cost"] if t.get("cost") is not None else t.get("cost_min")
+    if amount is None:
+        cost = "not listed"
+    elif float(amount) == 0:
+        cost = "free"
+    else:
+        v = fx.convert(float(amount), cur, to, rates)
+        cost = ("from " if t.get("cost") is None else "") + ("" if cur == to else "≈") + f"{SYMBOL[to]}{v:,.2f}".replace(".00", "")
+    d = t.get("days")
+    days = None if not d else (f"up to {d[1]}" if d[0] is None else f"{d[0]}–{d[1]}") + " working days"
+    return {"region": region, "label": REGION_LABEL[region], "cost": cost, "days": days,
+            "duties": t.get("duties_included"), "note": t.get("note", "")}
+
+
+def _store_pages(phones: list[dict], stores_cfg: dict, rates: dict, buyers: dict) -> list[dict]:
+    """One page per store with published terms (an EU warehouse is shown on its store's page): trust, terms per Ship-to
+    region, payment fees, and every phone it lists with its lowest price against the cheapest store's."""
+    pages = []
+    for name, cfg in stores_cfg.items():
+        if not cfg.get("enabled", True) or cfg.get("part_of") or not (cfg.get("terms") or {}).get("shipping"):
+            continue
+        parts = [name] + [n for n, c in stores_cfg.items() if c.get("part_of") == name and c.get("enabled", True)]
+        listed = []
+        for p in phones:
+            mine = [o for o in p["offers"] if o["store"] in parts and o["available"]]
+            if not mine:
+                continue
+            best = min(mine, key=lambda o: o["usd"])
+            low = min(o["usd"] for o in p["offers"] if o["available"])
+            listed.append({"name": p["name"], "slug": p["slug"], "money": best["money"], "storage": best["storage"],
+                           "edition": best["edition"], "ed_label": p["ed_label"], "cheapest": best["usd"] <= low + 0.5,
+                           "gap_pct": round((best["usd"] / low - 1) * 100) if low else 0, "n": len(mine)})
+        listed.sort(key=lambda x: x["name"])
+        extra = [{"label": stores_cfg[n].get("label", n), "ship": [_ship_cell(stores_cfg[n], r, rates) for r in terms.REGIONS]}
+                 for n in parts[1:]]
+        pages.append({"name": name, "label": cfg.get("label", name), "currency": cfg.get("currency"),
+                      "trust": cfg.get("trust") or {}, "google_play": cfg.get("google_play"),
+                      "ship": [_ship_cell(cfg, r, rates) for r in terms.REGIONS], "extra": extra,
+                      "pay": [{"method": {"card": "Card", "paypal": "PayPal", "bank": "Bank transfer"}[m], "pct": terms.payment_pct(cfg, m),
+                               "note": terms.notes(cfg)["pay"][m]} for m in terms.METHODS],
+                      "buyers": buyers.get(name) or {}, "phones": listed,
+                      "n_cheapest": sum(x["cheapest"] for x in listed)})
+    return pages
 
 
 def _tax_config(rates: dict) -> dict:
@@ -503,6 +556,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
            "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
+           "store_page_map": json.dumps({n: c.get("part_of") or n for n, c in stores_cfg.items() if c.get("enabled", True)
+                                         and (c.get("terms") or {}).get("shipping")}),
            "tax_regions": tax_cfg, "import_tax_json": json.dumps(tax_cfg)}
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -510,6 +565,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static")
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
+    if site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
+        (OUT / f'{site_cfg["indexnow_key"]}.txt').write_text(site_cfg["indexnow_key"])
     (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))
     for p in phones:
         (OUT / "phones" / f'{p["slug"]}.html').write_text(env.get_template("phone.html").render(p=p, root="../", path=f'phones/{p["slug"]}', **ctx))
@@ -522,8 +579,14 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
            for p in sorted(phones, key=lambda q: q["name"])]
     (OUT / "compare.html").write_text(env.get_template("compare.html").render(
         root="", path="compare", cmp_phones=cmp, cmp_json=json.dumps(cmp, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"), **ctx))
+    store_pages = _store_pages(phones, stores_cfg, rates, buyers)
+    (OUT / "stores").mkdir()
+    (OUT / "stores.html").write_text(env.get_template("stores.html").render(root="", path="stores", store_pages=store_pages, **ctx))
+    for sp in store_pages:
+        (OUT / "stores" / f'{sp["name"]}.html').write_text(env.get_template("store.html").render(
+            root="../", path=f'stores/{sp["name"]}', sp=sp, **ctx))
     for page in ("about", "methodology", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
-    _seo_files(ctx["site"], phones)
+    _seo_files(ctx["site"], phones, [sp["name"] for sp in store_pages])
     _feeds(ctx["site"], phones, rows, stores_cfg, updated_at)
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

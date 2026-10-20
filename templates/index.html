@@ -12,14 +12,19 @@
   {{ explain.editions(["global", "china"]) }}
 </section>
 
+{#- only the search stays pinned while the list scrolls; the filters scroll away with the page -#}
 <div class="list-tools">
   <input id="q" type="search" placeholder="Search phones, e.g. “x9 ultra”" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
-  <div class="chips" role="group" aria-label="Brand">
+</div>
+<div class="chips">
+  <div class="chip-set chip-filters" role="group" aria-label="Filters">
+    <button type="button" class="chip" id="global-only" aria-pressed="false">Global version only</button>
+    <button type="button" class="chip" id="watch-only" aria-pressed="false" hidden>Watched (<span class="n">0</span>)</button>
+  </div>
+  <div class="chip-set" role="group" aria-label="Brand">
     <button class="chip" data-brand="" aria-pressed="true">All brands</button>
     {% for b in brands %}<button class="chip" data-brand="{{ b|lower }}" aria-pressed="false">{{ b }}</button>{% endfor %}
   </div>
-  <button type="button" class="chip chip-global" id="global-only" aria-pressed="false">Global version only</button>
-  <button type="button" class="chip chip-global" id="watch-only" aria-pressed="false" hidden>Watched (<span class="n">0</span>)</button>
 </div>
 
 <div class="list-head">

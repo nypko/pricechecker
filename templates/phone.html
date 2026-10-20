@@ -55,9 +55,8 @@
     {% endfor %}
     </tbody>
   </table>
-  <p class="grid-note">Each price is the cheapest total for that choice: phone, payment fee, shipping and import tax where we know them.
-    “+ shipping” and “tax?” mark costs a store doesn't state, which aren't in the number; a total with fewer of them ranks first.
-    {%- if p.made %} “Not offered”: the brand doesn't make that version with this RAM/storage; “no offers”: none of our stores lists it.{% endif %}</p>
+  <p class="grid-note">Cheapest total per choice. “+ shipping” and “tax?” are costs the store doesn't state, not in the number.
+    {%- if p.made %} “Not offered”: the brand doesn't make it; “no offers”: no store we check lists it.{% endif %}</p>
   <p class="nojs-only grid-note">These are store prices, before shipping, payment fees and import tax. Turn on JavaScript to see delivered totals.</p>
 </section>
 

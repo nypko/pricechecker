@@ -78,7 +78,7 @@ def phone_card(path: Path, name: str, editions: list[tuple[str, str]], price: st
 
 
 def site_card(path: Path, n_phones: int, n_stores: int) -> None:
-    img, d = _base(f"{n_phones} phones · {n_stores} import stores · checked every hour")
+    img, d = _base(f"{n_phones} phones · {n_stores} stores · checked every hour")
     f = _font(700, 64)
     d.text((PAD, 236), "What a flagship phone", font=f, fill=INK, anchor="ls")
     d.text((PAD, 312), "really costs, delivered", font=f, fill=INK, anchor="ls")

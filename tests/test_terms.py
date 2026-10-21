@@ -75,3 +75,11 @@ def test_terms_page_wording_and_diff():
     new = terms.policy_lines(html.replace("few duties", "duties and GST"))
     assert terms.page_diff(lines, new) == ["-Canada: few duties and taxes, we usually declare a lower value.",
                                            "+Canada: duties and GST and taxes, we usually declare a lower value."]
+
+
+def test_store_that_does_not_deliver():
+    cfg = {"terms": {"shipping": {"EU": {"cost": 0, "currency": "EUR"}, "US": {"ships": False}}}}
+    offer = {"price": 1000.0, "currency": "EUR", "prices": {"EUR": 1000.0}}
+    assert terms.shipping(cfg, "US", offer, RATES) is False      # the page leaves the offer out for the US
+    assert terms.shipping(cfg, "EU", offer, RATES)["eur"] == 0
+    assert terms.shipping(cfg, "AU", offer, RATES) is None       # not listed: still shown, as "shipping not listed"

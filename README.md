@@ -27,7 +27,8 @@ Prices are shown in USD / EUR / GBP / AUD using **each store's own price in that
 |---|---|---|
 | `shopify` | Wonda Mobile, The Mobile Marvel | public `/products.json`, asked once per currency (`?currency=`). Shopify allows ~1 request/min per IP across all shops, so requests are 2 min apart and a 429 is not retried until the next hour |
 | `magento` | Giztop | walks the phone category (`?p=N`), reads per-variant prices from tracked phones' product pages; store currency rates via its header currency switch, once a day |
-| `feed` | Trading Shenzhen (blocks scripts with HTTP 403) | an affiliate product feed URL (CSV or XML) – ask your affiliate contact |
+| `sitemap` | Trading Shenzhen, Gomibo | product sitemap → tracked phones' pages (schema.org), cached by `<lastmod>` or `refresh_hours`. Gomibo: model from the URL, RAM from the page (`ram_pattern`), EU units only (`edition: global`) |
+| `feed` | Trading Shenzhen fallback, if it blocks scripts again | an affiliate product feed URL (CSV or XML) – ask your affiliate contact |
 | `official_api` | Amazon, AliExpress | API credentials (placeholders; client not written yet) |
 | `webpage` | stores without a feed | product page URLs per phone in `config/catalog.yaml` (schema.org / price meta tags) |
 
@@ -119,7 +120,7 @@ Until both are set the step does nothing.
 
 ## Still to do
 
-1. **Affiliate links** – Wonda (`ref=`) and Trading Shenzhen (`affp=`) are set; The Mobile Marvel and Giztop still
+1. **Affiliate links** – Wonda (`ref=`) and Trading Shenzhen (`affp=`) are set; The Mobile Marvel, Giztop, Average Dad and Gomibo still
    have `YOUR_..._ID` placeholders in `config/stores.yaml`. Until an id is set, the site uses plain links.
 2. **Trading Shenzhen feed** – product feed URL from the affiliate account → GitHub secret `TSZ_FEED_URL`.
 3. **Amazon / AliExpress** – API credentials as GitHub secrets, then implement `pricechecker/stores/official_api.py`.

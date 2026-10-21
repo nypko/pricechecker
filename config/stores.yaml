@@ -191,7 +191,7 @@ stores:
         card: {fee_pct: 0, note: "Cards via PayPal"}
       # codes the shopper types: shown as a hint, never in totals; hidden after `until` or once `watch` leaves the homepage
       coupons:
-        - {code: H2026, text: "store says it saves up to 30%", until: 2026-10-30, watch: "H2026"}
+        - {code: H2026, text: "store doesn't say how much it takes off", until: 2026-12-31, watch: "H2026"}   # 2026-10-22: banner dropped "up to 30%", extended to 31 Dec
       shipping:
         EU: {duties_included: null, cost: null, note: "Weight-based, shown in cart. Giztop says it pays EU duties/VAT through IOSS, but IOSS only covers parcels up to EUR 150 and its own customs page says customs may charge the buyer for smartphones; buyers report paying on delivery (Trustpilot, 2026)"}
         UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
@@ -203,6 +203,41 @@ stores:
         - {url: "https://www.giztop.com/payment/", expect: "Wired Transfer"}
         - {url: "https://www.giztop.com/customs-duty", expect: "IOSS"}
       pages: ["https://www.giztop.com/giztop-shipping-options/"]   # also kept as text; wording changes are reported
+
+  gomibo:
+    label: Gomibo
+    mentions: ["gomibo", "belsimpel"]   # Belsimpel's shop for Germany and the rest of Europe (same company, Groningen NL)
+    type: sitemap         # 2026-10-22: robots.txt allows product pages, answers PriceCheckerBot; schema.org Product per colour/storage page
+    sitemap_url: https://www.gomibo.de/sitemaps/gomibo_de/de_de/Sitemap_leverbare_toestellen.xml   # devices in stock or orderable
+    url_match: '^https://www\.gomibo\.de/[^/]+/\d+(?:gb|tb)-[^/]+$'   # variant pages only: /google-pixel-11-pro-eu/256gb-schwarz
+    model_from_url: '^https://www\.gomibo\.de/(.+?)(?:-eu|-de)?/'      # titles carry the colour, not the model alone
+    ram_pattern: '\b(\d{4,6}) MB RAM'   # titles leave the RAM out; the page's spec icons say "12288 MB RAM"
+    edition: global       # EU retail units only
+    exclude_url: "enterprise"
+    refresh_hours: 12     # the sitemap has no <lastmod>: ~150 pages, re-read twice a day
+    request_spacing_sec: 3
+    aliases: {honor-magic8-pro: honor-magic-8-pro, vivo-x-fold6: vivo-x-fold-6}
+    promo_pages: ["https://www.gomibo.de/"]
+    currency: EUR
+    affiliate_link: "{url}{sep}partner={id}"   # format unconfirmed: Gomibo's partner programme is by email (german.growth@gomibo.com)
+    affiliate_id: YOUR_GOMIBO_ID
+    trust: {reviews: {score: 4.6, count: 3924, source: Trustpilot, url: "https://www.trustpilot.com/review/gomibo.de"}, warranty_months: 24, returns_days: 31, checked: 2026-10-22}   # /kundenservice/aftersales: 2 years statutory warranty, repairs via manufacturer-certified partners; 31 days to return, free label
+    terms:   # verified 2026-10-22 from /kundenservice/versand, /kundenservice/bestellen/bezahlen, /kundenservice/aftersales/umtauschen-stornieren
+      payment:
+        card: {fee_pct: 0, note: "Visa/Mastercard, free"}
+        paypal: {fee_pct: 0, note: "Free"}
+        bank_transfer: {discount_pct: 0, note: "Free, no discount; Klarna (pay now or within 30 days) is free too"}
+      shipping:   # ships from the Netherlands to 30+ European countries; nothing outside Europe
+        EU: {duties_included: true, cost: 1.95, currency: EUR, note: "€1.95 by DHL within Germany, free to the other EU countries. Prices include VAT; we show the German price (19% VAT). EU shops usually charge your own country's VAT rate, so the checkout price can differ a little."}
+        UK: {duties_included: true, cost: 9.95, currency: EUR, note: "€9.95 by parcel. For private buyers Gomibo pays UK import VAT and duties: they're in the price once the UK is chosen as the shipping country, so the checkout price differs from the German price we show."}
+        US: {ships: false, note: "Gomibo delivers within Europe only"}
+        CA: {ships: false, note: "Gomibo delivers within Europe only"}
+        AU: {ships: false, note: "Gomibo delivers within Europe only"}
+        Global: {ships: false, note: "Gomibo delivers within Europe only"}
+      watch:
+        - {url: "https://www.gomibo.de/kundenservice/versand", expect: "9,95"}
+        - {url: "https://www.gomibo.de/kundenservice/bestellen/bezahlen", expect: "Kostenlos"}
+      pages: ["https://www.gomibo.de/kundenservice/aftersales/umtauschen-stornieren"]
 
   banggood:
     label: Banggood

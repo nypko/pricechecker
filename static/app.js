@@ -248,6 +248,8 @@
     offers.forEach(function (o) { var k = cost(o); if (!best || better(k, best.k)) best = { o: o, k: k }; });
     return best;
   }
+  // a store that doesn't deliver to the chosen Ship-to region (stores.yaml `ships: false`) has no offer there
+  function delivers(o) { return !o.ship || o.ship[state.region] !== false; }
   function byEdition(offers, ed) { return offers.filter(function (o) { return o.edition === ed; }); }
   function at(offers, s) { return offers.filter(function (o) { return o.storage === s; }); }
 
@@ -334,7 +336,7 @@
     if (m) sel = { storage: m[1] + "/" + m[2], ed: m[3] };
   })();
   function inStock(storage, ed) {
-    return OFFERS.filter(function (o) { return o.available && o.storage === storage && o.edition === ed; });
+    return OFFERS.filter(function (o) { return o.available && o.storage === storage && o.edition === ed && delivers(o); });
   }
 
   // The answer's cost, part by part: what the bar shows and the list under it spells out
@@ -487,13 +489,28 @@
     // grid: each cell is the cheapest total for that RAM/storage + version
     var overall = null, cells = document.querySelectorAll(".cell");
     cells.forEach(function (c) {
-      var b = pick(inStock(c.dataset.storage, c.dataset.ed));
+      var b = pick(inStock(c.dataset.storage, c.dataset.ed));   // null: no store that has it delivers to this region
       c._b = b;
+      c.disabled = !b;
+      c.classList.toggle("noship", !b);
+      if (!b) { c.classList.remove("nopay"); c.querySelector(".cell-v").textContent = "not delivered"; c.querySelector(".cell-sub").textContent = ""; return; }
       c.querySelector(".cell-v").textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "no " + PAY_LABEL[state.pay];
       c.querySelector(".cell-sub").textContent = b.k.payOk ? extras(b.k) : "";
       c.classList.toggle("nopay", !b.k.payOk);
       if (!overall || better(b.k, overall._b.k)) overall = c;
     });
+    // nothing on this page reaches the chosen region (e.g. a Pixel, sold here only by an EU shop, with Ship to: US)
+    var none = document.querySelector(".noship-note");
+    none.hidden = !!overall;
+    none.textContent = overall ? "" : "None of the stores we check delivers this phone to " + REGION_NAME[state.region] +
+      ". Change Ship to above to see where it's sold.";
+    document.querySelector(".answer").hidden = !overall;
+    document.querySelector(".others").hidden = !overall;
+    if (!overall) {
+      cells.forEach(function (c) { c.classList.remove("best"); c.setAttribute("aria-pressed", "false"); });
+      stickyShow();
+      return;
+    }
     cells.forEach(function (c) {
       c.classList.toggle("best", c === overall && overall._b.k.payOk);
       c.dataset.tag = partial(overall._b.k) ? "Lowest " + openWhat(overall._b.k) : "Cheapest delivered";
@@ -501,8 +518,8 @@
     var w = watched(), slug = layout.dataset.slug;
     if (w[slug] && overall._b.k.payOk) { w[slug] = { k: prefKey(), v: Math.round(overall._b.k.total) }; setWatched(w); }
     var payable = null;   // the cheapest cell you can actually pay for with the chosen method
-    cells.forEach(function (c) { if (c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
-    var found = sel && Array.prototype.some.call(cells, function (c) { return c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
+    cells.forEach(function (c) { if (c._b && c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
+    var found = sel && Array.prototype.some.call(cells, function (c) { return c._b && c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
     if (!found) sel = { storage: overall.dataset.storage, ed: overall.dataset.ed };
     var cur = null;
     cells.forEach(function (c) {
@@ -575,7 +592,7 @@
     deal.querySelector(".deal-t").textContent = b.k.payOk ? "View deal at " + b.o.store_label : "See " + b.o.store_label + "'s payment options";
     if (settleNext) settle(ans);
     // the other stores for the same choice, cheapest first
-    var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o; });
+    var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o && delivers(o); });
     var live = others.filter(function (o) { return o.available; }).map(function (o) { return { o: o, k: cost(o) }; });
     live.sort(function (x, y) { return better(x.k, y.k) ? -1 : better(y.k, x.k) ? 1 : 0; });
     var list = document.querySelector(".others > .store-list");
@@ -722,7 +739,8 @@
     if (!list) return;
     WATCH = watched();
     list.querySelectorAll(".prow[data-offers]").forEach(function (row) {
-      var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
+      var all = (row._offers || (row._offers = JSON.parse(row.dataset.offers))).filter(delivers);
+      row._noShip = !all.length;   // no store we track delivers this phone to the chosen region
       var offers = globalOnly ? byEdition(all, "global") : all;
       row._noGlobal = !offers.length;
       if (rom) offers = offers.filter(function (o) { return (o.storage || "").split("/")[1] === rom; });
@@ -802,11 +820,11 @@
   }
   // the phone's offers at `cfg`, or at the nearest RAM/storage it is in stock in: {offers, storage, exact}
   function cmpAt(q, cfg) {
-    var exact = at(q.o, cfg);
+    var o = q.o.filter(delivers), exact = at(o, cfg);
     if (exact.length) return { offers: exact, storage: cfg, exact: true };
     var near = null;
-    q.o.forEach(function (o) { if (!near || distance(o.storage, cfg) < distance(near, cfg)) near = o.storage; });
-    return near ? { offers: at(q.o, near), storage: near, exact: false } : { offers: [], storage: "", exact: false };
+    o.forEach(function (x) { if (!near || distance(x.storage, cfg) < distance(near, cfg)) near = x.storage; });
+    return near ? { offers: at(o, near), storage: near, exact: false } : { offers: [], storage: "", exact: false };
   }
   function cmpChosen() {
     var by = {};
@@ -826,7 +844,7 @@
     rows.textContent = "";
     cmpBox.querySelector(".cmp-note").hidden = chosen.length < 2;
     var cfg = cmpCfg();
-    var sets = chosen.map(function (q) { return cfg ? cmpAt(q, cfg) : { offers: q.o, storage: "", exact: true }; });
+    var sets = chosen.map(function (q) { return cfg ? cmpAt(q, cfg) : { offers: q.o.filter(delivers), storage: "", exact: true }; });
     var best = sets.map(function (x) { return x.offers.length ? pick(x.offers) : null; });
     var totals = best.map(function (b) { return b && b.k.payOk ? b.k.total : Infinity; });
     var low = Math.min.apply(null, totals);
@@ -984,7 +1002,10 @@
     renderCompare();
   }
 
-  function set(key, val) { state[key] = val; store("pc-" + key, val); settleNext = true; render(); }
+  function set(key, val) {
+    state[key] = val; store("pc-" + key, val); settleNext = true; render();
+    if (key === "region" && document.getElementById("phones")) filter();   // phones no tracked store delivers there drop out of the list
+  }
   var countrySel = document.getElementById("p-country");
   if (countrySel) countrySel.addEventListener("change", function () { set("country", countrySel.value); });
   var provSel = document.getElementById("p-prov");
@@ -1028,7 +1049,8 @@
   var sbPicked = false, sbOff = false, sbAbove = false;
   function stickyShow() {
     if (!sbar) return;
-    var show = sbAbove || (sbPicked && sbOff);
+    var ans = document.querySelector(".answer");
+    var show = !(ans && ans.hidden) && (sbAbove || (sbPicked && sbOff));   // no answer (nothing delivers here): no deal bar
     sbar.classList.toggle("show", show);
     sbar.setAttribute("aria-hidden", show ? "false" : "true");
     sbar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = show ? 0 : -1; });
@@ -1061,7 +1083,7 @@
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
-      c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
+      c.hidden = !((!brand || c.dataset.brand === brand) && !c._noShip && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
                    !(rom && (c._noRom || !c.dataset.offers)) &&
                    words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
@@ -1107,7 +1129,7 @@
       gchip.setAttribute("aria-pressed", globalOnly ? "true" : "false");
       renderIndex(); filter();
     });
-    if (globalOnly) filter();
+    filter();   // the remembered Global-only chip, and phones no tracked store delivers to the remembered region
   }
   // Header search (every page but the list): a suggested name opens that phone; anything else opens the list, filtered
   var hs = document.querySelector(".hsearch");

@@ -98,3 +98,21 @@ def test_sub_brands_and_realme_gt_match_across_stores():
     assert model_id("vivo iQOO 15") == model_id("iQOO 15") == "iqoo-15"
     assert model_id("Xiaomi Redmi K90 Pro Max") == model_id("Redmi K90 Pro Max") == "redmi-k90-pro-max"
     assert model_id("Realme GT8 Pro") == model_id("Realme GT 8 Pro") == "realme-gt-8-pro"
+
+
+def test_gomibo_urls():
+    import re
+    import yaml
+    from pricechecker.stores.sitemap import variant_storage
+    cfg = yaml.safe_load(open("config/stores.yaml"))["stores"]["gomibo"]
+    match, model = re.compile(cfg["url_match"], re.I), re.compile(cfg["model_from_url"], re.I)
+    assert match.search("https://www.gomibo.de/google-pixel-11-pro-eu/256gb-gruen")
+    assert match.search("https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-blau")
+    assert not match.search("https://www.gomibo.de/google-pixel-11-pro-eu/vodafone")      # contract offers
+    assert not match.search("https://www.gomibo.de/google-pixel-11-pro-eu")
+    assert model_id(model.search("https://www.gomibo.de/google-pixel-11-pro-eu/256gb-gruen").group(1).replace("-", " ")) == "google-pixel-11-pro"
+    assert model_id(model.search("https://www.gomibo.de/xiaomi-17-ultra/512gb-weiss").group(1).replace("-", " ")) == "xiaomi-17-ultra"
+    assert variant_storage("https://www.gomibo.de/google-pixel-11-pro-eu/256gb-gruen", 12288) == "12/256"
+    assert variant_storage("https://www.gomibo.de/google-pixel-11-pro-xl-eu/1tb-schwarz", 16384) == "16/1024"
+    assert variant_storage("https://www.gomibo.de/google-pixel-11-pro-xl-eu/1tb-schwarz", None) == "base"
+    assert re.search(cfg["ram_pattern"], r'{\"icon_type\":\"processor\",\"title\":\"12288 MB RAM\"}').group(1) == "12288"

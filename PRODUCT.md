@@ -16,7 +16,7 @@ DoorPrice is a static site that compares flagship phone prices across specialist
 Three things together, none leading:
 - **True landed cost** — each store's own price in the visitor's currency, adjusted for payment method (bank transfer discount, PayPal fee), shipping to their region and estimated import tax when the store doesn't cover duties.
 - **Global vs China gap** — both editions of a model side by side, so the price difference is visible.
-- **Importer coverage** — stores mainstream comparison sites ignore (Wonda Mobile, Giztop, Trading Shenzhen, The Mobile Marvel; Amazon/AliExpress planned).
+- **Importer coverage** — stores mainstream comparison sites ignore (Wonda Mobile, Giztop, Trading Shenzhen, The Mobile Marvel, Average Dad; Amazon/AliExpress planned), next to one EU retailer (Gomibo, since 2026-10-22: Pixels, and the EU-shop price an importer has to beat).
 
 ## Operating Context
 - Visitors mostly arrive on phones, often from shared links (forums, social).

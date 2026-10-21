@@ -45,10 +45,13 @@ def payment_available(cfg: dict, method: str, usd: float) -> bool:
     return mn is None or usd >= mn
 
 
-def shipping(cfg: dict, region: str, offer: dict, rates: dict) -> dict | None:
-    """Shipping cost in each site currency, or None when the store doesn't list it. Uses the store's own
+def shipping(cfg: dict, region: str, offer: dict, rates: dict) -> dict | None | bool:
+    """Shipping cost in each site currency, None when the store doesn't list it, False when it doesn't deliver there
+    (`ships: false`: the page leaves its offers out for that region). Uses the store's own
     exchange rate (from its prices) when the cost is in the offer's currency, else ECB."""
     t = (cfg.get("terms") or {}).get("shipping", {}).get(region) or {}
+    if t.get("ships") is False:
+        return False
     minimum = t.get("cost") is None and t.get("cost_min") is not None   # "from EUR 10": used as a floor, marked as such
     if t.get("cost") is None and not minimum:
         return None

@@ -248,6 +248,8 @@
     offers.forEach(function (o) { var k = cost(o); if (!best || better(k, best.k)) best = { o: o, k: k }; });
     return best;
   }
+  // a store that doesn't deliver to the chosen Ship-to region (stores.yaml `ships: false`) has no offer there
+  function delivers(o) { return !o.ship || o.ship[state.region] !== false; }
   function byEdition(offers, ed) { return offers.filter(function (o) { return o.edition === ed; }); }
   function at(offers, s) { return offers.filter(function (o) { return o.storage === s; }); }
 
@@ -334,7 +336,7 @@
     if (m) sel = { storage: m[1] + "/" + m[2], ed: m[3] };
   })();
   function inStock(storage, ed) {
-    return OFFERS.filter(function (o) { return o.available && o.storage === storage && o.edition === ed; });
+    return OFFERS.filter(function (o) { return o.available && o.storage === storage && o.edition === ed && delivers(o); });
   }
 
   // The answer's cost, part by part: what the bar shows and the list under it spells out
@@ -575,7 +577,7 @@
     deal.querySelector(".deal-t").textContent = b.k.payOk ? "View deal at " + b.o.store_label : "See " + b.o.store_label + "'s payment options";
     if (settleNext) settle(ans);
     // the other stores for the same choice, cheapest first
-    var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o; });
+    var others = OFFERS.filter(function (o) { return o.storage === sel.storage && o.edition === sel.ed && o !== b.o && delivers(o); });
     var live = others.filter(function (o) { return o.available; }).map(function (o) { return { o: o, k: cost(o) }; });
     live.sort(function (x, y) { return better(x.k, y.k) ? -1 : better(y.k, x.k) ? 1 : 0; });
     var list = document.querySelector(".others > .store-list");
@@ -722,7 +724,8 @@
     if (!list) return;
     WATCH = watched();
     list.querySelectorAll(".prow[data-offers]").forEach(function (row) {
-      var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
+      var all = (row._offers || (row._offers = JSON.parse(row.dataset.offers))).filter(delivers);
+      row._noShip = !all.length;   // no store we track delivers this phone to the chosen region
       var offers = globalOnly ? byEdition(all, "global") : all;
       row._noGlobal = !offers.length;
       if (rom) offers = offers.filter(function (o) { return (o.storage || "").split("/")[1] === rom; });
@@ -802,11 +805,11 @@
   }
   // the phone's offers at `cfg`, or at the nearest RAM/storage it is in stock in: {offers, storage, exact}
   function cmpAt(q, cfg) {
-    var exact = at(q.o, cfg);
+    var o = q.o.filter(delivers), exact = at(o, cfg);
     if (exact.length) return { offers: exact, storage: cfg, exact: true };
     var near = null;
-    q.o.forEach(function (o) { if (!near || distance(o.storage, cfg) < distance(near, cfg)) near = o.storage; });
-    return near ? { offers: at(q.o, near), storage: near, exact: false } : { offers: [], storage: "", exact: false };
+    o.forEach(function (x) { if (!near || distance(x.storage, cfg) < distance(near, cfg)) near = x.storage; });
+    return near ? { offers: at(o, near), storage: near, exact: false } : { offers: [], storage: "", exact: false };
   }
   function cmpChosen() {
     var by = {};
@@ -826,7 +829,7 @@
     rows.textContent = "";
     cmpBox.querySelector(".cmp-note").hidden = chosen.length < 2;
     var cfg = cmpCfg();
-    var sets = chosen.map(function (q) { return cfg ? cmpAt(q, cfg) : { offers: q.o, storage: "", exact: true }; });
+    var sets = chosen.map(function (q) { return cfg ? cmpAt(q, cfg) : { offers: q.o.filter(delivers), storage: "", exact: true }; });
     var best = sets.map(function (x) { return x.offers.length ? pick(x.offers) : null; });
     var totals = best.map(function (b) { return b && b.k.payOk ? b.k.total : Infinity; });
     var low = Math.min.apply(null, totals);
@@ -984,7 +987,10 @@
     renderCompare();
   }
 
-  function set(key, val) { state[key] = val; store("pc-" + key, val); settleNext = true; render(); }
+  function set(key, val) {
+    state[key] = val; store("pc-" + key, val); settleNext = true; render();
+    if (key === "region" && document.getElementById("phones")) filter();   // phones no tracked store delivers there drop out of the list
+  }
   var countrySel = document.getElementById("p-country");
   if (countrySel) countrySel.addEventListener("change", function () { set("country", countrySel.value); });
   var provSel = document.getElementById("p-prov");
@@ -1061,7 +1067,7 @@
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
-      c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
+      c.hidden = !((!brand || c.dataset.brand === brand) && !c._noShip && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
                    !(rom && (c._noRom || !c.dataset.offers)) &&
                    words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
@@ -1107,7 +1113,7 @@
       gchip.setAttribute("aria-pressed", globalOnly ? "true" : "false");
       renderIndex(); filter();
     });
-    if (globalOnly) filter();
+    filter();   // the remembered Global-only chip, and phones no tracked store delivers to the remembered region
   }
   // Header search (every page but the list): a suggested name opens that phone; anything else opens the list, filtered
   var hs = document.querySelector(".hsearch");

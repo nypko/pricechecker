@@ -7,6 +7,12 @@
 # announced: first official launch (usually China) - checked 2026-10-19 against GSMArena, PhoneArena, Huawei Central,
 # Gizmochina, Wikipedia and brand announcements. The site lists phones newest first by this date.
 phones:
+  # Google Pixel: added 2026-10-22 with Gomibo, the first tracked store that sells them (EU units; Pixels have no China version)
+  - {id: google-pixel-10-pro, edition: global, name: "Google Pixel 10 Pro", announced: 2025-08-20}
+  - {id: google-pixel-10-pro-xl, edition: global, name: "Google Pixel 10 Pro XL", announced: 2025-08-20}
+  - {id: google-pixel-11, edition: global, name: "Google Pixel 11", announced: 2026-08-12}
+  - {id: google-pixel-11-pro, edition: global, name: "Google Pixel 11 Pro", announced: 2026-08-12}
+  - {id: google-pixel-11-pro-xl, edition: global, name: "Google Pixel 11 Pro XL", announced: 2026-08-12}
   - {id: honor-magic-8-pro, edition: global, name: "Honor Magic 8 Pro", announced: 2025-10-15}
   - {id: honor-magic-8-pro-air, edition: china, name: "Honor Magic 8 Pro Air", announced: 2026-01-19}
   - {id: honor-magic-9, edition: china, name: "Honor Magic 9", announced: 2026-09-28}

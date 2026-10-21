@@ -336,6 +336,9 @@ def _ship_cell(cfg: dict, region: str, rates: dict) -> dict:
     t = ((cfg.get("terms") or {}).get("shipping", {}).get(region)) or {}
     cur, to = t.get("currency", cfg.get("currency", "USD")), REGION_CUR[region]
     amount = t["cost"] if t.get("cost") is not None else t.get("cost_min")
+    if t.get("ships") is False:
+        return {"region": region, "label": REGION_LABEL[region], "cost": "doesn't deliver", "days": None,
+                "duties": None, "ships": False, "note": t.get("note", "")}
     if amount is None:
         cost = "not listed"
     elif float(amount) == 0:
@@ -346,7 +349,7 @@ def _ship_cell(cfg: dict, region: str, rates: dict) -> dict:
     d = t.get("days")
     days = None if not d else (f"up to {d[1]}" if d[0] is None else f"{d[0]}–{d[1]}") + " working days"
     return {"region": region, "label": REGION_LABEL[region], "cost": cost, "days": days,
-            "duties": t.get("duties_included"), "note": t.get("note", "")}
+            "duties": t.get("duties_included"), "ships": True, "note": t.get("note", "")}
 
 
 def _store_pages(phones: list[dict], stores_cfg: dict, rates: dict, buyers: dict) -> list[dict]:

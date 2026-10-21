@@ -4,6 +4,11 @@
 # two sources agree (GSMArena, PhoneArena, Huawei Central, Notebookcheck, Engadget, Gizmochina, Beebom, FoneArena). A field sources disagree on is left
 # out rather than guessed. Battery is the typical (advertised) capacity; Global and China differ where noted.
 phones:
+  google-pixel-10-pro:    {chip: Tensor G5, screen: 6.3, battery: "4,870 mAh", charging: "30 W", source: brand}   # added 2026-10-22: support.google.com/pixelphone/answer/7158570
+  google-pixel-10-pro-xl: {chip: Tensor G5, screen: 6.8, battery: "5,200 mAh", charging: "45 W", source: brand}
+  google-pixel-11:        {chip: Tensor G6, screen: 6.3, battery: "4,985 mAh", charging: "30 W", source: brand}
+  google-pixel-11-pro:    {chip: Tensor G6, screen: 6.3, battery: "4,850 mAh", charging: "30 W", source: brand}
+  google-pixel-11-pro-xl: {chip: Tensor G6, screen: 6.8, battery: "5,115 mAh", charging: "45 W", source: brand}
   honor-magic-8-pro:      {chip: Snapdragon 8 Elite Gen 5, screen: 6.71, battery: "7,200 mAh (China) / 7,100 mAh (Global) / 6,270 mAh (EU)", charging: "120 W (China) / 100 W (Global)"}   # fixed 2026-10-20 (GSMArena + launch coverage)
   honor-magic-8-pro-air:  {chip: Dimensity 9500, screen: 6.31, battery: "5,500 mAh", charging: "80 W"}
   honor-magic-9:          {chip: Snapdragon 8 Elite Gen 5, screen: 6.37, battery: "8,000 mAh", charging: "80 W"}

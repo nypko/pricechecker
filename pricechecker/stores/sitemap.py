@@ -1,6 +1,9 @@
 """Stores with a product sitemap and one product page per configuration (e.g. Trading Shenzhen, PrestaShop):
 read the sitemap, pick the tracked phones by their URL, and read price/stock from each page's schema.org data.
-Pages are cached and only re-read when the sitemap's <lastmod> changes, or every few hours."""
+Pages are cached and only re-read when the sitemap's <lastmod> changes, or every few hours (`refresh_hours`).
+Stores whose URLs read model/variant (Gomibo: /google-pixel-11-pro-eu/256gb-schwarz) set `url_match` (variant pages
+only), `model_from_url` (regex, group 1 = model slug), `ram_pattern` (RAM in MB from the page, when titles leave it
+out) and `edition` (a store that sells one version only)."""
 import json
 import re
 from datetime import datetime, timedelta, timezone
@@ -16,6 +19,7 @@ _URL = re.compile(r"<url>\s*<loc>([^<]+)</loc>(?:\s*<lastmod>([^<]+)</lastmod>)?
 _SLUG_STORAGE = re.compile(r"-(\d{1,2})gb-?(\d{2,4}gb|\dtb)\b")
 _SLUG_EXTRA = re.compile(r"-(eu-warehouse|eu-lager|foldable)\b")
 REFRESH = timedelta(hours=6)
+_VARIANT_ROM = re.compile(r"/(\d+)(gb|tb)-[^/]*$", re.I)   # ".../256gb-schwarz", ".../1tb-blau"
 _STORAGE_PART = re.compile(r"\s+-\s+\d{1,2}\s*GB\s*/\s*\d+\s*(?:GB|TB)\b.*$", re.I)
 
 
@@ -30,11 +34,29 @@ def slug_model(url: str) -> str:
     return model_id(_SLUG_EXTRA.sub("", _SLUG_STORAGE.sub("", slug)).replace("-", " "))
 
 
+def variant_storage(url: str, ram_mb: int | None) -> str:
+    """'.../512gb-schwarz' + 16384 MB -> '16/512'; 'base' without the RAM or a storage part."""
+    m = _VARIANT_ROM.search(url)
+    if not m or not ram_mb:
+        return "base"
+    rom = int(m.group(1)) * (1024 if m.group(2).lower() == "tb" else 1)
+    return f"{round(ram_mb / 1024)}/{rom}"
+
+
 def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     tracked = {p["id"] for p in catalog}
     aliases = {**{n: c["id"] for c in catalog for n in c.get("also") or []}, **(cfg.get("aliases") or {})}   # catalog `also` + store aliases
     skip_url = re.compile(cfg["exclude_url"], re.I) if cfg.get("exclude_url") else None
     skip_title = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
+    only_url = re.compile(cfg["url_match"], re.I) if cfg.get("url_match") else None
+    url_model = re.compile(cfg["model_from_url"], re.I) if cfg.get("model_from_url") else None
+    ram_pat = re.compile(cfg["ram_pattern"]) if cfg.get("ram_pattern") else None
+    refresh = timedelta(hours=cfg["refresh_hours"]) if cfg.get("refresh_hours") else REFRESH
+
+    def guess(url: str) -> str:   # model id from the URL alone
+        m = url_model.search(url) if url_model else None
+        mid = model_id(m.group(1).replace("-", " ")) if m else slug_model(url)
+        return aliases.get(mid, mid)
     if cfg.get("request_spacing_sec"):
         http.HOST_DELAY[cfg["sitemap_url"].split("/")[2]] = cfg["request_spacing_sec"]
     cache_file = Path(f"data/{store}_pages.json")
@@ -43,13 +65,16 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     entries = _URL.findall(http.get(cfg["sitemap_url"]).text)
     offers, seen = [], set()
     for url, lastmod in entries:
-        if (skip_url and skip_url.search(url)) or aliases.get(slug_model(url), slug_model(url)) not in tracked:
+        if (only_url and not only_url.search(url)) or (skip_url and skip_url.search(url)) or guess(url) not in tracked:
             continue
         seen.add(url)
         hit = cache.get(url)
-        if not hit or hit["lastmod"] != lastmod or now - datetime.fromisoformat(hit["fetched"]) > REFRESH:
+        if not hit or hit["lastmod"] != lastmod or now - datetime.fromisoformat(hit["fetched"]) > refresh:
             try:
-                info = parse(http.get(url).text)
+                html = http.get(url).text
+                info = parse(html)
+                if info and ram_pat and (m := ram_pat.search(html)):
+                    info["ram_mb"] = int(m.group(1))
             except http.Blocked:
                 raise
             except Exception as e:   # one broken page shouldn't drop the whole store
@@ -59,14 +84,23 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
         info = hit["info"]
         if not info or not info.get("price") or (skip_title and skip_title.search(info["name"])):
             continue
-        mid = model_id(title_model(info["name"]))
-        mid = aliases.get(mid, mid)
-        if mid not in tracked:   # the page title disagrees with the URL guess: trust the title
-            continue
+        if url_model:   # titles carry the colour ("Google Pixel 11 Pro 256GB Grün"): the URL names the model
+            mid = guess(url)
+        else:
+            mid = model_id(title_model(info["name"]))
+            mid = aliases.get(mid, mid)
+            if mid not in tracked:   # the page title disagrees with the URL guess: trust the title
+                continue
         # e.g. "... - EU Warehouse": same phone, shipped from inside the EU with other terms -> its own store entry
         sub = next((name for name, pattern in (cfg.get("sub_stores") or {}).items() if re.search(pattern, info["name"], re.I)), store)
-        offers.append(Offer(store=sub, model_id=mid, edition=edition_of(info["name"]),
-                            storage=storage_of(info["name"]) if storage_of(info["name"]) != "base" else storage_of(url.replace("gb", "GB ")),
+        if ram_pat:   # URL storage + page RAM: a title like "Galaxy S26+ 256GB" would read as 26 GB RAM + 256 GB
+            storage = variant_storage(url, info.get("ram_mb"))
+        else:
+            storage = storage_of(info["name"])
+            if storage == "base":
+                storage = storage_of(url.replace("gb", "GB "))
+        offers.append(Offer(store=sub, model_id=mid, edition=cfg.get("edition") or edition_of(info["name"]),
+                            storage=storage,
                             title=info["name"], price=info["price"], currency=info["currency"] or cfg.get("currency", "EUR"),
                             available=info["available"], url=url,
                             prices={info["currency"] or cfg.get("currency", "EUR"): info["price"]}))

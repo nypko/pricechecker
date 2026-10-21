@@ -410,6 +410,8 @@ def _title_price(offers: list[dict], tax_eu_pct: float | None, with_offer: bool 
             base -= base * o["promo"]["pct"] / 100
         adj = (o["pay"].get("card") or 0) * base / 100
         ship = (o["ship"] or {}).get("EU")
+        if ship is False:   # the store doesn't deliver to the EU (stores.yaml `ships: false`)
+            continue
         ship_amt = ship["eur"] if ship else 0
         duties = (o.get("duties") or {}).get("EU")
         tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0

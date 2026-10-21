@@ -1,5 +1,25 @@
 {
  "phones": {
+  "google-pixel-10-pro": {
+   "left": "",
+   "ref": 686.95
+  },
+  "google-pixel-10-pro-xl": {
+   "left": "",
+   "ref": 953.95
+  },
+  "google-pixel-11": {
+   "left": "",
+   "ref": 813.95
+  },
+  "google-pixel-11-pro": {
+   "left": "",
+   "ref": 1060.95
+  },
+  "google-pixel-11-pro-xl": {
+   "left": "",
+   "ref": 1195.95
+  },
   "honor-magic-8": {
    "left": "",
    "ref": 587.0
@@ -117,8 +137,8 @@
    "ref": 952.8
   },
   "motorola-razr-fold": {
-   "left": "import tax",
-   "ref": 1261.13
+   "left": "",
+   "ref": 1452.95
   },
   "oneplus-15": {
    "left": "",
@@ -165,8 +185,8 @@
    "ref": 707.0
   },
   "realme-gt-8-pro": {
-   "left": "shipping and import tax",
-   "ref": 576.95
+   "left": "",
+   "ref": 709.95
   },
   "redmi-k100-pro-max": {
    "left": "",
@@ -177,28 +197,28 @@
    "ref": 677.0
   },
   "samsung-galaxy-s26": {
-   "left": "import tax",
-   "ref": 857.79
+   "left": "",
+   "ref": 660.95
   },
   "samsung-galaxy-s26-plus": {
-   "left": "import tax",
-   "ref": 1081.87
+   "left": "",
+   "ref": 879.95
   },
   "samsung-galaxy-s26-ultra": {
-   "left": "import tax",
-   "ref": 1262.93
+   "left": "",
+   "ref": 970.95
   },
   "samsung-galaxy-z-fold-8": {
-   "left": "import tax",
-   "ref": 1687.79
+   "left": "",
+   "ref": 1350.95
   },
   "samsung-galaxy-z-fold-8-ultra": {
-   "left": "import tax",
-   "ref": 1863.47
+   "left": "",
+   "ref": 1376.95
   },
   "sony-xperia-1-viii": {
-   "left": "import tax",
-   "ref": 1379.45
+   "left": "",
+   "ref": 1559.95
   },
   "vivo-x-fold-6": {
    "left": "",
@@ -261,12 +281,12 @@
    "ref": 1147.0
   },
   "xiaomi-17t": {
-   "left": "shipping and import tax",
-   "ref": 471.89
+   "left": "",
+   "ref": 513.95
   },
   "xiaomi-17t-pro": {
    "left": "",
-   "ref": 774.31
+   "ref": 695.95
   },
   "xiaomi-18-fold": {
    "left": "",
@@ -285,5 +305,5 @@
    "ref": 902.69
   }
  },
- "updated": "2026-10-21T22:40:20Z"
+ "updated": "2026-10-21T23:20:31Z"
 }

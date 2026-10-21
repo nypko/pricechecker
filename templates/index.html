@@ -28,7 +28,11 @@
 </div>
 
 <div class="list-head">
-  <p class="list-meta"><span class="count">{{ phones|length }}</span> phones · delivered to <strong class="for-region">the EU</strong>
+  <p class="list-meta"><span class="count">{{ phones|length }}</span> phones with
+    {#- storage filter: prices become each phone's cheapest at that storage, phones not sold with it are hidden (app.js) #}
+    <label class="sr-only" for="rom">Storage</label><select id="rom" class="rom-select"><option value="">any storage</option>
+      {%- for r, label in roms %}<option value="{{ r }}">{{ label }}</option>{% endfor %}</select>
+    · delivered to <strong class="for-region">the EU</strong>
     <button type="button" class="link-btn" data-prefs>Change</button></p>
   <div class="seg seg-sm sort" role="group" aria-label="Sort by">
     <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="drop" aria-pressed="false">Price drops</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>

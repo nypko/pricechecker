@@ -417,9 +417,15 @@
       return "Code " + c.code + ": " + c.text + (until ? ", until " + until : "") + ". Not in the total.";
     }).join(" ");
   }
+  // "China" / "Global" (or the brand's own word, e.g. "Asia"); a China unit with global software is "China (Global ROM)"
+  function edLabel(o, cl) {
+    var base = o.edition === "china" && cl ? cl : ED[o.edition];
+    return o.grom ? base + " (Global ROM)" : base;
+  }
   function storeRow(o, k, best) {
     var li = el("li"), d = el("details", "st"), s = el("summary");
     var name = el("span", "st-name", o.store_label);
+    if (o.grom) name.appendChild(el("span", "st-stale", " · Global ROM"));
     if (o.stale || o.old) name.appendChild(el("span", "st-stale", " · last known price"));
     if (o.trust && o.trust.reviews) name.appendChild(el("span", "st-stars", " ★ " + o.trust.reviews.score.toFixed(1)));
     s.appendChild(name);
@@ -533,7 +539,7 @@
       alt.appendChild(go2);
     }
     var badge = ans.querySelector(".ans-ed");
-    badge.className = "ans-ed badge " + b.o.edition; badge.textContent = ED[b.o.edition];
+    badge.className = "ans-ed badge " + b.o.edition; badge.textContent = edLabel(b.o);
     ans.querySelector(".ans-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
     ans.querySelector(".ans-store").textContent = b.o.store_label + (b.o.stale || b.o.old ? " (last known price)" : "");
     var dv = ans.querySelector(".ans-days");
@@ -588,7 +594,7 @@
     var sb = document.querySelector(".sticky-deal");
     if (sb) {
       sb.querySelector(".sd-price").textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) + (partial(b.k) ? " " + extras(b.k) : "") : "Not available by " + PAY_LABEL[state.pay];
-      sb.querySelector(".sd-store").textContent = ED[b.o.edition] + " · " + b.o.store_label;
+      sb.querySelector(".sd-store").textContent = edLabel(b.o) + " · " + b.o.store_label;
       sb.querySelector(".deal").href = b.o.link;
     }
   }
@@ -719,10 +725,12 @@
       var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
       var offers = globalOnly ? byEdition(all, "global") : all;
       row._noGlobal = !offers.length;
+      if (rom) offers = offers.filter(function (o) { return (o.storage || "").split("/")[1] === rom; });
+      row._noRom = !offers.length;   // not sold with the chosen storage (or not as a Global version, with that filter on)
       if (!offers.length) return;
       var b = pick(offers), m = globalOnly ? null : match(offers);
       var badge = row.querySelector(".prow-sub .badge");
-      badge.className = "badge " + b.o.edition; badge.textContent = b.o.edition === "china" && row.dataset.cl ? row.dataset.cl : ED[b.o.edition];
+      badge.className = "badge " + b.o.edition; badge.textContent = edLabel(b.o, row.dataset.cl);
       row.querySelector(".prow-spec").textContent = spec(b.o.storage) || "RAM/storage not listed";
       row.querySelector(".prow-store").textContent = " · " + b.o.store_label;
       var pv = row.querySelector(".prow-v .price");
@@ -1040,11 +1048,21 @@
   var brand = "", q = document.getElementById("q");
   function squash(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, ""); }
   var noResults = document.getElementById("no-results"), count = document.querySelector(".list-meta .count");
+  // Storage filter: each phone priced at its cheapest offer with that storage (any RAM); phones without it hidden
+  var rom = "", romSel = document.getElementById("rom");
+  if (romSel) {
+    rom = store("pc-rom") || "";
+    if (!romSel.querySelector('option[value="' + rom + '"]')) rom = "";
+    romSel.value = rom;
+    romSel.addEventListener("change", function () { rom = romSel.value; store("pc-rom", rom); renderIndex(); filter(); });
+    if (rom) { renderIndex(); filter(); }   // a storage remembered from the last visit (the first render ran before it was read)
+  }
   function filter() {
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
       c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
+                   !(rom && (c._noRom || !c.dataset.offers)) &&
                    words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
     });

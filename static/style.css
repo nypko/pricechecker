@@ -156,6 +156,10 @@ p > .link-btn, .order-for .link-btn, .list-meta .link-btn { min-height: var(--ta
 .list-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 8px 0 10px; }
 .list-meta { margin: 0; font-size: .9rem; color: var(--muted); }
 .list-meta strong { color: var(--text); }
+/* "72 phones with [any storage ▾]": a filter that reads as part of the sentence */
+.rom-select { font: inherit; font-weight: 700; color: var(--brand); background: var(--brand-soft); border: 0; border-radius: 999px;
+              min-height: 36px; padding: 0 10px; margin: -4px 0; cursor: pointer; }
+.no-js .rom-select { display: none; }
 .no-results { text-align: center; padding: 32px 16px; color: var(--muted); }
 .no-results p { margin: 0 0 12px; }
 

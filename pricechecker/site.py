@@ -654,7 +654,14 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     if site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{site_cfg["indexnow_key"]}.txt').write_text(site_cfg["indexnow_key"])
     _share_cards(phones, ctx)
-    (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", **ctx))
+    # storage sizes for the home page filter: those at least 3 phones are sold with (in stock somewhere)
+    rom_phones = defaultdict(set)
+    for p in phones:
+        for o in p["offers"]:
+            if o["available"] and "/" in o["storage"]:
+                rom_phones[int(o["storage"].split("/")[1])].add(p["id"])
+    roms = [(r, f"{r // 1024} TB" if r >= 1024 else f"{r} GB") for r in sorted(rom_phones) if len(rom_phones[r]) >= 3]
+    (OUT / "index.html").write_text(env.get_template("index.html").render(phones=phones, root="", path="", roms=roms, **ctx))
     # a real 404 (Cloudflare Pages serves /404.html with status 404), so a mistyped address isn't indexed as a page
     (OUT / "404.html").write_text(env.get_template("404.html").render(root="/", path="404", **ctx))
     for p in phones:

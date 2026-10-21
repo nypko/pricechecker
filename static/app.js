@@ -719,6 +719,8 @@
       var all = row._offers || (row._offers = JSON.parse(row.dataset.offers));
       var offers = globalOnly ? byEdition(all, "global") : all;
       row._noGlobal = !offers.length;
+      if (rom) offers = offers.filter(function (o) { return (o.storage || "").split("/")[1] === rom; });
+      row._noRom = !offers.length;   // not sold with the chosen storage (or not as a Global version, with that filter on)
       if (!offers.length) return;
       var b = pick(offers), m = globalOnly ? null : match(offers);
       var badge = row.querySelector(".prow-sub .badge");
@@ -1040,11 +1042,21 @@
   var brand = "", q = document.getElementById("q");
   function squash(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, ""); }
   var noResults = document.getElementById("no-results"), count = document.querySelector(".list-meta .count");
+  // Storage filter: each phone priced at its cheapest offer with that storage (any RAM); phones without it hidden
+  var rom = "", romSel = document.getElementById("rom");
+  if (romSel) {
+    rom = store("pc-rom") || "";
+    if (!romSel.querySelector('option[value="' + rom + '"]')) rom = "";
+    romSel.value = rom;
+    romSel.addEventListener("change", function () { rom = romSel.value; store("pc-rom", rom); renderIndex(); filter(); });
+    if (rom) { renderIndex(); filter(); }   // a storage remembered from the last visit (the first render ran before it was read)
+  }
   function filter() {
     var words = (q ? q.value : "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(squash), shown = 0;
     document.querySelectorAll("#phones .prow").forEach(function (c) {
       var hay = c._hay || (c._hay = squash(c.dataset.brand + " " + c.dataset.name));
       c.hidden = !((!brand || c.dataset.brand === brand) && !(globalOnly && (c._noGlobal || !c.dataset.offers)) && !(watchOnly && !c._watched) &&
+                   !(rom && (c._noRom || !c.dataset.offers)) &&
                    words.every(function (w) { return hay.indexOf(w) !== -1; }));
       if (!c.hidden) shown++;
     });

@@ -26,7 +26,7 @@ mobilemarvel	huawei-matebook-fold-ultimate-design-2025/china
 mobilemarvel	huawei-pura-80-pro-plus/china
 mobilemarvel	huawei-pura-x/china
 mobilemarvel	leica-leitzphone-xiaomi-17-ultra-leica-edition/global
-mobilemarvel	oneplus-15-with/global
+mobilemarvel	oneplus-15-with/china
 mobilemarvel	oppo-bubble/china
 mobilemarvel	oppo-find-x8-pro/china
 mobilemarvel	oppo-find-x8-pro/global
@@ -46,7 +46,7 @@ mobilemarvel	samsung-galaxy-z-flip-8-snapdragon-version/global
 mobilemarvel	samsung-galaxy-z-fold-se-special-edition/china
 mobilemarvel	samsung-galaxy-z-fold-w25/china
 mobilemarvel	samsung-galaxy-z-trifold-taiwan-version/china
-mobilemarvel	samsung-galaxy-z-trifold/global
+mobilemarvel	samsung-galaxy-z-trifold/china
 mobilemarvel	sony-1-viii/global
 mobilemarvel	vivo-x-fold-3-pro/china
 mobilemarvel	vivo-x-fold-3-pro/global
@@ -127,6 +127,7 @@ giztop	honor-power-2/china
 giztop	honor-power/china
 giztop	honor-robot-phone/china
 giztop	honor-win-2/china
+giztop	honor-win-rt-2/china
 giztop	honor-win-rt-black-brand-new-35-off/china
 giztop	honor-win-rt/china
 giztop	honor-win-turbo/china

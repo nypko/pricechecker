@@ -26,6 +26,8 @@ jobs:
     timeout-minutes: 55   # a normal run is ~12-15 min (Shopify needs ~75 s between requests); ~30 min once a week for rates
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main   # latest main, not the commit that queued this run: a run waiting on another starts from its data
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

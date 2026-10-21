@@ -2,8 +2,8 @@
 # On a phone page, an option missing from this list shows "not offered" (the brand doesn't make it); an option the
 # brand makes but none of our stores lists shows "no offers". List a version only once the brand's own site shows
 # its line-up: leaks and launches not yet on the brand's site stay out, and their empty cells say "no offers".
-# Not listed yet (checked 2026-10-19): Oppo Find X10 Pro Max and vivo X500, X500 Pro Max and X Fold 6 aren't on
-# the brands' global sites; mi.com blocks automated reading (Xiaomi 17 Ultra Global: 12/512, 16/512, 16/1TB per GSMArena).
+# Not listed yet (checked 2026-10-22): vivo X500 Pro, X500 Pro Max and X Fold 6 aren't on vivo.com/en yet (X500 series
+# EU launch 27 Oct 2026; base X500 reportedly stays China-only); mi.com blocks automated reading (Xiaomi 17 Ultra Global: 12/512, 16/512, 16/1TB per GSMArena).
 honor-magic-8-pro:
   global: {made: [12/512, 16/1024], source: "https://www.honor.com/global/phones/honor-magic8-pro/spec/"}
 honor-magic-v6:
@@ -14,6 +14,10 @@ oppo-find-n5:
   global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-n/find-n5/specs/"}
 oppo-find-n6:
   global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-n/find-n6/specs/"}
+oppo-find-x10:   # added 2026-10-22 (global launch 21 Oct)
+  global: {made: [12/256, 12/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x10/specs/"}
+oppo-find-x10-pro-max:   # added 2026-10-22 after the global launch; oppo.com/uk (EU/UK) lists only 12/512
+  global: {made: [12/512, 16/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x10-pro-max/specs/"}
 oppo-find-x9-pro:
   global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-pro/specs/"}
 oppo-find-x9-ultra:

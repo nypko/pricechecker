@@ -191,7 +191,7 @@ stores:
         card: {fee_pct: 0, note: "Cards via PayPal"}
       # codes the shopper types: shown as a hint, never in totals; hidden after `until` or once `watch` leaves the homepage
       coupons:
-        - {code: H2026, text: "store says it saves up to 30%", until: 2026-10-30, watch: "H2026"}
+        - {code: H2026, text: "store doesn't say how much it takes off", until: 2026-12-31, watch: "H2026"}   # 2026-10-22: banner dropped "up to 30%", extended to 31 Dec
       shipping:
         EU: {duties_included: null, cost: null, note: "Weight-based, shown in cart. Giztop says it pays EU duties/VAT through IOSS, but IOSS only covers parcels up to EUR 150 and its own customs page says customs may charge the buyer for smartphones; buyers report paying on delivery (Trustpilot, 2026)"}
         UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}

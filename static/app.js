@@ -489,13 +489,28 @@
     // grid: each cell is the cheapest total for that RAM/storage + version
     var overall = null, cells = document.querySelectorAll(".cell");
     cells.forEach(function (c) {
-      var b = pick(inStock(c.dataset.storage, c.dataset.ed));
+      var b = pick(inStock(c.dataset.storage, c.dataset.ed));   // null: no store that has it delivers to this region
       c._b = b;
+      c.disabled = !b;
+      c.classList.toggle("noship", !b);
+      if (!b) { c.classList.remove("nopay"); c.querySelector(".cell-v").textContent = "not delivered"; c.querySelector(".cell-sub").textContent = ""; return; }
       c.querySelector(".cell-v").textContent = b.k.payOk ? fmt(b.k.total, b.k.approx) : "no " + PAY_LABEL[state.pay];
       c.querySelector(".cell-sub").textContent = b.k.payOk ? extras(b.k) : "";
       c.classList.toggle("nopay", !b.k.payOk);
       if (!overall || better(b.k, overall._b.k)) overall = c;
     });
+    // nothing on this page reaches the chosen region (e.g. a Pixel, sold here only by an EU shop, with Ship to: US)
+    var none = document.querySelector(".noship-note");
+    none.hidden = !!overall;
+    none.textContent = overall ? "" : "None of the stores we check delivers this phone to " + REGION_NAME[state.region] +
+      ". Change Ship to above to see where it's sold.";
+    document.querySelector(".answer").hidden = !overall;
+    document.querySelector(".others").hidden = !overall;
+    if (!overall) {
+      cells.forEach(function (c) { c.classList.remove("best"); c.setAttribute("aria-pressed", "false"); });
+      stickyShow();
+      return;
+    }
     cells.forEach(function (c) {
       c.classList.toggle("best", c === overall && overall._b.k.payOk);
       c.dataset.tag = partial(overall._b.k) ? "Lowest " + openWhat(overall._b.k) : "Cheapest delivered";
@@ -503,8 +518,8 @@
     var w = watched(), slug = layout.dataset.slug;
     if (w[slug] && overall._b.k.payOk) { w[slug] = { k: prefKey(), v: Math.round(overall._b.k.total) }; setWatched(w); }
     var payable = null;   // the cheapest cell you can actually pay for with the chosen method
-    cells.forEach(function (c) { if (c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
-    var found = sel && Array.prototype.some.call(cells, function (c) { return c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
+    cells.forEach(function (c) { if (c._b && c._b.k.payOk && (!payable || better(c._b.k, payable._b.k))) payable = c; });
+    var found = sel && Array.prototype.some.call(cells, function (c) { return c._b && c.dataset.storage === sel.storage && c.dataset.ed === sel.ed; });
     if (!found) sel = { storage: overall.dataset.storage, ed: overall.dataset.ed };
     var cur = null;
     cells.forEach(function (c) {
@@ -1034,7 +1049,8 @@
   var sbPicked = false, sbOff = false, sbAbove = false;
   function stickyShow() {
     if (!sbar) return;
-    var show = sbAbove || (sbPicked && sbOff);
+    var ans = document.querySelector(".answer");
+    var show = !(ans && ans.hidden) && (sbAbove || (sbPicked && sbOff));   // no answer (nothing delivers here): no deal bar
     sbar.classList.toggle("show", show);
     sbar.setAttribute("aria-hidden", show ? "false" : "true");
     sbar.querySelectorAll("a, button").forEach(function (x) { x.tabIndex = show ? 0 : -1; });

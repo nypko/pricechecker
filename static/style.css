@@ -251,12 +251,16 @@ p > .link-btn, .order-for .link-btn, .list-meta .link-btn { min-height: var(--ta
 .cell-sub { font-size: .72rem; color: var(--muted); font-weight: 600; line-height: 1.2; }
 .cell-sub:empty { display: none; }
 .cell.nopay .cell-v { color: var(--muted); font-size: .85rem; }
+/* no store we track delivers this choice to the chosen region: looks like the "out of stock" cells, can't be picked */
+.cell.noship { background: transparent; border-style: dashed; cursor: default; }
+.cell.noship .cell-v { color: var(--muted); font-size: .8rem; font-weight: 400; }
 .cell.best { background: var(--save-soft); border-color: transparent; }
 .cell.best::after { content: attr(data-tag); position: absolute; top: -8px; right: 8px; font-size: .65rem; font-weight: 700; letter-spacing: .02em;
                     background: var(--save); color: var(--surface); padding: 0 6px; border-radius: 999px; line-height: 1.6; }
 .cell[aria-pressed="true"] { border: 2px solid var(--brand); padding: 5px 9px; background: var(--brand-soft); }
 .cell-none { display: grid; align-content: center; min-height: 50px; padding: 0 10px; border-radius: 12px; font-size: .8rem;
              color: var(--muted); border: 1px dashed var(--border); }
+.noship-note { margin: 12px 0 0; font-weight: 600; max-width: 60ch; }
 .grid-note { margin: 10px 0 0; font-size: .8rem; color: var(--muted); max-width: 60ch; }
 
 /* the answer: one total, what it's made of, the trade-off, the way out */

@@ -87,8 +87,10 @@ def fetch(store: str, cfg: dict) -> list[Offer]:
         opt = next((i + 1 for i, n in enumerate(names) if re.search(r"size|storage|ram|capacity|memory", n)), 1)
         for v in p["variants"]:
             price = float(v["price"])
+            # a variant can say more than the product: "(GLOBAL)" product, "16GB/1TB (China Version)" variant
+            v_ed = edition_of(f'{p["title"]} - {v.get("title", "")}') if ed == "global" else ed
             offers.append(Offer(
-                store=store, model_id=mid, edition=ed,
+                store=store, model_id=mid, edition=v_ed,
                 storage=storage_of(v.get(f"option{opt}") or v.get("title", "")),
                 title=f'{p["title"]} - {v.get("title", "")}',
                 price=price, currency=main_cur,

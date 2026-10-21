@@ -17,7 +17,16 @@ _STORAGE = re.compile(r"(\d{1,2})\s*(?:gb\s*(?:ram)?\s*[+/,\s-]|\+|/)\s*-?\s*(\d
 _NO_CHINA_EDITION = re.compile(r"\b(?:google|pixel)\b", re.I)
 
 
+# Not the Global version, even though the title says "global": China hardware with global software flashed on it
+# ("Oneplus 15 (Global Rom)"; the site shows it as "China (Global ROM)"), or a variant marked China inside a Global listing
+# ("Huawei Pura 80 Ultra (GLOBAL) - 16GB/1TB (China Version)").
+_CHINA_UNIT = re.compile(r"global\s*rom|\b(?:china|chinese|cn)\s*(?:version|edition|rom)\b", re.I)
+GLOBAL_ROM = re.compile(r"global\s*rom", re.I)
+
+
 def edition_of(title: str) -> str:
+    if _CHINA_UNIT.search(title):
+        return "china"
     return "global" if re.search(r"global", title, re.I) or _NO_CHINA_EDITION.search(title) else "china"
 
 

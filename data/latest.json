@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T19:13:06Z",
+ "updated": "2026-10-21T22:55:13Z",
  "stores": {
   "wonda": {
    "checked": "2026-10-21T19:13:06Z",
@@ -13930,6 +13930,726 @@
       "EUR": 1049.72,
       "GBP": 926.23,
       "AUD": 1906.41
+     }
+    }
+   ]
+  },
+  "gomibo": {
+   "checked": "2026-10-21T22:55:13Z",
+   "ok": true,
+   "offers": [
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-n5",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find N5 512GB Schwarz",
+     "price": 1179.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oppo-find-n5/512gb-schwarz",
+     "prices": {
+      "EUR": 1179.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-10-pro",
+     "edition": "global",
+     "storage": "16/128",
+     "title": "Google Pixel 10 Pro 128GB Schwarz",
+     "price": 685.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-10-pro-eu/128gb-schwarz",
+     "prices": {
+      "EUR": 685.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-10-pro-xl",
+     "edition": "global",
+     "storage": "16/256",
+     "title": "Google Pixel 10 Pro XL 256GB Schwarz",
+     "price": 952.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-10-pro-xl-eu/256gb-schwarz",
+     "prices": {
+      "EUR": 952.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "honor-magic-v5",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Honor Magic V5 16GB/512GB Schwarz",
+     "price": 1127.0,
+     "currency": "EUR",
+     "available": false,
+     "url": "https://www.gomibo.de/honor-magic-v5/512gb-schwarz",
+     "prices": {
+      "EUR": 1127.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "vivo-x300-pro",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "vivo X300 Pro 16GB/512GB Braun",
+     "price": 1066.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/vivo-x300-pro/512gb-braun",
+     "prices": {
+      "EUR": 1066.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-x9-pro",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find X9 Pro 16GB/512GB Wei\u00df",
+     "price": 1159.0,
+     "currency": "EUR",
+     "available": false,
+     "url": "https://www.gomibo.de/oppo-find-x9-pro/512gb-weiss",
+     "prices": {
+      "EUR": 1159.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "realme-gt-8-pro",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Realme GT 8 Pro 12GB/256GB Wei\u00df",
+     "price": 708.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/realme-gt-8-pro/256gb-weiss",
+     "prices": {
+      "EUR": 708.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "realme-gt-8-pro",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Realme GT 8 Pro 16GB/512GB Blau",
+     "price": 757.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/realme-gt-8-pro/512gb-blau",
+     "prices": {
+      "EUR": 757.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "OnePlus 15 256GB Schwarz",
+     "price": 1386.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oneplus-15/256gb-schwarz",
+     "prices": {
+      "EUR": 1386.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oneplus-15",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OnePlus 15 512GB Lila",
+     "price": 1202.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oneplus-15/512gb-lila",
+     "prices": {
+      "EUR": 1202.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-x9",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "OPPO Find X9 12GB/512GB Schwarz",
+     "price": 850.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oppo-find-x9/512gb-schwarz",
+     "prices": {
+      "EUR": 850.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "honor-magic-8-pro",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Honor Magic8 Pro 512GB Gold",
+     "price": 908.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/honor-magic8-pro/512gb-gold",
+     "prices": {
+      "EUR": 908.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "honor-magic-8-pro",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Honor Magic8 Pro 1TB Gold",
+     "price": 1034.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/honor-magic8-pro/1tb-gold",
+     "prices": {
+      "EUR": 1034.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Samsung Galaxy S26 256GB Hellblau",
+     "price": 718.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-hellblau",
+     "prices": {
+      "EUR": 718.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Samsung Galaxy S26 512GB Hellblau",
+     "price": 799.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-hellblau",
+     "prices": {
+      "EUR": 799.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26",
+     "edition": "global",
+     "storage": "12/128",
+     "title": "Samsung Galaxy S26 128GB Lila",
+     "price": 659.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-eu/128gb-lila",
+     "prices": {
+      "EUR": 659.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26-ultra",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Samsung Galaxy S26 Ultra 256GB Hellblau",
+     "price": 969.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-hellblau",
+     "prices": {
+      "EUR": 969.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Samsung Galaxy S26 Ultra 1TB Hellblau",
+     "price": 1372.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-hellblau",
+     "prices": {
+      "EUR": 1372.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26-ultra",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Samsung Galaxy S26 Ultra 512GB Hellblau",
+     "price": 1104.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-hellblau",
+     "prices": {
+      "EUR": 1104.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26-plus",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Samsung Galaxy S26+ 256GB Hellblau",
+     "price": 878.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-hellblau",
+     "prices": {
+      "EUR": 878.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-s26-plus",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Samsung Galaxy S26+ 512GB Schwarz",
+     "price": 954.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-schwarz",
+     "prices": {
+      "EUR": 954.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Xiaomi 17 512GB Blau",
+     "price": 869.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17/512gb-blau",
+     "prices": {
+      "EUR": 869.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Xiaomi 17 256GB Schwarz",
+     "price": 777.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17/256gb-schwarz",
+     "prices": {
+      "EUR": 777.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Xiaomi 17 Ultra 512GB Gr\u00fcn",
+     "price": 1116.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17-ultra/512gb-gruen",
+     "prices": {
+      "EUR": 1116.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Xiaomi 17 Ultra 1TB Wei\u00df",
+     "price": 1283.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17-ultra/1tb-weiss",
+     "prices": {
+      "EUR": 1283.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-n6",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "OPPO Find N6 512GB Silber",
+     "price": 1740.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oppo-find-n6/512gb-silber",
+     "prices": {
+      "EUR": 1740.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "motorola-razr-fold",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Motorola Razr Fold 512GB Wei\u00df",
+     "price": 1451.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/motorola-razr-fold/512gb-weiss",
+     "prices": {
+      "EUR": 1451.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "OPPO Find X9 Ultra 512GB Orange",
+     "price": 1493.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oppo-find-x9-ultra/512gb-orange",
+     "prices": {
+      "EUR": 1493.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "oppo-find-x9-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "OPPO Find X9 Ultra 1TB Orange",
+     "price": 1729.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/oppo-find-x9-ultra/1tb-orange",
+     "prices": {
+      "EUR": 1729.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "vivo X300 Ultra 1TB Gr\u00fcn",
+     "price": 1651.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/vivo-x300-ultra/1tb-gruen",
+     "prices": {
+      "EUR": 1651.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "vivo-x300-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "vivo X300 Ultra 512GB Wei\u00df",
+     "price": 1503.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/vivo-x300-ultra/512gb-weiss",
+     "prices": {
+      "EUR": 1503.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17t-pro",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Xiaomi 17T Pro 512GB Schwarz",
+     "price": 694.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17t-pro-de/512gb-schwarz",
+     "prices": {
+      "EUR": 694.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17t-pro",
+     "edition": "global",
+     "storage": "12/1024",
+     "title": "Xiaomi 17T Pro 1TB Schwarz",
+     "price": 875.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17t-pro-de/1tb-schwarz",
+     "prices": {
+      "EUR": 875.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "xiaomi-17t",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Xiaomi 17T 256GB Blau",
+     "price": 512.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/xiaomi-17t-de/256gb-blau",
+     "prices": {
+      "EUR": 512.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "honor-magic-v6",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Honor Magic V6 512GB Wei\u00df",
+     "price": 1536.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/honor-magic-v6/512gb-weiss",
+     "prices": {
+      "EUR": 1536.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "honor-magic-v6",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Honor Magic V6 1TB Rot",
+     "price": 1662.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/honor-magic-v6/1tb-rot",
+     "prices": {
+      "EUR": 1662.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "sony-xperia-1-viii",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Sony Xperia 1 VIII 256GB Silber",
+     "price": 1558.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/sony-xperia-1-viii/256gb-silber",
+     "prices": {
+      "EUR": 1558.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Samsung Galaxy Z Fold 8 256GB Schwarz",
+     "price": 1349.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/256gb-schwarz",
+     "prices": {
+      "EUR": 1349.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Samsung Galaxy Z Fold 8 512GB Wei\u00df",
+     "price": 1492.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/512gb-weiss",
+     "prices": {
+      "EUR": 1492.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Samsung Galaxy Z Fold 8 1TB Wei\u00df",
+     "price": 1699.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-weiss",
+     "prices": {
+      "EUR": 1699.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Samsung Galaxy Z Fold 8 Ultra 256GB Wei\u00df",
+     "price": 1375.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/256gb-weiss",
+     "prices": {
+      "EUR": 1375.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Samsung Galaxy Z Fold 8 Ultra 512GB Dunkelviolett",
+     "price": 1660.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-dunkelviolett",
+     "prices": {
+      "EUR": 1660.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Samsung Galaxy Z Fold 8 Ultra 512GB Wei\u00df",
+     "price": 1636.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-weiss",
+     "prices": {
+      "EUR": 1636.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "samsung-galaxy-z-fold-8-ultra",
+     "edition": "global",
+     "storage": "16/1024",
+     "title": "Samsung Galaxy Z Fold 8 Ultra 1TB Wei\u00df",
+     "price": 1840.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-weiss",
+     "prices": {
+      "EUR": 1840.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "Google Pixel 11 512GB Gr\u00fcn",
+     "price": 916.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-11-eu/512gb-gruen",
+     "prices": {
+      "EUR": 916.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Google Pixel 11 256GB Schwarz",
+     "price": 812.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-11-eu/256gb-schwarz",
+     "prices": {
+      "EUR": 812.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11-pro",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Google Pixel 11 Pro 256GB Schwarz",
+     "price": 1059.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-schwarz",
+     "prices": {
+      "EUR": 1059.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11-pro",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Google Pixel 11 Pro 512GB Schwarz ",
+     "price": 1259.0,
+     "currency": "EUR",
+     "available": false,
+     "url": "https://www.gomibo.de/google-pixel-11-pro-eu/512gb-schwarz",
+     "prices": {
+      "EUR": 1259.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11-pro-xl",
+     "edition": "global",
+     "storage": "12/256",
+     "title": "Google Pixel 11 Pro XL 256GB Gr\u00fcn",
+     "price": 1194.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/google-pixel-11-pro-xl-eu/256gb-gruen",
+     "prices": {
+      "EUR": 1194.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "google-pixel-11-pro-xl",
+     "edition": "global",
+     "storage": "16/512",
+     "title": "Google Pixel 11 Pro XL 512GB Hellgr\u00fcn",
+     "price": 1456.0,
+     "currency": "EUR",
+     "available": false,
+     "url": "https://www.gomibo.de/google-pixel-11-pro-xl-eu/512gb-hellgrun",
+     "prices": {
+      "EUR": 1456.0
+     }
+    },
+    {
+     "store": "gomibo",
+     "model_id": "vivo-x-fold-6",
+     "edition": "global",
+     "storage": "12/512",
+     "title": "vivo X Fold6 12GB/512GB Schwarz",
+     "price": 2055.0,
+     "currency": "EUR",
+     "available": true,
+     "url": "https://www.gomibo.de/vivo-x-fold6/512gb-schwarz",
+     "prices": {
+      "EUR": 2055.0
      }
     }
    ]

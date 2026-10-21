@@ -94,6 +94,11 @@ def page_diff(old: list[str], new: list[str], limit: int = 40) -> list[str]:
     return out[:limit] + ([f"... {len(out) - limit} more changed lines"] if len(out) > limit else [])
 
 
+def saved_status() -> dict:
+    """The last daily terms check as saved, without reading any store page (offline builds)."""
+    return json.loads(STATUS.read_text()) if STATUS.exists() else {}
+
+
 def check_pages(stores_cfg: dict, force: bool = False) -> dict:
     """Once a day: fetch each store's terms pages, confirm each `watch` phrase is still there, and report any
     change in a page's wording since the last check (first sight: recorded only)."""

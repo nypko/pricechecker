@@ -28,11 +28,16 @@ def main(argv=None) -> int:
     ap.add_argument("--only", help="comma-separated store names to check")
     ap.add_argument("--no-build", action="store_true")
     ap.add_argument("--build-only", action="store_true", help="rebuild the site from saved data, no price checks")
+    ap.add_argument("--offline", action="store_true", help="with --build-only: no network at all (saved exchange rates "
+                                                             "and terms status), for local previews and the testing site")
     args = ap.parse_args(argv)
     os.chdir(Path(__file__).resolve().parent.parent)
     stores, catalog = load_config()
     if args.build_only:
-        site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
+        if args.offline:
+            site.build(catalog, stores, fx.cached(), terms.saved_status())
+        else:
+            site.build(catalog, stores, fx.rates(), terms.check_pages(stores))
         return 0
     tracked = {p["id"] for p in catalog}   # by model: any edition a store sells is shown (Global and China side by side)
     also = {name: p["id"] for p in catalog for name in p.get("also") or []}

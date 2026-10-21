@@ -29,5 +29,10 @@ def rates() -> dict:
         raise
 
 
+def cached() -> dict:
+    """The last saved ECB rates, without asking the ECB (offline builds)."""
+    return json.loads(CACHE.read_text())
+
+
 def convert(amount: float, frm: str, to: str, r: dict) -> float:
     return amount / r[frm] * r[to]

@@ -1,0 +1,36 @@
+name: Testing site
+
+# testing.doorprice.app: every push to the `testing` branch is built from the saved prices (no store is contacted)
+# and deployed as the Cloudflare Pages branch "testing", with a Testing banner and hidden from search engines.
+# No Telegram, no IndexNow, nothing committed. Publishing = merging the change into main.
+on:
+  push:
+    branches: [testing]
+  workflow_dispatch:
+
+concurrency:
+  group: testing-site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - name: Build from the saved prices
+        env:
+          DOORPRICE_ENV: testing
+        run: python -m pricechecker.run --build-only --offline
+      - name: Deploy as the "testing" branch
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy build --project-name=${{ vars.CF_PAGES_PROJECT || 'pricechecker' }} --branch=testing --commit-dirty=true

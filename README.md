@@ -88,6 +88,18 @@ New reports land in one GitHub issue, "Buyer reports to review". Open the links,
 and commit `config/buyer_reports.yaml` and `data/buyer_reports_*.json`. Only links, dates and the facts (country, days,
 tax, amount, courier) are kept, never a post's text.
 
+## Testing before publishing
+
+- **Locally:** `python -m pricechecker.run --build-only --offline && python -m pricechecker.serve` builds the site from the
+  saved prices (no store, ECB or terms page is contacted) and serves it at http://127.0.0.1:8765.
+- **testing.doorprice.app:** push to the `testing` branch (`git push origin <branch>:testing --force`). The "Testing site"
+  workflow builds it from the saved prices with `DOORPRICE_ENV=testing` (red Testing strip, `noindex`, robots.txt
+  disallows everything, no IndexNow key) and deploys the Cloudflare Pages branch `testing`
+  (https://testing.pricechecker-87q.pages.dev). No prices are checked and nothing is posted or committed.
+  Publishing = merging the branch into `main`.
+- Custom domain (once): Cloudflare → Workers & Pages → pricechecker → Custom domains → add `testing.doorprice.app`,
+  then in DNS change that record's CNAME target to `testing.pricechecker-87q.pages.dev` so it serves the testing branch.
+
 ## Telegram price-drop channel
 
 After each deploy, `python -m pricechecker.telegram` posts to a Telegram channel when a phone's cheapest delivered price

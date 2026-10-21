@@ -601,3 +601,6 @@ footer p { max-width: 62ch; }
                    background: var(--surface); color: var(--text); }
 .nowrap { white-space: nowrap; }   /* a short link that reads badly when split across two lines */
 footer .foot-tg a { font-weight: 700; }   /* first line of the footer: the channel, above the small print */
+/* testing.doorprice.app only: a strip at the very top so it can't be mistaken for the live site */
+.testing-bar { margin: 0; padding: 6px 16px; background: #b42318; color: #fff; font-size: .85rem; font-weight: 600; text-align: center; }
+.testing-bar a { color: #fff; }

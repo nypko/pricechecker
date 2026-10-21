@@ -1,5 +1,6 @@
 """Generates the static website into build/ from data/latest.json, data/history.csv and config/."""
 import hashlib
+import os
 import json
 import re
 import shutil
@@ -109,6 +110,9 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) 
     """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
     live = bool(site_cfg.get("domain_live") and base)
+    if site_cfg.get("testing"):   # the testing copy must never be indexed
+        (OUT / "robots.txt").write_text("User-agent: *\nDisallow: /\n")
+        return
     # AI crawlers that collect pages to train models (and send no visitors) are asked to stay out; search engines,
     # AI search assistants that link their sources (OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot...)
     # and link-preview fetchers (Telegram, Reddit, WhatsApp, Facebook) keep full access under "*".
@@ -520,6 +524,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     tax_eu = (tax_cfg.get("EU") or {}).get("rate_pct")
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
+    if os.environ.get("DOORPRICE_ENV") == "testing":   # testing.doorprice.app: banner, hidden from search engines, no IndexNow key
+        site_cfg = {**site_cfg, "testing": True, "indexnow_key": None}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
     google = _google()   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region

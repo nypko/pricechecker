@@ -20,7 +20,9 @@ def test_mobile_marvel_titles():
 
 
 def test_edition():
-    assert edition_of("Oneplus 15 5G (Global Rom) Dual SIM") == "global"
+    assert edition_of("Oneplus 15 5G (Global Rom) Dual SIM") == "china"          # China phone, global software
+    assert edition_of("Huawei Pura 80 Ultra (GLOBAL) - Black / 16GB/1TB (China Version)") == "china"
+    assert edition_of("Xiaomi 17 Ultra 5G (Global Version) Dual SIM - 16+512GB") == "global"
     assert edition_of("HUAWEI Mate 90 Pro Dual SIM") == "china"
 
 

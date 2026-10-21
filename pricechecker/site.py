@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import affiliate, buyer_reports, cards, fx, history, promos, terms
+from . import affiliate, buyer_reports, cards, fx, history, normalize, promos, terms
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]   # CAD: always an ECB conversion (marked ≈)
@@ -543,6 +543,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
             # an EU-warehouse section (part_of) shares its store's promotions, coupons and their watch state
             shop = stores_cfg[store]["part_of"] if stores_cfg[store].get("part_of") in stores_cfg else store
             for o in st["offers"]:
+                if normalize._CHINA_UNIT.search(o.get("title") or ""):   # saved before the rule existed: same verdict now
+                    o = {**o, "edition": "china"}
                 if o["model_id"] == m["id"] and o["edition"] in m["editions"]:
                     usd = (o.get("prices") or {}).get("USD") or fx.convert(o["price"], o["currency"], "USD", rates)
                     offers.append({**o, "store_label": stores_cfg[store].get("label", store), "stale": not st.get("ok", True), "old": old[store],
@@ -555,6 +557,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                    "duties": {r: terms.duties_included(stores_cfg[store], r) for r in terms.REGIONS},
                                    "days": {r: terms.delivery(stores_cfg[store], r) for r in terms.REGIONS},
                                    "buyers": buyers.get(store),
+                                   "grom": 1 if normalize.GLOBAL_ROM.search(o.get("title") or "") else 0,   # China unit, global software
                                    "gplay": stores_cfg[store].get("google_play") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("google_play")
                                             if o["edition"] == "china" else None,
                                    "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
@@ -563,9 +566,9 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last
         in_stock = [o for o in offers if o["available"] and not o["old"]]   # what the index, compare, title and search data rank
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old")}
+        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old", "grom")}
         # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
-        lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend")},
+        lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend", "grom")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
         # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
         full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}

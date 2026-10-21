@@ -24,11 +24,11 @@
   "currency": "USD",
   "rates": {
    "USD": 1.0,
-   "EUR": 0.875498,
+   "EUR": 0.875497,
    "GBP": 0.772501,
    "AUD": 1.59
   },
-  "fetched": "2026-10-20T08:06:20+00:00"
+  "fetched": "2026-10-21T08:13:19+00:00"
  },
  "https://averagedadofficial.com": {
   "currency": "GBP",

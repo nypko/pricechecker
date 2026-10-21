@@ -18,9 +18,7 @@ mobilemarvel	huawei-m-pen-3/china
 mobilemarvel	huawei-mate-70-air/china
 mobilemarvel	huawei-mate-70-pro-plus/china
 mobilemarvel	huawei-mate-70-rs-ultimate/china
-mobilemarvel	huawei-mate-90-rs-ultimate-design/china
 mobilemarvel	huawei-mate-x6/global
-mobilemarvel	huawei-mate-xt-2/china
 mobilemarvel	huawei-mate-xt/global
 mobilemarvel	huawei-mate-xts-ultimate-design/china
 mobilemarvel	huawei-matebook-fold-2026/china
@@ -78,7 +76,6 @@ averagedad	huawei-m-pencil-3rd-generation/china
 averagedad	huawei-m-pencil-pro/china
 averagedad	huawei-mate-70-air/china
 averagedad	huawei-mate-80-rs-ultimate-design/china
-averagedad	huawei-mate-90-rs-ultimate/china
 averagedad	huawei-mate-xt-ultimate-design/global
 averagedad	huawei-mate-xt2/china
 averagedad	huawei-mate-xts/china

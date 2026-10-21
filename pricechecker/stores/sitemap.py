@@ -105,4 +105,11 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
                             available=info["available"], url=url,
                             prices={info["currency"] or cfg.get("currency", "EUR"): info["price"]}))
     cache_file.write_text(json.dumps({u: v for u, v in cache.items() if u in seen}, indent=0))
-    return offers
+    # one page per colour (Gomibo): keep one offer per phone/version/storage - the cheapest in stock, else the cheapest -
+    # so the page lists the store once and price history (keyed without colour) doesn't flip between colours
+    best: dict[tuple, Offer] = {}
+    for o in offers:
+        k, b = (o.store, o.model_id, o.edition, o.storage), best.get((o.store, o.model_id, o.edition, o.storage))
+        if b is None or (o.available, -o.price) > (b.available, -b.price):
+            best[k] = o
+    return list(best.values())

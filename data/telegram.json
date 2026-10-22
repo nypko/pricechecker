@@ -2,7 +2,7 @@
  "phones": {
   "google-pixel-10-pro": {
    "left": "",
-   "ref": 686.95
+   "ref": 687.95
   },
   "google-pixel-10-pro-xl": {
    "left": "",
@@ -46,11 +46,11 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1209.43
+   "ref": 1212.48
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1414.25
+   "ref": 1418.28
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -62,7 +62,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1164.35
+   "ref": 1167.4
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -74,23 +74,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1618.09
+   "ref": 1622.12
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2208.05
+   "ref": 2214.04
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1942.47
+   "ref": 1947.48
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3722.15
+   "ref": 3733.04
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1390.73
+   "ref": 1394.76
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -102,23 +102,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1097.71
+   "ref": 1099.78
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 928.17
+   "ref": 930.24
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1072.23
+   "ref": 1075.28
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1720.01
+   "ref": 1725.02
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1097.71
+   "ref": 1099.78
   },
   "iqoo-15": {
    "left": "",
@@ -150,7 +150,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1084.97
+   "ref": 1087.04
   },
   "oppo-find-n5": {
    "left": "",
@@ -302,8 +302,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 902.69
+   "ref": 905.74
   }
  },
- "updated": "2026-10-22T08:24:01Z"
+ "updated": "2026-10-22T14:33:13Z"
 }

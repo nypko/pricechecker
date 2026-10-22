@@ -14,7 +14,7 @@
    "Enjoy 4.5% discount by using local bank transfer payment. New!!! United Arab Emirates, New Zealand",
    "24% off"
   ],
-  "checked": "2026-10-21T09:05:05+00:00",
+  "checked": "2026-10-22T08:12:30+00:00",
   "errors": []
  },
  "mobilemarvel": {
@@ -28,7 +28,7 @@
    "2% summer sale at checkout - Auto Applied",
    "Bank Transfer 4.75% Off"
   ],
-  "checked": "2026-10-21T09:05:05+00:00",
+  "checked": "2026-10-22T08:12:30+00:00",
   "errors": [],
   "promo_active": true
  },
@@ -43,7 +43,7 @@
    "Sign Up And Get A 10€ Voucher",
    "Your voucher is active"
   ],
-  "checked": "2026-10-21T09:05:05+00:00",
+  "checked": "2026-10-22T08:12:30+00:00",
   "errors": []
  },
  "giztop": {
@@ -60,17 +60,23 @@
    "Honor WIN RT-Black-12GB - 512GB ( Brand New, 35% Off )",
    "SIGN UP & GET 5% OFF."
   ],
-  "checked": "2026-10-21T09:05:05+00:00",
+  "checked": "2026-10-22T08:12:30+00:00",
   "errors": [],
   "coupons": {
    "H2026": true
   }
  },
- "_checked": "2026-10-21T09:05:05+00:00",
+ "_checked": "2026-10-22T08:12:30+00:00",
  "averagedad": {
   "seen": [],
   "current": [],
-  "checked": "2026-10-21T09:05:05+00:00",
+  "checked": "2026-10-22T08:12:30+00:00",
+  "errors": []
+ },
+ "gomibo": {
+  "seen": [],
+  "current": [],
+  "checked": "2026-10-22T08:12:30+00:00",
   "errors": []
  }
 }

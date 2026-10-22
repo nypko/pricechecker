@@ -128,7 +128,6 @@ giztop	honor-power-2/china
 giztop	honor-power/china
 giztop	honor-robot-phone/china
 giztop	honor-win-2/china
-giztop	honor-win-pad-8-4/china
 giztop	honor-win-rt-2/china
 giztop	honor-win-rt-black-brand-new-35-off/china
 giztop	honor-win-rt/china

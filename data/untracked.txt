@@ -64,6 +64,7 @@ mobilemarvel	xiaomi-15-ultra/china
 mobilemarvel	xiaomi-15-ultra/global
 averagedad	ad-prize-tickets/china
 averagedad	ad-wireless-charging-puck-15w/china
+averagedad	apple-iphone-duo/china
 averagedad	bow-folding-bluetooth-keyboard-for-huawei-mate-xt-ultimate/china
 averagedad	honor-magic-8-pro-rsr-porsche-design/china
 averagedad	honor-magic-v2-pen/china

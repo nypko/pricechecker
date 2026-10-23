@@ -1648,5 +1648,16 @@
 "available": true,
 "ram_mb": 12288
 }
+},
+"https://www.gomibo.de/motorola-razr-70-ultra/512gb-lila": {
+"lastmod": "",
+"fetched": "2026-10-23T01:48:55+00:00",
+"info": {
+"name": "Motorola Razr 70 Ultra 512GB Lila",
+"price": 1276.0,
+"currency": "EUR",
+"available": true,
+"ram_mb": 16384
+}
 }
 }

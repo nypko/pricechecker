@@ -1,6 +1,6 @@
+from pricechecker import affiliate
 from pricechecker.normalize import edition_of, model_id, storage_of
 from pricechecker.stores.webpage import parse
-from pricechecker import affiliate
 
 
 def test_model_id_strips_store_noise():
@@ -59,8 +59,9 @@ def test_giztop_titles():
 
 
 def test_tradingshenzhen_affiliate_link():
-    import yaml
     from pathlib import Path
+
+    import yaml
     cfg = yaml.safe_load((Path(__file__).parent.parent / "config/stores.yaml").read_text())["stores"]["tradingshenzhen"]
     assert affiliate.link("https://tradingshenzhen.com/en/gift-coupon/10-voucher", cfg) == \
         "https://tradingshenzhen.com/en/gift-coupon/10-voucher?affp=313618"
@@ -69,8 +70,9 @@ def test_tradingshenzhen_affiliate_link():
 
 
 def test_wonda_affiliate_link():
-    import yaml
     from pathlib import Path
+
+    import yaml
     cfg = yaml.safe_load((Path(__file__).parent.parent / "config/stores.yaml").read_text())["stores"]["wonda"]
     assert affiliate.link("https://wondamobile.com/products/vivo-x300-ultra?variant=123", cfg) == \
         "https://wondamobile.com/products/vivo-x300-ultra?variant=123&ref=ivaylo_kirov"
@@ -102,10 +104,13 @@ def test_sub_brands_and_realme_gt_match_across_stores():
 
 def test_gomibo_urls():
     import re
+    from pathlib import Path
+
     import yaml
+
     from pricechecker.stores.sitemap import variant_storage
-    cfg = yaml.safe_load(open("config/stores.yaml"))["stores"]["gomibo"]
-    match, model = re.compile(cfg["url_match"], re.I), re.compile(cfg["model_from_url"], re.I)
+    cfg = yaml.safe_load((Path(__file__).parent.parent / "config/stores.yaml").read_text())["stores"]["gomibo"]
+    match, model = re.compile(cfg["url_match"], re.IGNORECASE), re.compile(cfg["model_from_url"], re.IGNORECASE)
     assert match.search("https://www.gomibo.de/google-pixel-11-pro-eu/256gb-gruen")
     assert match.search("https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-blau")
     assert not match.search("https://www.gomibo.de/google-pixel-11-pro-eu/vodafone")      # contract offers

@@ -58,8 +58,9 @@ def test_minimum_shipping_is_marked():
 
 
 def test_canada_terms_and_tax_config():
-    import yaml
     from pathlib import Path
+
+    import yaml
     tax = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]["CA"]
     assert tax["ship_taxed"] is False and tax["provinces"]["QC"]["rate"] == 14.975 and tax["provinces"]["AB"]["rate"] == 5
     assert terms.duties_included(STORES["mobilemarvel"], "CA") is True     # "fully landed" for Canada

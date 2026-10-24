@@ -1,3 +1,5 @@
+from datetime import UTC
+
 from pricechecker import site
 
 
@@ -26,8 +28,9 @@ def test_chart_for_a_price_that_never_changed():
 
 def test_variants_config_uses_catalog_ids_and_storage_keys():
     import re
-    import yaml
     from pathlib import Path
+
+    import yaml
     ids = {p["id"] for p in yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]}
     for model, eds in yaml.safe_load(Path("config/variants.yaml").read_text()).items():
         assert model in ids
@@ -68,8 +71,9 @@ def test_delivery_days_come_from_store_terms():
 
 
 def test_specs_config_uses_catalog_ids():
-    import yaml
     from pathlib import Path
+
+    import yaml
     ids = {p["id"] for p in yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]}
     specs = yaml.safe_load(Path("config/specs.yaml").read_text())["phones"]
     assert set(specs) <= ids, set(specs) - ids
@@ -86,7 +90,8 @@ def test_buyer_report_parsing():
 
 
 def test_buyer_summary_groups_by_store_and_region(tmp_path, monkeypatch):
-    from datetime import datetime, timezone
+    from datetime import datetime
+
     from pricechecker import buyer_reports
     f = tmp_path / "r.yaml"
     f.write_text("reports:\n"
@@ -95,7 +100,7 @@ def test_buyer_summary_groups_by_store_and_region(tmp_path, monkeypatch):
                  "- {id: c, store: giztop, date: 2026-09-12, country: IT, days: 12}\n"
                  "- {id: d, store: giztop, date: 2024-01-01, country: DE, days: 40, tax: true}\n")   # older than a year: left out
     monkeypatch.setattr(buyer_reports, "APPROVED", f)
-    s = buyer_reports.summary(datetime(2026, 10, 19, tzinfo=timezone.utc))
+    s = buyer_reports.summary(datetime(2026, 10, 19, tzinfo=UTC))
     assert s == {"giztop": {"EU": {"n": 3, "dmin": 9, "dmax": 21, "dmed": 12, "nd": 3, "tk": 2, "tx": 1}}}
 
 
@@ -112,24 +117,28 @@ def test_spec_parts_splits_editions():
 
 
 def test_average_dad_titles_parse():
-    from pricechecker.normalize import model_id, edition_of, storage_of
+    from pricechecker.normalize import edition_of, model_id, storage_of
     assert (model_id("OPPO Find X10 Pro Max (Global)"), edition_of("OPPO Find X10 Pro Max (Global)")) == ("oppo-find-x10-pro-max", "global")
     assert (model_id("OnePlus 16"), edition_of("OnePlus 16"), storage_of("Black / 12GB/256GB")) == ("oneplus-16", "china", "12/256")
-    import re, yaml
+    import re
     from pathlib import Path
+
+    import yaml
     cfg = yaml.safe_load(Path("config/stores.yaml").read_text())["stores"]["averagedad"]
-    assert re.search(cfg["exclude_title"], "OPPO Find X10 Pro Max Photo Kit", re.I)
+    assert re.search(cfg["exclude_title"], "OPPO Find X10 Pro Max Photo Kit", re.IGNORECASE)
 
 
 def test_tax_config_covers_all_eu_countries():
-    import yaml
     from pathlib import Path
+
+    import yaml
     eu = yaml.safe_load(Path("config/import_tax.yaml").read_text())["regions"]["EU"]["countries"]
     assert len(eu) == 27 and all(17 <= c["vat"] <= 27 for c in eu.values())
 
 
 def test_indexnow_only_real_changes(tmp_path):
     import json
+
     from pricechecker import indexnow
     h = tmp_path / "h.csv"
     h.write_text("time,store,model_id,edition,storage,price,currency,available\n"

@@ -7,12 +7,12 @@ from .. import http
 from ..models import Offer, StoreNotConfigured
 from ..normalize import storage_of
 
-_LD = re.compile(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>', re.S | re.I)
+_LD = re.compile(r'<script[^>]*application/ld\+json[^>]*>(.*?)</script>', re.DOTALL | re.IGNORECASE)
 _META_PRICE = [
-    re.compile(r'<meta[^>]+property="product:price:amount"[^>]+content="([0-9.,]+)"', re.I),
-    re.compile(r'itemprop="price"[^>]+content="([0-9.,]+)"', re.I),
+    re.compile(r'<meta[^>]+property="product:price:amount"[^>]+content="([0-9.,]+)"', re.IGNORECASE),
+    re.compile(r'itemprop="price"[^>]+content="([0-9.,]+)"', re.IGNORECASE),
 ]
-_META_CUR = re.compile(r'<meta[^>]+property="product:price:currency"[^>]+content="([A-Z]{3})"', re.I)
+_META_CUR = re.compile(r'<meta[^>]+property="product:price:currency"[^>]+content="([A-Z]{3})"', re.IGNORECASE)
 
 
 def parse(html: str) -> dict | None:
@@ -34,7 +34,7 @@ def parse(html: str) -> dict | None:
         m = pat.search(html)
         if m:
             cur = _META_CUR.search(html)
-            name = re.search(r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', html, re.I)
+            name = re.search(r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', html, re.IGNORECASE)
             return {"name": name.group(1) if name else "", "price": float(m.group(1).replace(",", "")),
                     "currency": cur.group(1) if cur else None, "available": "out of stock" not in html.lower()[:200000]}
     return None
@@ -51,7 +51,7 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
             info = parse(http.get(url).text)
         except http.Blocked:
             raise
-        except Exception as e:  # one broken page shouldn't drop the whole store
+        except Exception as e:  # noqa: BLE001 - one broken page shouldn't drop the whole store
             errors.append(f"{url}: {e}")
             continue
         if not info:

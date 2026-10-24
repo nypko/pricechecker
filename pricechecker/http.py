@@ -2,7 +2,7 @@
 import json
 import time
 import urllib.robotparser
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -28,7 +28,7 @@ def _robots_text(host: str) -> str:
     """robots.txt, cached on disk for a day: on rate-limited stores every saved request counts."""
     cache = json.loads(ROBOTS_CACHE.read_text()) if ROBOTS_CACHE.exists() else {}
     hit = cache.get(host)
-    if hit and datetime.now(timezone.utc) - datetime.fromisoformat(hit["fetched"]) < ROBOTS_TTL:
+    if hit and datetime.now(UTC) - datetime.fromisoformat(hit["fetched"]) < ROBOTS_TTL:
         return hit["text"]
     try:
         _wait(urlparse(host).netloc)
@@ -38,7 +38,7 @@ def _robots_text(host: str) -> str:
             return ""   # rate limited: don't cache, try again next run
     except requests.RequestException:
         return ""
-    cache[host] = {"text": text, "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    cache[host] = {"text": text, "fetched": datetime.now(UTC).isoformat(timespec="seconds")}
     ROBOTS_CACHE.parent.mkdir(exist_ok=True)
     ROBOTS_CACHE.write_text(json.dumps(cache, indent=1))
     return text

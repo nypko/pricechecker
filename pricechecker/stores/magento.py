@@ -6,7 +6,7 @@ import html
 import json
 import re
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import requests
@@ -17,11 +17,11 @@ from ..normalize import edition_of, model_id, storage_of
 from .shopify import cheapest_per_config
 from .webpage import parse
 
-_ITEM = re.compile(r'class="product-item-link"\s+href="([^"]+)">\s*([^<]+?)\s*</a>.*?data-price-amount="([0-9.]+)"', re.S)
+_ITEM = re.compile(r'class="product-item-link"\s+href="([^"]+)">\s*([^<]+?)\s*</a>.*?data-price-amount="([0-9.]+)"', re.DOTALL)
 _COUNT = re.compile(r'toolbar-number">(\d+)</span>')
-_SP_CONFIG = re.compile(r'"spConfig":\s*(\{.*?\})\s*,\s*"gallerySwitchStrategy"', re.S)
+_SP_CONFIG = re.compile(r'"spConfig":\s*(\{.*?\})\s*,\s*"gallerySwitchStrategy"', re.DOTALL)
 # single-variant listings: "OPPO Find X9 Ultra-Black-12GB - 256GB"
-_SIMPLE = re.compile(r"^(?P<base>.+?)-(?P<color>[^-]+)-(?P<storage>\d+\s*GB\s*-\s*\d+\s*(?:GB|TB))$", re.I)
+_SIMPLE = re.compile(r"^(?P<base>.+?)-(?P<color>[^-]+)-(?P<storage>\d+\s*GB\s*-\s*\d+\s*(?:GB|TB))$", re.IGNORECASE)
 PER_PAGE = 24
 REFRESH = timedelta(hours=6)
 SITE_CURRENCIES = ["EUR", "GBP", "AUD"]
@@ -40,7 +40,7 @@ def market_rates(base: str, sample_url: str, base_cur: str = "USD") -> dict:
     main price check stays in USD. Prices on the site then match what the store shows in EUR/GBP. Cached for 20h."""
     cache = json.loads(RATES_CACHE.read_text()) if RATES_CACHE.exists() else {}
     hit = cache.get(base)
-    if hit and datetime.now(timezone.utc) - datetime.fromisoformat(hit["fetched"]) < timedelta(hours=20):
+    if hit and datetime.now(UTC) - datetime.fromisoformat(hit["fetched"]) < timedelta(hours=20):
         return hit["rates"]
     sess = requests.Session()
     sess.headers.update({"User-Agent": http.USER_AGENT, "Accept-Language": "en"})
@@ -57,11 +57,11 @@ def market_rates(base: str, sample_url: str, base_cur: str = "USD") -> dict:
                       timeout=30, allow_redirects=False)
             time.sleep(http.MIN_DELAY_SEC)
             local = sess.get(sample_url, timeout=30).text
-            if f'"currencyFormat":"' in local and max(_final_prices(local), default=0):
+            if '"currencyFormat":"' in local and max(_final_prices(local), default=0):
                 rate = round(max(_final_prices(local)) / usd, 6)
                 if rate != 1.0:   # a currency the store doesn't offer leaves the page in USD -> site uses ECB instead
                     rates[cur] = rate
-    cache[base] = {"currency": base_cur, "rates": rates, "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    cache[base] = {"currency": base_cur, "rates": rates, "fetched": datetime.now(UTC).isoformat(timespec="seconds")}
     RATES_CACHE.write_text(json.dumps(cache, indent=1))
     return rates
 
@@ -94,7 +94,7 @@ def variants(page: str) -> list[tuple[str, float]] | None:
         return None
     cfg = json.loads(m.group(1))
     attrs = list(cfg["attributes"].values())
-    store_attr = next((a for a in attrs if re.search(r"storage|memory|capacity|rom", a["code"] + a["label"], re.I)), None)
+    store_attr = next((a for a in attrs if re.search(r"storage|memory|capacity|rom", a["code"] + a["label"], re.IGNORECASE)), None)
     storage_by_product = {}
     if store_attr:
         for o in store_attr["options"]:
@@ -108,10 +108,10 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     base = cfg["base_url"].rstrip("/")
     tracked = {p["id"] for p in catalog}
     aliases = {**{n: c["id"] for c in catalog for n in c.get("also") or []}, **(cfg.get("aliases") or {})}   # catalog `also` + store aliases
-    exclude = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
+    exclude = re.compile(cfg["exclude_title"], re.IGNORECASE) if cfg.get("exclude_title") else None
     cache_file = Path(f"data/{store}_pages.json")
     cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     seen, offers, untracked = set(), [], []
     rates = None
     for path in cfg.get("categories", ["/phones.html"]):

@@ -4,8 +4,10 @@
 {% import "_stats.html" as hstats %}
 {#- search-friendly: the cheapest total (EU, card) in the title; "delivered" only when shipping and import tax are settled -#}
 {% set tp = p.title_price %}
-{% block title %}{{ p.name }} price{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
-{% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} import store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
+{#- people search "<phone> price in china": name the China version when the page has one, under the label the page uses -#}
+{% set price_kind = ("price in " ~ p.ed_label.china ~ " vs Global") if p.editions|length > 1 else ((p.ed_label.china ~ " version price") if "china" in p.editions else "price") %}
+{% block title %}{{ p.name }} {{ price_kind }}{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %} [{{ month }}] – DoorPrice{% endblock %}
+{% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated hourly.{% endblock %}
 {% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
 {% block og_alt %}{{ p.name }} on DoorPrice{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}{% endblock %}

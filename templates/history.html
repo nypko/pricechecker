@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% from "_price.html" import price %}
 {% import "_stats.html" as hstats %}
+{% set crumbs = [(p.name, "phones/" ~ p.slug), ("Price history", "history/" ~ p.slug)] %}
 {% block title %}{{ p.name }} price history – DoorPrice{% endblock %}
 {% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
 {% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% endblock %}

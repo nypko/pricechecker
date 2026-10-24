@@ -29,10 +29,9 @@ def changed_slugs(history: Path = Path("data/history.csv"), latest: Path = Path(
         for r in csv.DictReader(f):
             key = (r["store"], r["model_id"], r["edition"], r["storage"])
             prev = last.get(key)
-            if r["time"] == now:
-                if prev is None or prev["available"] != r["available"] or \
-                        abs(float(r["price"]) - float(prev["price"])) >= MIN_MOVE * float(prev["price"]):
-                    slugs.add(r["model_id"])
+            if r["time"] == now and (prev is None or prev["available"] != r["available"] or
+                                     abs(float(r["price"]) - float(prev["price"])) >= MIN_MOVE * float(prev["price"])):
+                slugs.add(r["model_id"])
             last[key] = r
     return sorted(slugs)
 

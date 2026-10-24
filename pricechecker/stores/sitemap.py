@@ -6,7 +6,7 @@ only), `model_from_url` (regex, group 1 = model slug), `ram_pattern` (RAM in MB 
 out) and `edition` (a store that sells one version only)."""
 import json
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from .. import http
@@ -14,13 +14,13 @@ from ..models import Offer
 from ..normalize import edition_of, model_id, storage_of
 from .webpage import parse
 
-_URL = re.compile(r"<url>\s*<loc>([^<]+)</loc>(?:\s*<lastmod>([^<]+)</lastmod>)?", re.S)
+_URL = re.compile(r"<url>\s*<loc>([^<]+)</loc>(?:\s*<lastmod>([^<]+)</lastmod>)?", re.DOTALL)
 # ".../xiaomi-17-pro-max-16gb512gb", ".../oneplus-15-16gb512gb-eu-warehouse", ".../oppo-find-n6-12gb256gb-foldable"
 _SLUG_STORAGE = re.compile(r"-(\d{1,2})gb-?(\d{2,4}gb|\dtb)\b")
 _SLUG_EXTRA = re.compile(r"-(eu-warehouse|eu-lager|foldable)\b")
 REFRESH = timedelta(hours=6)
-_VARIANT_ROM = re.compile(r"/(\d+)(gb|tb)-[^/]*$", re.I)   # ".../256gb-schwarz", ".../1tb-blau"
-_STORAGE_PART = re.compile(r"\s+-\s+\d{1,2}\s*GB\s*/\s*\d+\s*(?:GB|TB)\b.*$", re.I)
+_VARIANT_ROM = re.compile(r"/(\d+)(gb|tb)-[^/]*$", re.IGNORECASE)   # ".../256gb-schwarz", ".../1tb-blau"
+_STORAGE_PART = re.compile(r"\s+-\s+\d{1,2}\s*GB\s*/\s*\d+\s*(?:GB|TB)\b.*$", re.IGNORECASE)
 
 
 def title_model(name: str) -> str:
@@ -46,10 +46,10 @@ def variant_storage(url: str, ram_mb: int | None) -> str:
 def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     tracked = {p["id"] for p in catalog}
     aliases = {**{n: c["id"] for c in catalog for n in c.get("also") or []}, **(cfg.get("aliases") or {})}   # catalog `also` + store aliases
-    skip_url = re.compile(cfg["exclude_url"], re.I) if cfg.get("exclude_url") else None
-    skip_title = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
-    only_url = re.compile(cfg["url_match"], re.I) if cfg.get("url_match") else None
-    url_model = re.compile(cfg["model_from_url"], re.I) if cfg.get("model_from_url") else None
+    skip_url = re.compile(cfg["exclude_url"], re.IGNORECASE) if cfg.get("exclude_url") else None
+    skip_title = re.compile(cfg["exclude_title"], re.IGNORECASE) if cfg.get("exclude_title") else None
+    only_url = re.compile(cfg["url_match"], re.IGNORECASE) if cfg.get("url_match") else None
+    url_model = re.compile(cfg["model_from_url"], re.IGNORECASE) if cfg.get("model_from_url") else None
     ram_pat = re.compile(cfg["ram_pattern"]) if cfg.get("ram_pattern") else None
     refresh = timedelta(hours=cfg["refresh_hours"]) if cfg.get("refresh_hours") else REFRESH
 
@@ -61,7 +61,7 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
         http.HOST_DELAY[cfg["sitemap_url"].split("/")[2]] = cfg["request_spacing_sec"]
     cache_file = Path(f"data/{store}_pages.json")
     cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     entries = _URL.findall(http.get(cfg["sitemap_url"]).text)
     offers, seen = [], set()
     for url, lastmod in entries:
@@ -77,7 +77,7 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
                     info["ram_mb"] = int(m.group(1))
             except http.Blocked:
                 raise
-            except Exception as e:   # one broken page shouldn't drop the whole store
+            except Exception as e:  # noqa: BLE001 - one broken page shouldn't drop the whole store
                 print(f"  [{store}] warning: {url}: {type(e).__name__}: {e}")
                 continue
             hit = cache[url] = {"lastmod": lastmod, "fetched": now.isoformat(timespec="seconds"), "info": info}
@@ -92,7 +92,7 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
             if mid not in tracked:   # the page title disagrees with the URL guess: trust the title
                 continue
         # e.g. "... - EU Warehouse": same phone, shipped from inside the EU with other terms -> its own store entry
-        sub = next((name for name, pattern in (cfg.get("sub_stores") or {}).items() if re.search(pattern, info["name"], re.I)), store)
+        sub = next((name for name, pattern in (cfg.get("sub_stores") or {}).items() if re.search(pattern, info["name"], re.IGNORECASE)), store)
         if ram_pat:   # URL storage + page RAM: a title like "Galaxy S26+ 256GB" would read as 26 GB RAM + 256 GB
             storage = variant_storage(url, info.get("ram_mb"))
         else:

@@ -6,7 +6,7 @@
 import difflib
 import json
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import fx, http
@@ -107,7 +107,7 @@ def check_pages(stores_cfg: dict, force: bool = False) -> dict:
     change in a page's wording since the last check (first sight: recorded only)."""
     status = json.loads(STATUS.read_text()) if STATUS.exists() else {}
     snaps = json.loads(PAGES.read_text()) if PAGES.exists() else {}
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     last = status.get("_checked")
     if not force and last and now - datetime.fromisoformat(last) < timedelta(hours=20):
         return status
@@ -125,10 +125,10 @@ def check_pages(stores_cfg: dict, force: bool = False) -> dict:
         for u in urls:   # each page once, even when several phrases are watched on it
             try:
                 texts[u] = http.get(u).text
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 problems.append(f"could not read {u}: {type(e).__name__}")
         for w in watch:
-            if w["url"] in texts and not re.search(w["expect"], re.sub(r"<[^>]+>", " ", texts[w["url"]]), re.I):
+            if w["url"] in texts and not re.search(w["expect"], re.sub(r"<[^>]+>", " ", texts[w["url"]]), re.IGNORECASE):
                 problems.append(f"'{w['expect']}' no longer on {w['url']}")
         for u, html in texts.items():
             lines, old = policy_lines(html), snaps.get(u)

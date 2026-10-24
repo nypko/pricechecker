@@ -21,7 +21,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import yaml
@@ -53,12 +53,12 @@ _ALIASES = {"uk": "GB", "britain": "GB", "england": "GB", "scotland": "GB", "usa
 _NAMES = sorted([(n.lower(), c) for c, n in COUNTRIES.items() if c != "XX"] + list(_ALIASES.items()), key=lambda x: -len(x[0]))
 _TAXWORD = r"(?:customs|import (?:tax|vat|fees?|duty)|vat|duty|duties|taxes|tax|gst)"
 _NO_TAX = re.compile(rf"\b(?:no|didn'?t (?:have to )?pay|did not (?:have to )?pay|without|zero|0)\b[^.!?\n]{{0,25}}\b{_TAXWORD}\b"
-                     rf"|\b{_TAXWORD}\b[^.!?\n]{{0,20}}\b(?:free|included|covered|paid by (?:the )?(?:seller|store)|none)\b", re.I)
+                     rf"|\b{_TAXWORD}\b[^.!?\n]{{0,20}}\b(?:free|included|covered|paid by (?:the )?(?:seller|store)|none)\b", re.IGNORECASE)
 _TAX = re.compile(rf"\b(?:paid|pay|charged|had to pay|got hit|billed|asked (?:me )?(?:to pay|for))\b[^.!?\n]{{0,40}}\b{_TAXWORD}\b"
-                  rf"|\b{_TAXWORD}\b[^.!?\n]{{0,25}}\b(?:of|was|were|cost|came to)\b[^.!?\n]{{0,10}}\d", re.I)
-_MONEY = re.compile(r"(€|eur|euros?|£|gbp|c\$|cad|\$|usd|aud|a\$)\s?(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s?(€|eur\b|euros?\b|£|gbp\b|cad\b|usd\b|aud\b|\$)", re.I)
-_DAYS = re.compile(r"\b(\d{1,2})\s*(?:business |working |calendar )?(days?|weeks?)\b", re.I)
-_DELIVERY = re.compile(r"\b(?:arriv|deliver|receiv|took|got it|got my|came|shipping|shipped|transit|to get here|door)", re.I)
+                  rf"|\b{_TAXWORD}\b[^.!?\n]{{0,25}}\b(?:of|was|were|cost|came to)\b[^.!?\n]{{0,10}}\d", re.IGNORECASE)
+_MONEY = re.compile(r"(€|eur|euros?|£|gbp|c\$|cad|\$|usd|aud|a\$)\s?(\d{1,4}(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s?(€|eur\b|euros?\b|£|gbp\b|cad\b|usd\b|aud\b|\$)", re.IGNORECASE)
+_DAYS = re.compile(r"\b(\d{1,2})\s*(?:business |working |calendar )?(days?|weeks?)\b", re.IGNORECASE)
+_DELIVERY = re.compile(r"\b(?:arriv|deliver|receiv|took|got it|got my|came|shipping|shipped|transit|to get here|door)", re.IGNORECASE)
 
 
 def _currency(sym: str) -> str:
@@ -76,7 +76,7 @@ def parse(text: str) -> dict:
             out["country"] = code
             break
     for c in COURIERS:
-        if re.search(rf"\b{re.escape(c)}\b", text, re.I):
+        if re.search(rf"\b{re.escape(c)}\b", text, re.IGNORECASE):
             out["courier"] = c
             break
     for m in _DAYS.finditer(text):   # "arrived in 9 days", "took 3 weeks to get here"
@@ -143,7 +143,7 @@ def reddit_reports(stores_cfg: dict, since: datetime) -> list[dict]:
                                                       **({"after": after} if after else {})})
                 posts = [c["data"] for c in page["data"]["children"]]
                 for p in posts:
-                    when = datetime.fromtimestamp(p["created_utc"], timezone.utc)
+                    when = datetime.fromtimestamp(p["created_utc"], UTC)
                     if when < since:
                         continue
                     text = f"{p.get('title', '')}\n{p.get('selftext', '')}"
@@ -155,7 +155,7 @@ def reddit_reports(stores_cfg: dict, since: datetime) -> list[dict]:
                         found.append({**base, **facts, "id": "t3_" + p["id"], "url": base["thread"], "date": f"{when:%Y-%m-%d}"})
                     found += _replies(token, p, base, since)
                 after = page["data"].get("after")
-                if not after or not posts or datetime.fromtimestamp(posts[-1]["created_utc"], timezone.utc) < since:
+                if not after or not posts or datetime.fromtimestamp(posts[-1]["created_utc"], UTC) < since:
                     break
     return found
 
@@ -169,7 +169,7 @@ def _replies(token: str, post: dict, base: dict, since: datetime) -> list[dict]:
         if c.get("kind") != "t1":
             continue
         d = c["data"]
-        when = datetime.fromtimestamp(d.get("created_utc", 0), timezone.utc)
+        when = datetime.fromtimestamp(d.get("created_utc", 0), UTC)
         facts = parse(d.get("body", ""))
         if when >= since and useful(facts):
             out.append({**base, **facts, "id": "t1_" + d["id"], "url": "https://www.reddit.com" + d.get("permalink", ""), "date": f"{when:%Y-%m-%d}"})
@@ -193,7 +193,7 @@ def form_reports(since: datetime) -> list[dict]:
     for r in rows:
         facts = {k: r[k] for k in ("country", "days", "tax", "amount", "currency", "courier") if r.get(k) not in (None, "")}
         out.append({"id": "f_" + r["key"], "store": r["store"], "source": "form", "phone": r.get("phone"), **facts,
-                    "date": datetime.fromtimestamp(r["ts"] / 1000, timezone.utc).strftime("%Y-%m-%d")})
+                    "date": datetime.fromtimestamp(r["ts"] / 1000, UTC).strftime("%Y-%m-%d")})
     return out
 
 
@@ -203,7 +203,7 @@ def _load(path: Path, default):
 
 
 def collect(stores_cfg: dict, days: int = 7) -> int:
-    since = datetime.now(timezone.utc) - timedelta(days=days)
+    since = datetime.now(UTC) - timedelta(days=days)
     pending, seen = _load(PENDING, {}), set(_load(SEEN, []))
     new = [r for r in reddit_reports(stores_cfg, since) + form_reports(since) if r["id"] not in pending and r["id"] not in seen]
     for r in new:
@@ -266,10 +266,10 @@ def summary(now: datetime | None = None) -> dict:
     12 months: n reports, delivery days range and median, how many said whether tax was charged (tk) and how many paid (tx)."""
     if not APPROVED.exists():
         return {}
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     groups: dict = {}
     for r in (yaml.safe_load(APPROVED.read_text()) or {}).get("reports", []):
-        when = datetime.strptime(str(r["date"]), "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        when = datetime.strptime(str(r["date"]), "%Y-%m-%d").replace(tzinfo=UTC)
         if now - when > timedelta(days=365) or not r.get("country"):
             continue
         groups.setdefault(r["store"], {}).setdefault(region_of(r["country"]), []).append(r)

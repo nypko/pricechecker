@@ -1,11 +1,11 @@
 """Generates the static website into build/ from data/latest.json, data/history.csv and config/."""
 import hashlib
-import os
 import json
+import os
 import re
 import shutil
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import yaml
@@ -157,8 +157,8 @@ def _chart(series: dict[tuple, list[tuple[datetime, float]]], colors: dict[str, 
     x = lambda t: L + (t - t0).total_seconds() / max((t1 - t0).total_seconds(), 1) * (W - L - R)
     y = lambda p: T + (hi - p) / (hi - lo) * (H - T - B)
     # data-* let app.js read a value off the chart where it is tapped: the time span, plot edges, and each line's steps
-    parts = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in {cur}, shown in the table below" '
-             f'data-t0="{t0:%Y-%m-%dT%H:%M}" data-t1="{t1:%Y-%m-%dT%H:%M}" data-l="{L}" data-r="{W-R}">']
+    parts = [(f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Price history in {cur}, shown in the table below" '
+              f'data-t0="{t0:%Y-%m-%dT%H:%M}" data-t1="{t1:%Y-%m-%dT%H:%M}" data-l="{L}" data-r="{W-R}">')]
     for v in ticks:
         parts.append(f'<line x1="{L}" x2="{W-R}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="grid"/>'
                      f'<text x="{L-6}" y="{y(v)+4:.1f}" class="axis" text-anchor="end">{SYMBOL[cur]}{v:,.0f}</text>')
@@ -199,9 +199,9 @@ def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = No
         state[(line, r["storage"])] = fx.convert(r["price"], r["currency"], cur, rates) if r["available"] else None
         t = datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ")
         best = min((p for (l, _), p in state.items() if l == line and p is not None), default=None)
-        if out[line] or best is not None:   # a line starts at its first in-stock price
-            if not out[line] or out[line][-1][1] != best:
-                out[line].append((t, best))
+        # a line starts at its first in-stock price
+        if (out[line] or best is not None) and (not out[line] or out[line][-1][1] != best):
+            out[line].append((t, best))
     return out
 
 
@@ -531,7 +531,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         site_cfg = {**site_cfg, "testing": True, "indexnow_key": None}
     specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
     google = _google()   # Google Play on each brand's China version
-    buyers = buyer_reports.summary(updated_at.replace(tzinfo=timezone.utc) if updated_at else None)   # approved buyer reports per store, region
+    buyers = buyer_reports.summary(updated_at.replace(tzinfo=UTC) if updated_at else None)   # approved buyer reports per store, region
     # only stores still enabled in stores.yaml: a switched-off or removed store's last prices must not show as current
     live_stores = {s: st for s, st in latest["stores"].items() if s in stores_cfg and stores_cfg[s].get("enabled", True)}
     old = {s: _too_old(st.get("checked"), updated_at) for s, st in live_stores.items()}
@@ -574,7 +574,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend", "grom")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
         # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
-        full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}
+        full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}  # noqa: B023 - used in this pass only
         by_storage = defaultdict(list)
         for o in offers:
             o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header

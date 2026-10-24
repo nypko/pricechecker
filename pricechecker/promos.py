@@ -9,7 +9,7 @@ store's pages and its optional `until` date hasn't passed. When the banner goes,
 """
 import json
 import re
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from . import http
@@ -19,7 +19,7 @@ REPORT = Path(".promo_report.md")   # picked up by the workflow and filed as a G
 
 PROMO = re.compile(r"\b\d{1,2}(?:[.,]\d+)?\s?%\s?(?:off|discount|rabatt)\b|\b(?:summer|winter|black friday|cyber|flash|mega|"
                    r"anniversary|holiday|singles'? day|11\.11|double 11)\s+(?:sale|deal|offer)s?\b|\bsale\b|\bdiscount\b|"
-                   r"\bcoupons?\b|\bvouchers?\b|\bpromo(?:tion)? ?codes?\b|\buse (?:the )?code\b|\bcode\s*:?\s*[A-Z0-9]{4,}\b", re.I)
+                   r"\bcoupons?\b|\bvouchers?\b|\bpromo(?:tion)? ?codes?\b|\buse (?:the )?code\b|\bcode\s*:?\s*[A-Z0-9]{4,}\b", re.IGNORECASE)
 
 
 def pages(name: str, cfg: dict) -> list[str]:
@@ -44,7 +44,7 @@ def snippets(lines: list[str]) -> list[str]:
     out = []
     for ln in lines:
         # menu items ("SALE", "Vouchers") are noise: keep lines of 3+ words, or any line with a % or a code
-        if 3 <= len(ln) <= 300 and PROMO.search(ln) and (len(ln.split()) >= 3 or re.search(r"%|\bcode\b", ln, re.I)):
+        if 3 <= len(ln) <= 300 and PROMO.search(ln) and (len(ln.split()) >= 3 or re.search(r"%|\bcode\b", ln, re.IGNORECASE)):
             s = ln if len(ln) <= 160 else ln[:157] + "..."
             if s not in out:
                 out.append(s)
@@ -60,14 +60,14 @@ def promo_active(promo: dict, text: str | None, today: date) -> bool | None:
         return True          # no banner to watch: trust the config (and `until`)
     if text is None:
         return None
-    return re.search(promo["watch"], text, re.I) is not None
+    return re.search(promo["watch"], text, re.IGNORECASE) is not None
 
 
 def scan(stores_cfg: dict, force: bool = False) -> dict:
     """Once a day: read promotion pages, record what's there, decide which configured promotions still run,
     and write a report of anything new or ended. Returns the saved state."""
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     last = state.get("_checked")
     if not force and last and now - datetime.fromisoformat(last) < timedelta(hours=20):
         return state
@@ -86,7 +86,7 @@ def scan(stores_cfg: dict, force: bool = False) -> dict:
         for u in urls:
             try:
                 texts.append("\n".join(text_of(http.get(u).text)))
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 errors.append(f"{u}: {type(e).__name__}")
         prev = state.get(name, {})
         found = snippets("\n".join(texts).split("\n")) if texts else []
@@ -131,12 +131,12 @@ def write_report(new_found: dict, ended: list, started: list, stores_cfg: dict, 
         return
     out = []
     if first_run:
-        out += ["Promotion watch started. This is the promotion wording on each store's pages right now - "
-                "from now on only changes are reported.", ""]
+        out += [("Promotion watch started. This is the promotion wording on each store's pages right now - "
+                 "from now on only changes are reported."), ""]
     if ended or started:
         out += ["## Configured promotions", ""] + [f"- {x}" for x in ended + started] + [
-            "", "Totals already follow this. If the promotion is over for good, remove `promo:` from the store "
-                "in `config/stores.yaml`.", ""]
+            "", ("Totals already follow this. If the promotion is over for good, remove `promo:` from the store "
+                 "in `config/stores.yaml`."), ""]
     if new_found:
         out += ["## New promotion text", ""]
         for name, lines in new_found.items():

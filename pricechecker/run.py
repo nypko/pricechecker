@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from . import fx, history, site, terms, promos
+from . import fx, history, promos, site, terms
 from .models import StoreNotConfigured
 from .stores import ADAPTERS
 
@@ -53,7 +53,7 @@ def main(argv=None) -> int:
         except StoreNotConfigured as e:
             print(f"  skipped: {e}")
             continue
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"  FAILED: {type(e).__name__}: {e}")
             failures[name] = f"{type(e).__name__}: {e}"[:300]
             for sub, sub_cfg in stores.items():
@@ -63,7 +63,7 @@ def main(argv=None) -> int:
         if not offers and had.get(name):
             # an answer with nothing in it (a changed page layout, a half-written sitemap) is a failure, not a sold-out store:
             # keep the last prices, marked stale, rather than wiping the store off the site
-            print("  FAILED: no offers returned (had %d last run)" % had[name])
+            print(f"  FAILED: no offers returned (had {had[name]} last run)")
             failures[name] = "no offers returned"
             for sub, sub_cfg in stores.items():
                 if sub_cfg.get("part_of") == name:
@@ -83,7 +83,7 @@ def main(argv=None) -> int:
     history.save(results, failures)
     try:
         promos.scan(stores)   # once a day: new promotion text -> report; configured promotions expire with their banner
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"  [promos] scan failed: {type(e).__name__}: {e}")
     if not args.no_build:
         site.build(catalog, stores, fx.rates(), terms.check_pages(stores))

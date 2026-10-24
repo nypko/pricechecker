@@ -3,7 +3,7 @@
   data/history.csv  - one row only when a price or availability CHANGES (plus the first sighting)"""
 import csv
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .models import Offer
@@ -18,7 +18,7 @@ def load_latest() -> dict:
 
 
 def save(results: dict[str, list[Offer]], failures: dict[str, str]) -> dict:
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     prev = load_latest()
     # compare with the last recorded row per offer, not with latest.json: an offer that drops out of a store's listing
     # for a run and comes back at the same price is no change

@@ -11,7 +11,7 @@ as one digest. The first run only records prices (no flood of "drops"). Needs TE
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from html import escape
 from pathlib import Path
 
@@ -138,7 +138,7 @@ def check(token: str, chat: str, post: bool) -> int:
             print(f"the bot is '{member['status']}' in the channel: make it an administrator with 'Post messages'")
             return 1
         print("bot is an administrator and may post")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"FAILED {e}")
         if "chat not found" in str(e):   # show the channels the bot has seen, so a private one can be used by its id
             try:
@@ -154,7 +154,7 @@ def check(token: str, chat: str, post: bool) -> int:
                 else:
                     print("the bot hasn't seen any channel yet: add it to the channel as an administrator, post any message "
                           "in the channel, then run this check again")
-            except Exception as e2:
+            except Exception as e2:  # noqa: BLE001
                 print(f"could not list channels: {e2}")
         return 1
     if post:
@@ -189,7 +189,7 @@ def welcome(token: str, chat: str, base: str) -> int:
             return 1
         print("pinned")
         return 0
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"FAILED {e}")
         return 1
 
@@ -230,7 +230,7 @@ def main(argv=None) -> int:
         try:
             send(token, chat, text, url)
             sent += 1
-        except Exception as e:   # keep going; the phones in a failed message keep their old state, so it goes out next run
+        except Exception as e:  # noqa: BLE001 - keep going; the phones in a failed message keep their old state, so it goes out next run
             print(f"  [telegram] send failed: {e}")
             for slug in slugs:
                 if slug in old:
@@ -238,7 +238,7 @@ def main(argv=None) -> int:
                 else:
                     nxt.pop(slug, None)
     if not dry:
-        STATE.write_text(json.dumps({"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "phones": nxt},
+        STATE.write_text(json.dumps({"updated": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"), "phones": nxt},
                                     indent=1, sort_keys=True))
         print(f"  [telegram] {sent} sent")
     return 0

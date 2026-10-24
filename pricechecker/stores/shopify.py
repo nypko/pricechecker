@@ -2,13 +2,12 @@
 variant and price."""
 import json
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from .. import http
 from ..models import Offer
 from ..normalize import edition_of, model_id, storage_of
-
 
 _ACTIVE = re.compile(r'Shopify\.currency\s*=\s*\{"active":"([A-Z]{3})","rate":"([0-9.]+)"\}')
 SITE_CURRENCIES = ["USD", "EUR", "GBP", "AUD"]
@@ -32,7 +31,7 @@ def market_rates(base: str) -> tuple[str, dict]:
     cache = json.loads(RATES_CACHE.read_text()) if RATES_CACHE.exists() else {}
     hit = cache.get(base)
     if hit and set(SITE_CURRENCIES) <= set(hit.get("checked", hit["rates"])) and \
-            datetime.now(timezone.utc) - datetime.fromisoformat(hit["fetched"]) < timedelta(days=7):
+            datetime.now(UTC) - datetime.fromisoformat(hit["fetched"]) < timedelta(days=7):
         return hit["currency"], hit["rates"]
     shop_cur = http.get(f"{base}/meta.json").json()["currency"]
     rates = {shop_cur: 1.0}
@@ -43,7 +42,7 @@ def market_rates(base: str) -> tuple[str, dict]:
         if m and m.group(1) == cur:  # the shop really offers this currency (otherwise the site converts via ECB)
             rates[cur] = float(m.group(2))
     cache[base] = {"currency": shop_cur, "rates": rates, "checked": [shop_cur] + SITE_CURRENCIES,
-                   "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+                   "fetched": datetime.now(UTC).isoformat(timespec="seconds")}
     RATES_CACHE.write_text(json.dumps(cache, indent=1))
     return shop_cur, rates
 
@@ -74,7 +73,7 @@ def fetch(store: str, cfg: dict) -> list[Offer]:
     feeds = {c: _feed(base, c) for c in currencies}
     local = {c: {v["id"]: float(v["price"]) for p in prods for v in p["variants"]} for c, prods in feeds.items()}
     types = {t.lower() for t in cfg.get("product_types", [])}       # empty = don't filter by type
-    exclude = re.compile(cfg["exclude_title"], re.I) if cfg.get("exclude_title") else None
+    exclude = re.compile(cfg["exclude_title"], re.IGNORECASE) if cfg.get("exclude_title") else None
     offers: list[Offer] = []
     for p in feeds[main_cur]:
         if types and p.get("product_type", "").lower() not in types:

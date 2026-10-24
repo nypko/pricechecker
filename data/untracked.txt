@@ -1,4 +1,5 @@
 wonda	honor-600-pro/global
+wonda	honor-robot-phone/china
 wonda	honor-win/china
 wonda	oppo-reno-16-pro/china
 wonda	sony-xperia-10-vii/china
@@ -63,6 +64,7 @@ mobilemarvel	xiaomi-15-ultra/china
 mobilemarvel	xiaomi-15-ultra/global
 averagedad	ad-prize-tickets/china
 averagedad	ad-wireless-charging-puck-15w/china
+averagedad	apple-iphone-duo/china
 averagedad	bow-folding-bluetooth-keyboard-for-huawei-mate-xt-ultimate/china
 averagedad	honor-magic-8-pro-rsr-porsche-design/china
 averagedad	honor-magic-v2-pen/china
@@ -127,9 +129,7 @@ giztop	honor-power-2/china
 giztop	honor-power/china
 giztop	honor-robot-phone/china
 giztop	honor-win-2/china
-giztop	honor-win-pad-8-4/china
 giztop	honor-win-rt-2/china
-giztop	honor-win-rt-black-brand-new-35-off/china
 giztop	honor-win-rt/china
 giztop	honor-win-turbo-2/china
 giztop	honor-win-turbo/china

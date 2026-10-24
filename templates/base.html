@@ -14,6 +14,12 @@
 <link rel="canonical" href="{{ site.base_url.rstrip('/') }}/{{ path }}">
 {#- the old pages.dev address forwards to the same page on the real domain -#}
 {% if site.testing %}<meta name="robots" content="noindex, nofollow">{% else %}<script>if (/\.pages\.dev$/.test(location.hostname)) location.replace({{ site.base_url.rstrip('/')|tojson }} + location.pathname + location.search + location.hash);</script>{% endif %}
+{#- search results: the site's name on the home page, and a breadcrumb trail ("DoorPrice › Stores › Giztop") from each page's `crumbs` -#}
+{% set base = site.base_url.rstrip('/') %}
+{% if path == "" %}<script type="application/ld+json">{{ {"@context": "https://schema.org", "@type": "WebSite", "name": "DoorPrice", "alternateName": "doorprice.app", "url": base ~ "/"}|tojson }}</script>
+{% elif crumbs is defined %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DoorPrice","item":{{ (base ~ "/")|tojson }}}
+  {%- for name, href in crumbs %},{"@type":"ListItem","position":{{ loop.index + 1 }},"name":{{ name|tojson }},"item":{{ (base ~ "/" ~ href)|tojson }}}{% endfor %}]}</script>
+{% endif %}
 {% endif %}
 <meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
 <link rel="preload" href="{{ root }}static/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>

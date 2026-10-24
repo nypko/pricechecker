@@ -1659,5 +1659,27 @@
 "available": true,
 "ram_mb": 16384
 }
+},
+"https://www.gomibo.de/oppo-find-x10-pro-max/512gb-weiss": {
+"lastmod": "",
+"fetched": "2026-10-24T01:19:45+00:00",
+"info": {
+"name": "OPPO Find X10 Pro Max 16GB/512GB Wei\u00df",
+"price": 1669.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/oppo-find-x10-pro-max/512gb-grau": {
+"lastmod": "",
+"fetched": "2026-10-24T01:19:45+00:00",
+"info": {
+"name": "OPPO Find X10 Pro Max 16GB/512GB Grau",
+"price": 1666.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
 }
 }

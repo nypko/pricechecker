@@ -25,14 +25,18 @@
 </div>
 {% for x in sp.extra %}
 <h3>{{ x.label }}</h3>
+<p>Some listings ship from here instead, on these terms:</p>
 <div class="table-wrap">
 <table class="tax-table">
-  <tbody>{% for c in x.ship if c.cost != "not listed" or c.note %}
+  <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
+  <tbody>{% for c in x.ship if c.cost != "not listed" %}
     <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>
-      <td>{{ "–" if not c.ships else "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
+      <td class="{{ 'good' if c.duties else '' }}">{{ "–" if not c.ships else "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
+    {% if c.note %}<tr class="note-row"><td colspan="4" class="muted small">{{ c.note }}</td></tr>{% endif %}
   {% endfor %}</tbody>
 </table>
 </div>
+{% for n in x.ship|selectattr("cost", "equalto", "not listed")|map(attribute="note")|select|unique %}<p class="muted small">{{ n }}.</p>{% endfor %}
 {% endfor %}
 <p class="muted small">Import tax is estimated per country on each phone's page. <a href="../methodology">How it is worked out</a>.</p>
 

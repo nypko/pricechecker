@@ -46,7 +46,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1213.49
+   "ref": 1137.95
   },
   "honor-magic-v6": {
    "left": "",
@@ -145,8 +145,8 @@
    "ref": 697.0
   },
   "oneplus-15t": {
-   "left": "",
-   "ref": 637.0
+   "left": "shipping and import tax",
+   "ref": 611.97
   },
   "oneplus-16": {
    "left": "",
@@ -305,5 +305,5 @@
    "ref": 905.77
   }
  },
- "updated": "2026-10-24T23:34:36Z"
+ "updated": "2026-10-25T05:44:40Z"
 }

@@ -1,8 +1,8 @@
 {
- "updated": "2026-10-24T23:34:06Z",
+ "updated": "2026-10-25T05:28:47Z",
  "stores": {
   "wonda": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -3000,7 +3000,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -5794,7 +5794,7 @@
    ]
   },
   "averagedad": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -8231,7 +8231,7 @@
    ]
   },
   "tradingshenzhen": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -9096,7 +9096,7 @@
      "title": "OnePlus 15T - 16GB/1024GB",
      "price": 917.0,
      "currency": "EUR",
-     "available": true,
+     "available": false,
      "url": "https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-16gb1024gb",
      "prices": {
       "EUR": 917.0
@@ -9110,7 +9110,7 @@
      "title": "OnePlus 15T - 16GB/512GB",
      "price": 817.0,
      "currency": "EUR",
-     "available": true,
+     "available": false,
      "url": "https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-16gb512gb",
      "prices": {
       "EUR": 817.0
@@ -9124,7 +9124,7 @@
      "title": "OnePlus 15T - 12GB/256GB",
      "price": 627.0,
      "currency": "EUR",
-     "available": true,
+     "available": false,
      "url": "https://tradingshenzhen.com/en/oneplus-15-series/oneplus-15t-12gb256gb",
      "prices": {
       "EUR": 627.0
@@ -10127,7 +10127,7 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -10189,7 +10189,7 @@
    ]
   },
   "giztop": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -13969,7 +13969,7 @@
    ]
   },
   "gomibo": {
-   "checked": "2026-10-24T23:34:06Z",
+   "checked": "2026-10-25T05:28:47Z",
    "ok": true,
    "offers": [
     {
@@ -14019,13 +14019,13 @@
      "model_id": "honor-magic-v5",
      "edition": "global",
      "storage": "16/512",
-     "title": "Honor Magic V5 16GB/512GB Schwarz",
-     "price": 1127.0,
+     "title": "Honor Magic V5 16GB/512GB Gold",
+     "price": 1136.0,
      "currency": "EUR",
-     "available": false,
-     "url": "https://www.gomibo.de/honor-magic-v5/512gb-schwarz",
+     "available": true,
+     "url": "https://www.gomibo.de/honor-magic-v5/512gb-gold",
      "prices": {
-      "EUR": 1127.0
+      "EUR": 1136.0
      }
     },
     {
@@ -14090,12 +14090,12 @@
      "edition": "global",
      "storage": "12/256",
      "title": "OnePlus 15 256GB Schwarz",
-     "price": 1401.0,
+     "price": 1406.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/oneplus-15/256gb-schwarz",
      "prices": {
-      "EUR": 1401.0
+      "EUR": 1406.0
      }
     },
     {
@@ -14104,12 +14104,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "OnePlus 15 512GB Lila",
-     "price": 1204.0,
+     "price": 1213.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/oneplus-15/512gb-lila",
      "prices": {
-      "EUR": 1204.0
+      "EUR": 1213.0
      }
     },
     {
@@ -14454,12 +14454,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "Motorola Razr 70 Ultra 512GB Lila",
-     "price": 1274.0,
+     "price": 1273.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/motorola-razr-70-ultra/512gb-lila",
      "prices": {
-      "EUR": 1274.0
+      "EUR": 1273.0
      }
     },
     {

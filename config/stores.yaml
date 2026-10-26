@@ -142,7 +142,7 @@ stores:
         paypal: {fee_pct: 4, note: "Store says it pays about 4% PayPal fees from China and passes them on; exact amount at checkout"}
         card: {fee_pct: 0, note: "Visa/Mastercard, Google Pay, Apple Pay via Stripe; no fee mentioned. Card address must match shipping address"}
       shipping:   # Global Priority from China; EU-warehouse items ship free in 2-5 working days
-        EU: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout) (exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
+        EU: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days + 2-5 processing; no customs or import VAT - the store covers them"}
         UK: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import VAT, refunds any charges"}
         US: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store covers customs and import costs, refunds any charges"}
         CA: {days: [12, 19], duties_included: true, cost: null, cost_min: 10, currency: EUR, note: "Global Priority from EUR 10 (used here as the minimum; exact at checkout), 10-14 working days; store says it covers customs and import tax for every destination and refunds any charges (Canada isn't named separately)"}

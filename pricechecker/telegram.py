@@ -133,6 +133,7 @@ def check(token: str, chat: str, post: bool) -> int:
         print(f"looking for channel {chat[:3]}… ({len(chat)} characters)")   # the value is a secret: only a hint
         ch = call("getChat", chat_id=chat)
         print(f"channel OK: {ch.get('title')} ({'@' + ch['username'] if ch.get('username') else 'private'}, type {ch['type']})")
+        print(f"channel id {ch['id']}: use it as TELEGRAM_CHAT_ID to keep posting after the channel's @username changes")
         member = call("getChatMember", chat_id=chat, user_id=me["id"])
         if member["status"] not in ("administrator", "creator") or member.get("can_post_messages") is False:
             print(f"the bot is '{member['status']}' in the channel: make it an administrator with 'Post messages'")

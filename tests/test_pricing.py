@@ -63,6 +63,8 @@ def test_rank_skips_base_and_out_of_stock_and_orders_best_first():
     rule = pricing.tax_rule(CASES["tax"], s)
     offers = [{**cheap, "storage": "base"}, {**dear, "available": False}, cheap, dear]
     assert [o for o, _ in pricing.rank(offers, s, rule)] == [dear, cheap]   # 1047 < 1113.20
+    # the phone page (and so its title) also ranks an offer whose RAM/storage the store doesn't list
+    assert [o for o, _ in pricing.rank(offers, s, rule, with_base=True)] == [dear, offers[0], cheap]
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")

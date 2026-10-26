@@ -373,6 +373,61 @@
    }
   },
   {
+   "name": "bank_vs_sale_stacks_unset",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 1000.0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": -4.75
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "EU": true
+    },
+    "promo": {
+     "pct": 2
+    }
+   },
+   "settings": [
+    "EU",
+    "",
+    "bank",
+    "eur"
+   ],
+   "expect": {
+    "total": 952.5,
+    "unknowns": 0
+   }
+  },
+  {
    "name": "paypal_refused",
    "offer": {
     "storage": "12/256",

@@ -62,8 +62,8 @@ def cost(o: dict, s: Settings, rule: TaxRule) -> Cost:
     c = s.cur
     lst, adj, ship = o["money"][c], (o.get("pay") or {}).get(s.pay), (o.get("ship") or {}).get(s.region)
     # store-wide automatic discount (e.g. a summer sale); with bank transfer only the larger discount counts unless they combine
-    pr = o.get("promo")
-    bank_beats = s.pay == "bank" and adj is not None and adj < 0 and pr and not pr["stacks_with_bank"]
+    pr = o.get("promo")   # the index's lean offers carry stacks_with_bank only when set: absent = doesn't combine
+    bank_beats = s.pay == "bank" and adj is not None and adj < 0 and pr and not pr.get("stacks_with_bank")
     promo_pct = 0 if not pr else (0 if -adj >= pr["pct"] else pr["pct"]) if bank_beats else pr["pct"]
     if promo_pct and bank_beats:
         adj = 0
@@ -120,9 +120,11 @@ def better(a: Cost, b: Cost) -> bool:
     return a.total < b.total
 
 
-def rank(offers: list[dict], s: Settings, rule: TaxRule) -> list[tuple[dict, Cost]]:
-    """In-stock offers with a known RAM/storage, best first. A store that doesn't deliver to the region is skipped."""
+def rank(offers: list[dict], s: Settings, rule: TaxRule, with_base: bool = False) -> list[tuple[dict, Cost]]:
+    """In-stock offers with a known RAM/storage, best first. A store that doesn't deliver to the region is skipped.
+    with_base: also offers whose RAM/storage the store doesn't list, as today's phone page ranks them (its "not
+    listed" row) and so its title."""
     out = [(o, cost(o, s, rule)) for o in offers
-           if o.get("available") and o.get("storage") != "base" and (o.get("ship") or {}).get(s.region) is not False]
+           if o.get("available") and (with_base or o.get("storage") != "base") and (o.get("ship") or {}).get(s.region) is not False]
     # the same order better() gives, as a sort key (stable, so ties keep the input order)
     return sorted(out, key=lambda oc: (not oc[1].pay_ok, oc[1].old, unknowns(oc[1]), oc[1].total))

@@ -191,8 +191,24 @@ def test_title_price_prefers_known_shipping_over_a_slightly_lower_unknown():
                                   "ship": {"EU": ship}, "duties": {"EU": duties}}
     giztop = mk(1137, None, None)              # shipping not listed, tax not stated
     wonda = mk(1145, {"eur": 0}, None)         # free shipping, tax not stated
-    assert site._title_price([giztop, wonda], 21) == (1145, False, "import tax")
-    assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], 21) == (1145, False, "import tax")
+    assert site._title_price([giztop, wonda], {"EU": {"rate_pct": 21}}) == (1145, False, "import tax")
+    assert site._title_price([giztop, wonda, {**mk(900, {"eur": 0}, True), "old": True}], {"EU": {"rate_pct": 21}}) == (1145, False, "import tax")
+
+
+def test_title_price_counts_an_offer_without_listed_ram_storage_as_the_phone_page_does():
+    # the page grid has a "not listed" row for it and app.js ranks it like any other (xiaomi-17-ultra-leica-edition)
+    mk = lambda v, storage: {"available": True, "storage": storage, "money": {"eur": v}, "pay": {"card": 0},
+                             "pay_ok": {"card": True}, "ship": {"EU": {"eur": 10}}, "duties": {"EU": True}}
+    base, listed = mk(1137, "base"), mk(1292.95, "16/512")
+    assert site._title_price([listed, base], {"EU": {"rate_pct": 21}}, with_offer=True) == (1147, True, "", base)
+
+
+def test_title_price_never_led_by_an_old_price_or_a_store_refusing_card():
+    mk = lambda v, **kw: {"available": True, "storage": "12/256", "money": {"eur": v}, "pay": {"card": 0}, "pay_ok": {"card": True},
+                          "ship": {"EU": {"eur": 0}}, "duties": {"EU": True}, **kw}
+    tax = {"EU": {"rate_pct": 21}}
+    assert site._title_price([mk(900, old=True), mk(800, pay_ok={"card": False})], tax) is None
+    assert site._title_price([mk(900, old=True), mk(1000)], tax) == (1000, True, "")
 
 
 def test_telegram_posts_real_drops_only():

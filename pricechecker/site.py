@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import affiliate, buyer_reports, cards, fx, history, normalize, promos, terms
+from . import affiliate, buyer_reports, cards, fx, history, normalize, pricing, promos, terms
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]   # CAD: always an ECB conversion (marked ≈)
@@ -393,34 +393,20 @@ def _tax_config(rates: dict) -> dict:
     return regions
 
 
-def _title_price(offers: list[dict], tax_eu_pct: float | None, with_offer: bool = False) -> tuple | None:
-    """Cheapest total for the page title and search snippet (a complete total first, as on the page): shipping to the EU, paying by card, in EUR - the same sum
-    the browser does (store price, automatic store discount, card fee, shipping, estimated import VAT when the store's
-    price excludes it). Returns (total, complete, left out): complete = shipping known and import tax settled either way,
-    left out = "shipping", "import tax" or "shipping and import tax" when it isn't.
-    Ranked like the page (app.js better()): fewer unknowns first - unlisted shipping counts 2, import tax that may be
-    due 1 (a "from €10" shipping floor is a known, approximate cost) - then the lower total.
+def _title_price(offers: list[dict], tax_cfg: dict, with_offer: bool = False) -> tuple | None:
+    """Cheapest total for the page title and search snippet: what the phone page puts first for shipping to the EU,
+    paying by card, in EUR, at the EU-average import VAT (pricing.rank, the page's own ranking - a complete total
+    first, then fewer unknowns, then the lower total). Returns (total, complete, left out): complete = shipping known
+    and import tax settled either way, left out = "shipping", "import tax" or "shipping and import tax" when it isn't.
+    An old price or a store that refuses card never leads it (None when only such offers are left).
     with_offer: (total, complete, left out, the offer) - for the deals list the Telegram channel posts from."""
-    best = None
-    for o in offers:
-        if not o["available"] or o.get("old") or not (o.get("pay_ok") or {}).get("card", True):
-            continue
-        base = o["money"]["eur"]
-        if o.get("promo"):
-            base -= base * o["promo"]["pct"] / 100
-        adj = (o["pay"].get("card") or 0) * base / 100
-        ship = (o["ship"] or {}).get("EU")
-        if ship is False:   # the store doesn't deliver to the EU (stores.yaml `ships: false`)
-            continue
-        ship_amt = ship["eur"] if ship else 0
-        duties = (o.get("duties") or {}).get("EU")
-        tax = (base + adj + ship_amt) * tax_eu_pct / 100 if duties is False and tax_eu_pct is not None else 0
-        total = base + adj + ship_amt + tax
-        unknown = (2 if ship is None else 0) + (0 if duties is True or tax else 1)
-        if best is None or (unknown, total) < best[3:5]:
-            left = " and ".join(x for x, gone in (("shipping", ship is None), ("import tax", not (duties is True or tax))) if gone)
-            best = (total, not left, left, unknown, total, o)
-    return (best[:3] + ((best[5],) if with_offer else ())) if best else None
+    s = pricing.Settings("EU", "", "card", "eur")
+    ranked = pricing.rank(offers, s, pricing.tax_rule(tax_cfg, s), with_base=True)   # the page has a "not listed" row
+    o, k = next(((o, k) for o, k in ranked if k.pay_ok and not k.old), (None, None))   # ranked first when present
+    if o is None:
+        return None
+    left = pricing.left_out(k)
+    return (k.total, not left, left) + ((o,) if with_offer else ())
 
 
 def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
@@ -526,7 +512,6 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     except ValueError:
         updated_at = None
     tax_cfg = _tax_config(rates)
-    tax_eu = (tax_cfg.get("EU") or {}).get("rate_pct")
     variants = yaml.safe_load(Path("config/variants.yaml").read_text()) or {}   # RAM/storage options each brand makes
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     if os.environ.get("DOORPRICE_ENV") == "testing":   # testing.doorprice.app: banner, hidden from search engines, no IndexNow key
@@ -595,8 +580,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
-                       "title_price": _title_price(offers, tax_eu),
-                       "title_offer": (_title_price(offers, tax_eu, with_offer=True) or [None] * 4)[3],
+                       "title_price": _title_price(offers, tax_cfg),
+                       "title_offer": (_title_price(offers, tax_cfg, with_offer=True) or [None] * 4)[3],
                        "ld": _product_ld(m, in_stock, site_cfg),
                        "specs": _specs(specs.get(m["id"])),
                        "ed_label": ed_labels(m["brand"]),

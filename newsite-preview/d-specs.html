@@ -48,23 +48,25 @@
   }).join("") + ["global", "china"].filter(function (e) { return !F.sources[e] && (P.made || []).indexOf(e) >= 0; }).map(function (e) {
     return '<p class="src">' + X.ED[e] + ' version: we haven\'t read its spec page yet. Most specs match; network bands and software can differ.</p>';
   }).join("");
+  if (Object.keys(F.sources).length > 1) document.getElementById("src").insertAdjacentHTML("beforeend",
+    '<p class="src">Some specs appear on only one of ' + P.brand + '\'s two pages. Where it\'s the same hardware we show it once, for both versions.</p>');
   function id(t) { return t.toLowerCase().replace(/[^a-z]+/g, "-"); }
   document.getElementById("jump").innerHTML = F.groups.map(function (g) { return '<a href="#' + id(g[0]) + '">' + g[0] + '</a>'; }).join("") + '<a href="#bands-sec">Network bands</a>';
   // a value the versions disagree on splits into a China half and a Global half, each labelled in its colour
   var S = { only: false }, nd = DPS.diffs(P.slug);
   function half(e, v) {
     return '<div class="half ' + (e === "china" ? "cn" : "gl") + '"><span class="htag">' + X.ED[e] + '</span>' +
-      (v == null ? '<span class="na">Not on ' + P.brand + '\'s ' + X.ED[e] + ' page</span>' : v) + '</div>';
+      (v == null ? '<span class="na">Not listed</span>' : v) + '</div>';
   }
   function cell(v) {
     if (v == null) return '<td class="na">Not on ' + P.brand + '\'s page</td>';
-    if (typeof v === "object" && "from" in v) return '<td>' + v.v + ' <span class="only ' + (v.from === "china" ? "cn" : "gl") + '">' + X.ED[v.from] + ' page only</span></td>';
+    if (typeof v === "object" && "from" in v) return '<td>' + v.v + '</td>';
     if (typeof v === "object") return '<td class="split-td"><div class="split">' + half("china", v.china) + half("global", v.global) + '</div></td>';
     return '<td>' + v + '</td>';
   }
   function sheet() {
     document.getElementById("sheet").innerHTML = F.groups.map(function (g) {
-      function isDiff(r) { return r[1] && typeof r[1] === "object" && "china" in r[1]; }
+      function isDiff(r) { return r[1] && typeof r[1] === "object" && r[1].china != null && r[1].global != null; }   // same rule as DPS.diffs
       var rows = g[1].filter(function (r) { return !S.only || isDiff(r); });
       if (!rows.length) return "";
       return '<section class="sgroup" id="' + id(g[0]) + '"><h2>' + g[0] + '</h2><table class="sheet-t"><tbody>' + rows.map(function (r) {
@@ -73,7 +75,7 @@
     }).join("");
     var db = document.getElementById("difbar");
     db.hidden = !nd;
-    if (nd) db.innerHTML = '<span class="legend2"><i class="cn"></i>China <i class="gl"></i>Global</span><span>' + nd + ' specs differ between the versions; those cells are split. “Page only” marks a spec that only one version\'s page lists.</span>' +
+    if (nd) db.innerHTML = '<span class="legend2"><i class="cn"></i>China <i class="gl"></i>Global</span><span>' + nd + ' specs differ between the versions; those cells are split.</span>' +
       '<button type="button" id="only" aria-pressed="' + S.only + '">' + (S.only ? "Show all specs" : "Show only the " + nd + " differences") + '</button>';
     var o = document.getElementById("only"); if (o) o.onclick = function () { S.only = !S.only; sheet(); };
   }

@@ -160,5 +160,3 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .legend2 { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .8rem; }
 .legend2 i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; } .legend2 i.cn { background: var(--cn); } .legend2 i.gl { background: var(--gl); margin-left: 6px; }
 @media (max-width: 420px) { .sheet-t th { width: 28%; padding-right: 8px; } }
-.only { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; font: 600 .68rem var(--body); vertical-align: 1px; }
-.only.cn { background: var(--cn-soft); color: var(--cn-ink); } .only.gl { background: var(--gl-soft); color: var(--gl-ink); }

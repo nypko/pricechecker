@@ -118,7 +118,7 @@ groups:                        # fixed group and field names, so every phone's s
   battery: {capacity: ..., wired: "100 W SUPERVOOC / 100 W UFCS", wireless: null}   # null = not on the brand's page
   software: {system: "ColorOS 17"}
   # a value the two brand pages disagree on: {china: "...", global: "..."}  -> shown as a split cell, counted as a difference
-  # a value only one page lists:            {value: "...", from: china}   -> one cell tagged "China page only", not a difference
+  # a value only one page lists:            {value: "...", from: china}   -> one plain cell for both versions, not a difference
   ...
 bands:
   china: {lte: [1, 2, 3, ...], nr: [1, 2, 3, ...]}
@@ -126,7 +126,9 @@ bands:
 
 - **China vs Global:** when both versions' brand pages are read, a field the pages disagree on renders as a split cell
   (China half and Global half, each with its colour label on top), and the specs page offers "Show only the N
-  differences". A field only one page lists is not a difference: one cell, tagged with the page it came from. Example,
+  differences". A field only one page lists is not a difference: if it is the same hardware it shows as one plain cell
+  (no tag; one line under the sources explains it); if it can vary by market (what's in the box) it shows as a split
+  cell with "Not listed" in the other half, and isn't counted. Example,
   Find X9 Ultra (2026-10-26): 7 real differences (memory versions, wired charging standards, colours, NFC, SIM/eSIM,
   satellite systems, colour lens), plus 5 fields only one page lists.
 - **Schema:** fixed groups (display, performance, battery, cameras, video, build, connectivity, software, other) with

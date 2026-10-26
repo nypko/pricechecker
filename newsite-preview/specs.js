@@ -10,7 +10,7 @@ window.DPS = {
   },
   phones: {
     "oppo-find-x9-ultra": {
-      // both brand pages read: {china, global} = the pages disagree; {v, from} = only one page lists it (not a difference)
+      // both brand pages read: {china, global} = split cell; {v, from} = only one page lists the same hardware fact, shown plainly
       sources: { global: { url: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/", checked: "2026-10-26" },
                  china: { url: "https://www.oppo.com/cn/smartphones/series-find-x/find-x9-ultra/specs/", checked: "2026-10-26", lang: "Chinese" } },
       groups: [
@@ -21,7 +21,7 @@ window.DPS = {
         ["Build", [["Size", "163.16 × 76.97 × 8.65 mm (9.10 mm leather back)"], ["Weight", "235 g (236 g leather back)"], ["Colours", { china: "Three, incl. a glacier white", global: "Canyon Orange, Tundra Umber" }], ["Water and dust", null]]],
         ["Connectivity", [["Wi-Fi", "Wi-Fi 7"], ["Bluetooth", "6.0; LDAC, aptX Adaptive, LHDC 5.0"], ["LE Audio", { v: "Yes", from: "china" }], ["NFC", { china: "Yes, with Chinese transit and payment cards", global: "Yes (depends on region)" }], ["SIM", { china: "Dual nano-SIM (no eSIM listed)", global: "Dual nano-SIM + eSIM" }], ["USB", "USB-C 3.2 Gen 1, no analogue headphones"], ["Satellite positioning", { china: "BeiDou, GPS L1+L5, Galileo, GLONASS, QZSS", global: "GPS L1+L5, Galileo, BeiDou, GLONASS, QZSS, NavIC" }], ["China model number", { v: "PMA110", from: "china" }]]],
         ["Software", [["System", "ColorOS 16"], ["Updates", null]]],
-        ["Other", [["Fingerprint", "Ultrasonic, under the screen"], ["Face unlock", "Yes"], ["Infrared remote", "Yes"], ["In the box", { v: "Charger, cable, case", from: "china" }]]]
+        ["Other", [["Fingerprint", "Ultrasonic, under the screen"], ["Face unlock", "Yes"], ["Infrared remote", "Yes"], ["In the box", { china: "Charger, cable, case", global: null }]]]
       ],
       bands: { global: { lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71, 38, 39, 40, 41, 42], nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 66, 71, 75, 77, 78, 79] },
                china: { lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48], nr: [1, 2, 3, 5, 7, 8, 12, 18, 20, 25, 26, 28, 38, 40, 41, 48, 66, 77, 78, 79, 80, 81, 83, 84, 89] } }
@@ -65,7 +65,7 @@ DPS.check = function (slug, ed, region) {
 // how many fields differ between the versions (both pages read)
 DPS.diffs = function (slug) {
   var p = DPS.phones[slug]; if (!p) return 0;
-  return p.groups.reduce(function (n, g) { return n + g[1].filter(function (r) { return r[1] && typeof r[1] === "object" && "china" in r[1]; }).length; }, 0);
+  return p.groups.reduce(function (n, g) { return n + g[1].filter(function (r) { return r[1] && typeof r[1] === "object" && r[1].china != null && r[1].global != null; }).length; }, 0);
 };
 DPS.count = function (slug) {
   var p = DPS.phones[slug]; if (!p) return 0;

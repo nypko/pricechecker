@@ -1,0 +1,10 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# added 2026-10-21 from GSMArena's spec pages (battery is the China unit's unless noted)
+id: redmi-k90-pro-max
+key:
+  chip: "Snapdragon 8 Elite Gen 5"
+  screen: 6.9
+  battery: "7,560 mAh"
+  charging: "100 W"

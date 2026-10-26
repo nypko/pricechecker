@@ -1,0 +1,10 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# source: brand (the brand's own spec page)
+id: google-pixel-11-pro-xl
+key:
+  chip: "Tensor G6"
+  screen: 6.8
+  battery: "5,115 mAh"
+  charging: "45 W"

@@ -1,0 +1,10 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# fixed 2026-10-20 (GSMArena + launch coverage)
+id: honor-magic-8-pro
+key:
+  chip: "Snapdragon 8 Elite Gen 5"
+  screen: 6.71
+  battery: "7,200 mAh (China) / 7,100 mAh (Global) / 6,270 mAh (EU)"
+  charging: "120 W (China) / 100 W (Global)"

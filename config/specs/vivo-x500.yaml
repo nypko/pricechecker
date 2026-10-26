@@ -1,0 +1,10 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# added 2026-10-20: Gizmochina, Beebom, Notebookcheck
+id: vivo-x500
+key:
+  chip: "Dimensity 9600M"
+  screen: 6.59
+  battery: "7,500 mAh"
+  charging: "90 W"

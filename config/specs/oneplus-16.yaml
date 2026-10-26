@@ -1,0 +1,61 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+id: oneplus-16
+sources:
+  china: {url: https://www.oneplus.com/cn/16/specs, checked: 2026-10-26, lang: Chinese}
+key:
+  chip: "Snapdragon 8 Elite Extreme Gen 6"
+  screen: 6.78
+  battery: "9,000 mAh"
+  charging: "100 W"
+groups:
+  display:
+    size: "6.78 in, flat"
+    panel: "Flat screen, Crystal Shield glass (panel type not stated)"
+    resolution: "2772 × 1272 (FHD+), 450 ppi"
+    refresh_rate: "1–165 Hz, up to 185 Hz in games"
+    brightness: "1,000 nits typical, 2,000 nits high-brightness mode"
+    dimming: "3,840 Hz PWM below 70 nits, DC-like above"
+  performance:
+    chip: "Snapdragon 8 Elite Extreme Gen 6 (2 nm)"
+    cpu: "8 cores, up to 5.01 GHz"
+    gpu: "Adreno 850 @ 1,450 MHz"
+    ram: "LPDDR5X Ultra"
+    storage: "UFS 4.1"
+    versions: "12+256, 12+512, 16+512, 16 GB + 1 TB"
+  battery:
+    battery: "9,000 mAh typical (2 × 4,500; 8,780 mAh rated)"
+    wired: "100 W SUPERVOOC / 100 W UFCS; also 55 W PPS, 18 W PD"
+    wireless: null
+  cameras:
+    main: "200 MP, f/1.6, OIS"
+    telephoto: "50 MP, f/2.6, OIS (3x)"
+    ultra_wide: "50 MP, f/2.0, 116°"
+    front: "50 MP, f/2.0, autofocus"
+    video: "8K 30 fps, 4K 120 fps, 4K Dolby Vision 120 fps"
+  build:
+    size: "161.42 × 76.67 × 8.45–8.55 mm"
+    weight: "217–220 g"
+    colours: "Three colours (Chinese names)"
+    water_and_dust: "IP66, IP68, IP69, IP69K"
+    frame: "Metal"
+  connectivity:
+    wi_fi: "Wi-Fi 7"
+    bluetooth: "6.0, LE Audio"
+    nfc: "Yes"
+    sim: "Dual nano-SIM (no eSIM listed)"
+    usb: "USB-C 3.2 Gen 1"
+    satellite_positioning: "BeiDou, GPS L1+L2+L5, Galileo, GLONASS, QZSS"
+  software:
+    system: "ColorOS 17 (Chinese software; see what the China version means)"
+    updates: null
+  other:
+    speakers: "Stereo"
+    fingerprint: "Ultrasonic, under the screen"
+    infrared_remote: "Yes"
+    in_the_box: "Charger, cable, case"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 25, 26, 28, 32, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 18, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 75, 77, 78, 79, 80, 81, 83, 84, 89, 91, 92, 93, 94, 95, 98]

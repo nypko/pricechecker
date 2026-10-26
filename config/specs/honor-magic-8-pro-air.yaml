@@ -1,0 +1,9 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+id: honor-magic-8-pro-air
+key:
+  chip: "Dimensity 9500"
+  screen: 6.31
+  battery: "5,500 mAh"
+  charging: "80 W"

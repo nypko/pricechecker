@@ -1,0 +1,10 @@
+# Main bands the operators of a region use. The band check on a phone page lists any of these a phone's version lacks
+# (carriers differ: always check yours). `why` explains the bands whose absence matters most.
+EU:
+  label: the EU
+  lte: [1, 3, 7, 8, 20, 28]
+  nr: [1, 3, 7, 8, 20, 28, 78]
+  why:
+    20: "800 MHz: rural coverage and indoors in most EU countries"
+    28: "700 MHz: wide-area 4G/5G in many EU countries"
+    78: "3.5 GHz: the main EU 5G band"

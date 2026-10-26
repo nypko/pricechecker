@@ -12,6 +12,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import affiliate, buyer_reports, cards, fx, history, normalize, pricing, promos, terms
+from . import specs as specs_cfg
 
 OUT = Path("build")
 CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]   # CAD: always an ECB conversion (marked ≈)
@@ -296,7 +297,7 @@ def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:
 
 
 def _specs(sp: dict | None) -> list[tuple[str, str]]:
-    """specs.yaml entry -> [("Chip", "Dimensity 9500"), ("Screen", "6.78″"), ...] in a fixed order, skipping blanks."""
+    """a sheet's `key` block -> [("Chip", "Dimensity 9500"), ("Screen", "6.78″"), ...] in a fixed order, skipping blanks."""
     if not sp:
         return []
     screen = sp.get("screen")
@@ -517,7 +518,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     if os.environ.get("DOORPRICE_ENV") == "testing":   # testing.doorprice.app: banner, hidden from search engines, no IndexNow key
         site_cfg = {**site_cfg, "testing": True, "indexnow_key": None}
-    specs = (yaml.safe_load(Path("config/specs.yaml").read_text()) or {}).get("phones") or {}   # key specs, hand-entered
+    specs = {i: sheet.get("key") for i, sheet in specs_cfg.load().items()}   # key specs, one file per phone in config/specs/
     google = _google()   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=UTC) if updated_at else None)   # approved buyer reports per store, region
     # only stores still enabled in stores.yaml: a switched-off or removed store's last prices must not show as current

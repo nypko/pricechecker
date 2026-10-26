@@ -1,0 +1,10 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# added 2026-10-20: GSMArena, Beebom
+id: huawei-mate-90
+key:
+  chip: "Kirin 9030"
+  screen: 6.75
+  battery: "6,600 mAh"
+  charging: "66 W"

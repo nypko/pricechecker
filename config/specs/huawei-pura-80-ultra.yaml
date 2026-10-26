@@ -1,0 +1,9 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+id: huawei-pura-80-ultra
+key:
+  chip: "Kirin 9020"
+  screen: 6.8
+  battery: "5,700 mAh (China) / 5,170 mAh (Global)"
+  charging: "100 W"

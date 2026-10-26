@@ -1,0 +1,55 @@
+# Key specs shown on the phone page. Entered by hand, checked 2026-10-19/20 against GSMArena, brand announcements and
+# Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
+# A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
+# source: brand (the brand's own spec page)
+id: google-pixel-11-pro
+sources:
+  global: {url: https://support.google.com/pixelphone/answer/7158570, checked: 2026-10-26}
+key:
+  chip: "Tensor G6"
+  screen: 6.3
+  battery: "4,850 mAh"
+  charging: "30 W"
+groups:
+  display:
+    size: "6.3 in, 20:9"
+    panel: "LTPO OLED, Gorilla Glass Victus 2"
+    resolution: "1280 × 2856, 495 ppi"
+    refresh_rate: "1–120 Hz"
+    brightness: "2,400 nits HDR, 3,600 nits peak"
+  performance:
+    chip: "Google Tensor G6, Titan M3 security chip"
+    versions: "12 GB + 256 GB, 16 GB + 512 GB, 16 GB + 1 TB"
+  battery:
+    battery: "4,850 mAh typical (4,707 mAh minimum)"
+    wired: "30 W (55% in about 30 min)"
+    wireless: "25 W Pixelsnap (Qi2.2)"
+  cameras:
+    main: "50 MP, f/1.68, 1/1.3\""
+    telephoto: "48 MP, f/2.8, OIS, 5x"
+    ultra_wide: "48 MP, f/1.7, 123°, macro"
+    front: "42 MP, f/2.2, autofocus"
+    video: "8K 30 fps (Video Boost), 4K 60 fps, 10-bit HDR"
+  build:
+    size: "152.7 × 71.9 × 8.4 mm"
+    weight: "204 g"
+    colours: "Canyon, Olive, Fog, Obsidian"
+    water_and_dust: "IP68"
+    frame: "Recycled aluminium"
+  connectivity:
+    wi_fi: "Wi-Fi 7"
+    bluetooth: "6"
+    nfc: "Yes"
+    sim: "Nano-SIM + eSIM (EU model)"
+    usb: "USB-C 3.2"
+    also: "Ultra-wideband, Thread"
+  software:
+    system: "Android 17"
+    updates: "7 years of OS and security updates"
+  other:
+    speakers: "Stereo, 3 microphones"
+    sensors: "Barometer, gyro, compass, proximity, light"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 14, 17, 18, 19, 20, 21, 25, 26, 28, 29, 30, 32, 38, 39, 40, 41, 42, 48, 66, 71, 75]
+    nr: [1, 2, 3, 5, 7, 8, 12, 13, 14, 20, 25, 26, 28, 30, 38, 40, 41, 66, 71, 75, 77, 78, 79]

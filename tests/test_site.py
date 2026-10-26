@@ -75,8 +75,10 @@ def test_specs_config_uses_catalog_ids():
 
     import yaml
     ids = {p["id"] for p in yaml.safe_load(Path("config/catalog.yaml").read_text())["phones"]}
-    specs = yaml.safe_load(Path("config/specs.yaml").read_text())["phones"]
+    from pricechecker import specs as specs_cfg
+    specs = specs_cfg.load()
     assert set(specs) <= ids, set(specs) - ids
+    assert all(s["id"] == i for i, s in specs.items())   # file name and id agree
     assert site._specs({"chip": "X", "screen": "8.12 inside", "battery": "5,600 mAh"}) == [("Chip", "X"), ("Screen", "8.12″ inside"), ("Battery", "5,600 mAh")]
 
 

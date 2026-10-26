@@ -224,6 +224,10 @@ def test_telegram_posts_real_drops_only():
     assert st["a"]["ref"] == 1040                                                 # rises raise the reference
     drops, _, st = telegram.changes([d("a", 1000), d("b", 500)], st)
     assert [x["was"] for x in drops] == [1040] and st["a"]["ref"] == 1000         # −€40, −3.8%: posted
+    assert [(p["slug"], p["was"], p["eur"]) for p in st["posted"]] == [("a", 1040, 1000)] and st["posted"][0]["at"]
+    from datetime import UTC, datetime
+    later = datetime(2099, 1, 1, tzinfo=UTC)                                      # 14 days on, the record is pruned
+    assert "posted" not in telegram.changes([d("a", 1000), d("b", 500)], st, later)[2]
     drops, _, st = telegram.changes([d("a", 900, "import tax"), d("b", 500)], st)
     assert not drops and st["a"] == {"ref": 900, "left": "import tax"}            # total covers something else: reset
     assert "€1,000" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x") and "−€40" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x")

@@ -11,7 +11,7 @@ as one digest. The first run only records prices (no flood of "drops"). Needs TE
 import json
 import os
 import sys
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from html import escape
 from pathlib import Path
 
@@ -43,9 +43,16 @@ def what(d: dict) -> str:
     return " · ".join(x for x in (f"{d['edition']} version", spec(d["storage"]), d["store"]) if x)
 
 
-def changes(deals: list[dict], state: dict) -> tuple[list[dict], list[dict], dict]:
-    """(drops, new phones, next state). Pure: no network, so it can be tested."""
+POSTED_DAYS = 14
+
+
+def changes(deals: list[dict], state: dict, now: datetime | None = None) -> tuple[list[dict], list[dict], dict]:
+    """(drops, new phones, next state). Pure: no network, so it can be tested. The next state also has
+    "posted": [{slug, at, was, eur}] - the drops of the last 14 days (not a phone), which the site marks as headline drops."""
+    now = now or datetime.now(UTC)
     first_run = not state
+    posted_before = state.get("posted") or []
+    state = {k: v for k, v in state.items() if k != "posted"}
     drops, new, nxt = [], [], {}
     for d in deals:
         s = state.get(d["slug"])
@@ -65,6 +72,11 @@ def changes(deals: list[dict], state: dict) -> tuple[list[dict], list[dict], dic
     for slug, s in state.items():           # a phone gone from the site (out of stock everywhere) keeps its last ref
         nxt.setdefault(slug, s)
     drops.sort(key=lambda d: (d["eur"] - d["was"]) / d["was"])   # biggest drop first
+    at = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    cutoff = (now - timedelta(days=POSTED_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    posted = [p for p in posted_before if p["at"] >= cutoff] + [{"slug": d["slug"], "at": at, "was": d["was"], "eur": d["eur"]} for d in drops]
+    if posted:
+        nxt["posted"] = posted
     return drops, new, nxt
 
 
@@ -233,6 +245,8 @@ def main(argv=None) -> int:
             sent += 1
         except Exception as e:  # noqa: BLE001 - keep going; the phones in a failed message keep their old state, so it goes out next run
             print(f"  [telegram] send failed: {e}")
+            if "posted" in nxt:   # a drop that didn't go out isn't posted
+                nxt["posted"] = [p for p in nxt["posted"] if p["slug"] not in slugs or p in old.get("posted", [])]
             for slug in slugs:
                 if slug in old:
                     nxt[slug] = old[slug]

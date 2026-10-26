@@ -1,0 +1,107 @@
+from datetime import UTC, datetime
+
+from pricechecker import derive
+from pricechecker.pricing import Settings, tax_rule
+
+RATES = {"EUR": 1.0, "USD": 1.1}
+NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
+
+
+def row(time, price, store="s", model="m", edition="china", storage="12/256", cur="EUR", avail=True):
+    return {"time": time, "store": store, "model_id": model, "edition": edition, "storage": storage,
+            "price": price, "currency": cur, "available": avail}
+
+
+def test_store_joining_is_not_a_drop():
+    rows = [row("2026-10-01T00:00:00Z", 1000, store="a"), row("2026-10-26T00:00:00Z", 800, store="b")]
+    assert derive.listing_drops(rows, RATES, NOW) == []
+
+
+def test_drop_thresholds():
+    def one(now_price):
+        rows = [row("2026-10-01T00:00:00Z", 1000), row("2026-10-26T00:00:00Z", now_price)]
+        (d,) = derive.listing_drops(rows, RATES, NOW)
+        return d
+    assert one(971)["real"] is False                      # -2.9%
+    small = derive.listing_drops([row("2026-10-01T00:00:00Z", 400), row("2026-10-26T00:00:00Z", 385)], RATES, NOW)[0]
+    assert small["real"] is False and small["pct"] < -3   # -3.75% but EUR 15
+    d = one(965)                                          # -3.5%, EUR 35 -> real; 40 below
+    assert d["real"] is True and d["then"] == 1000 and d["now"] == 965 and d["eur"] == 35
+    assert d["slug"] == "m" and d["store"] == "s" and d["when"] == "2026-10-26"
+    assert one(960)["pct"] == -4.0
+
+
+def test_drop_ignores_sold_out_and_old_changes():
+    rows = [row("2026-10-01T00:00:00Z", 1000), row("2026-10-26T00:00:00Z", 900, avail=False)]
+    assert derive.listing_drops(rows, RATES, NOW) == []
+    rows = [row("2026-09-01T00:00:00Z", 1000), row("2026-09-10T00:00:00Z", 900)]   # it fell a month ago, held since
+    assert derive.listing_drops(rows, RATES, NOW) == []
+
+
+def test_drop_converts_to_eur():
+    rows = [row("2026-10-01T00:00:00Z", 1100, cur="USD"), row("2026-10-26T00:00:00Z", 1000, cur="USD")]
+    (d,) = derive.listing_drops(rows, RATES, NOW)
+    assert d["then"] == 1000 and d["now"] == 909.09
+
+
+def test_sub_store_folds_into_parent_line():
+    rows = [row("2026-10-01T00:00:00Z", 1000, store="x"), row("2026-10-01T00:00:00Z", 950, store="x_eu"),
+            row("2026-10-02T00:00:00Z", 950, store="x_eu", avail=False)]
+    lines = derive.store_lines(rows, "m", "china", RATES)
+    assert list(lines) == ["x"]
+    assert lines["x"] == [("2026-10-01", 950.0), ("2026-10-02", 1000.0)]   # EU copy sold out: only the parent's price left
+
+
+def test_store_lines_carry_state_and_skip_sold_out_and_other_phones():
+    rows = [row("2026-10-01T00:00:00Z", 100, store="a"), row("2026-10-03T00:00:00Z", 90, store="b"),
+            row("2026-10-03T00:00:00Z", 5, store="a", model="other"), row("2026-10-04T00:00:00Z", 1, store="a", avail=False)]
+    lines = derive.store_lines(rows, "m", "china", RATES)
+    assert lines["a"] == [("2026-10-01", 100.0), ("2026-10-03", 100.0)]
+    assert lines["b"] == [("2026-10-03", 90.0), ("2026-10-04", 90.0)]
+
+
+def offer(edition, storage, total, **kw):
+    # ship and duties known, EUR, no payment fee: total == money.eur
+    return {"edition": edition, "storage": storage, "available": True, "money": {"eur": total}, "pay": {"card": 0},
+            "ship": {"EU": {"eur": 0}}, "duties": {"EU": True}, **kw}
+
+
+RULE = tax_rule({"EU": {"rate_pct": 21}}, Settings("EU", "", "card", "eur"))
+
+
+def test_gap_same_storage_only():
+    offers = [offer("china", "12/256", 800), offer("china", "12/512", 900), offer("global", "12/512", 1200),
+              offer("global", "12/512", 1300), offer("global", "16/512", 1000)]
+    assert derive.gap(offers, RULE) == {"storage": "12/512", "china": 900, "global": 1200, "diff": 300}
+
+
+def test_gap_none_without_shared_storage():
+    assert derive.gap([offer("china", "12/256", 800), offer("global", "12/512", 1200)], RULE) is None
+    assert derive.gap([], RULE) is None
+
+
+def test_gap_uses_settled_totals_only():
+    open_ship = offer("china", "12/512", 500, ship={"EU": None})
+    open_ship["ship"] = {}
+    assert derive.gap([open_ship, offer("global", "12/512", 1200)], RULE) is None
+    assert derive.gap([offer("china", "12/512", 500, available=False), offer("global", "12/512", 1200)], RULE) is None
+
+
+def test_mark_headline_without_posted_key():
+    drops = [{"slug": "a"}]
+    out = derive.mark_headline(drops, {"a": {"ref": 1, "left": ""}}, NOW)   # an old state has no "posted"
+    assert out == [{"slug": "a"}]
+
+
+def test_mark_headline_within_window():
+    st = {"posted": [{"slug": "a", "at": "2026-10-25T00:00:00Z", "was": 1040, "eur": 1000},
+                     {"slug": "b", "at": "2026-10-01T00:00:00Z", "was": 1, "eur": 1}]}
+    out = derive.mark_headline([{"slug": "a"}, {"slug": "b"}, {"slug": "c"}], st, NOW)
+    assert [d.get("headline", False) for d in out] == [True, False, False]
+    assert derive.mark_headline([{"slug": "a"}], {"phones": st}, NOW)[0]["headline"] is True   # the whole saved file works too
+
+
+def test_promo_split():
+    o = {"money": {"eur": 1056.95}, "promo": {"pct": 2}}
+    assert derive.promo_split(o, "eur") == (1056.95, 21.14, 1035.81)
+    assert derive.promo_split({"money": {"eur": 500}}, "eur") == (500, 0, 500)

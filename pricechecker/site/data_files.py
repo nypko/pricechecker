@@ -46,6 +46,8 @@ def _put(out: Path, name: str, doc) -> str:
     path = out / rel
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(body)
+    if len(body) > BUDGET:   # warn, never fail the build: the hourly price run must still publish
+        print(f"  [data] {rel} is {len(body)} bytes, over the {BUDGET:,}-byte budget")
     return "/" + rel
 
 

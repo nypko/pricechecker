@@ -1,7 +1,9 @@
 """Versioned data files the browser loads (build/data/v1/): hashed names, no notes text, size budgets, and that the
 offer inputs in them give pricing.js the same totals as pricing.py."""
 import json
+import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -11,6 +13,9 @@ from pricechecker import fx, pricing, run, terms
 from pricechecker.site import context, data_files, offers
 
 BUDGET = 60_000
+# sizes of the real saved prices are checked in the newsite/testing workflows only: the hourly production run must not
+# be blocked by data growth (data_files.write prints a warning instead)
+live_budgets = pytest.mark.skipif(os.environ.get("DOORPRICE_CHECK_BUDGETS") != "1", reason="set DOORPRICE_CHECK_BUDGETS=1")
 
 
 @pytest.fixture(scope="module")
@@ -56,6 +61,7 @@ def test_phone_file_has_no_notes_text(built, phones):
     assert "notes" not in raw
 
 
+@live_budgets
 def test_budgets(built):
     out, _ = built
     files = list((out / "data" / "v1").rglob("*.json"))
@@ -68,6 +74,7 @@ def _load(out, paths):
     return [o for path in paths for o in json.loads((out / path.lstrip("/")).read_text())["offers"]]
 
 
+@live_budgets
 def test_every_region_has_home_files_within_budget(built):
     out, names = built
     for region in terms.REGIONS:
@@ -100,6 +107,7 @@ def test_home_files_rerank_like_the_phone_pages(built, data, phones, s):
     assert checked > 10
 
 
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_offer_inputs_feed_pricing_js(built, data, phones):
     out, names = built
     p = max(phones, key=lambda p: len(p["offers"]))
@@ -113,7 +121,9 @@ def test_offer_inputs_feed_pricing_js(built, data, phones):
                          "--settings", "UK,,bank,gbp"], capture_output=True, text=True)
     assert r2.returncode == 0, r2.stderr
     uk = pricing.Settings("UK", "", "bank", "gbp")
-    for g, o in zip(json.loads(r2.stdout), json.loads(f.read_text())["offers"]):
+    offers_in = json.loads(f.read_text())["offers"]
+    assert len(json.loads(r2.stdout)) == len(offers_in)
+    for g, o in zip(json.loads(r2.stdout), offers_in):
         assert round(g, 2) == round(pricing.cost(o, uk, pricing.tax_rule(data.tax_cfg, uk)).total, 2)
     doc = json.loads(f.read_text())
     s = pricing.Settings("EU", "", "card", "eur")
@@ -124,3 +134,20 @@ def test_offer_inputs_feed_pricing_js(built, data, phones):
     # and the file's inputs give the same totals as the full offers the pages use
     for o, full in zip(doc["offers"], p["offers"]):
         assert round(pricing.cost(o, s, rule).total, 2) == round(pricing.cost(full, s, rule).total, 2)
+
+
+def test_splitter_keeps_synthetic_data_within_budget(data, tmp_path):
+    """The splitter's own guarantee, on made-up offers (no env needed): many phones, none split across parts."""
+    offer = {"available": True, "old": False, "money": {"price": 999.5, "cur": "EUR"}, "ship": {"EU": 5.0},
+             "duties": {"EU": 0.0}, "store_label": "Some Store", "edition": "global", "storage": "12/256"}
+    phones = [{"id": f"p{i}", "offers": [dict(offer) for _ in range(8)]} for i in range(300)]
+    parts = data_files._home_parts(data, phones, "EU")
+    assert len(parts) > 1
+    for rows in parts:
+        assert len(data_files._dump(data_files._home_doc("EU", rows))) <= BUDGET
+    assert sum(len(r) for r in parts) == 300 * 8
+
+
+def test_write_warns_about_an_oversized_file(capsys, tmp_path):
+    data_files._put(tmp_path, "big", {"x": "y" * (BUDGET + 1)})
+    assert "over the 60,000-byte budget" in capsys.readouterr().out

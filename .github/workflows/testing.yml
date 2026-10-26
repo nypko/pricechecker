@@ -23,7 +23,12 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - run: python -m pytest -q
+        env:
+          DOORPRICE_CHECK_BUDGETS: "1"
       - name: Build from the saved prices
         env:
           DOORPRICE_ENV: testing

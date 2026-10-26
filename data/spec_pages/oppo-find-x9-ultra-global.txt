@@ -1,0 +1,386 @@
+OPPO Find X9 Ultra - Specifications | OPPO Global
+Skip to main content
+We use cookies and similar technologies to make this site work properly and to analyse traffic and optimise your browsing experience. By continuing to browse the site, you agree to the use of such cookies.
+Read More
+.
+Smartphones
+OPPO Find X10 Pro Max
+OPPO Find X10
+OPPO Reno16 Series 5G
+OPPO Find N6
+OPPO A7 Pro 5G
+Find N Series
+Find X Series
+Reno Series
+A Series
+Compare
+View All Phones
+Tablets
+OPPO Pad 5 Pro
+OPPO Pad Mini
+Matte Display Edition
+OPPO Pad 5
+Matte Display Edition
+OPPO Pad SE
+OPPO Pad 3 Pro
+OPPO Pad 3
+Matte Display Edition
+View Tablets
+Audio
+OPPO Enco X4
+OPPO Enco Buds3s
+OPPO Enco Air5s
+OPPO Enco Air5
+OPPO Enco Clip2
+Open Earbuds
+OPPO Enco Air5 Pro
+View Audio
+Wearables
+OPPO Watch X3
+OPPO Watch S
+OPPO Watch X2
+OPPO Watch X2 Mini
+OPPO Watch X
+OPPO Watch Free
+View Wearables
+Accessories
+OPPO Bubble
+View Accessories
+About OPPO
+Our Story
+OPPO AI
+OPPO LUMO IMAGE
+OPPO Apex Guard
+News
+Events
+ColorOS
+ColorOS 17 Official Website
+Community
+Support
+Smartphones
+OPPO Find X10 Pro Max
+OPPO Find X10
+OPPO Reno16 Series 5G
+OPPO Find N6
+OPPO A7 Pro 5G
+Find N Series
+Find X Series
+Reno Series
+A Series
+Compare
+View All Phones
+Tablets
+OPPO Pad 5 Pro
+OPPO Pad Mini
+Matte Display Edition
+OPPO Pad 5
+Matte Display Edition
+OPPO Pad SE
+OPPO Pad 3 Pro
+OPPO Pad 3
+Matte Display Edition
+View Tablets
+Audio
+OPPO Enco X4
+OPPO Enco Buds3s
+OPPO Enco Air5s
+OPPO Enco Air5
+OPPO Enco Clip2
+Open Earbuds
+OPPO Enco Air5 Pro
+View Audio
+Wearables
+OPPO Watch X3
+OPPO Watch S
+OPPO Watch X2
+OPPO Watch X2 Mini
+OPPO Watch X
+OPPO Watch Free
+View Wearables
+Accessories
+OPPO Bubble
+View Accessories
+About OPPO
+Our Story
+OPPO AI
+OPPO LUMO IMAGE
+OPPO Apex Guard
+News
+Events
+ColorOS
+ColorOS 17 Official Website
+Community
+Support
+Find X9 Ultra
+Find X9s
+Overview
+Specs
+Find X9 Ultra
+Find X9 Ultra
+Find X9s
+Overview
+Specs
+OPPO Find X9 Ultra
+(
+CPH2841
+)
+OPPO Find X9 Ultra
+(
+CPH2841
+)
+Canyon Orange | Tundra Umber
+* Product pictures are for reference only. Please refer to the actual product.
+Size and Weight
+Height
+about 163.16mm
+Width
+about 76.97mm
+Thickness
+about 8.65mm(Canyon Orange)
+about 9.10mm(Tundra Umber)
+Weight
+about 235g(Canyon Orange)
+about 236g(Tundra Umber)
+* Product size and weight may vary by configuration, manufacturing process and measurements. All specifications are subject to the actual product.
+Storage
+RAM and ROM Capacities
+12GB+512GB
+16GB+1TB
+RAM Type
+LPDDR5X
+ROM Specifications
+UFS 4.1
+Phone Storage Card
+Unsupported
+USB OTG
+Supported
+* The available internal storage may be smaller as part of the internal storage is occupied by software. Actual memory space may change due to application updates, user operations, and other related factors.
+Display
+Size
+6.82 inches
+Screen Ratio
+94.6%
+Resolution
+QHD+ 3168×1440 Pixels
+Refresh Rate
+1-120Hz Adaptive, Maximum 144Hz (144Hz only works in some game scenarios)
+Touch Sampling Rate
+Maximum 300Hz
+Default 120Hz
+Colour Gamut
+Standard mode: 100% DCI-P3
+Natural mode: 100% DCI-P3
+Vivid mode: 100% DCI-P3
+Colour Depth
+1.07 billion colours(10-bit)
+Pixel Density
+510 PPI
+Brightness
+Normal brightness: 800 nits(Typical)
+HBM: 1800 nits(Typical)
+Panel
+AMOLED display
+Cover Glasses
+Corning® Gorilla® Glass Victus® 2
+Camera
+Rear
+Ultra-wide angle: 50MP; f/2.0; FOV 123°; 6P lens; AF supported
+Wide angle: 200MP; f/1.5; FOV 84°; 7P lens; AF supported; Supports 2-axis OIS
+Telephoto: 200MP; f/2.2; FOV 34°; Prism(OIS)+3P+3P(AF) lens; AF supported; Supports 2-axis OIS
+Ultra telephoto: 50MP; f/3.5; FOV 11°; 1G3P+PRISM lens; AF supported; Supports 2-axis OIS
+Monochrome: 3.2MP; f/2.4; FOV 95°; 3P lens
+Front
+50MP; f/2.4; FOV 90°; 5P lens; AF supported
+Shooting Mode
+Rear: Photo, Video, Portrait, Night, Panorama, SLO-MO, Long Exposure, Dual-view video, TIME-LAPSE, STICKER, XPAN, HASSELBLAD HI-RES, Underwater, Master, Hypertext, DOC SCANNER, Pro Video, HASSELBLAD TELECONVERTER
+Front: Photo, Video, Portrait, HASSELBLAD HI-RES, Night, Panorama, Dual-view video, TIME-LAPSE, STICKER, Pro Video
+Video
+Rear
+8K video: 30 fps
+4K video: 120 fps, 60 fps, 30 fps
+1080P video: 120 fps, 60 fps, 30 fps
+720P video: 30 fps
+4K EIS/OIS video: 60 fps, 30 fps
+1080P EIS/OIS video: 60 fps, 30 fps
+4K SLO-MO video: 120 fps
+1080P SLO-MO video: 240 fps, 120 fps
+720P SLO-MO video: 480 fps, 240 fps
+4K TIME-LAPSE: 30 fps
+1080P TIME-LAPSE: 30 fps
+4K Dolby Vision shooting: 120 fps 60 fps, 30 fps
+1080P Dolby Vision shooting: 120 fps, 60 fps, 30 fps
+Supports professional video shooting
+Supports Dual-view video shooting
+Supports HDR video shooting
+Supports video zoom shooting: up to 10x optical zoom, up to 30x digital zoom
+Front
+4K video: 60 fps, 30 fps
+1080P video: 60 fps, 30 fps(with Retouch on)
+720P video: 30 fps
+1080P EIS video: 30 fps(with Retouch on)
+720P EIS video: 30 fps
+4K TIME-LAPSE: 30 fps
+1080P TIME-LAPSE: 30 fps
+Supports professional video shooting
+Supports Dual-view video shooting
+Supports HDR video shooting
+Supports video zoom shooting: 2× digital zoom
+Chips
+SoC
+Snapdragon® 8 Elite Gen 5 Mobile Platform
+CPU
+8-core
+GPU
+Adreno™ 840@1200MHz
+Battery
+Battery
+7050 mAh/26.23 Wh(Typical)
+6890 mAh/25.64 Wh(Rated)
+Fast Charge
+Supports(Max): 100 W SUPERVOOC
+TM
+Compatible with: 80 W and below SUPERVOOC
+TM
+, 18 W PD, 18 W QC, 55 W PPS
+Supports: 50 W AIRVOOC
+TM
+* The SUPERVOOC word mark and logos are trademarks owned by Guangdong OPPO Mobile Telecommunications Corp., Ltd.
+* Adapter maximum supported power is 100W, maximum supported power in low voltage areas is 80W.
+Biometrics
+Fingerprint
+Under-screen fingerprint
+Facial Recognition
+Supported
+Sensors
+Proximity sensor
+Ambient light sensor
+Colour temperature sensor
+E-compass
+Accelerometer
+Gyroscope
+In-display ultrasound fingerprint sensor
+Hall sensor
+Pressure sensor
+Laser focusing sensor
+Spectral sensor
+Infrared remote control
+* The Hall sensor is used for magnetic accessory identification and cannot be used for flip cover identification.
+Cellular Network
+SIM 2
+Supported
+SIM Card Type
+Nano-SIM card, Nano-USIM card
+eSIM
+Supported
+Frequency Band
+[Version 1]
+GSM: 850/900/1800/1900MHz
+WCDMA: Band 1/2/4/5/6/8/19
+LTE FDD: Band 1/2/3/4/5/7/8/12/13/17/18/19/20/25/26/28/32/66/71
+LTE TDD: Band 38/39/40/41/42
+5G NR: n1/n2/n3/n5/n7/n8/n12/n20/n25/n26/n28/n38/n40/n41/n66/n71/n75/n77/n78/n79
+[Version 2]
+GSM: 900/1800MHz
+WCDMA: Band 900/2100MHz
+LTE FDD: Band 1/3/5/8
+LTE TDD: Band 40
+5G NR: n1/n3/n5/n8/n40
+* Functions available on the live network depend on the situations of carrier's network and related services deployment.
+Connectivity
+WLAN
+Wi-Fi 7 (802.11be) supported
+Wi-Fi 6 (802.11ax) supported
+Wi-Fi 5 (802.11ac) supported
+802.11a/b/g/n supported
+Wi-Fi Display supported
+WLAN Tethering supported
+Wi-Fi 2.4GHz 2×2+Wi-Fi 5GHz 2×2 concurrent supported
+Wi-Fi 5GHz 160MHz supported
+Wi-Fi 6GHz 320MHz supported
+2×2 MIMO supported
+Bluetooth® Version
+Bluetooth® 6.0, Low Energy
+Bluetooth® Audio Codec
+SBC, AAC, aptX, aptX HD, aptX Adaptive, LDAC, LHDC5.0
+USB Interface
+USB Type-C, USB 3.2 Gen 1
+Earphone Jack
+Type-C headphones, supported Type-C digital headphones, not supported Type-C analog headphones
+NFC
+Supported
+* NFC support depends on the regions.
+Operating System
+ColorOS 16.0
+* The operating system information is for reference only, subject to the actual product. If updated, no further notice will be given.
+Location Technology
+GNSS
+GPS(L1+L5), GLONASS(G1), BDS(B1I+B1C+B2a), Galileo(E1+E5a), QZSS(L1+L5), NavIC(L5)
+Others
+Supported: A-GNSS assisted positioning, WLAN positioning, Cellular network positioning
+In the Box
+Phone×1
+Charger×1
+USB Data Cable×1
+SIM Ejector Tool×1
+Protective Case×1
+Quick Guide×1
+Safety Guide×1
+* May vary in different markets. Subject to the actual product.
+Additional Remarks
+In order to make the front of the phone more compact, the light sensor hole is hidden at the top of the screen. Screen protectors with poor light transmission, such as those that are colored or darkened, may block the light sensor hole and affect the normal use of the phone.
+OPPO
+Smartphones
+OPPO Find X9 Ultra
+Specs
+Smartphones
+OPPO Find X10 Pro Max
+OPPO Find X10
+OPPO Find N6
+OPPO Reno16 Series 5G
+OPPO A7 Pro Max 5G
+OPPO A7 Pro 5G
+See All Smartphones
+IoT Products
+OPPO Bubble
+OPPO Pad 5 Pro
+OPPO Pad SE
+OPPO Watch X3
+OPPO Watch S
+OPPO Enco X4
+OPPO Enco Air5s
+Support
+Contact Us
+Warranty Status
+OPPO Lock
+Android Enterprise
+User Guide
+FAQ
+HeyTap
+Declaration of Conformity
+Security Response Center
+O-Log Technical Downloads
+Digital Service Act
+EU Data Act
+About OPPO
+Our Story
+OPPO LUMO IMAGE
+OPPO Apex Guard
+OPPO 5G
+Newsroom
+Campaign
+AI Smartphone White Paper
+OPPO Sustainability
+Intellectual Property
+Supplier Portal
+Find a Distributor
+OPPO Community
+OPPO Community
+OPPO Life Studio
+Global (English)
+Privacy
+Terms of Use
+Legal & Compliance
+Copyright © 2004-2026 OPPO. All rights reserved.
+Global (English)
+Email Us
+Service Center

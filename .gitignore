@@ -6,3 +6,4 @@ venv/
 .pytest_cache/
 .promo_report.md
 .terms_report.md
+.spec_report.md

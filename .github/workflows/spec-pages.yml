@@ -1,0 +1,30 @@
+name: Spec pages watch
+
+on:
+  schedule:
+    - cron: "23 6 * * 1"   # Mondays 06:23 UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write   # file a review issue when a brand spec page changed
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pricechecker.specpages watch
+      - name: Report changed spec pages
+        if: always() && hashFiles('.spec_report.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |   # one open review issue at a time: later reports are added to it as comments
+          n=$(gh issue list --state open --search 'in:title "Spec pages changed"' --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file .spec_report.md
+          else gh issue create --title "Spec pages changed ($(date -u +%Y-%m-%d))" --body-file .spec_report.md; fi

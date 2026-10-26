@@ -11,10 +11,9 @@ Reference mockups: https://claude.ai/artifact/SBXAcoCFS4Mrzjyd9TUG32 (D pages; p
 
 ## 1. Goals
 
-1. **One place computes totals.** Today the delivered-total maths and the ranking rule exist twice: in Python
-   (`site._title_price`, used for page titles, JSON-LD, deals.json and Telegram) and in JavaScript (`app.js better()`
-   and its total code, used for everything the visitor sees). They have to agree by hand. newsite computes every total
-   and ranking in Python only.
+1. **One definition of totals.** Today the delivered-total maths and the ranking rule exist twice, in Python
+   (`site._title_price`: titles, JSON-LD, deals.json, Telegram) and in `app.js`, and already disagree. newsite defines
+   them once in `pricing.py`; the browser's copy is a small mirror that must pass the same test cases in CI (§4.1).
 2. **Data that grows stays cheap.** History is one CSV that every build reads whole and every history page embeds whole.
 3. **Data for D's new parts:** list price vs automatic sale, one history line per store, listing-level drops,
    delivery-filter fields, full specs and network bands per version.
@@ -42,39 +41,42 @@ Reference mockups: https://claude.ai/artifact/SBXAcoCFS4Mrzjyd9TUG32 (D pages; p
 
 ## 4. Design
 
-### 4.1 Totals engine (`pricechecker/pricing.py`)
+### 4.1 Totals engine (`pricechecker/pricing.py`, mirrored by `static/js/pricing.js`)
 
-One pure module turns an offer plus settings into a total and an "unknowns" score:
+One pure module defines how an offer plus settings becomes a total and an "unknowns" score:
 
 ```
-total(offer, region, payment, currency, province=None) -> Total(list, sale, fee, shipping, tax, total, unknown, approx, left)
-rank(offers, ...) -> offers in display order   # fewer unknowns first (unlisted shipping 2, unsettled tax 1), then total
+cost(offer, settings, tax) -> Cost(list, promo_amt, base, adj_amt, ship, tax_est, tax_added, total, approx, pay_ok, old, duties)
+unknowns(cost) -> int                 # unlisted shipping 2, tax that may still be due 1
+better(a, b) -> bool                  # payment accepted, then current over old, then fewer unknowns, then lower total
 ```
 
-- Settings space: 5 regions × 3 payments × 5 currencies, plus 13 Canadian provinces for CA (tax rate only).
-- **Python precomputes every combination**; the browser only looks values up. A phone with 28 offers × 75 combos is
-  about 2,100 numbers (~20 KB of JSON before gzip). The home page needs only each phone's best per version per combo.
-- `_title_price`, `deals.json`, Telegram, JSON-LD and the pages all call this module. `app.js` total code is deleted.
-- **Regression guard:** before switching, a golden test runs the old Python path and a headless run of the old JS over
-  every current offer and combination, and requires the new engine to match both to the cent (or documents each
-  difference as a bug fix).
-
-*Rejected:* keeping two implementations with shared test vectors (still two places to change); porting to JS only
-(titles, JSON-LD and Telegram need the numbers at build time).
+- `settings` = region, EU country or Canadian province, payment, currency. With 27 EU VAT rates (some with a courier's
+  minimum fee) and 13 provinces that is about 690 combinations per offer, so totals can't be precomputed for every
+  setting: ~400 KB per phone, or ~53,000 files (Cloudflare Pages allows 20,000). *Revised 2026-10-27 while planning.*
+- So the rule is defined once in `pricing.py` and mirrored line for line in `static/js/pricing.js`, a small ES module
+  with no DOM access. Python uses it at build time (titles, JSON-LD, deals.json, Telegram, the default EU/card/euro
+  render); the browser uses the mirror when the visitor changes settings.
+- **They can't drift:** `tests/fixtures/pricing_cases.json` holds offers × settings with expected costs; pytest checks
+  `pricing.py` against it and runs `node tests/js/pricing_cases.mjs` to check `pricing.js` against the same file.
+- **Regression guard:** before the switch, a one-off parity run compares `pricing.py` with today's `app.js cost1()` /
+  `better()` over every current offer and settings combination; each difference is fixed deliberately and listed.
+  Known already: `_title_price` ignores courier fees and the sale-vs-bank-transfer rule that `app.js` applies.
 
 ### 4.2 Data files the pages read
 
-Pages stay fully rendered HTML for the default settings (EU, card, euro), so search engines and the first view need no
-JavaScript. When the visitor changes settings, the page loads one small file:
+Pages stay fully rendered HTML for the default settings (EU average VAT, card, euro), so search engines and the first
+view need no JavaScript. When the visitor changes settings, the page loads one small file with the compact inputs
+`pricing.js` needs (prices per currency, payment percentages, shipping per region, duties per region, sale):
 
 ```
-build/data/v1/phone/<id>.<hash>.json      offers + precomputed totals for every combo, store history lines, band check
-build/data/v1/home/<region>-<pay>-<cur>.<hash>.json   per phone: best total per version, unknowns, gap, 7-day drop
-build/data/v1/compare/<id>.<hash>.json    what compare needs for one phone, loaded per picked phone
+build/data/v1/phone/<id>.<hash>.json      offer inputs, store history lines, band check
+build/data/v1/home.<hash>.json            per phone and version: the best offer's inputs, for re-ranking the list
+build/data/v1/tax.<hash>.json             config/import_tax.yaml as the browser needs it
 ```
 
-- `v1` = data format version; a breaking change becomes `v2` and old files keep working until the next deploy.
-- Hashed names, cached for a year (`_headers` already does this for assets).
+- `v1` = data format version; a breaking change becomes `v2`.
+- Hashed names, cached for a year (`_headers`).
 - Budgets enforced by a test: phone page ≤ 60 KB HTML, home ≤ 120 KB, any one data file ≤ 60 KB (before gzip).
 
 ### 4.3 History in monthly files

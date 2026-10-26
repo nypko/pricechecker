@@ -1,0 +1,482 @@
+{
+ "tax": {
+  "EU": {
+   "rate_pct": 21,
+   "name": "import VAT",
+   "countries": {
+    "BG": {
+     "name": "Bulgaria",
+     "vat": 20
+    },
+    "DE": {
+     "name": "Germany",
+     "vat": 19,
+     "fee": {
+      "pct": 2,
+      "min": 15,
+      "by": "DHL Express Germany",
+      "min_m": {
+       "usd": 16.79,
+       "eur": 15.0,
+       "gbp": 12.56,
+       "cad": 23.5,
+       "aud": 23.91
+      }
+     }
+    }
+   }
+  },
+  "UK": {
+   "rate_pct": 20,
+   "name": "import VAT",
+   "note": "UK VAT 20% on the phone plus shipping (above \u00a3135 it is collected at import); phones have 0% customs duty. The courier adds a handling fee: \u00a38 with Royal Mail, about \u00a311\u201317 with DHL or FedEx."
+  },
+  "CA": {
+   "rate_pct": 13,
+   "name": "GST/HST",
+   "ship_taxed": false,
+   "note": "Canada charges GST/HST at your province's rate on the phone's price (not on international shipping); phones have 0% duty. The courier may add a brokerage fee, which isn't published, so it isn't in the estimate.",
+   "provinces": {
+    "ON": {
+     "name": "Ontario",
+     "rate": 13,
+     "tax": "HST"
+    }
+   }
+  }
+ },
+ "cases": [
+  {
+   "name": "card_free_ship_tax_paid",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 1037.0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 10.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0,
+      "min": 1
+     }
+    },
+    "duties": {
+     "EU": true
+    },
+    "promo": null
+   },
+   "settings": [
+    "EU",
+    "",
+    "card",
+    "eur"
+   ],
+   "expect": {
+    "total": 1047.0,
+    "unknowns": 0,
+    "approx": true,
+    "pay_ok": true
+   }
+  },
+  {
+   "name": "ship_not_listed",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 1005.95,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": null
+    },
+    "duties": {
+     "EU": null
+    },
+    "promo": null
+   },
+   "settings": [
+    "EU",
+    "",
+    "card",
+    "eur"
+   ],
+   "expect": {
+    "total": 1005.95,
+    "unknowns": 3,
+    "approx": false,
+    "pay_ok": true
+   }
+  },
+  {
+   "name": "duties_false_eu_avg",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 900.0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 20.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "EU": false
+    },
+    "promo": null
+   },
+   "settings": [
+    "EU",
+    "",
+    "card",
+    "eur"
+   ],
+   "expect": {
+    "total": 1113.2,
+    "tax_added": 193.2,
+    "unknowns": 0,
+    "approx": true
+   }
+  },
+  {
+   "name": "de_fee_minimum_gbp",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 0,
+     "eur_approx": 0,
+     "gbp": 500.0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "EU": false
+    },
+    "promo": null
+   },
+   "settings": [
+    "EU",
+    "DE",
+    "card",
+    "gbp"
+   ],
+   "expect": {
+    "total": 607.56,
+    "tax_added": 107.56,
+    "unknowns": 0
+   }
+  },
+  {
+   "name": "ca_on_ship_not_taxed",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 1000.0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "CA": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 60.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "CA": false
+    },
+    "promo": null
+   },
+   "settings": [
+    "CA",
+    "ON",
+    "card",
+    "cad"
+   ],
+   "expect": {
+    "total": 1190.0,
+    "tax_added": 130.0,
+    "unknowns": 0
+   }
+  },
+  {
+   "name": "bank_vs_sale_no_stack",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 1000.0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": -4.75
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "EU": true
+    },
+    "promo": {
+     "pct": 2,
+     "stacks_with_bank": false,
+     "label": "Sale",
+     "note": ""
+    }
+   },
+   "settings": [
+    "EU",
+    "",
+    "bank",
+    "eur"
+   ],
+   "expect": {
+    "total": 952.5,
+    "unknowns": 0
+   }
+  },
+  {
+   "name": "paypal_refused",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 800.0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 0,
+     "aud_approx": 0
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": false,
+     "bank": true
+    },
+    "ship": {
+     "EU": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "EU": true
+    },
+    "promo": null
+   },
+   "settings": [
+    "EU",
+    "",
+    "paypal",
+    "eur"
+   ],
+   "expect": {
+    "total": 800.0,
+    "pay_ok": false
+   }
+  },
+  {
+   "name": "currency_approx",
+   "offer": {
+    "storage": "12/256",
+    "available": true,
+    "old": false,
+    "money": {
+     "usd": 0,
+     "usd_approx": 0,
+     "eur": 0,
+     "eur_approx": 0,
+     "gbp": 0,
+     "gbp_approx": 0,
+     "cad": 0,
+     "cad_approx": 0,
+     "aud": 1500.0,
+     "aud_approx": 1
+    },
+    "pay": {
+     "card": 0.0,
+     "paypal": 0.0,
+     "bank": 0.0
+    },
+    "pay_ok": {
+     "card": true,
+     "paypal": true,
+     "bank": true
+    },
+    "ship": {
+     "AU": {
+      "eur": 0.0,
+      "gbp": 0.0,
+      "usd": 0.0,
+      "cad": 0.0,
+      "aud": 0.0
+     }
+    },
+    "duties": {
+     "AU": true
+    },
+    "promo": null
+   },
+   "settings": [
+    "AU",
+    "",
+    "card",
+    "aud"
+   ],
+   "expect": {
+    "total": 1500.0,
+    "approx": true
+   }
+  }
+ ]
+}

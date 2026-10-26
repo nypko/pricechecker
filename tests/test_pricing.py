@@ -1,5 +1,7 @@
 """pricing.py against shared cases (the JS port in static/ is tested against the same file)."""
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -61,3 +63,9 @@ def test_rank_skips_base_and_out_of_stock_and_orders_best_first():
     rule = pricing.tax_rule(CASES["tax"], s)
     offers = [{**cheap, "storage": "base"}, {**dear, "available": False}, cheap, dear]
     assert [o for o, _ in pricing.rank(offers, s, rule)] == [dear, cheap]   # 1047 < 1113.20
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_mirror_matches_cases():
+    r = subprocess.run(["node", "tests/js/pricing_cases.mjs"], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr

@@ -68,3 +68,18 @@ def test_split_roundtrip(tmp_path, monkeypatch):
         [(r[0], r[2], float(r[5]), bool(r[7])) for r in rows]
     assert sorted(p.name for p in Path("data/history").iterdir()) == ["2026-09.csv", "2026-10.csv", "2026-11.csv", "last.json"]
     assert json.loads(history.LAST.read_text()) == {"a|phone-a|china|12/256": [980.0, 1], "a|phone-b|china|12/256": [500.0, 0]}
+
+
+def test_join_reproduces_the_original_file(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    src = tmp_path / "history.csv"
+    rows = [_row("2026-09-30T23:00:00Z", 1000.0), _row("2026-10-01T00:00:00Z", 990.5), _row("2026-10-02T00:00:00Z", 500.0, "phone-b", 0),
+            _row("2026-10-02T00:00:00Z", 12.0, "phone-c"), _row("2026-11-01T00:00:00Z", 980.0)]
+    with src.open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(history.FIELDS)
+        w.writerows(rows)
+    subprocess.run([sys.executable, str(ROOT / "tools" / "split_history.py"), str(src)], check=True, cwd=tmp_path)
+    out = tmp_path / "joined.csv"
+    subprocess.run([sys.executable, str(ROOT / "tools" / "join_history.py"), str(out)], check=True, cwd=tmp_path)
+    assert out.read_bytes() == src.read_bytes()

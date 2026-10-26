@@ -49,7 +49,10 @@ It does not try to get around bot protection – for stores that block it, use t
 
 - **History:** `data/history/YYYY-MM.csv`, same columns as the old single file. The hourly run appends to the current
   month. `data/history/last.json` holds the last known row per offer. `python tools/split_history.py` rebuilds the
-  monthly files from a `history.csv`.
+  monthly files from a `history.csv`; `python tools/join_history.py` does the reverse (rollback).
+  After merging `main` into `newsite`, main's rows are silently appended to `data/history/2026-10.csv` and `last.json`
+  is left stale. Before building, rebuild both: `git show <main>:data/history.csv > /tmp/h.csv && python tools/split_history.py /tmp/h.csv`
+  (`<main>` is `origin/main`).
 - **Spec pages:** `python -m pricechecker.specpages fetch <id> [--edition]` pulls a spec sheet from the maker's page.
   It runs locally only and needs chromium. `python -m pricechecker.specpages watch` checks the pages for changes;
   it runs weekly in CI (`.github/workflows/spec-pages.yml`).

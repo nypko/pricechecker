@@ -137,7 +137,7 @@ bands:
   EU bands" or "missing LTE 20, 5G n20 (800 MHz: rural coverage and indoors)". Other regions get lists later; until
   then the check only shows for EU.
 - **Pages:** `/phones/<id>/specs` (indexable, "<phone> specs"), linked from the phone page's key specs.
-- **Coverage:** the 3 sample phones are done. Fill the rest in order of search impressions; until a phone has a sheet,
+- **Coverage:** the 3 sample phones are done. Fill the rest newest first (§8); until a phone has a sheet,
   its page shows the four key specs and no "All specs" link.
 
 ### 4.6 Code layout
@@ -201,9 +201,12 @@ Each page module takes plain data in and returns HTML out; none reads files or t
 - **Band lists change** with firmware or carrier deals; the check says "main EU bands" and tells people to confirm with
   their carrier.
 
-## 8. Open questions for you
+## 8. Decisions (2026-10-26)
 
-1. **Drops vs Telegram:** OK to keep Telegram on headline drops and have the Drops page show listing drops with the
-   headline ones marked (4.4)?
-2. **Telegram name:** rename the channel to @DoorPriceDrops, or keep the handle and title posts "DoorPrice Drops"?
-3. **Specs order:** fill sheets by search impressions (needs a fresh Search Console export), or newest phones first?
+1. **Drops vs Telegram:** Telegram keeps posting headline drops (a phone's cheapest delivered price, EU/card, ≥ 3% and
+   ≥ €20 below its last post). The Drops page lists listing drops and marks the ones that were also headline drops.
+   Both come from `derive.py`.
+2. **Telegram name:** the channel becomes @DoorPriceDrops (title already changed). The bot already posts by the channel's
+   numeric id (`TELEGRAM_CHAT_ID`, set 2026-10-26), so the rename can't break posting; `config/site.yaml` `telegram:`
+   changes to `DoorPriceDrops` once the new link works.
+3. **Specs order:** newest phones first (catalog `announced:` descending).

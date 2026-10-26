@@ -10,18 +10,21 @@ window.DPS = {
   },
   phones: {
     "oppo-find-x9-ultra": {
-      sources: { global: { url: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/", checked: "2026-10-26" } },
+      // both brand pages read: {china, global} = the pages disagree; {v, from} = only one page lists it (not a difference)
+      sources: { global: { url: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/", checked: "2026-10-26" },
+                 china: { url: "https://www.oppo.com/cn/smartphones/series-find-x/find-x9-ultra/specs/", checked: "2026-10-26", lang: "Chinese" } },
       groups: [
-        ["Display", [["Size", "6.82 in"], ["Panel", "AMOLED, Gorilla Glass Victus 2"], ["Resolution", "3168 × 1440 (QHD+), 510 ppi"], ["Refresh rate", "1–120 Hz adaptive, up to 144 Hz in some games"], ["Brightness", "800 nits typical, 1,800 nits high-brightness mode"], ["Colour", "10-bit, 100% DCI-P3"]]],
-        ["Performance", [["Chip", "Snapdragon 8 Elite Gen 5"], ["CPU", "8 cores"], ["GPU", "Adreno 840 @ 1,200 MHz"], ["RAM", "LPDDR5X"], ["Storage", "UFS 4.1, no memory card"], ["Versions", "12 GB + 512 GB, 16 GB + 1 TB"]]],
-        ["Battery and charging", [["Battery", "7,050 mAh typical (6,890 mAh rated)"], ["Wired", "100 W SUPERVOOC; also 55 W PPS, 18 W PD"], ["Wireless", "50 W AIRVOOC"]]],
-        ["Cameras", [["Main", "200 MP, f/1.5, OIS"], ["Telephoto", "200 MP, f/2.2, OIS (3x)"], ["Periscope", "50 MP, f/3.5, OIS (10x)"], ["Ultra-wide", "50 MP, f/2.0, 123°"], ["Monochrome", "3.2 MP"], ["Front", "50 MP, f/2.4, autofocus"], ["Video", "8K 30 fps, 4K 120 fps, 4K Dolby Vision 120 fps"]]],
-        ["Build", [["Size", "163.16 × 76.97 × 8.65 mm (9.10 mm Tundra Umber)"], ["Weight", "235 g (236 g Tundra Umber)"], ["Colours", "Canyon Orange, Tundra Umber"], ["Water and dust", null]]],
-        ["Connectivity", [["Wi-Fi", "Wi-Fi 7"], ["Bluetooth", "6.0; LDAC, aptX Adaptive, LHDC 5.0"], ["NFC", "Yes (depends on region)"], ["SIM", "Dual nano-SIM + eSIM"], ["USB", "USB-C 3.2 Gen 1, no analogue headphones"], ["Satellite positioning", "GPS L1+L5, Galileo E1+E5a, BeiDou, GLONASS, QZSS, NavIC"]]],
+        ["Display", [["Size", "6.82 in, flat"], ["Panel", { v: "AMOLED, Gorilla Glass Victus 2", from: "global" }], ["Resolution", "3168 × 1440 (QHD+), 510 ppi"], ["Refresh rate", "Up to 144 Hz (in some games)"], ["Brightness", "800 nits typical, 1,800 nits high-brightness mode"], ["Colour", "10-bit"]]],
+        ["Performance", [["Chip", "Snapdragon 8 Elite Gen 5"], ["CPU", "8 cores"], ["Top CPU speed", { v: "4.608 GHz", from: "china" }], ["GPU", { v: "Adreno 840 @ 1,200 MHz", from: "global" }], ["RAM", "LPDDR5X"], ["Storage", "UFS 4.1, no memory card"], ["Versions", { china: "12+256, 12+512, 16+512, 16 GB + 1 TB", global: "12 GB + 512 GB, 16 GB + 1 TB" }]]],
+        ["Battery and charging", [["Battery", "7,050 mAh typical (6,890 mAh rated)"], ["Wired", { china: "100 W SUPERVOOC, 100 W UFCS; also 55 W PPS, 18 W PD", global: "100 W SUPERVOOC; also 55 W PPS, 18 W PD" }], ["Wireless", "50 W"]]],
+        ["Cameras", [["Main", "200 MP, f/1.5, OIS"], ["Telephoto", "200 MP, f/2.2, OIS (3x)"], ["Periscope", "50 MP, f/3.5, OIS (10x)"], ["Ultra-wide", "50 MP, f/2.0, 123°"], ["Colour lens", { china: "Danxia colour lens, f/2.4", global: "3.2 MP monochrome, f/2.4" }], ["Front", "50 MP, f/2.4, autofocus"], ["Video", "8K 30 fps, 4K 120 fps, 4K Dolby Vision 120 fps"]]],
+        ["Build", [["Size", "163.16 × 76.97 × 8.65 mm (9.10 mm leather back)"], ["Weight", "235 g (236 g leather back)"], ["Colours", { china: "Three, incl. a glacier white", global: "Canyon Orange, Tundra Umber" }], ["Water and dust", null]]],
+        ["Connectivity", [["Wi-Fi", "Wi-Fi 7"], ["Bluetooth", "6.0; LDAC, aptX Adaptive, LHDC 5.0"], ["LE Audio", { v: "Yes", from: "china" }], ["NFC", { china: "Yes, with Chinese transit and payment cards", global: "Yes (depends on region)" }], ["SIM", { china: "Dual nano-SIM (no eSIM listed)", global: "Dual nano-SIM + eSIM" }], ["USB", "USB-C 3.2 Gen 1, no analogue headphones"], ["Satellite positioning", { china: "BeiDou, GPS L1+L5, Galileo, GLONASS, QZSS", global: "GPS L1+L5, Galileo, BeiDou, GLONASS, QZSS, NavIC" }], ["China model number", { v: "PMA110", from: "china" }]]],
         ["Software", [["System", "ColorOS 16"], ["Updates", null]]],
-        ["Other", [["Fingerprint", "Ultrasonic, under the screen"], ["Face unlock", "Yes"], ["Infrared remote", "Yes"]]]
+        ["Other", [["Fingerprint", "Ultrasonic, under the screen"], ["Face unlock", "Yes"], ["Infrared remote", "Yes"], ["In the box", { v: "Charger, cable, case", from: "china" }]]]
       ],
-      bands: { global: { lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71, 38, 39, 40, 41, 42], nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 66, 71, 75, 77, 78, 79] } }
+      bands: { global: { lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71, 38, 39, 40, 41, 42], nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 66, 71, 75, 77, 78, 79] },
+               china: { lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48], nr: [1, 2, 3, 5, 7, 8, 12, 18, 20, 25, 26, 28, 38, 40, 41, 48, 66, 77, 78, 79, 80, 81, 83, 84, 89] } }
     },
     "oneplus-16": {
       sources: { china: { url: "https://www.oneplus.com/cn/16/specs", checked: "2026-10-26", lang: "Chinese" } },
@@ -58,6 +61,11 @@ DPS.check = function (slug, ed, region) {
   var p = DPS.phones[slug], r = DPS.regionBands[region || "EU"], b = p && p.bands[ed];
   if (!b) return null;
   return { lte: r.lte.filter(function (x) { return b.lte.indexOf(x) < 0; }), nr: r.nr.filter(function (x) { return b.nr.indexOf(x) < 0; }), r: r };
+};
+// how many fields differ between the versions (both pages read)
+DPS.diffs = function (slug) {
+  var p = DPS.phones[slug]; if (!p) return 0;
+  return p.groups.reduce(function (n, g) { return n + g[1].filter(function (r) { return r[1] && typeof r[1] === "object" && "china" in r[1]; }).length; }, 0);
 };
 DPS.count = function (slug) {
   var p = DPS.phones[slug]; if (!p) return 0;

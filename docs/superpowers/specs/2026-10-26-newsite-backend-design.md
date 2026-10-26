@@ -116,12 +116,19 @@ key:                           # the four shown at the top of the phone page (to
 groups:                        # fixed group and field names, so every phone's sheet lines up and can be compared
   display: {size: "6.78 in, flat", resolution: "2772 × 1272 (FHD+), 450 ppi", refresh: "1–165 Hz, up to 185 Hz in games", ...}
   battery: {capacity: ..., wired: "100 W SUPERVOOC / 100 W UFCS", wireless: null}   # null = not on the brand's page
-  software: {system: "ColorOS 17"}   # a value that differs by version is written {china: "...", global: "..."}
+  software: {system: "ColorOS 17"}
+  # a value the two brand pages disagree on: {china: "...", global: "..."}  -> shown as a split cell, counted as a difference
+  # a value only one page lists:            {value: "...", from: china}   -> one cell tagged "China page only", not a difference
   ...
 bands:
   china: {lte: [1, 2, 3, ...], nr: [1, 2, 3, ...]}
 ```
 
+- **China vs Global:** when both versions' brand pages are read, a field the pages disagree on renders as a split cell
+  (China half and Global half, each with its colour label on top), and the specs page offers "Show only the N
+  differences". A field only one page lists is not a difference: one cell, tagged with the page it came from. Example,
+  Find X9 Ultra (2026-10-26): 7 real differences (memory versions, wired charging standards, colours, NFC, SIM/eSIM,
+  satellite systems, colour lens), plus 5 fields only one page lists.
 - **Schema:** fixed groups (display, performance, battery, cameras, video, build, connectivity, software, other) with
   fixed field names; a test validates every file. `null` renders as "Not on <brand>'s page". Missing versions render
   as "not checked yet".

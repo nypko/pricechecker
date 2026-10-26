@@ -143,3 +143,22 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .bandlist b { color: var(--warn); }
 .jump { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 12px 0 0; padding-bottom: 4px; }
 .jump a { flex: none; min-height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); font-size: .84rem; text-decoration: none; }
+
+/* split cells: China and Global side by side, each half topped by its colour label */
+.sheet-t td.split-td { padding: 6px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.half { border-radius: 8px; padding: 0 9px 8px; min-width: 0; font-size: .9rem; line-height: 1.4; }
+.half .htag { display: block; margin: 0 -9px 6px; padding: 3px 9px; border-radius: 8px 8px 0 0; font: 700 .68rem var(--body); letter-spacing: .06em; text-transform: uppercase; color: #fff; }
+.half.cn { background: var(--cn-soft); } .half.cn .htag { background: var(--cn); }
+.half.gl { background: var(--gl-soft); } .half.gl .htag { background: var(--gl); }
+:root[data-theme="dark"] .half .htag { color: #0e1117; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .half .htag { color: #0e1117; } }
+.half .na { color: var(--ink-2); font-style: italic; }
+.difbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 12px 0 0; padding: 12px 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; font-size: .88rem; }
+.difbar button { min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--ink); background: none; color: var(--ink); font: 600 .86rem var(--body); cursor: pointer; }
+.difbar button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.legend2 { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .8rem; }
+.legend2 i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; } .legend2 i.cn { background: var(--cn); } .legend2 i.gl { background: var(--gl); margin-left: 6px; }
+@media (max-width: 420px) { .sheet-t th { width: 28%; padding-right: 8px; } }
+.only { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; font: 600 .68rem var(--body); vertical-align: 1px; }
+.only.cn { background: var(--cn-soft); color: var(--cn-ink); } .only.gl { background: var(--gl-soft); color: var(--gl-ink); }

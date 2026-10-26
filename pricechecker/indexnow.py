@@ -4,7 +4,6 @@ picked up within hours instead of whenever the crawler next comes by. `python -m
 A page counts as changed when this run recorded a price move of at least 0.5% or a stock change for that phone - the same
 rule as the RSS feeds, so a store re-converting its prices by a cent doesn't resubmit every page every hour. Never fails
 the job: a refused or unreachable endpoint is only logged."""
-import csv
 import json
 import sys
 from pathlib import Path
@@ -12,27 +11,27 @@ from pathlib import Path
 import requests
 import yaml
 
+from . import history
 from .http import USER_AGENT
 
 ENDPOINT = "https://api.indexnow.org/indexnow"
 MIN_MOVE = 0.005
 
 
-def changed_slugs(history: Path = Path("data/history.csv"), latest: Path = Path("data/latest.json")) -> list[str]:
+def changed_slugs(latest: Path = Path("data/latest.json")) -> list[str]:
     """Phones with a real price or stock change in the latest run (history rows stamped with latest.json's time)."""
-    if not history.exists() or not latest.exists():
+    if not latest.exists():
         return []
     now = json.loads(latest.read_text()).get("updated")
     last: dict[tuple, dict] = {}
     slugs = set()
-    with history.open() as f:
-        for r in csv.DictReader(f):
-            key = (r["store"], r["model_id"], r["edition"], r["storage"])
-            prev = last.get(key)
-            if r["time"] == now and (prev is None or prev["available"] != r["available"] or
-                                     abs(float(r["price"]) - float(prev["price"])) >= MIN_MOVE * float(prev["price"])):
-                slugs.add(r["model_id"])
-            last[key] = r
+    for r in history.load_history(months=2):   # the run's rows are in the newest file, the price before them at most one month back
+        key = (r["store"], r["model_id"], r["edition"], r["storage"])
+        prev = last.get(key)
+        if r["time"] == now and (prev is None or prev["available"] != r["available"] or
+                                 abs(r["price"] - prev["price"]) >= MIN_MOVE * prev["price"]):
+            slugs.add(r["model_id"])
+        last[key] = r
     return sorted(slugs)
 
 

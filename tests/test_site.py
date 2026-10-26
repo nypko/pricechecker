@@ -136,18 +136,19 @@ def test_tax_config_covers_all_eu_countries():
     assert len(eu) == 27 and all(17 <= c["vat"] <= 27 for c in eu.values())
 
 
-def test_indexnow_only_real_changes(tmp_path):
+def test_indexnow_only_real_changes(tmp_path, monkeypatch):
     import json
 
-    from pricechecker import indexnow
-    h = tmp_path / "h.csv"
-    h.write_text("time,store,model_id,edition,storage,price,currency,available\n"
-                 "T0,a,phone-a,china,12/256,1000,USD,1\nT0,a,phone-b,china,12/256,1000,USD,1\nT0,a,phone-c,china,12/256,1000,USD,1\n"
-                 "T1,a,phone-a,china,12/256,990,USD,1\nT1,a,phone-b,china,12/256,999,USD,1\nT1,a,phone-c,china,12/256,1000,USD,0\n"
-                 "T1,a,phone-d,china,12/256,800,USD,1\n")
+    from pricechecker import history, indexnow
+    monkeypatch.chdir(tmp_path)
+    T0, T1 = "2026-10-26T10:00:00Z", "2026-10-27T10:00:00Z"
+    history.append([[T0, "a", "phone-a", "china", "12/256", 1000, "USD", 1], [T0, "a", "phone-b", "china", "12/256", 1000, "USD", 1],
+                    [T0, "a", "phone-c", "china", "12/256", 1000, "USD", 1],
+                    [T1, "a", "phone-a", "china", "12/256", 990, "USD", 1], [T1, "a", "phone-b", "china", "12/256", 999, "USD", 1],
+                    [T1, "a", "phone-c", "china", "12/256", 1000, "USD", 0], [T1, "a", "phone-d", "china", "12/256", 800, "USD", 1]])
     l = tmp_path / "l.json"
-    l.write_text(json.dumps({"updated": "T1"}))
-    assert indexnow.changed_slugs(h, l) == ["phone-a", "phone-c", "phone-d"]   # phone-b moved 0.1%: skipped
+    l.write_text(json.dumps({"updated": T1}))
+    assert indexnow.changed_slugs(l) == ["phone-a", "phone-c", "phone-d"]   # phone-b moved 0.1%: skipped
     u = indexnow.urls({"base_url": "https://x.app"}, ["phone-a", "gone"], {"phone-a"})
     assert u == ["https://x.app/", "https://x.app/compare", "https://x.app/phones/phone-a", "https://x.app/history/phone-a"]
 

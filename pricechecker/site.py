@@ -1,4 +1,4 @@
-"""Generates the static website into build/ from data/latest.json, data/history.csv and config/."""
+"""Generates the static website into build/ from data/latest.json, data/history/ and config/."""
 import hashlib
 import json
 import os
@@ -503,7 +503,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     rates = rates_info["rates"]
     terms_status = terms_status or {}
     latest = history.load_latest()
-    rows = history.load_history()
+    rows_all = history.load_history()        # every change: history pages and feeds
+    rows = history.load_history(months=3)    # charts, trends and stats only look back a few weeks
     LABELS.update({k: v.get("label", k) for k, v in stores_cfg.items()})
     store_names = list(stores_cfg)
     colors = {s: STORE_COLORS[i % len(STORE_COLORS)] for i, s in enumerate(store_names)}
@@ -525,6 +526,9 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     by_model = defaultdict(list)   # history rows per phone, so each phone's charts and trends scan only its own rows
     for r in rows:
         by_model[r["model_id"]].append(r)
+    all_by_model = defaultdict(list)
+    for r in rows_all:
+        all_by_model[r["model_id"]].append(r)
     phones = []
     for m in _models(catalog, [o for st in live_stores.values() for o in st["offers"]]):
         mrows = by_model[m["id"]]
@@ -589,7 +593,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                   "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""},
                        "chart": _charts(mrows, m, rates, colors, updated_at),
                        "chart_stats": _all_stats(mrows, m, rates, updated_at),
-                       "tier_charts": {s: _tier_chart(mrows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(mrows, m, stores_cfg, rates),
+                       "tier_charts": {s: _tier_chart(mrows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(all_by_model[m["id"]], m, stores_cfg, rates),
                        "series_stores": sorted({s for s, _ in _series(mrows, m, rates)})})
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
@@ -677,5 +681,5 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for page in ("about", "methodology", "privacy"):   # /about and /privacy (affiliate networks look for both)
         (OUT / f"{page}.html").write_text(env.get_template(f"{page}.html").render(phones=phones, root="", path=page, **ctx))
     _seo_files(ctx["site"], phones, [sp["name"] for sp in store_pages])
-    _feeds(ctx["site"], phones, rows, stores_cfg, updated_at)
+    _feeds(ctx["site"], phones, rows_all, stores_cfg, updated_at)
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

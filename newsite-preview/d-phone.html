@@ -53,7 +53,7 @@
   <h2 id="more-h"></h2>
   <ul class="offers" id="more"></ul>
 </main>
-<div class="buybar" id="buybar" hidden><div class="bb-t"><b class="num" id="bb-p"></b><span id="bb-s"></span></div><a class="bb-go" id="bb-a" href="#" rel="sponsored nofollow noopener" target="_blank">View deal ↗</a></div>
+<div class="buybar" id="buybar" hidden><div class="bb-t"><span class="bb-l1"><b class="num" id="bb-p"></b><b class="bb-w" id="bb-w"></b></span><span id="bb-s"></span></div><a class="bb-go" id="bb-a" href="#" rel="sponsored nofollow noopener" target="_blank">View deal ↗</a></div>
 <footer><div class="wrap">
   <p>Delivered = store price after any automatic sale + card fee + shipping to the EU + import VAT when the store doesn't pay it. When a store doesn't say, we mark it instead of guessing.</p>
   <p>DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">Stores</a> · <a href="#">How we work out totals</a> · <a href="#">Telegram</a> · <a href="#">r/DoorPrice</a> · <a href="#">Privacy</a></p>
@@ -76,6 +76,11 @@
   var st = X.stores(P);
   document.getElementById("dek").textContent = "Delivered to the EU by card · " + st.length + " store" + (st.length > 1 ? "s" : "") + " · checked " + X.ago(DP.updated);
 
+  // what you get, spelled out: "12 GB RAM · 256 GB storage"
+  function sto(n) { return +n >= 1024 ? n / 1024 + " TB" : n + " GB"; }
+  function memText(st) { var p = st.split("/"); return p[0] + " GB RAM · " + sto(p[1]) + " storage"; }
+  function memShort(st) { var p = st.split("/"); return p[0] + " GB + " + sto(p[1]); }
+  function mem(st) { var p = st.split("/"); return '<div class="mem"><b>' + p[0] + ' GB</b> RAM · <b>' + sto(p[1]) + '</b> storage</div>'; }
   function edBest(e) { return all.filter(function (o) { return o.edition === e; })[0]; }
   function duel() {
     var eds = ["china", "global"].filter(function (e) { return has[e]; });
@@ -84,9 +89,10 @@
     d.innerHTML = eds.map(function (e) {
       var b = edBest(e), cls = e === "china" ? "cn" : "gl";
       // the price and its store link together: the visitor can act on the number without scrolling
-      return '<div class="side ' + cls + (S.ed === e && eds.length > 1 ? " on" : "") + '"><button type="button" class="pickbtn" data-e="' + e + '" aria-pressed="' + (S.ed === e) + '"><div class="lab">' + X.ED[e] + ' version</div>' +
-        '<div class="big num">' + (b.approx ? "≈" : "") + X.eur(b.total) + '</div><p class="st">' + X.storage(b.storage) + ' at <b>' + b.label + '</b></p>' +
+      return '<div class="side ' + cls + (S.ed === e && eds.length > 1 ? " on" : "") + '"><button type="button" class="pickbtn" data-e="' + e + '" aria-pressed="' + (S.ed === e) + '"><div class="lab">' + X.ED[e] + ' version</div>' + mem(b.storage) +
+        '<div class="big num">' + (b.approx ? "≈" : "") + X.eur(b.total) + '</div><p class="st">at <b>' + b.label + '</b></p>' +
         (X.settled(b) ? '<span class="ok">✓ delivered, tax settled</span>' : '<span class="unk">' + X.tail(b) + ' not included</span>') + '</button>' +
+        (e === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") +
         '<a class="go" href="' + b.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + b.label + ' ↗</a>' +
         (eds.length > 1 ? '<button type="button" class="pick" data-e="' + e + '">' + (S.ed === e ? "Details below ↓" : "Show this version ↓") + '</button>' : "") + '</div>';
     }).join("");
@@ -120,7 +126,8 @@
       : list.length > 1 ? "<b>Why this one:</b> the lowest total of " + list.length + " stores for this version and memory." : "<b>Only one store</b> we check sells this version and memory.";
     var t = best.trust || {}, r = t.reviews;
     document.getElementById("verdict").innerHTML =
-      '<p class="q">' + (X.settled(best) ? "Cheapest delivered" : "Lowest total we can work out") + ' · ' + X.ED[best.edition] + ' · ' + X.storage(best.storage) + '</p>' +
+      '<div class="what"><span class="vpill ' + (best.edition === "china" ? "cn" : "gl") + '">' + X.ED[best.edition] + ' version</span><span class="mpill">' + memText(best.storage) + '</span></div>' +
+      '<p class="q">' + (X.settled(best) ? "Cheapest delivered" : "Lowest total we can work out") + '</p>' +
       '<div class="total num">' + (best.approx ? "≈" : "") + X.eur(best.total) + (X.tail(best) ? '<small>' + X.tail(best) + '</small>' : "") + '</div>' +
       '<p class="who">at <b>' + best.label + '</b> · ' + (best.days ? "arrives in " + X.days(best) : "delivery time not stated") + '</p>' +
       '<p class="why">' + why + '</p><ul class="badges">' +
@@ -131,10 +138,12 @@
       '<a class="cta" href="' + best.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + best.label + ' ↗</a>' +
       '<p class="fine">Price checked ' + X.stamp(best.checked) + '. Affiliate link: we may earn a commission; it never changes the order.</p>';
 
-    document.getElementById("bb-p").textContent = (best.approx ? "≈" : "") + X.eur(best.total) + (X.tail(best) ? " " + X.tail(best) : "");
-    document.getElementById("bb-s").textContent = X.ED[best.edition] + " · " + X.storage(best.storage) + " · " + best.label;
+    document.getElementById("bb-p").textContent = (best.approx ? "≈" : "") + X.eur(best.total);
+    document.getElementById("bb-w").textContent = X.ED[best.edition] + " · " + memShort(best.storage);
+    document.getElementById("bb-s").textContent = (X.tail(best) ? X.tail(best) + " · " : "") + best.label;
     document.getElementById("bb-a").href = best.link;
-    document.getElementById("bb-a").textContent = "View at " + best.label + " ↗";
+    document.getElementById("bb-a").textContent = "View deal ↗";
+    document.getElementById("bb-a").setAttribute("aria-label", "View deal at " + best.label);
     if (window.__watchCta) window.__watchCta();
     // receipt with the store's sale as its own line (PCPartPicker's promo column)
     var promo = best.list - best.base, fee = best.payPct ? best.base * best.payPct / 100 : 0, ship = best.ship || 0, tax = best.taxAdded;

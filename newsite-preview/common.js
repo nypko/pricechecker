@@ -101,7 +101,7 @@
   }
 
   // The switcher that lets the reviewer hop between directions, the home page and the three sample phones
-  var DIRS = [["d", "Preview · prices from 25 Oct"]];   // newsite preview: direction D only
+  var DIRS = [["d", "Preview · prices from 26 Oct"]];   // newsite preview: direction D only
   var SHORT = { "oppo-find-x9-ultra": "X9 Ultra (both)", "oneplus-16": "OnePlus 16 (China only)", "google-pixel-11-pro": "Pixel 11 Pro (Global, 1 store)" };
   function switcher(dir, page) {
     var cur = page === "phone" || page === "specs" ? phone().slug : null;

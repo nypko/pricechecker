@@ -11,7 +11,7 @@ GitHub Actions (hourly, .github/workflows/hourly.yml)
   └─ python -m pricechecker.run
        ├─ each store in config/stores.yaml  → current prices (Offer: model + edition + storage)
        ├─ data/latest.json   current prices per store (a failed store keeps its last prices, marked stale)
-       ├─ data/history.csv   one row per price/stock CHANGE (committed to git = price history)
+       ├─ data/history/YYYY-MM.csv  one row per price/stock CHANGE, one file per month (committed to git = price history)
        ├─ data/*cache*.json  store exchange rates, robots.txt, Giztop product pages (committed, so runs stay light)
        └─ build/             static site (index + one page per phone, Global vs China side by side)
   └─ commit data/ → deploy build/ to Cloudflare Pages
@@ -41,7 +41,21 @@ It does not try to get around bot protection – for stores that block it, use t
   `data/untracked.txt` lists models stores carry that aren't in the catalog.
 - `config/stores.yaml` – stores, affiliate link templates (`{url}{sep}ref={id}`), payment/shipping terms per
   destination (`duties_included` = price already covers import tax), and pages re-checked daily for changes.
+- `config/specs/<id>.yaml` – full spec sheet per phone (one file each); `config/region_bands.yaml` – which
+  bands each region's variants fall in, used by the band check.
 - `config/import_tax.yaml` – estimated VAT/GST per destination, added (≈) to totals when a store's price excludes it.
+
+## History, specs and pricing
+
+- **History:** `data/history/YYYY-MM.csv`, same columns as the old single file. The hourly run appends to the current
+  month. `data/history/last.json` holds the last known row per offer. `python tools/split_history.py` rebuilds the
+  monthly files from a `history.csv`.
+- **Spec pages:** `python -m pricechecker.specpages fetch <id> [--edition]` pulls a spec sheet from the maker's page.
+  It runs locally only and needs chromium. `python -m pricechecker.specpages watch` checks the pages for changes;
+  it runs weekly in CI (`.github/workflows/spec-pages.yml`).
+- **Pricing rule:** totals come from `pricechecker/pricing.py`, mirrored in `static/js/pricing.js`. Change both
+  together. `tests/fixtures/pricing_cases.json` must pass in both (`node tests/js/pricing_cases.mjs` for the JS side).
+- **Data files:** the build writes small hashed files to `build/data/v1/` (each at most 60,000 bytes) for the pages.
 
 ## Local use
 

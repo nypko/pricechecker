@@ -71,7 +71,7 @@ view need no JavaScript. When the visitor changes settings, the page loads one s
 
 ```
 build/data/v1/phone/<id>.<hash>.json      offer inputs, store history lines, band check
-build/data/v1/home.<hash>.json            per phone and version: the best offer's inputs, for re-ranking the list
+build/data/v1/home-<region>-<n>.<hash>.json  per region, in parts: per phone and version, the best offer's inputs, for re-ranking the list
 build/data/v1/tax.<hash>.json             config/import_tax.yaml as the browser needs it
 ```
 
@@ -196,12 +196,12 @@ Each page module takes plain data in and returns HTML out; none reads files or t
 ## 6. Build order (input to the implementation plan)
 
 1. `newsite.yml` + mockup preview (done with this spec, so D can be tried now).
-2. `pricing.py` + golden test; switch Python callers.
-3. History chunks + migration.
-4. `derive.py` (store lines, drops, gap, promo split); Telegram reads it.
-5. Specs: schema, migrate `specs.yaml` key fields, 3 full sheets, band check, `specpages fetch`.
-6. `build/data/v1` files + budget test.
-7. `site/` package split, then the D templates and JS modules (after the page design spec, step 3).
+2. `pricing.py` + golden test; switch Python callers. **Done** (98d838e, 72f6969, 9cc9c6c). Parity report: `docs/superpowers/notes/2026-10-27-pricing-parity.md`, 0 differences.
+3. History chunks + migration. **Done** (bde88cb).
+4. `derive.py` (store lines, drops, gap, promo split); Telegram reads it. **Done** (3dac0dc).
+5. Specs: schema, migrate `specs.yaml` key fields, 3 full sheets, band check, `specpages fetch`. **Done** (4ccb1f5, afcd7b4, eaf0eee). All 77 phones have a sheet.
+6. `build/data/v1` files + budget test. **Done** (1ae17c8, 20d1234).
+7. `site/` package split, then the D templates and JS modules (after the page design spec, step 3). The split is **done** (45990b9). The D templates and JS modules remain for the templates plan.
 8. Preview on newsite, fix, publish.
 
 ## 7. Risks

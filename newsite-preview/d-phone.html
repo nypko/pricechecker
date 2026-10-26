@@ -53,6 +53,7 @@
   <h2 id="more-h"></h2>
   <ul class="offers" id="more"></ul>
 </main>
+<div class="buybar" id="buybar" hidden><div class="bb-t"><b class="num" id="bb-p"></b><span id="bb-s"></span></div><a class="bb-go" id="bb-a" href="#" rel="sponsored nofollow noopener" target="_blank">View deal ↗</a></div>
 <footer><div class="wrap">
   <p>Delivered = store price after any automatic sale + card fee + shipping to the EU + import VAT when the store doesn't pay it. When a store doesn't say, we mark it instead of guessing.</p>
   <p>DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">Stores</a> · <a href="#">How we work out totals</a> · <a href="#">Telegram</a> · <a href="#">r/DoorPrice</a> · <a href="#">Privacy</a></p>
@@ -73,7 +74,7 @@
   document.title = P.name + (both ? " price: China vs Global" : has.china ? " price: China version" : " price") + " · D";
   document.getElementById("h1").innerHTML = P.name + " price" + (both ? ": <em>China vs Global</em>" : has.china ? ": <em>China version</em>" : "");
   var st = X.stores(P);
-  document.getElementById("dek").textContent = "Delivered to the EU, paying by card, at " + st.length + " store" + (st.length > 1 ? "s" : "") + ". Checked every hour, last " + X.stamp(DP.updated) + ".";
+  document.getElementById("dek").textContent = "Delivered to the EU by card · " + st.length + " store" + (st.length > 1 ? "s" : "") + " · checked " + X.ago(DP.updated);
 
   function edBest(e) { return all.filter(function (o) { return o.edition === e; })[0]; }
   function duel() {
@@ -82,10 +83,12 @@
     d.className = "duel" + (eds.length < 2 ? " one" : "");
     d.innerHTML = eds.map(function (e) {
       var b = edBest(e), cls = e === "china" ? "cn" : "gl";
-      return '<button type="button" class="side ' + cls + '" data-e="' + e + '" aria-pressed="' + (S.ed === e) + '"><div class="lab">' + X.ED[e] + ' version</div>' +
-        '<div class="big num">' + (b.approx ? "≈" : "") + X.eur(b.total) + '</div><p class="st">from <b>' + b.label + '</b> · ' + X.storage(b.storage) + '</p>' +
-        (X.settled(b) ? '<span class="ok">✓ delivered, tax settled</span>' : '<span class="unk">' + X.tail(b) + ' not included</span>') +
-        (eds.length > 1 ? '<span class="pick">' + (S.ed === e ? "Showing below" : "Show this version") + '</span>' : "") + '</button>';
+      // the price and its store link together: the visitor can act on the number without scrolling
+      return '<div class="side ' + cls + (S.ed === e && eds.length > 1 ? " on" : "") + '"><button type="button" class="pickbtn" data-e="' + e + '" aria-pressed="' + (S.ed === e) + '"><div class="lab">' + X.ED[e] + ' version</div>' +
+        '<div class="big num">' + (b.approx ? "≈" : "") + X.eur(b.total) + '</div><p class="st">' + X.storage(b.storage) + ' at <b>' + b.label + '</b></p>' +
+        (X.settled(b) ? '<span class="ok">✓ delivered, tax settled</span>' : '<span class="unk">' + X.tail(b) + ' not included</span>') + '</button>' +
+        '<a class="go" href="' + b.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + b.label + ' ↗</a>' +
+        (eds.length > 1 ? '<button type="button" class="pick" data-e="' + e + '">' + (S.ed === e ? "Details below ↓" : "Show this version ↓") + '</button>' : "") + '</div>';
     }).join("");
     d.onclick = function (ev) { var b = ev.target.closest("[data-e]"); if (b) { S.ed = b.dataset.e; S.mem = edBest(S.ed).storage; S.f = {}; render(); } };
     var miss = ["china", "global"].filter(function (e) { return !has[e]; })[0], only = document.getElementById("only");
@@ -128,6 +131,11 @@
       '<a class="cta" href="' + best.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + best.label + ' ↗</a>' +
       '<p class="fine">Price checked ' + X.stamp(best.checked) + '. Affiliate link: we may earn a commission; it never changes the order.</p>';
 
+    document.getElementById("bb-p").textContent = (best.approx ? "≈" : "") + X.eur(best.total) + (X.tail(best) ? " " + X.tail(best) : "");
+    document.getElementById("bb-s").textContent = X.ED[best.edition] + " · " + X.storage(best.storage) + " · " + best.label;
+    document.getElementById("bb-a").href = best.link;
+    document.getElementById("bb-a").textContent = "View at " + best.label + " ↗";
+    if (window.__watchCta) window.__watchCta();
     // receipt with the store's sale as its own line (PCPartPicker's promo column)
     var promo = best.list - best.base, fee = best.payPct ? best.base * best.payPct / 100 : 0, ship = best.ship || 0, tax = best.taxAdded;
     function seg(v, c) { return v > 0 ? '<span style="flex:' + v.toFixed(1) + ';background:var(' + c + ')"></span>' : ""; }
@@ -187,6 +195,14 @@
 
     document.getElementById("actions").innerHTML = '<button type="button" id="w" aria-pressed="' + S.watch + '">' + (S.watch ? "Watching" : "Watch this phone") + '</button><a href="#">History</a><a href="#">Compare</a><button type="button">Share</button>';
     document.getElementById("w").onclick = function () { S.watch = !S.watch; render(); };
+  }
+  // buy bar: pinned once the price boxes have scrolled away, hidden while the verdict's own button is on screen
+  var seen = { duel: true, cta: false }, bar = document.getElementById("buybar");
+  function bb() { bar.hidden = seen.duel || seen.cta; }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (x) { seen.duel = x.isIntersecting || x.boundingClientRect.top > 0; }); bb(); }).observe(document.getElementById("duel"));
+    var vo = new IntersectionObserver(function (es) { es.forEach(function (x) { seen.cta = x.isIntersecting; }); bb(); });
+    window.__watchCta = function () { vo.disconnect(); var c = document.querySelector("#verdict .cta"); if (c) vo.observe(c); };
   }
   document.getElementById("mems").onclick = function (e) { var b = e.target.closest("button"); if (b) { S.mem = b.dataset.m; S.f = {}; render(); } };
 

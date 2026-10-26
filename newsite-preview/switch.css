@@ -11,4 +11,5 @@
 .ms-dir b { font-weight: 600; color: #8b94a1; margin-right: 4px; }
 .ms-dir.on b { color: #fff; }
 .ms-home { border: 1px solid #2c323a; }
+:root { --mock-bar: 48px; }
 body { padding-bottom: 64px; }

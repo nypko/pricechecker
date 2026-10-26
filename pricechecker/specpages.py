@@ -88,7 +88,9 @@ def watch(snap_dir: Path = SNAP_DIR, report: Path = REPORT, sheets: dict | None 
         diff = [ln for ln in difflib.unified_diff(old_l, new_l, lineterm="", n=0) if ln[:1] in "+-" and ln[:3] not in ("+++", "---")]
         shown = diff[:MAX_DIFF] + ([f"... {len(diff) - MAX_DIFF} more changed lines"] if len(diff) > MAX_DIFF else [])
         changed.append(f"### `{pid}` ({edition})\n{url}\n\n```diff\n" + "\n".join(shown) + "\n```")
-    if not changed and not by_hand:
+    if not changed:   # pages to check by hand alone never raise a report (no weekly issue); they ride along with a real change
+        for ln in by_hand:
+            print(ln)
         return 0
     out = []
     if changed:

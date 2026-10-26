@@ -26,11 +26,20 @@ def test_watch_reports_changed_text_only(tmp_path):
     assert "phone-a" in report.read_text() and "number three" in report.read_text()
 
 
-def test_watch_short_js_shell_is_check_by_hand(tmp_path):
+def test_watch_by_hand_only_writes_no_report(tmp_path):
     snaps, report = _setup(tmp_path, LONG)
     specpages.watch(snaps, report, SHEETS, lambda url: "<html><body><div id=app></div><script>x</script></body></html>")
+    assert not report.exists()
+
+
+def test_watch_by_hand_pages_ride_along_with_a_real_change(tmp_path):
+    snaps, report = _setup(tmp_path, LONG)
+    (snaps / "phone-b-global.txt").write_text(specpages.page_text(LONG))
+    sheets = {**SHEETS, "phone-b": {"sources": {"global": {"url": "https://brand.example/b"}}}}
+    fetch = lambda url: LONG.replace("number 3 ", "number three ") if url.endswith("/a") else "<html></html>"
+    specpages.watch(snaps, report, sheets, fetch)
     text = report.read_text()
-    assert "check by hand" in text and "phone-a" in text
+    assert "number three" in text and "check by hand" in text and "phone-b" in text
 
 
 def test_fetch_saves_what_the_watch_will_see(tmp_path, monkeypatch):

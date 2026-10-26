@@ -1,0 +1,22 @@
+/* The settings sheet (common.js sheet()): a bottom sheet on phones, a centred panel on wide screens.
+   Each direction sets --sh-bg, --sh-fg, --sh-muted, --sh-rule, --sh-accent, --sh-on-accent and --sh-font. */
+.sheet { border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 520px; max-height: 92dvh; overflow: auto;
+  background: var(--sh-bg); color: var(--sh-fg); font-family: var(--sh-font); border-radius: 20px 20px 0 0; box-shadow: 0 -10px 40px rgb(0 0 0 / .25); }
+.sheet::backdrop { background: rgb(8 12 20 / .5); }
+@media (min-width: 640px) { .sheet { margin: auto; border-radius: 20px; } }
+.sheet form { padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 16px; }
+.sheet h2 { margin: 0; font-size: 1.25rem; }
+.sheet-sub, .sheet-note { margin: -8px 0 0; color: var(--sh-muted); font-size: .9rem; }
+.sheet-note { margin: 0; font-size: .82rem; }
+.sheet fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
+.sheet legend { font-size: .78rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--sh-muted); padding: 0; margin-bottom: 8px; }
+.sheet-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.sheet-opts label { position: relative; }
+.sheet-opts input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.sheet-opts span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid var(--sh-rule); border-radius: 10px; font-size: .92rem; }
+.sheet-opts input:checked + span { border-color: var(--sh-fg); box-shadow: inset 0 0 0 1px var(--sh-fg); font-weight: 600; }
+.sheet-opts input:focus-visible + span { outline: 2px solid var(--sh-accent); outline-offset: 2px; }
+.sheet-sel { display: grid; gap: 6px; font-size: .88rem; color: var(--sh-muted); }
+.sheet-sel select { min-height: 44px; font: inherit; color: var(--sh-fg); background: var(--sh-bg); border: 1px solid var(--sh-rule); border-radius: 10px; padding: 0 10px; }
+.sheet-done { min-height: 48px; border: 0; border-radius: 12px; background: var(--sh-accent); color: var(--sh-on-accent); font: 600 1rem var(--sh-font); cursor: pointer; }
+.sheet-done:focus-visible { outline: 2px solid var(--sh-fg); outline-offset: 2px; }

@@ -1,0 +1,127 @@
+/* D · Mix: C's two-price top (loaded first from c.css) with A's verdict and receipt underneath, plus the parts borrowed
+   from PCPartPicker (promo column, one history line per store, a drops page) and Pazaruvaj (delivery filters).
+   The verdict is ink, not blue, because blue already means "Global version" here. */
+:root {
+  --ink-card: #121722; --on-ink: #ffffff; --on-ink-2: #b9c1cf;
+  --promo: #6d28d9; --promo-soft: #efe8fd;
+  --bar-phone: #121722; --bar-fee: #d1462f; --bar-ship: #8792a6; --bar-tax: #b0306b; --bar-promo: #6d28d9;
+  --s1: #c4122f; --s2: #1f4fbf; --s3: #0f766e; --s4: #b45309; --s5: #6d28d9; --s6: #4b5563;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ink-card: #232a36; --on-ink: #ffffff; --on-ink-2: #c3cbd8; --promo: #b69cff; --promo-soft: #241a3d;
+  --bar-phone: #eef1f6; --bar-fee: #f07a62; --bar-ship: #7d889c; --bar-tax: #e0679f; --bar-promo: #b69cff;
+  --s1: #ff6b7d; --s2: #7fa4ff; --s3: #3cc2b3; --s4: #f2b45a; --s5: #b69cff; --s6: #a2abba; } }
+:root[data-theme="dark"] {
+  --ink-card: #232a36; --on-ink: #ffffff; --on-ink-2: #c3cbd8; --promo: #b69cff; --promo-soft: #241a3d;
+  --bar-phone: #eef1f6; --bar-fee: #f07a62; --bar-ship: #7d889c; --bar-tax: #e0679f; --bar-promo: #b69cff;
+  --s1: #ff6b7d; --s2: #7fa4ff; --s3: #3cc2b3; --s4: #f2b45a; --s5: #b69cff; --s6: #a2abba; }
+
+.topnav { display: flex; gap: 14px; margin-left: auto; font: 600 .88rem var(--body); }
+.topnav a { text-decoration: none; color: var(--ink-2); padding: 8px 0; }
+.topnav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+.topnav + .prefs { margin-left: 0; }
+
+/* the pair doubles as the version picker */
+button.side { text-align: left; font: inherit; color: inherit; cursor: pointer; }
+button.side[aria-pressed="true"].cn { box-shadow: 0 0 0 2px var(--cn); border-color: var(--cn); }
+button.side[aria-pressed="true"].gl { box-shadow: 0 0 0 2px var(--gl); border-color: var(--gl); }
+.side .pick { display: block; margin-top: 8px; font: 600 .78rem var(--body); color: var(--ink-2); }
+.duel.one { grid-template-columns: 1fr; }
+.only { margin: -2px 0 12px; font-size: .9rem; color: var(--ink-2); }
+.gapline.slim { padding: 10px 14px; font-size: .92rem; }
+
+.lbl { font: 700 .76rem var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); margin: 18px 0 8px; }
+
+/* A's verdict, in ink */
+.verdict { background: var(--ink-card); color: var(--on-ink); border-radius: 20px; padding: 20px 18px 16px; margin: 4px 0 12px; }
+.verdict .q { margin: 0; font-size: .86rem; font-weight: 600; color: var(--on-ink-2); }
+.verdict .total { font: 800 clamp(2.8rem, 14vw, 4rem)/1 var(--serif); letter-spacing: -.04em; margin: 6px 0 6px; }
+.verdict .total small { font: 600 .95rem var(--body); letter-spacing: 0; margin-left: 6px; color: var(--on-ink-2); }
+.verdict .who { margin: 0 0 12px; }
+.verdict .why { margin: 0 0 12px; font-size: .92rem; background: rgb(255 255 255 / .09); border-radius: 12px; padding: 11px 13px; }
+.badges { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.badges li { font-size: .8rem; background: rgb(255 255 255 / .1); padding: 4px 10px; border-radius: 999px; }
+.badges li.sale { background: var(--promo); color: #fff; }
+.cta { display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 12px; background: var(--on-ink); color: #121722; font: 700 1rem var(--body); text-decoration: none; }
+.verdict .fine { margin: 10px 0 0; font-size: .78rem; color: var(--on-ink-2); }
+
+.receipt { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; margin-bottom: 8px; }
+.receipt h3 { margin: 0 0 10px; font: 700 1.05rem var(--serif); }
+.costbar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; gap: 2px; margin-bottom: 12px; background: var(--rule); }
+.costbar span { display: block; height: 100%; }
+.receipt dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; font-size: .94rem; }
+.receipt dt { color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.receipt dt i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.receipt dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.receipt dd.neg { color: var(--promo); font-weight: 600; }
+.receipt .sum { font-weight: 700; color: var(--ink); border-top: 1px solid var(--rule); padding-top: 8px; }
+.receipt .note { margin: 10px 0 0; font-size: .82rem; color: var(--ink-2); }
+
+/* Pazaruvaj-style delivery filters over the store list */
+.dfilt { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px; }
+.dfilt button { flex: none; min-height: 38px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .84rem var(--body); cursor: pointer; }
+.dfilt button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.dfilt button:disabled, .chips button:disabled { opacity: .45; cursor: default; }
+.dfilt button span { color: inherit; opacity: .7; margin-left: 4px; font-variant-numeric: tabular-nums; }
+.offers .promo { display: inline-block; font: 600 .72rem var(--body); color: var(--promo); background: var(--promo-soft); padding: 1px 7px; border-radius: 999px; margin-left: 6px; }
+.offers .t s { font: 500 .78rem var(--body); color: var(--ink-2); display: block; }
+
+/* PCPartPicker-style ledger behind "Compare every offer" */
+details.ledger { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; margin-top: 12px; }
+details.ledger summary { cursor: pointer; min-height: 50px; display: flex; align-items: center; padding: 0 16px; font-weight: 600; }
+details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
+.lt { width: 100%; border-collapse: collapse; font-size: .84rem; min-width: 720px; }
+.lt th, .lt td { padding: 9px 10px; border-top: 1px solid var(--rule); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.lt th:first-child, .lt td:first-child { text-align: left; position: sticky; left: 0; background: var(--paper); }
+.lt thead th { border-top: 0; font: 700 .7rem var(--body); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+.lt thead button { all: unset; cursor: pointer; } .lt thead button:focus-visible { outline: 2px solid var(--ink); }
+.lt td.p { color: var(--promo); font-weight: 600; } .lt td.q { color: var(--warn); } .lt td.tot { font-weight: 700; }
+
+/* one line per store */
+.hist svg { width: 100%; height: 130px; display: block; }
+.hist .keys { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: .84rem; }
+.hist .keys span { display: inline-flex; align-items: center; gap: 6px; }
+.hist .keys i { width: 14px; height: 3px; border-radius: 2px; }
+.hist .keys b { font-variant-numeric: tabular-nums; }
+
+/* drops page */
+.drops { list-style: none; margin: 0; padding: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+.drops a { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 13px 14px; border-top: 1px solid var(--rule); text-decoration: none; color: var(--ink); }
+.drops li:first-child a { border-top: 0; }
+.drops a:hover { background: var(--ground); }
+.drops .nm { font: 700 1.05rem var(--serif); }
+.drops .pc { font: 800 1.15rem var(--serif); color: var(--good); text-align: right; font-variant-numeric: tabular-nums; }
+.drops .was { grid-column: 1 / -1; font-size: .86rem; color: var(--ink-2); }
+.drops .was s { color: var(--ink-2); } .drops .was b { color: var(--ink); }
+.drops .small .pc { color: var(--ink-2); font-size: .98rem; }
+.rule { font-size: .86rem; color: var(--ink-2); margin: 0 0 12px; max-width: 70ch; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; min-height: 40px; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--ink); }
+
+/* home rows: one-version phones get one wide price, not an empty box */
+.pairs .two.one { grid-template-columns: 1fr; }
+.pairs .range { font-size: .8rem; color: var(--ink-2); }
+.teaser { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 14px 16px; margin: 4px 0 16px; text-decoration: none; color: var(--ink); }
+.teaser b { font: 700 1.05rem var(--serif); }
+.teaser span { font-size: .86rem; color: var(--ink-2); grid-column: 1; }
+.teaser em { font-style: normal; font-weight: 700; grid-row: 1 / span 2; grid-column: 2; }
+
+/* specs: key four on the phone page, a band check per version, and the full sheet on its own page */
+.keyspecs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin: 0; }
+.keyspecs dt { font-size: .78rem; color: var(--ink-2); } .keyspecs dd { margin: 0; font-weight: 600; }
+.bandchk { display: grid; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .9rem; }
+.bandchk p { margin: 0; }
+.bandchk .bad { color: var(--warn); font-weight: 600; } .bandchk .fine { color: var(--good); font-weight: 600; }
+.allspecs { display: flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 14px; border-radius: 12px; border: 1.5px solid var(--ink); font-weight: 700; text-decoration: none; color: var(--ink); }
+.src { font-size: .86rem; color: var(--ink-2); margin: 0 0 6px; }
+.sgroup { margin-top: 18px; }
+.sgroup h2 { margin: 0 0 8px; }
+.sheet-t { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; font-size: .93rem; }
+.sheet-t th, .sheet-t td { text-align: left; vertical-align: top; padding: 10px 14px; border-top: 1px solid var(--rule); }
+.sheet-t tr:first-child th, .sheet-t tr:first-child td { border-top: 0; }
+.sheet-t th { width: 34%; font-weight: 500; color: var(--ink-2); }
+.sheet-t td.na { color: var(--ink-2); font-style: italic; }
+.bandlist { font-family: ui-monospace, monospace; font-size: .84rem; word-break: break-word; }
+.bandlist b { color: var(--warn); }
+.jump { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 12px 0 0; padding-bottom: 4px; }
+.jump a { flex: none; min-height: 36px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); font-size: .84rem; text-decoration: none; }

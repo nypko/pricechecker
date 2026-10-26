@@ -1,0 +1,27 @@
+name: newsite preview
+
+# newsite.pricechecker-87q.pages.dev: the redesign (docs/superpowers/specs/2026-10-26-newsite-backend-design.md).
+# Until the new build exists this deploys direction D's mockup pages from newsite-preview/ (real prices from the
+# 25 Oct check, three sample phones; noindex). Deployed as the Cloudflare Pages branch "newsite": production is untouched.
+# No store is contacted, no Telegram, no IndexNow, nothing committed. Publishing = merging newsite into main.
+on:
+  push:
+    branches: [newsite]
+  workflow_dispatch:
+
+concurrency:
+  group: newsite-site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy as the "newsite" branch
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy newsite-preview --project-name=${{ vars.CF_PAGES_PROJECT || 'pricechecker' }} --branch=newsite --commit-dirty=true

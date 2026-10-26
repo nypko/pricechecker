@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D · All specs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Albert+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="switch.css">
+<link rel="stylesheet" href="sheet.css">
+<link rel="stylesheet" href="c.css">
+<link rel="stylesheet" href="d.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="home" href="d-home.html"><span id="logo"></span></a>
+  <nav class="topnav" aria-label="Sections"><a href="d-home.html">Phones</a><a href="d-drops.html">Drops</a></nav>
+  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: EU, card, euro. Change">EU · Card · €</button>
+</div></header>
+
+<main class="wrap">
+  <p class="kicker"><a href="d-home.html">All phones</a> · <a id="back" href="#"></a></p>
+  <h1 id="h1"></h1>
+  <div id="src"></div>
+  <nav class="jump" id="jump" aria-label="Spec sections"></nav>
+  <div id="sheet"></div>
+  <section class="sgroup" id="bands-sec"><h2>Network bands</h2><div id="bands"></div></section>
+  <p class="src" style="margin-top:20px">Copied from the brand's own spec page; we don't fill gaps from other sites. A value the brand doesn't give says so. Spotted a mistake? <a href="#">Tell us on r/DoorPrice</a>.</p>
+</main>
+<footer><div class="wrap"><p>DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">How we work out totals</a> · <a href="#">Privacy</a></p></div></footer>
+
+<script src="data.js"></script>
+<script src="specs.js"></script>
+<script src="common.js"></script>
+<script>
+(function () {
+  var X = DPX, P = X.phone(), F = DPS.phones[P.slug];
+  document.getElementById("logo").innerHTML = X.lockup("d");
+  document.title = P.name + " specs · D";
+  document.getElementById("h1").textContent = P.name + " specs";
+  var back = document.getElementById("back");
+  back.href = X.phoneHref("d", P.slug); back.textContent = P.name + " prices";
+  document.getElementById("src").innerHTML = Object.keys(F.sources).map(function (e) {
+    var s = F.sources[e];
+    return '<p class="src">' + X.ED[e] + ' version: from <a href="' + s.url + '" rel="noopener" target="_blank">' + P.brand + '\'s spec page</a>' + (s.lang ? " (in " + s.lang + ", translated)" : "") + ', checked ' + X.day(s.checked + "T00:00:00Z") + '.</p>';
+  }).join("") + ["global", "china"].filter(function (e) { return !F.sources[e] && (P.made || []).indexOf(e) >= 0; }).map(function (e) {
+    return '<p class="src">' + X.ED[e] + ' version: we haven\'t read its spec page yet. Most specs match; network bands and software can differ.</p>';
+  }).join("");
+  function id(t) { return t.toLowerCase().replace(/[^a-z]+/g, "-"); }
+  document.getElementById("jump").innerHTML = F.groups.map(function (g) { return '<a href="#' + id(g[0]) + '">' + g[0] + '</a>'; }).join("") + '<a href="#bands-sec">Network bands</a>';
+  document.getElementById("sheet").innerHTML = F.groups.map(function (g) {
+    return '<section class="sgroup" id="' + id(g[0]) + '"><h2>' + g[0] + '</h2><table class="sheet-t"><tbody>' + g[1].map(function (r) {
+      return '<tr><th scope="row">' + r[0] + '</th>' + (r[1] == null ? '<td class="na">Not on ' + P.brand + '\'s page</td>' : '<td>' + r[1] + '</td>') + '</tr>';
+    }).join("") + '</tbody></table></section>';
+  }).join("");
+  document.getElementById("bands").innerHTML = ["china", "global"].filter(function (e) { return (P.made || []).indexOf(e) >= 0; }).map(function (e) {
+    var b = F.bands[e], c = DPS.check(P.slug, e);
+    if (!b) return '<p class="src"><b>' + X.ED[e] + ' version:</b> not checked yet.</p>';
+    var miss = c.lte.length + c.nr.length;
+    function list(arr, missing, pre) { return arr.slice().sort(function (a, z) { return a - z; }).map(function (x) { return pre + x; }).join(" · ") +
+      (missing.length ? ' · <b>missing ' + missing.map(function (x) { return pre + x; }).join(", ") + '</b>' : ""); }
+    return '<table class="sheet-t" style="margin-bottom:10px"><tbody>' +
+      '<tr><th scope="row">' + X.ED[e] + ' version, EU check</th><td>' + (miss ? '<span style="color:var(--warn);font-weight:600">Missing ' + c.lte.map(function (x) { return "LTE " + x; }).concat(c.nr.map(function (x) { return "5G n" + x; })).join(", ") + '</span>' +
+        Object.keys(c.r.why).filter(function (k) { return c.lte.indexOf(+k) >= 0 || c.nr.indexOf(+k) >= 0; }).map(function (k) { return '<br>Band ' + k + ' = ' + c.r.why[k]; }).join("") : '<span style="color:var(--good);font-weight:600">Has all the main EU bands</span>') + '</td></tr>' +
+      '<tr><th scope="row">4G LTE</th><td class="bandlist">' + list(b.lte, c.lte, "") + '</td></tr>' +
+      '<tr><th scope="row">5G</th><td class="bandlist">' + list(b.nr, c.nr, "n") + '</td></tr></tbody></table>';
+  }).join("") + '<p class="src">Main EU bands we check: LTE ' + DPS.regionBands.EU.lte.join(", ") + '; 5G n' + DPS.regionBands.EU.nr.join(", n") + '. Operators differ, so check your own before buying.</p>';
+  X.switcher("d", "specs");
+})();
+</script>
+</body>
+</html>

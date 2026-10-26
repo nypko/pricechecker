@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D · Price drops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Albert+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="switch.css">
+<link rel="stylesheet" href="sheet.css">
+<link rel="stylesheet" href="c.css">
+<link rel="stylesheet" href="d.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="home" href="d-home.html"><span id="logo"></span></a>
+  <nav class="topnav" aria-label="Sections"><a href="d-home.html">Phones</a><a href="d-drops.html" aria-current="page">Drops</a></nav>
+  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: EU, card, euro. Change">EU · Card · €</button>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Price drops this week</h1>
+    <p class="dek" id="lede"></p>
+  </section>
+  <p class="rule">A drop is the same store and the same listing (version and memory) costing at least 3% and €20 less than 7 days ago. A cheaper store joining doesn't count. Prices are store prices before shipping and tax. <a href="#">Telegram @DoorPriceDrops</a> (proposed name) posts the ones that lower a phone's cheapest delivered price.</p>
+  <div class="chips" id="chips" role="group" aria-label="Filter"></div>
+  <div class="sorts" id="sorts" role="group" aria-label="Sort"></div>
+  <label class="toggle"><input type="checkbox" id="small"> Also show smaller moves</label>
+  <p class="count" id="count" aria-live="polite"></p>
+  <ul class="drops" id="list"></ul>
+</main>
+<footer><div class="wrap">
+  <p>Checked every hour. DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">How we work out totals</a> · <a href="#">RSS</a> · <a href="#">r/DoorPrice</a></p>
+</div></footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+(function () {
+  var X = DPX, S = { ed: "all", brand: null, sort: "pct", small: false };
+  document.getElementById("logo").innerHTML = X.lockup("d");
+  function real(d) { return d.pct <= -3 && d.then - d.now >= 20; }
+  var big = DP.drops.filter(real);
+  document.getElementById("lede").textContent = big.length + " drops across " + new Set(big.map(function (d) { return d.slug; })).size + " phones in the 7 days to " + X.stamp(DP.updated) + ".";
+  var brands = Array.from(new Set(DP.drops.map(function (d) { return d.brand; }))).sort();
+  function render() {
+    var base = DP.drops.filter(function (d) { return S.small || real(d); });
+    function n(f) { return base.filter(f).length; }
+    document.getElementById("chips").innerHTML =
+      [["all", "All versions"], ["china", "China"], ["global", "Global"]].map(function (e) {
+        var c = e[0] === "all" ? base.length : n(function (d) { return d.edition === e[0]; });
+        return '<button type="button" data-e="' + e[0] + '" aria-pressed="' + (S.ed === e[0] && !S.brand) + '"' + (c || S.ed === e[0] ? "" : " disabled") + '>' + e[1] + ' (' + c + ')</button>';
+      }).join("") +
+      brands.map(function (b) { var c = n(function (d) { return d.brand === b; }); return c ? '<button type="button" data-b="' + b + '" aria-pressed="' + (S.brand === b) + '">' + b + ' (' + c + ')</button>' : ""; }).join("");
+    document.getElementById("sorts").innerHTML = '<span>Sort:</span>' + [["pct", "Biggest %"], ["eur", "Most €"], ["new", "Newest"]].map(function (s) {
+      return '<button type="button" data-s="' + s[0] + '" aria-pressed="' + (S.sort === s[0]) + '">' + s[1] + '</button>'; }).join("");
+    var r = base.filter(function (d) { return (S.ed === "all" || d.edition === S.ed) && (!S.brand || d.brand === S.brand); });
+    if (S.sort === "pct") r.sort(function (a, b) { return a.pct - b.pct; });
+    if (S.sort === "eur") r.sort(function (a, b) { return (b.then - b.now) - (a.then - a.now); });
+    if (S.sort === "new") r.sort(function (a, b) { return a.when < b.when ? 1 : -1; });
+    document.getElementById("count").textContent = r.length ? r.length + (S.small ? " price moves" : " drops") : "No drops match. Try all versions or another brand.";
+    document.getElementById("list").innerHTML = r.map(function (d) {
+      return '<li class="' + (real(d) ? "" : "small") + '"><a href="' + X.phoneHref("d", d.slug) + '"><span class="nm">' + d.name + '</span><span class="pc">' + d.pct.toFixed(1) + '%</span>' +
+        '<span class="was"><span class="ed-' + d.edition + '">' + X.ED[d.edition] + '</span> · ' + X.storage(d.storage) + ' at ' + d.label + ': <s>' + X.eur(d.then) + '</s> → <b>' + X.eur(d.now) + '</b> (−' + X.eur(d.then - d.now) + ') · ' + X.day(d.when) + '</span></a></li>';
+    }).join("");
+  }
+  document.getElementById("chips").onclick = function (e) { var b = e.target.closest("button"); if (!b) return; if (b.dataset.b) S.brand = S.brand === b.dataset.b ? null : b.dataset.b; else { S.ed = b.dataset.e; S.brand = null; } render(); };
+  document.getElementById("sorts").onclick = function (e) { var b = e.target.closest("button"); if (b) { S.sort = b.dataset.s; render(); } };
+  document.getElementById("small").onchange = function (e) { S.small = e.target.checked; render(); };
+  render();
+  X.switcher("d", "drops");
+})();
+</script>
+</body>
+</html>

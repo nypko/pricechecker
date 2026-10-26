@@ -1,0 +1,14 @@
+/* Mockup-only chrome: the direction switcher pinned to the bottom of every page (not part of any design). */
+.mock-switch { position: fixed; left: 0; right: 0; bottom: 0; z-index: 99; display: flex; gap: 6px; overflow-x: auto;
+  padding: 8px max(12px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  background: #111418; color: #e8eaee; font: 600 12px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; scrollbar-width: none; }
+.mock-switch::-webkit-scrollbar { display: none; }
+.mock-switch a { color: #c9cfd8; text-decoration: none; padding: 7px 10px; border-radius: 6px; white-space: nowrap; }
+.mock-switch a:hover { background: #22272e; color: #fff; }
+.mock-switch a:focus-visible { outline: 2px solid #79a6ff; outline-offset: 1px; }
+.mock-switch a[aria-current] { background: #f2f4f7; color: #111418; }
+.ms-dir { display: inline-flex; align-items: center; gap: 2px; padding-left: 10px; border-left: 1px solid #2c323a; white-space: nowrap; }
+.ms-dir b { font-weight: 600; color: #8b94a1; margin-right: 4px; }
+.ms-dir.on b { color: #fff; }
+.ms-home { border: 1px solid #2c323a; }
+body { padding-bottom: 64px; }

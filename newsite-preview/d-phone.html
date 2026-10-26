@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D · Phone page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Albert+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="switch.css">
+<link rel="stylesheet" href="sheet.css">
+<link rel="stylesheet" href="c.css">
+<link rel="stylesheet" href="d.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="home" href="d-home.html"><span id="logo"></span></a>
+  <nav class="topnav" aria-label="Sections"><a href="d-home.html">Phones</a><a href="d-drops.html">Drops</a></nav>
+  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: EU, card, euro. Change">EU · Card · €</button>
+</div></header>
+
+<main class="wrap">
+  <p class="kicker"><a href="d-home.html">All phones</a> · <span id="brand"></span> · <span id="ann"></span></p>
+  <h1 id="h1"></h1>
+  <p class="dek" id="dek"></p>
+
+  <!-- C: the two prices, which also pick the version for everything below -->
+  <div class="duel" id="duel" role="group" aria-label="Version"></div>
+  <p class="only" id="only" hidden></p>
+  <div class="gapline slim" id="gapline" hidden></div>
+
+  <!-- A: memory, verdict, receipt -->
+  <p class="lbl" id="mem-lbl">Memory</p>
+  <div class="mems" id="mems" role="group" aria-labelledby="mem-lbl"></div>
+  <section class="verdict" id="verdict" aria-live="polite"></section>
+  <section class="receipt" id="receipt" aria-label="How the total adds up"></section>
+
+  <!-- the other stores, with Pazaruvaj-style delivery filters; PCPartPicker-style ledger behind it -->
+  <h2 id="others-h">Other stores</h2>
+  <div class="dfilt" id="dfilt" role="group" aria-label="Delivery filters"></div>
+  <ul class="offers" id="others"></ul>
+  <details class="ledger" id="ledger"><summary id="ledger-s">Compare every offer</summary><div class="scroll"><table class="lt" id="lt"></table></div></details>
+
+  <h2 id="means-h">What the China version means</h2>
+  <ul class="means" id="means"></ul>
+
+  <h2>Price history by store</h2>
+  <div class="box hist" id="hist"></div>
+
+  <div class="actions" id="actions" style="margin-top:18px"></div>
+  <h2>Specs</h2>
+  <div class="box"><dl class="keyspecs" id="specs"></dl><div class="bandchk" id="bandchk"></div><a class="allspecs" id="allspecs" href="#"></a></div>
+  <h2 id="more-h"></h2>
+  <ul class="offers" id="more"></ul>
+</main>
+<footer><div class="wrap">
+  <p>Delivered = store price after any automatic sale + card fee + shipping to the EU + import VAT when the store doesn't pay it. When a store doesn't say, we mark it instead of guessing.</p>
+  <p>DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">Stores</a> · <a href="#">How we work out totals</a> · <a href="#">Telegram</a> · <a href="#">r/DoorPrice</a> · <a href="#">Privacy</a></p>
+</div></footer>
+
+<script src="data.js"></script>
+<script src="specs.js"></script>
+<script src="common.js"></script>
+<script>
+(function () {
+  var X = DPX, P = X.phone(), all = X.rank(P.offers);
+  var has = { china: all.some(function (o) { return o.edition === "china"; }), global: all.some(function (o) { return o.edition === "global"; }) };
+  var both = has.china && has.global;
+  var S = { ed: all[0].edition, mem: all[0].storage, f: {}, sort: "rank", watch: false };
+  document.getElementById("logo").innerHTML = X.lockup("d");
+  document.getElementById("brand").textContent = P.brand;
+  document.getElementById("ann").textContent = "announced " + X.month(P.announced);
+  document.title = P.name + (both ? " price: China vs Global" : has.china ? " price: China version" : " price") + " · D";
+  document.getElementById("h1").innerHTML = P.name + " price" + (both ? ": <em>China vs Global</em>" : has.china ? ": <em>China version</em>" : "");
+  var st = X.stores(P);
+  document.getElementById("dek").textContent = "Delivered to the EU, paying by card, at " + st.length + " store" + (st.length > 1 ? "s" : "") + ". Checked every hour, last " + X.stamp(DP.updated) + ".";
+
+  function edBest(e) { return all.filter(function (o) { return o.edition === e; })[0]; }
+  function duel() {
+    var eds = ["china", "global"].filter(function (e) { return has[e]; });
+    var d = document.getElementById("duel");
+    d.className = "duel" + (eds.length < 2 ? " one" : "");
+    d.innerHTML = eds.map(function (e) {
+      var b = edBest(e), cls = e === "china" ? "cn" : "gl";
+      return '<button type="button" class="side ' + cls + '" data-e="' + e + '" aria-pressed="' + (S.ed === e) + '"><div class="lab">' + X.ED[e] + ' version</div>' +
+        '<div class="big num">' + (b.approx ? "≈" : "") + X.eur(b.total) + '</div><p class="st">from <b>' + b.label + '</b> · ' + X.storage(b.storage) + '</p>' +
+        (X.settled(b) ? '<span class="ok">✓ delivered, tax settled</span>' : '<span class="unk">' + X.tail(b) + ' not included</span>') +
+        (eds.length > 1 ? '<span class="pick">' + (S.ed === e ? "Showing below" : "Show this version") + '</span>' : "") + '</button>';
+    }).join("");
+    d.onclick = function (ev) { var b = ev.target.closest("[data-e]"); if (b) { S.ed = b.dataset.e; S.mem = edBest(S.ed).storage; S.f = {}; render(); } };
+    var miss = ["china", "global"].filter(function (e) { return !has[e]; })[0], only = document.getElementById("only");
+    only.hidden = !miss; if (miss) only.textContent = X.missing(P, miss) + ".";
+    var g = P.gap, gl = document.getElementById("gapline");
+    gl.hidden = !both;
+    if (both) gl.innerHTML = g ? 'Same memory, <b>' + X.storage(g.storage) + '</b>: the China version is <b>' + X.eur(g.diff) + ' less</b> delivered (' + X.eur(g.china) + ' vs ' + X.eur(g.global) + ').'
+      : "No memory has a settled delivered price for both versions yet, so we don't put a number on the gap.";
+  }
+
+  var FILTERS = [["tax", "Import tax paid by store", function (o) { return o.duties === true; }],
+                 ["ship", "Free shipping", function (o) { return o.ship === 0; }],
+                 ["fast", "Arrives within 10 days", function (o) { return o.days && o.days[1] <= 10; }]];
+  function pool() { return all.filter(function (o) { return o.edition === S.ed && o.storage === S.mem; }); }
+
+  function render() {
+    duel();
+    var mems = Array.from(new Set(all.filter(function (o) { return o.edition === S.ed; }).map(function (o) { return o.storage; }))).sort(X.memSort);
+    document.getElementById("mems").innerHTML = mems.map(function (m) {
+      var b = all.filter(function (o) { return o.edition === S.ed && o.storage === m; })[0];
+      return '<button type="button" data-m="' + m + '" aria-pressed="' + (S.mem === m) + '">' + X.storage(m) + ' · ' + X.eur(b.total) + (b.unknown ? "+" : "") + '</button>';
+    }).join("");
+
+    var list = pool(), best = list[0];
+    var cheaper = list.filter(function (o) { return o.total < best.total; }).sort(function (a, b) { return a.total - b.total; })[0];
+    var gaps = [];
+    if (cheaper) { if (cheaper.ship == null) gaps.push("shipping"); if (cheaper.duties !== true && !cheaper.taxAdded) gaps.push("import tax"); }
+    var why = cheaper ? "<b>Why this one:</b> the lowest total where shipping and import tax are settled. " + cheaper.label + " lists " + X.eur(cheaper.total) + " but doesn't say what " + gaps.join(" or ") + " will add."
+      : list.length > 1 ? "<b>Why this one:</b> the lowest total of " + list.length + " stores for this version and memory." : "<b>Only one store</b> we check sells this version and memory.";
+    var t = best.trust || {}, r = t.reviews;
+    document.getElementById("verdict").innerHTML =
+      '<p class="q">' + (X.settled(best) ? "Cheapest delivered" : "Lowest total we can work out") + ' · ' + X.ED[best.edition] + ' · ' + X.storage(best.storage) + '</p>' +
+      '<div class="total num">' + (best.approx ? "≈" : "") + X.eur(best.total) + (X.tail(best) ? '<small>' + X.tail(best) + '</small>' : "") + '</div>' +
+      '<p class="who">at <b>' + best.label + '</b> · ' + (best.days ? "arrives in " + X.days(best) : "delivery time not stated") + '</p>' +
+      '<p class="why">' + why + '</p><ul class="badges">' +
+      (best.promo ? '<li class="sale">' + best.promo.pct + '% ' + (best.promo.label || "sale").toLowerCase() + ' applied</li>' : "") +
+      (r ? '<li>★ ' + r.score.toFixed(1) + ' on ' + r.source + ' (' + r.count.toLocaleString("en-GB") + ')</li>' : "") +
+      (best.duties === true ? '<li>Import tax paid by store</li>' : "") +
+      '<li>' + (t.warranty_months ? t.warranty_months + '-month store warranty' : "Warranty not stated") + '</li>' + (t.returns_days ? '<li>' + t.returns_days + '-day returns</li>' : "") + '</ul>' +
+      '<a class="cta" href="' + best.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + best.label + ' ↗</a>' +
+      '<p class="fine">Price checked ' + X.stamp(best.checked) + '. Affiliate link: we may earn a commission; it never changes the order.</p>';
+
+    // receipt with the store's sale as its own line (PCPartPicker's promo column)
+    var promo = best.list - best.base, fee = best.payPct ? best.base * best.payPct / 100 : 0, ship = best.ship || 0, tax = best.taxAdded;
+    function seg(v, c) { return v > 0 ? '<span style="flex:' + v.toFixed(1) + ';background:var(' + c + ')"></span>' : ""; }
+    document.getElementById("receipt").innerHTML = '<h3>How ' + X.eur(best.total) + ' adds up</h3>' +
+      '<div class="costbar" aria-hidden="true">' + seg(best.base, "--bar-phone") + seg(fee, "--bar-fee") + seg(ship, "--bar-ship") + seg(tax, "--bar-tax") + '</div><dl>' +
+      '<dt><i style="background:var(--bar-phone)"></i>Store price</dt><dd>' + X.eur(best.list, true) + '</dd>' +
+      (promo > .005 ? '<dt><i style="background:var(--bar-promo)"></i>' + (best.promo.label || "Sale") + ', ' + best.promo.pct + '% off at checkout</dt><dd class="neg">−' + X.eur(promo, true) + '</dd>' : "") +
+      '<dt><i style="background:var(--bar-fee)"></i>Paying by card</dt><dd>' + (best.payPct == null ? "unknown" : best.payPct ? X.eur(fee, true) : "no fee") + '</dd>' +
+      '<dt><i style="background:var(--bar-ship)"></i>Shipping to the EU</dt><dd>' + (best.ship == null ? "not listed" : best.ship === 0 ? "free" : (best.shipMin ? "from " : "") + X.eur(best.ship, true)) + '</dd>' +
+      '<dt><i style="background:var(--bar-tax)"></i>Import VAT</dt><dd>' + (best.duties === true ? "paid by the store" : best.duties === false ? "≈" + X.eur(tax, true) : "not stated (≈" + X.eur(best.vat) + " if due)") + '</dd>' +
+      '<dt class="sum">You pay at the door</dt><dd class="sum">' + (best.approx ? "≈" : "") + X.eur(best.total, true) + '</dd></dl>' +
+      (best.shipNote ? '<p class="note">' + best.shipNote + '</p>' : "");
+
+    // other stores + delivery filters with counts (a filter that would show nothing is disabled)
+    var rest = list.slice(1);
+    document.getElementById("others-h").textContent = rest.length ? "Other stores for " + X.ED[S.ed] + " · " + X.storage(S.mem) : "No other store sells this version and memory";
+    var df = document.getElementById("dfilt");
+    df.hidden = !rest.length;
+    df.innerHTML = FILTERS.map(function (f) {
+      var n = rest.filter(f[2]).length;
+      return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + !!S.f[f[0]] + '"' + (n || S.f[f[0]] ? "" : " disabled") + '>' + f[1] + '<span>' + n + '</span></button>';
+    }).join("");
+    df.onclick = function (e) { var b = e.target.closest("button"); if (b && !b.disabled) { S.f[b.dataset.f] = !S.f[b.dataset.f]; render(); } };
+    var shown = rest.filter(function (o) { return FILTERS.every(function (f) { return !S.f[f[0]] || f[2](o); }); });
+    document.getElementById("others").hidden = !rest.length;
+    document.getElementById("others").innerHTML = shown.length ? shown.map(function (o) {
+      return '<li><span class="s">' + o.label + (o.promo ? '<span class="promo">' + o.promo.pct + '% sale</span>' : "") + '</span>' +
+        '<span class="t num">' + (o.approx ? "≈" : "") + X.eur(o.total) + (X.tail(o) ? '<small>' + X.tail(o) + '</small>' : "") + '</span>' +
+        '<span class="c">' + X.days(o) + ' · ' + X.caveat(o) + (o.trust && o.trust.reviews ? ' · ★ ' + o.trust.reviews.score.toFixed(1) : "") + '</span>' +
+        '<a class="g" href="' + o.link + '" rel="sponsored nofollow noopener" target="_blank">View at ' + o.label + '</a></li>';
+    }).join("") : '<li><span class="empty">No other store matches these filters. Turn one off to see more.</span></li>';
+
+    // every offer, both versions, as PCPartPicker's columns: base, promo, card, shipping, tax, total
+    var rows = all.slice();
+    if (S.sort === "total") rows.sort(function (a, b) { return a.total - b.total; });
+    if (S.sort === "list") rows.sort(function (a, b) { return a.list - b.list; });
+    document.getElementById("ledger-s").textContent = "Compare every offer (" + all.length + ")";
+    document.getElementById("lt").innerHTML = '<thead><tr><th>Store · version · memory</th><th><button type="button" data-s="list">Store price</button></th><th>Sale</th><th>Card</th><th>Shipping</th><th>Import VAT</th><th><button type="button" data-s="total">Total</button></th><th><button type="button" data-s="rank">Rank</button></th></tr></thead><tbody>' +
+      rows.map(function (o) {
+        var p = o.list - o.base;
+        return '<tr><td>' + o.label + ' · ' + X.ED[o.edition] + ' · ' + X.storage(o.storage) + '</td><td>' + X.eur(o.list, true) + '</td>' +
+          '<td class="' + (p > .005 ? "p" : "") + '">' + (p > .005 ? "−" + X.eur(p, true) : "–") + '</td>' +
+          '<td' + (o.payPct == null ? ' class="q">?' : '>' + (o.payPct ? X.eur(o.base * o.payPct / 100, true) : "free")) + '</td>' +
+          '<td' + (o.ship == null ? ' class="q">not listed' : '>' + (o.ship === 0 ? "free" : (o.shipMin ? "from " : "") + X.eur(o.ship, true))) + '</td>' +
+          '<td' + (o.duties == null ? ' class="q">not stated' : '>' + (o.duties ? "store pays" : "+" + X.eur(o.taxAdded, true))) + '</td>' +
+          '<td class="tot">' + X.eur(o.total, true) + (o.unknown ? "+" : "") + '</td><td>' + (all.indexOf(o) + 1) + '</td></tr>';
+      }).join("") + '</tbody>';
+    document.querySelectorAll("#lt thead button").forEach(function (b) { b.onclick = function () { S.sort = b.dataset.s; render(); }; });
+
+    // one line per store for the chosen version
+    var m = X.multi(P.storeHist[S.ed] || {}, 600, 130);
+    document.getElementById("hist").innerHTML = m.svg + '<div class="keys">' + m.names.map(function (k, i) {
+      var s = P.storeHist[S.ed][k];
+      return '<span><i style="background:var(--s' + (i % 6 + 1) + ')"></i>' + k + ' <b>' + X.eur(s[s.length - 1].p) + '</b></span>';
+    }).join("") + '</div><p>Lowest ' + X.ED[S.ed] + ' price at each store since ' + X.day(DP.since) + ', any memory, before shipping and tax. One line per store, so a store cutting its price shows apart from a cheaper store joining. ' +
+      X.trackedDays() + ' days so far. <a href="#">Every change</a> · <a href="#">RSS</a></p>';
+
+    document.getElementById("actions").innerHTML = '<button type="button" id="w" aria-pressed="' + S.watch + '">' + (S.watch ? "Watching" : "Watch this phone") + '</button><a href="#">History</a><a href="#">Compare</a><button type="button">Share</button>';
+    document.getElementById("w").onclick = function () { S.watch = !S.watch; render(); };
+  }
+  document.getElementById("mems").onclick = function (e) { var b = e.target.closest("button"); if (b) { S.mem = b.dataset.m; S.f = {}; render(); } };
+
+  var chinaMade = has.china || (P.made || []).indexOf("china") >= 0;
+  document.getElementById("means-h").hidden = !chinaMade;
+  document.getElementById("means").hidden = !chinaMade;
+  document.getElementById("means").innerHTML = [
+    ['<path d="M5 3l14 9-14 9z"/>', "<b>Google Play is usually off at first.</b> It can be turned on in Settings; some stores do it for you."],
+    ['<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/>', "<b>Warranty usually comes from the store.</b> The manufacturer's usually doesn't cover it outside China."],
+    ['<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/>', "<b>Some 4G/5G bands may be missing.</b> Check your carrier's bands before buying."]
+  ].map(function (x) { return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + x[0] + '</svg><span>' + x[1] + '</span></li>'; }).join("") +
+    '<li><span></span><a href="#">What changes between the China and Global versions</a></li>';
+  var sp = P.spec;
+  document.getElementById("specs").innerHTML = [["Chip", sp.chip], ["Screen", sp.screen + (typeof sp.screen === "number" ? "″" : "")], ["Battery", sp.battery], ["Charging", sp.charging]]
+    .map(function (x) { return "<div><dt>" + x[0] + "</dt><dd>" + x[1] + "</dd></div>"; }).join("");
+  // will it work on EU networks? per version, from the brand's band list (the China version's real risk)
+  var F = DPS.phones[P.slug];
+  document.getElementById("bandchk").innerHTML = ["china", "global"].filter(function (e) { return has[e]; }).map(function (e) {
+    var c = DPS.check(P.slug, e);
+    if (!c) return '<p><b>' + X.ED[e] + ' version on EU networks:</b> bands not checked yet.</p>';
+    var miss = c.lte.map(function (x) { return "LTE " + x; }).concat(c.nr.map(function (x) { return "5G n" + x; }));
+    var why = Object.keys(c.r.why).filter(function (k) { return c.lte.indexOf(+k) >= 0 || c.nr.indexOf(+k) >= 0; }).map(function (k) { return "band " + k + " is " + c.r.why[k]; });
+    return '<p><b>' + X.ED[e] + ' version on EU networks:</b> ' + (miss.length ? '<span class="bad">missing ' + miss.join(", ") + '.</span> ' + why.join("; ").replace(/^b/, "B") + '.' : '<span class="fine">has all the main EU bands.</span>') + '</p>';
+  }).join("");
+  var nSpecs = DPS.count(P.slug), al = document.getElementById("allspecs");
+  al.hidden = !nSpecs;
+  al.href = "d-specs.html?p=" + P.slug; al.textContent = "All " + nSpecs + " specs and network bands";
+  document.getElementById("more-h").textContent = "More from " + P.brand;
+  document.getElementById("more").innerHTML = X.sameBrand(P, 3).map(function (h) {
+    return '<li><a class="s" href="' + X.phoneHref("d", h.slug) + '">' + h.name + '</a><span class="t num">' + X.eur(h.total) + (h.left ? '<small>+ ' + h.left + '?</small>' : "") + '</span><span class="c">' + X.month(h.announced) + ' · ' + h.n + (h.n === 1 ? " store" : " stores") + '</span></li>';
+  }).join("");
+  render();
+  X.switcher("d", "phone");
+})();
+</script>
+</body>
+</html>

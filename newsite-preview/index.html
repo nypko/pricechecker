@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D · Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Albert+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="switch.css">
+<link rel="stylesheet" href="sheet.css">
+<link rel="stylesheet" href="c.css">
+<link rel="stylesheet" href="d.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="home" href="d-home.html"><span id="logo"></span></a>
+  <nav class="topnav" aria-label="Sections"><a href="d-home.html" aria-current="page">Phones</a><a href="d-drops.html">Drops</a></nav>
+  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: EU, card, euro. Change">EU · Card · €</button>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>China version or Global? <em>Both prices, delivered.</em></h1>
+    <p class="dek" id="lede"></p>
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="sr-only">Search phones</span><input id="q" type="search" placeholder="Which phone? e.g. “x9 ultra”" autocomplete="off"></label>
+  </section>
+  <a class="teaser" id="teaser" href="d-drops.html"></a>
+  <div class="chips" id="chips" role="group" aria-label="Filter"></div>
+  <div class="sorts" id="sorts" role="group" aria-label="Sort"></div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <ul class="pairs" id="list"></ul>
+  <button class="showall" type="button" id="showall"></button>
+
+  <h2>The stores, and what they cover</h2>
+  <div class="terms" id="terms"></div>
+</main>
+<footer><div class="wrap">
+  <p>Delivered = store price + card fee + shipping to the EU + import VAT when the store doesn't pay it. When a store doesn't say, we mark it instead of guessing.</p>
+  <p>DoorPrice may earn a commission from some stores; it never changes the order. <a href="#">Compare phones</a> · <a href="#">How we work out totals</a> · <a href="#">Telegram</a> · <a href="#">r/DoorPrice</a> · <a href="#">About</a> · <a href="#">Privacy</a></p>
+</div></footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+(function () {
+  var X = DPX, H = DP.home, S = { f: "all", brand: null, sort: "new", q: "", all: false };
+  document.getElementById("logo").innerHTML = X.lockup("d");
+  var withGap = H.filter(function (h) { return h.gap; }).length;
+  document.getElementById("lede").textContent = "Many flagships come as a cheaper China version and a Global one. We check " + H.length + " phones at " + DP.stores.length +
+    " stores every hour and work shipping, payment fees and import tax into both prices. " + withGap + " phones have a settled price for both at the same memory today.";
+  var brands = Array.from(new Set(H.map(function (h) { return h.brand; }))).sort();
+  var F = [["all", "All phones"], ["both", "Both versions"], ["china", "China version"], ["global", "Global version"]];
+  function chips() {
+    document.getElementById("chips").innerHTML = F.map(function (f) { return '<button type="button" data-f="' + f[0] + '" aria-pressed="' + (S.f === f[0] && !S.brand) + '">' + f[1] + '</button>'; }).join("") +
+      brands.map(function (b) { return '<button type="button" data-b="' + b + '" aria-pressed="' + (S.brand === b) + '">' + b + '</button>'; }).join("");
+    document.getElementById("sorts").innerHTML = '<span>Sort:</span>' + [["new", "Newest"], ["save", "Biggest China saving"], ["cheap", "Lowest price"], ["drop", "Dropped this week"]].map(function (s) {
+      return '<button type="button" data-s="' + s[0] + '" aria-pressed="' + (S.sort === s[0]) + '">' + s[1] + '</button>'; }).join("");
+  }
+  document.getElementById("chips").onclick = function (e) { var b = e.target.closest("button"); if (!b) return; if (b.dataset.b) { S.brand = S.brand === b.dataset.b ? null : b.dataset.b; } else { S.f = b.dataset.f; S.brand = null; } render(); };
+  document.getElementById("sorts").onclick = function (e) { var b = e.target.closest("button"); if (b) { S.sort = b.dataset.s; render(); } };
+  document.getElementById("q").oninput = function (e) { S.q = e.target.value.trim().toLowerCase(); render(); };
+  document.getElementById("showall").onclick = function () { S.all = true; render(); };
+
+  function cell(h, e) {
+    var b = h.edBest[e], cls = e === "china" ? "cn" : "gl";
+    if (!b) return '<span class="p none">' + X.ED[e] + '<b>' + ((h.made || []).indexOf(e) < 0 ? (e === "global" ? "China only so far" : "not made") : "no store lists it") + '</b></span>';
+    return '<span class="p ' + cls + '">' + X.ED[e] + '<b class="num">' + X.eur(b.total) + (b.unknown ? '<small>+ tax?</small>' : "") + '</b>' + X.storage(b.storage) + '</span>';
+  }
+  function render() {
+    chips();
+    var words = S.q.split(/\s+/).filter(Boolean);
+    var r = H.filter(function (h) {
+      if (S.brand && h.brand !== S.brand) return false;
+      if (S.f === "both" && !(h.edBest.china && h.edBest.global)) return false;
+      if (S.f === "china" && !h.edBest.china) return false;
+      if (S.f === "global" && !h.edBest.global) return false;
+      return words.every(function (w) { return h.name.toLowerCase().indexOf(w) >= 0; });
+    });
+    if (S.sort === "save") r = r.filter(function (h) { return h.gap; }).sort(function (a, b) { return b.gap.diff - a.gap.diff; });
+    if (S.sort === "cheap") r.sort(function (a, b) { return (a.left ? 1 : 0) - (b.left ? 1 : 0) || a.total - b.total; });
+    if (S.sort === "drop") r = r.filter(function (h) { return X.drop(h); }).sort(function (a, b) { return X.drop(a).pct - X.drop(b).pct; });
+    var shown = S.all || S.q ? r : r.slice(0, 12);
+    document.getElementById("count").textContent = r.length ? r.length + " phone" + (r.length > 1 ? "s" : "") +
+      (S.sort === "save" ? " with a settled price for both versions at the same memory" : S.sort === "drop" ? " that dropped 3% and €20 or more this week" : "") + " · lowest delivered price per version"
+      : "No phones match. Try fewer words.";
+    document.getElementById("list").innerHTML = shown.map(function (h) {
+      var d = X.drop(h);
+      return '<li><a href="' + X.phoneHref("d", h.slug) + '"><span class="nm">' + h.name + '<small>' + X.month(h.announced) + '</small></span>' +
+        (h.edBest.china && h.edBest.global ? '<span class="two">' + cell(h, "china") + cell(h, "global") + '</span>'
+          : '<span class="two one">' + cell(h, h.edBest.china ? "china" : "global") + '</span><span class="range">' + (h.edBest.china ? "China version only so far" : (h.made || []).indexOf("china") < 0 ? "Global version only (no China version made)" : "No store lists the China version") + '</span>') +
+        (h.gap || d ? '<span class="gap">' + (h.gap ? 'China ' + X.eur(h.gap.diff) + ' less at ' + X.storage(h.gap.storage) : "") + (d ? '<span class="drop">↓ ' + X.eur(d.then - d.now) + ' this week</span>' : "") + '</span>' : "") +
+        '<span class="meta">' + h.n + (h.n === 1 ? " store" : " stores") + '</span></a></li>';
+    }).join("");
+    var m = document.getElementById("showall"); m.hidden = shown.length === r.length; m.textContent = "Show all " + r.length + " phones";
+  }
+  var big = DP.drops.filter(function (d) { return d.pct <= -3 && d.then - d.now >= 20; }).sort(function (a, b) { return a.pct - b.pct; });
+  document.getElementById("teaser").innerHTML = '<b>' + big.length + ' price drops this week</b><span>Biggest: ' + big[0].name + ' at ' + big[0].label + ', ' + X.eur(big[0].then) + ' → ' + X.eur(big[0].now) + '</span><em>See all →</em>';
+  document.getElementById("terms").innerHTML = DP.stores.map(function (s) {
+    var bits = [];
+    bits.push(s.duties === true ? "pays your import tax" : s.duties === false ? "you pay import tax" : "doesn't say who pays import tax");
+    bits.push(s.ship != null ? (s.ship === 0 ? "free shipping" : "shipping ≈" + X.eur(s.ship)) : s.shipMin != null ? "shipping from " + X.eur(s.shipMin) : "shipping shown at checkout");
+    bits.push(s.card ? "card +" + s.card + "%" : "no card fee");
+    if (s.bank) bits.push(s.bank + "% off by bank transfer");
+    if (s.days) bits.push(s.days[0] + "–" + s.days[1] + " days to the EU");
+    return '<div><b>' + s.label + '</b><span>' + bits.join(" · ") + (s.trust && s.trust.reviews ? " · ★ " + s.trust.reviews.score.toFixed(1) + " on " + s.trust.reviews.source : "") + '</span></div>';
+  }).join("");
+  render();
+  X.switcher("d", "home");
+})();
+</script>
+</body>
+</html>

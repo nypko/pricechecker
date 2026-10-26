@@ -10,7 +10,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import cards, context, offers, seo
+from . import cards, context, data_files, offers, seo
 from .charts import (
     LABELS,
     _all_stats,
@@ -111,9 +111,11 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "_headers").write_text("/static/app.js\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/style.css\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
-                                  "/static/icons/*\n  Cache-Control: public, max-age=2592000\n")
+                                  "/static/icons/*\n  Cache-Control: public, max-age=2592000\n"
+                                  "/data/v1/*\n  Cache-Control: public, max-age=31536000, immutable\n")   # names carry a content hash
     if data.site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{data.site_cfg["indexnow_key"]}.txt').write_text(data.site_cfg["indexnow_key"])
+    data_files.write(data, OUT, phones)   # build/data/v1/: the browser's phone, home and tax files
     _share_cards(phones, ctx)   # also sets the cards' ?v= in ctx and on each phone, so it comes before the pages
     (OUT / "stores").mkdir()
     for page in PAGES:

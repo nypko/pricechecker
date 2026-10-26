@@ -30,6 +30,7 @@ class SiteData:
     variants: dict                   # config/variants.yaml: RAM/storage options each brand makes
     site_cfg: dict                   # config/site.yaml, with testing/indexnow_key overridden when DOORPRICE_ENV=testing
     specs: dict                      # phone id -> key specs block from config/specs/ (or None)
+    spec_sheets: dict                # phone id -> the whole sheet from config/specs/ (bands, groups, ...)
     google: dict                     # config/google.yaml: Google Play on each brand's China version
     buyers: dict                     # approved buyer reports per store and region (buyer_reports.summary)
     live_stores: dict                # latest["stores"] limited to stores still enabled in stores.yaml
@@ -63,14 +64,15 @@ def load(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: 
     site_cfg = yaml.safe_load(Path("config/site.yaml").read_text()) if Path("config/site.yaml").exists() else {}
     if os.environ.get("DOORPRICE_ENV") == "testing":   # testing.doorprice.app: banner, hidden from search engines, no IndexNow key
         site_cfg = {**site_cfg, "testing": True, "indexnow_key": None}
-    specs = {i: sheet.get("key") for i, sheet in specs_cfg.load().items()}   # key specs, one file per phone in config/specs/
+    spec_sheets = specs_cfg.load()   # one file per phone in config/specs/
+    specs = {i: sheet.get("key") for i, sheet in spec_sheets.items()}   # key specs only
     google = _google()   # Google Play on each brand's China version
     buyers = buyer_reports.summary(updated_at.replace(tzinfo=UTC) if updated_at else None)   # approved buyer reports per store, region
     # only stores still enabled in stores.yaml: a switched-off or removed store's last prices must not show as current
     live_stores = {s: st for s, st in latest["stores"].items() if s in stores_cfg and stores_cfg[s].get("enabled", True)}
     return SiteData(catalog=catalog, stores_cfg=stores_cfg, rates_info=rates_info, rates=rates, terms_status=terms_status,
                     latest=latest, rows_all=rows_all, rows=rows, updated_at=updated_at, tax_cfg=tax_cfg, variants=variants,
-                    site_cfg=site_cfg, specs=specs, google=google, buyers=buyers, live_stores=live_stores, colors=colors)
+                    site_cfg=site_cfg, specs=specs, spec_sheets=spec_sheets, google=google, buyers=buyers, live_stores=live_stores, colors=colors)
 
 
 def _ship_notes(by_region: dict) -> list[tuple[str, list[str]]]:

@@ -2,6 +2,17 @@
 import { readFileSync } from "node:fs";
 import * as P from "../../static/js/pricing.js";
 
+// --offers <phone file> [--tax <tax file>]: print each offer's EU / card / EUR total as a JSON array instead of running the cases
+const arg = (n) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : null; };
+if (arg("--offers")) {
+  const doc = JSON.parse(readFileSync(arg("--offers"), "utf8"));
+  const tax = JSON.parse(readFileSync(arg("--tax") ?? new URL("../../config/import_tax.json", import.meta.url), "utf8"));
+  const s = { region: "EU", area: "", pay: "card", cur: "eur" };
+  const rule = P.taxRule(tax, s);
+  console.log(JSON.stringify(doc.offers.map((o) => P.cost(o, s, rule).total)));
+  process.exit(0);
+}
+
 const CASES = JSON.parse(readFileSync(new URL("../fixtures/pricing_cases.json", import.meta.url), "utf8"));
 let bad = 0;
 const fail = (name, field, got, want) => { bad++; console.log(`FAIL ${name} ${field} got ${got} want ${want}`); };

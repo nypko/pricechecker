@@ -95,7 +95,9 @@ def watch(snap_dir: Path = SNAP_DIR, report: Path = REPORT, sheets: dict | None 
     out = []
     if changed:
         out.append("Spec pages whose text changed since the saved copy. Re-read the page and update config/specs, "
-                   "then run `python -m pricechecker.specpages fetch <id> --edition <edition>` and commit the snapshot.\n\n"
+                   "Snapshots are not updated automatically: after checking the change, re-fetch locally with "
+                   "`python -m pricechecker.specpages fetch <id> --edition <edition>` and commit the snapshot, "
+                   "or this is reported again next Monday.\n\n"
                    + "\n\n".join(changed))
     if by_hand:
         out.append("Pages to check by hand:\n\n" + "\n".join(by_hand))

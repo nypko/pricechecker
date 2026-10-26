@@ -29,7 +29,7 @@ Three things together, none leading:
 - Totals carry caveats when a store's price excludes import tax ("excl. import tax") or doesn't say ("import tax not stated").
 - Store terms are re-checked daily; a changed terms page is flagged "terms need review".
 - Stores can be stale or failed; the UI must show that state, not hide it.
-- Price history (`data/history.csv`) is shown per RAM/storage on phone pages and in full on /history/<model> pages.
+- Price history (`data/history/<YYYY-MM>.csv`) is shown per RAM/storage on phone pages and in full on /history/<model> pages.
 - Undecided: Amazon/AliExpress integration (API credentials pending) and which DoorPrice domain to buy.
 
 ## Brand Commitments

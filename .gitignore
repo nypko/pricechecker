@@ -7,3 +7,5 @@ venv/
 .promo_report.md
 .terms_report.md
 .spec_report.md
+data/*.tmp
+data/history/*.tmp

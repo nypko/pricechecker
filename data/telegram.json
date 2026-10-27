@@ -50,7 +50,7 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1423.22
+   "ref": 1425.36
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -62,7 +62,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1171.36
+   "ref": 1173.5
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -74,23 +74,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1629.02
+   "ref": 1631.16
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2222.9
+   "ref": 2226.02
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1955.36
+   "ref": 1958.48
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3746.8
+   "ref": 3752.86
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1399.7
+   "ref": 1402.82
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -102,23 +102,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1104.72
+   "ref": 1105.88
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 934.2
+   "ref": 935.36
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1079.24
+   "ref": 1081.38
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1731.92
+   "ref": 1734.06
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1104.72
+   "ref": 1105.88
   },
   "iqoo-15": {
    "left": "",
@@ -150,7 +150,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1091.98
+   "ref": 1093.14
   },
   "oppo-find-n5": {
    "left": "",
@@ -302,8 +302,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 908.72
+   "ref": 909.88
   }
  },
- "updated": "2026-10-27T13:56:41Z"
+ "updated": "2026-10-27T19:58:27Z"
 }

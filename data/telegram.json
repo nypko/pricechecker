@@ -42,19 +42,19 @@
   },
   "honor-magic-9-super": {
    "left": "import tax",
-   "ref": 786.08
+   "ref": 754.44
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1214.48
+   "ref": 1215.46
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1420.28
+   "ref": 1421.26
   },
   "huawei-mate-80": {
    "left": "import tax",
-   "ref": 809.39
+   "ref": 811.72
   },
   "huawei-mate-80-pro": {
    "left": "import tax",
@@ -62,11 +62,11 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1169.4
+   "ref": 1170.38
   },
   "huawei-mate-90": {
    "left": "import tax",
-   "ref": 974.31
+   "ref": 911.95
   },
   "huawei-mate-90-pro": {
    "left": "import tax",
@@ -74,27 +74,27 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1625.1
+   "ref": 1626.08
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2218.0
+   "ref": 2219.96
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1951.44
+   "ref": 1952.42
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3739.94
+   "ref": 3741.9
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1397.74
+   "ref": 1398.72
   },
   "huawei-pura-90": {
    "left": "import tax",
-   "ref": 737.68
+   "ref": 740.12
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
@@ -102,23 +102,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1101.78
+   "ref": 1102.76
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 932.24
+   "ref": 933.22
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1077.28
+   "ref": 1078.26
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1728.0
+   "ref": 1728.98
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1101.78
+   "ref": 1102.76
   },
   "iqoo-15": {
    "left": "",
@@ -150,7 +150,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1089.04
+   "ref": 1090.02
   },
   "oppo-find-n5": {
    "left": "",
@@ -302,8 +302,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 906.76
+   "ref": 907.74
   }
  },
- "updated": "2026-10-27T00:54:00Z"
+ "updated": "2026-10-27T07:01:55Z"
 }

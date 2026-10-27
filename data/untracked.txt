@@ -26,6 +26,7 @@ mobilemarvel	huawei-matebook-fold-2026/china
 mobilemarvel	huawei-matebook-fold-ultimate-design-2025/china
 mobilemarvel	huawei-pura-80-pro-plus/china
 mobilemarvel	huawei-pura-x/china
+mobilemarvel	iphone-duo/china
 mobilemarvel	leica-leitzphone-xiaomi-17-ultra-leica-edition/global
 mobilemarvel	oneplus-15-with/china
 mobilemarvel	oppo-bubble/china
@@ -186,6 +187,7 @@ giztop	motorola-razr-40-ultra/china
 giztop	motorola-razr-40/china
 giztop	motorola-razr-50-ultra/china
 giztop	motorola-razr-50/china
+giztop	motorola-razr-60-ice-diamond-edition/china
 giztop	motorola-razr-60-ultra/china
 giztop	motorola-razr-60/china
 giztop	motorola-razr-fold-2026-fifa-world-cup-gilded-limited-edition/china

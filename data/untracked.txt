@@ -186,7 +186,6 @@ giztop	motorola-razr-40-ultra/china
 giztop	motorola-razr-40/china
 giztop	motorola-razr-50-ultra/china
 giztop	motorola-razr-50/china
-giztop	motorola-razr-60-ice-diamond-edition/china
 giztop	motorola-razr-60-ultra/china
 giztop	motorola-razr-60/china
 giztop	motorola-razr-fold-2026-fifa-world-cup-gilded-limited-edition/china
@@ -242,7 +241,6 @@ giztop	red-magic-9s-pro-plus/china
 giztop	red-magic-9s-pro/china
 giztop	red-magic-gaming-pad-pro/china
 giztop	red-magic-gaming-tablet-5-pro/china
-giztop	redmagic-gaming-tablet-3-pro-golden-saga/china
 giztop	redmi-k100-pro/china
 giztop	redmi-k80-ultra/china
 giztop	redmi-k90-max/china

@@ -82,15 +82,15 @@
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1951.43
+   "ref": 1951.44
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3738.95
+   "ref": 3739.94
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1397.73
+   "ref": 1397.74
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,11 +110,11 @@
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1077.27
+   "ref": 1077.28
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1727.99
+   "ref": 1728.0
   },
   "huawei-pura-x-view": {
    "left": "",
@@ -305,5 +305,5 @@
    "ref": 906.76
   }
  },
- "updated": "2026-10-26T21:14:04Z"
+ "updated": "2026-10-27T00:54:00Z"
 }

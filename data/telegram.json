@@ -42,7 +42,7 @@
   },
   "honor-magic-9-super": {
    "left": "import tax",
-   "ref": 754.44
+   "ref": 761.46
   },
   "honor-magic-v5": {
    "left": "",
@@ -54,11 +54,11 @@
   },
   "huawei-mate-80": {
    "left": "import tax",
-   "ref": 811.72
+   "ref": 819.27
   },
   "huawei-mate-80-pro": {
    "left": "import tax",
-   "ref": 965.35
+   "ref": 972.83
   },
   "huawei-mate-80-pro-max": {
    "left": "",
@@ -66,7 +66,7 @@
   },
   "huawei-mate-90": {
    "left": "import tax",
-   "ref": 911.95
+   "ref": 920.44
   },
   "huawei-mate-90-pro": {
    "left": "import tax",
@@ -94,11 +94,11 @@
   },
   "huawei-pura-90": {
    "left": "import tax",
-   "ref": 740.12
+   "ref": 747.01
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
-   "ref": 830.9
+   "ref": 837.33
   },
   "huawei-pura-90-pro-max": {
    "left": "",
@@ -206,7 +206,7 @@
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
-   "ref": 970.95
+   "ref": 980.95
   },
   "samsung-galaxy-z-fold-8": {
    "left": "",
@@ -230,7 +230,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 737.0
+   "ref": 1004.94
   },
   "vivo-x300-pro": {
    "left": "",
@@ -305,5 +305,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-10-28T00:05:46Z"
+ "updated": "2026-10-28T13:40:52Z"
 }

@@ -63,5 +63,6 @@ def test_every_page_has_the_shell(site_build):
         assert "https://t.me/DoorPriceDeals" in html and "https://www.reddit.com/r/DoorPrice/" in html, f
         assert "static/app.js" not in html and 'id="import-tax"' not in html and "phone-names" not in html, f
         assert "Other countries and payment methods need JavaScript" in html, f
+        assert "Delivered = store price" in html, f
         assert 'type="module" src=' in html and "js/settings.js?v=" in html, f
         assert 'aria-label="Search phones"' in html, f

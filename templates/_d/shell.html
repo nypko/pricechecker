@@ -61,6 +61,7 @@
 
 {%- macro footer(root, site) -%}
 <footer><div class="wrap">
+  <p>Delivered = store price after any automatic sale + payment fee + shipping to you + import tax when the store doesn't pay it. When a store doesn't say, we mark it instead of guessing.</p>
   <p class="foot-links"><a href="{{ root }}stores">Stores</a> · <a href="{{ root }}methodology">How we work out totals</a> · <a href="{{ root }}about">About</a> · <a href="{{ root }}privacy">Privacy</a>
     {%- if site.telegram %} · <a href="https://t.me/{{ site.telegram }}" rel="noopener">Telegram</a>{% endif %}
     {%- if site.reddit %} · <a href="https://www.reddit.com/r/{{ site.reddit }}/" rel="noopener">r/{{ site.reddit }}</a>{% endif %}</p>

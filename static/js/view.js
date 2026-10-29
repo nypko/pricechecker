@@ -13,7 +13,7 @@ const state = (o, c, s) => {
   return c.payOk ? "ok" : "nopay";
 };
 
-function row(o, c, s, st) {
+function row(o, c, s, st, taxName) {
   const unknown = unknowns(c);
   const days = (o.days || {})[s.region];
   return {
@@ -26,6 +26,7 @@ function row(o, c, s, st) {
     left: leftOut(c), tail: tail(c, unknown), settled: unknown === 0,
     payOk: c.payOk, old: c.old, available: !!o.available,
     delivers: (o.ship || {})[s.region] !== false, state: st,
+    checked: o.checked ?? null, taxName,   // when the store's prices were read (ISO, UTC); the tax's name
   };
 }
 
@@ -38,9 +39,9 @@ export function rows(inputs, tax, s) {
   // same order as pricing.rank: payment accepted, current, fewer unknowns, lower total (stable)
   live.sort(([, a], [, b]) => (!a.payOk - !b.payOk) || (a.old - b.old) || (unknowns(a) - unknowns(b)) || (a.total - b.total));
   const rest = all.filter(([o]) => !live.some(([x]) => x === o));
-  const out = live.map(([o, c]) => row(o, c, s, state(o, c, s)));
+  const out = live.map(([o, c]) => row(o, c, s, state(o, c, s), rule.name));
   for (const want of ["nodelivery", "soldout"]) {
-    for (const [o, c] of rest) if (state(o, c, s) === want) out.push(row(o, c, s, want));
+    for (const [o, c] of rest) if (state(o, c, s) === want) out.push(row(o, c, s, want, rule.name));
   }
   return out;
 }

@@ -14,8 +14,8 @@ BUDGET = 60_000
 
 # what pricing.cost()/rank() read, plus what the page shows for a row
 _COST_KEYS = ("money", "pay", "pay_ok", "ship", "duties", "old", "available")
-_SHOW_KEYS = ("store_label", "edition", "storage", "link", "days", "trust")
-_PAGE_ONLY = ("link", "days", "trust")   # shown on the phone page, not in the home list
+_SHOW_KEYS = ("store_label", "edition", "storage", "link", "days", "trust", "checked")
+_PAGE_ONLY = ("link", "days", "trust", "checked")   # shown on the phone page, not in the home list
 
 
 def _promo(p: dict | None) -> dict | None:

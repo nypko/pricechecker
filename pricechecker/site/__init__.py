@@ -10,7 +10,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import assets, cards, context, data_files, offers, seo
+from . import assets, blocks, cards, context, data_files, offers, seo
 from .charts import (
     LABELS,
     _all_stats,
@@ -66,6 +66,7 @@ def _env() -> Environment:
     env.filters["spec"] = spec
     env.filters["spec_parts"] = _spec_parts
     env.filters["month"] = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%b %Y") if d else ""
+    blocks.register(env)
     return env
 
 

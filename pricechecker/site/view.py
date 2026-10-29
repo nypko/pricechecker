@@ -13,7 +13,7 @@ def _tail(c: pricing.Cost, unknown: int) -> str:
     return "+ tax?" if unknown else ""
 
 
-def _row(o: dict, c: pricing.Cost, s: Settings, state: str) -> dict:
+def _row(o: dict, c: pricing.Cost, s: Settings, state: str, tax_name: str) -> dict:
     unknown = pricing.unknowns(c)
     days = (o.get("days") or {}).get(s.region)
     return {
@@ -26,6 +26,7 @@ def _row(o: dict, c: pricing.Cost, s: Settings, state: str) -> dict:
         "left": pricing.left_out(c), "tail": _tail(c, unknown), "settled": unknown == 0,
         "payOk": c.pay_ok, "old": c.old, "available": bool(o.get("available")),
         "delivers": (o.get("ship") or {}).get(s.region) is not False, "state": state,
+        "checked": o.get("checked"), "taxName": tax_name,   # when the store's prices were read (ISO, UTC); the tax's name
     }
 
 
@@ -45,10 +46,10 @@ def rows(inputs: list[dict], tax_cfg: dict, s: Settings) -> list[dict]:
     rule = pricing.tax_rule(tax_cfg, s)
     ranked = pricing.rank(inputs, s, rule, with_base=True)
     ids = {id(o) for o, _ in ranked}
-    out = [_row(o, c, s, _state(o, c, s)) for o, c in ranked]
+    out = [_row(o, c, s, _state(o, c, s), rule.name) for o, c in ranked]
     rest = [(o, pricing.cost(o, s, rule)) for o in inputs if id(o) not in ids]
     for want in ("nodelivery", "soldout"):
-        out += [_row(o, c, s, want) for o, c in rest if _state(o, c, s) == want]
+        out += [_row(o, c, s, want, rule.name) for o, c in rest if _state(o, c, s) == want]
     return out
 
 

@@ -1,0 +1,159 @@
+{#- The D blocks: every price on the site is shown through one of these. Each has a twin in static/js/blocks.js with
+    the same name (camelCase there), root element, class and text; tests/test_blocks.py keeps them equal. Rows come from
+    pricechecker/site/view.py; s is the visitor's settings (region, area, pay, cur); labels = ed_labels(brand).
+    Text helpers (money, mem_text, ...) are pricechecker/site/blocks.py, registered as globals. No settings UI and no
+    event wiring here: page modules wire the buttons (data-e, data-m). -#}
+
+{%- macro _go(r, cls) -%}
+<a class="{{ cls }}" href="{{ r.link }}" rel="sponsored nofollow noopener" target="_blank">View at {{ r.store }}<span aria-hidden="true"> ↗</span></a>
+{%- endmacro -%}
+
+{%- macro _total(r, s) -%}
+{{ "≈" if r.approx }}{{ money(r.total, s.cur) }}{% if r.tail %}<small>{{ r.tail }}</small>{% endif %}
+{%- endmacro -%}
+
+{%- macro _mem(st) -%}
+{%- set p = mem_parts(st) -%}
+<div class="mem">{% if p %}<b>{{ p[0] }}</b> RAM · <b>{{ p[1] }}</b> storage{% else %}RAM/storage not listed{% endif %}</div>
+{%- endmacro -%}
+
+{#- One version's best current price: version, memory, price, store, settled mark or what is left out, store link.
+    on: this version is the one the page shows below. -#}
+{%- macro price_box(rows, edition, s, labels, on=False) -%}
+{%- set b = best_of(rows, edition) -%}
+{%- set other = best_of(rows, "global" if edition == "china" else "china") -%}
+{%- set cls = "cn" if edition == "china" else "gl" -%}
+{%- if not b -%}
+<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">No current price for your settings</p></div>
+{%- else -%}
+<div class="side {{ cls }}{{ ' on' if on and other }}" data-block="price_box" data-e="{{ edition }}"><button type="button" class="pickbtn" data-e="{{ edition }}" aria-pressed="{{ 'true' if on else 'false' }}"><div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div><p class="st">at <b>{{ b.store }}</b></p>
+{%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}
+</button>
+{%- if edition == "china" %}<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>{% endif -%}
+{{ _go(b, "go") }}
+{%- if other %}<button type="button" class="pick" data-e="{{ edition }}">{{ "Details below ↓" if on else "Show this version ↓" }}</button>{% endif -%}
+</div>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- Under the two boxes: the same-memory gap (view.gap), or why there is no number. Nothing when only one version sells. -#}
+{%- macro gap_line(gap, both, s, labels) -%}
+{%- if both -%}
+<div class="gapline slim" data-block="gap_line">
+{%- if gap -%}
+{%- set cheap = labels.china if gap.diff >= 0 else labels.global -%}
+Same memory, <b>{{ mem_label(gap.storage) }}</b>: the {{ cheap }} version is <b>{{ money(gap.diff|abs, s.cur) }} less</b> delivered ({{ money(gap.china, s.cur) }} vs {{ money(gap.global, s.cur) }}).
+{%- else -%}
+No memory has a settled delivered price for both versions yet, so we don't put a number on the gap.
+{%- endif -%}
+</div>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- One chip per memory of the edition with its best current price ("+" when something is left out). -#}
+{%- macro mem_chips(rows, edition, storage, s) -%}
+<div class="mems" data-block="mem_chips" role="group" aria-label="Memory">
+{%- for st, b in mem_options(rows, edition) -%}
+<button type="button" data-m="{{ st }}" aria-pressed="{{ 'true' if st == storage else 'false' }}">{{ mem_label(st) }} · {% if b %}{{ money(b.total, s.cur) }}{{ "+" if b.unknown }}{% else %}–{% endif %}</button>
+{%- endfor -%}
+</div>
+{%- endmacro -%}
+
+{#- The pick for this version and memory: row is view.best_of(rows, edition, storage) (never a stale, sold-out or
+    not-payable row); pick = every row of that version and memory, for "why this one". -#}
+{%- macro verdict(row, pick, s, labels, now=None) -%}
+<section class="verdict" data-block="verdict" aria-live="polite">
+{%- if not row or row.state != "ok" -%}
+<p class="q">No store we check has a current price for this version and memory.</p>
+{%- else -%}
+{%- set t = row.trust or {} -%}{%- set rv = t.reviews -%}{%- set w = why(row, pick, s) -%}
+<div class="what"><span class="vpill {{ 'cn' if row.edition == 'china' else 'gl' }}">{{ labels[row.edition] }} version</span><span class="mpill">{{ mem_text(row.storage) }}</span></div>
+<p class="q">{{ "Cheapest delivered" if row.settled else "Lowest total we can work out" }}</p>
+<div class="total num">{{ _total(row, s) }}</div>
+<p class="who">at <b>{{ row.store }}</b> · {{ ("arrives in " ~ days_text(row.days)) if row.days else "delivery time not stated" }}</p>
+<p class="why"><b>{{ w[0] }}</b> {{ w[1] }}</p>
+<ul class="badges">
+{%- if row.promoAmt > 0.005 %}<li class="sale">{{ pct(row.promoPct) }}% {{ (row.promoLabel or "sale")|lower }} applied</li>{% endif -%}
+{%- if rv %}<li>★ {{ fixed(rv.score, 1) }} on {{ rv.source }} ({{ group(rv.count) }})</li>{% endif -%}
+{%- if row.duties == true %}<li>{{ cap(row.taxName) }} paid by store</li>{% endif -%}
+<li>{{ (t.warranty_months ~ "-month store warranty") if t.warranty_months else "Warranty not stated" }}</li>
+{%- if t.returns_days %}<li>{{ t.returns_days }}-day returns</li>{% endif -%}
+</ul>
+{{- _go(row, "cta") -}}
+<p class="fine">{% if row.checked %}Price checked {{ stamp(row.checked) }}. {% endif %}Affiliate link: we may earn a commission; it never changes the order.</p>
+{%- endif -%}
+</section>
+{%- endmacro -%}
+
+{%- macro _seg(v, c) -%}{% if v > 0 %}<span style="flex:{{ fixed(v, 1) }};background:var({{ c }})"></span>{% endif %}{%- endmacro -%}
+
+{#- How the total adds up: cost bar, store price, sale, payment, shipping, import tax, "You pay at the door". -#}
+{%- macro receipt(row, s, labels) -%}
+<section class="receipt" data-block="receipt" aria-label="How the total adds up">
+{%- if row -%}
+{%- set fee = row.adjAmt if row.adjAmt > 0 else 0 -%}
+<h3>How {{ money(row.total, s.cur) }} adds up</h3>
+<div class="costbar" aria-hidden="true">{{ _seg(row.base, "--bar-phone") }}{{ _seg(fee, "--bar-fee") }}{{ _seg(row.ship or 0, "--bar-ship") }}{{ _seg(row.taxAdded, "--bar-tax") }}</div><dl>
+<dt><i style="background:var(--bar-phone)"></i>Store price</dt><dd>{{ money(row.list, s.cur, true) }}</dd>
+{%- if row.promoAmt > 0.005 %}<dt><i style="background:var(--bar-promo)"></i>{{ row.promoLabel or "Sale" }}, {{ pct(row.promoPct) }}% off at checkout</dt><dd class="neg">−{{ money(row.promoAmt, s.cur, true) }}</dd>{% endif -%}
+<dt><i style="background:var(--bar-fee)"></i>Paying by {{ PAY_BY[s.pay] }}</dt><dd>{{ "unknown" if row.adj is none else (money(row.adjAmt, s.cur, true) if row.adjAmt else "no fee") }}</dd>
+<dt><i style="background:var(--bar-ship)"></i>Shipping to {{ PLACE[s.region] }}</dt><dd>{{ "not listed" if row.ship is none else ("free" if row.ship == 0 else ("from " if row.shipMin else "") ~ money(row.ship, s.cur, true)) }}</dd>
+<dt><i style="background:var(--bar-tax)"></i>{{ cap(row.taxName) }}</dt><dd>
+{%- if row.duties == true %}paid by the store{% elif row.taxEst is none %}not estimated{% elif row.duties == false %}≈{{ money(row.taxAdded, s.cur, true) }}{% else %}not stated (≈{{ money(row.taxEst, s.cur) }} if due){% endif -%}
+</dd>
+<dt class="sum">You pay at the door</dt><dd class="sum">{{ "≈" if row.approx }}{{ money(row.total, s.cur, true) }}{% if row.tail %}<small>{{ row.tail }}</small>{% endif %}</dd></dl>
+{%- endif -%}
+</section>
+{%- endmacro -%}
+
+{#- One store in a list, by its state: ok, nopay ("Doesn't take PayPal"), stale ("price from N days ago"),
+    nodelivery ("Doesn't deliver to the UK", no price), soldout (last price, no store link). now: ISO, UTC. -#}
+{%- macro store_row(row, s, labels, now=None) -%}
+{%- set st = row.state -%}
+<li{% if st != "ok" %} class="{{ st }}"{% endif %} data-block="store_row" data-state="{{ st }}"><span class="s">{{ row.store }}{% if row.promoAmt > 0.005 and st != "nodelivery" %}<span class="promo">{{ pct(row.promoPct) }}% sale</span>{% endif %}</span>
+{%- if st != "nodelivery" -%}
+<span class="t num">{% if st == "soldout" %}{{ money(row.total, s.cur) }}{% else %}{{ _total(row, s) }}{% endif %}</span>
+{%- endif -%}
+<span class="c">
+{%- if st == "nodelivery" %}Doesn't deliver to {{ PLACE[s.region] }}
+{%- elif st == "soldout" %}Sold out
+{%- elif st == "stale" %}{% set n = days_ago(row.checked, now) %}{{ ("price from " ~ n ~ (" day ago" if n == 1 else " days ago")) if n is not none else "price from an earlier check" }}
+{%- elif st == "nopay" %}Doesn't take {{ PAY_BY[s.pay] }}
+{%- else %}{{ days_text(row.days) }} · {{ caveat(row, s) }}{% if row.trust and row.trust.reviews %} · ★ {{ fixed(row.trust.reviews.score, 1) }}{% endif %}
+{%- endif -%}
+</span>
+{%- if st in ("ok", "nopay", "stale") %}{{ _go(row, "g") }}{% endif -%}
+</li>
+{%- endmacro -%}
+
+{#- Stores for one version and memory: current, then not payable, stale, not delivered; sold-out ones under "Sold out at". -#}
+{%- macro store_list(rows, s, labels, now=None) -%}
+{%- set parts = list_order(rows) -%}
+<div class="stores" data-block="store_list">
+{%- if parts[0] %}<ul class="offers">{% for r in parts[0] %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
+{%- if parts[1] %}<h3 class="soldout-h">Sold out at</h3><ul class="offers soldout-list">{% for r in parts[1] %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
+</div>
+{%- endmacro -%}
+
+{#- Pinned at the bottom once the price boxes scroll away; the page shows and hides it. -#}
+{%- macro buy_bar(row, s, labels) -%}
+{%- if row -%}
+<div class="buybar" data-block="buy_bar" hidden><div class="bb-t"><span class="bb-l1"><b class="num">{{ "≈" if row.approx }}{{ money(row.total, s.cur) }}</b><b class="bb-w">{{ labels[row.edition] }} · {{ mem_short(row.storage) }}</b></span><span>{{ (row.tail ~ " · ") if row.tail }}{{ row.store }}</span></div><a class="bb-go" href="{{ row.link }}" rel="sponsored nofollow noopener" target="_blank" aria-label="View deal at {{ row.store }}">View deal<span aria-hidden="true"> ↗</span></a></div>
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro _cell(b, e, s, labels) -%}
+{%- if b -%}
+<span class="p {{ 'cn' if e == 'china' else 'gl' }}">{{ labels[e] }}<b class="num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}{% if b.tail %}<small>{{ b.tail }}</small>{% endif %}</b>{{ mem_label(b.storage) }}</span>
+{%- else -%}
+<span class="p none">{{ labels[e] }}<b>–</b></span>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. -#}
+{%- macro home_row(phone, rows, s, labels, root="") -%}
+{%- set g = gap_of(rows) -%}{%- set n = stores_n(rows) -%}
+<li class="pair" data-block="home_row" data-id="{{ phone.id }}"><a href="{{ root }}phones/{{ phone.id }}"><span class="nm">{{ phone.name }}<small>{{ month_of(phone.announced) }}</small></span><span class="two">{{ _cell(best_of(rows, "china"), "china", s, labels) }}{{ _cell(best_of(rows, "global"), "global", s, labels) }}</span>
+{%- if g %}<span class="gap">{{ labels.china if g.diff >= 0 else labels.global }} {{ money(g.diff|abs, s.cur) }} less at {{ mem_tiny(g.storage) }}</span>{% endif -%}
+<span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }}</span></a></li>
+{%- endmacro -%}

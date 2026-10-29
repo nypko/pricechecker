@@ -274,6 +274,13 @@ body:has(.buybar) footer { padding-bottom: 90px; }
 .dfilt button span { color: inherit; opacity: .7; margin-left: 4px; font-variant-numeric: tabular-nums; }
 .offers .promo { display: inline-block; font: 600 .72rem var(--body); color: var(--promo); background: var(--promo-soft); padding: 1px 7px; border-radius: 999px; margin-left: 6px; }
 .offers .t s { font: 500 .78rem var(--body); color: var(--ink-2); display: block; }
+/* price states (templates/_d/blocks.html store_row): stale greyed, sold out / not delivered / not payable muted */
+.offers li.stale .s, .offers li.stale .t { color: var(--ink-2); }
+.offers li.stale .t { font-weight: 500; }
+.offers li.soldout .t { color: var(--ink-2); font-weight: 500; }
+.offers li.nodelivery .s, .offers li.soldout .s { color: var(--ink-2); font-weight: 500; }
+.offers li.nodelivery .c, .offers li.nopay .c, .offers li.stale .c { color: var(--warn); }
+.soldout-h { font: 600 .82rem var(--body); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); margin: 16px 0 6px; }
 
 /* PCPartPicker-style ledger behind "Compare every offer" */
 details.ledger { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; margin-top: 12px; }

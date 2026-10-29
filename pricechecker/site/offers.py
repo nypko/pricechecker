@@ -85,6 +85,7 @@ def assemble(data: SiteData) -> list[dict]:
                 if o["model_id"] == m["id"] and o["edition"] in m["editions"]:
                     usd = (o.get("prices") or {}).get("USD") or fx.convert(o["price"], o["currency"], "USD", rates)
                     offers.append({**o, "store_label": stores_cfg[store].get("label", store), "stale": not st.get("ok", True), "old": old[store],
+                                   "checked": st.get("checked"),   # when this store's prices were last read (ISO, UTC)
                                    "link": affiliate.link(o["url"], stores_cfg[store]), "money": _money(o, rates), "usd": usd,
                                    "pay": {k: terms.payment_pct(stores_cfg[store], k) for k in terms.METHODS},
                                    "pay_ok": {k: terms.payment_available(stores_cfg[store], k, usd) for k in terms.METHODS},

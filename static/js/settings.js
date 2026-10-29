@@ -8,8 +8,8 @@ import { DEFAULT } from "./view.js";
 const REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"];
 const SYMBOL = { eur: "€", gbp: "£", usd: "$", cad: "C$", aud: "A$" };
 const PAY_LABEL = { card: "Card", paypal: "PayPal", bank: "Bank" };
-const PAY_BY = { card: "card", paypal: "PayPal", bank: "bank transfer" };
-const PLACE = { EU: "the EU", UK: "the UK", US: "the US", CA: "Canada", AU: "Australia", Global: "your country" };
+export const PAY_BY = { card: "card", paypal: "PayPal", bank: "bank transfer" };
+export const PLACE = { EU: "the EU", UK: "the UK", US: "the US", CA: "Canada", AU: "Australia", Global: "your country" };
 
 // First visit: region and currency from the device's time zone, worked out in the browser (no IP lookup, nothing sent
 // anywhere); the browser language only when there is no time zone.

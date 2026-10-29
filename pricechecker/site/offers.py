@@ -108,8 +108,6 @@ def assemble(data: SiteData) -> list[dict]:
         # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
         lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend", "grom")},
                           "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
-        # phone page: every offer (out of stock too) - the browser builds the price grid, answer and store list from it
-        full = lambda o: {**js(o), "available": o["available"], "stale": o["stale"], "store": o["store"]}  # noqa: B023 - used in this pass only
         by_storage = defaultdict(list)
         for o in offers:
             o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
@@ -124,7 +122,6 @@ def assemble(data: SiteData) -> list[dict]:
                    for s in storages if len(m["editions"]) > 1]
         phones.append({**m, "slug": m["id"], "best": in_stock[0] if in_stock else None, "eds": eds,
                        "offers_json": json.dumps([lean(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
-                       "all_json": json.dumps([full(o) for o in offers], separators=(",", ":")),
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
                        "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},

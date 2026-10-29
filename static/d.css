@@ -207,10 +207,9 @@ footer p { margin: 0 0 8px; }
   --bar-phone: #eef1f6; --bar-fee: #f07a62; --bar-ship: #7d889c; --bar-tax: #e0679f; --bar-promo: #b69cff;
   --s1: #ff6b7d; --s2: #7fa4ff; --s3: #3cc2b3; --s4: #f2b45a; --s5: #b69cff; --s6: #a2abba; }
 
-.topnav { display: flex; gap: 14px; margin-left: auto; font: 600 .88rem var(--body); }
+.topnav { display: flex; gap: 14px; margin-left: 18px; font: 600 .88rem var(--body); }
 .topnav a { text-decoration: none; color: var(--ink-2); padding: 8px 0; }
 .topnav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
-.topnav + .prefs { margin-left: 0; }
 
 /* each price box: tap the price to pick the version, the coloured button goes straight to that store */
 .side { display: flex; flex-direction: column; }
@@ -376,10 +375,62 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 /* ---- shell: header slides away on scroll down, back on scroll up; the "Delivered to ..." line; footer ---- */
 @media (prefers-reduced-motion: no-preference) { header.top { transition: transform .2s ease; } }
 header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
-.topnav + .icon-btn { margin-left: 4px; }
+/* logo and nav on the left; search and the settings button on the right */
+.top .icon-btn { margin-left: auto; }
+.top .prefs { margin-left: 0; white-space: nowrap; }
 .for { margin: -4px 0 14px; font-size: .92rem; color: var(--ink-2); }
 .foot-links a { white-space: nowrap; }
 @media (max-width: 420px) {
   .top .wrap { gap: 6px; } .topnav { gap: 10px; font-size: .84rem; } .prefs { padding: 0 10px; font-size: .8rem; }
   .icon-btn { width: 36px; height: 36px; }
 }
+/* phones: the nav gets its own row under logo, search and settings, so the settings label never wraps */
+@media (max-width: 520px) {
+  .top .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 8px; }
+  .topnav { order: 3; width: 100%; margin-left: 0; gap: 18px; }
+  .topnav a { padding: 6px 0 8px; }
+}
+
+/* ---- phone page (templates/phone.html) ---- */
+[hidden] { display: none !important; }
+.phone .for { margin-bottom: 16px; }
+.phone .only { margin: -2px 0 12px; }
+.buyers { margin: 0 0 8px; font-size: .86rem; color: var(--ink-2); }
+.stores .offers + .soldout-h { margin-top: 16px; }
+.nomatch, .empty { margin: 10px 0 0; padding: 14px 16px; background: var(--paper); border: 1px dashed var(--rule); border-radius: 16px; font-size: .92rem; color: var(--ink-2); }
+.watch-note { margin: 8px 0 0; font-size: .84rem; color: var(--ink-2); }
+.phone .actions { margin-top: 22px; }
+.lt tr.stale td, .lt tr.nopay td { color: var(--ink-2); }
+.lt td small { font-size: .74rem; color: var(--warn); margin-left: 4px; }
+.lt th[aria-sort] button { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.hist > div > p:last-child { margin-top: 8px; }
+.hist .keys b { font-weight: 600; }
+/* the China / Global explainer (templates/_explain.html), a native details under "What the China version means" */
+details.explain { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; margin: -10px 0 8px; }
+details.explain summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; padding: 0 16px; font-weight: 600; font-size: .94rem; }
+.explain-body { padding: 0 16px 14px; font-size: .9rem; }
+.explain-body p { margin: 0 0 10px; }
+.ed-diff { margin: 0; display: grid; gap: 10px; }
+.ed-diff dt { font: 700 .76rem var(--body); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+.ed-diff dd { margin: 4px 0 0; }
+.badge { display: inline-block; padding: 0 7px; border-radius: 999px; font: 700 .7rem/1.6 var(--body); letter-spacing: .03em; color: #fff; margin-right: 4px; }
+.badge.china { background: var(--cn); } .badge.global { background: var(--gl); }
+:root[data-theme="dark"] .badge { color: #0e1117; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .badge { color: #0e1117; } }
+.explain .small, .explain-body .small { font-size: .84rem; }
+/* the buyer report form (shown when site.reports_live) */
+.report details { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; margin-top: 22px; }
+.report summary { cursor: pointer; min-height: 50px; display: flex; align-items: center; padding: 0 16px; font-weight: 600; }
+.report-form { padding: 0 16px 16px; display: grid; gap: 12px; font-size: .9rem; }
+.report-form .small { margin: 0; color: var(--ink-2); font-size: .84rem; }
+.report-form .hp { position: absolute; left: -9999px; }
+.rf-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.rf-grid label, .rf-amount label { display: grid; gap: 4px; color: var(--ink-2); font-size: .84rem; }
+.report-form select, .report-form input[type="number"] { min-height: 42px; font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 0 10px; }
+.rf-tax { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; }
+.rf-tax legend { font-weight: 600; margin-bottom: 6px; padding: 0; }
+.rf-tax > label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+.rf-amount { display: inline-flex; gap: 8px; align-items: end; }
+.rf-actions { margin: 0; display: flex; align-items: center; gap: 12px; }
+.rf-send { min-height: 44px; padding: 0 18px; border-radius: 12px; border: 0; background: var(--ink); color: var(--paper); font: 700 .92rem var(--body); cursor: pointer; }
+.rf-status { color: var(--ink-2); font-size: .86rem; }

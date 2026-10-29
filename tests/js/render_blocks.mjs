@@ -2,7 +2,7 @@
 // Jinja macros: node render_blocks.mjs --phone <v1 file> --tax <tax file> --edition <e> --storage <st>
 //   [--settings region,area,pay,cur] [--labels '{"global":..,"china":..}'] [--meta '{"id","name","announced","brand"}']
 //   [--now <ISO>] [--root <prefix>]
-// prints {"<snake name>": "<html>", "store_row": ["<html>", ...one per row]}. Or --money '[[v, cur, dec], ...]' prints
+// prints {"<snake name>": "<html>", "store_row": ["<html>", ...one per row], "ledger": [by rank, by total, by store price]}. Or --money '[[v, cur, dec], ...]' prints
 // the money() text of each.
 import { readFileSync } from "node:fs";
 import { rows as viewRows, bestOf, gap } from "../../static/js/view.js";
@@ -35,5 +35,6 @@ if (arg("--money")) {
     store_list: B.storeList(pick.filter((r) => r !== best), s, labels, now),
     buy_bar: B.buyBar(best, s, labels),
     home_row: B.homeRow(meta, rows, s, labels, root),
+    ledger: ["rank", "total", "list"].map((k) => B.ledger(rows, s, labels, k)),
   }));
 }

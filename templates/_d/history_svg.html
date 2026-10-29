@@ -1,0 +1,9 @@
+{#- Price history drawn at build: one polyline per store in the series colours --s1..--s6, a dot at each line's last
+    price, and a key with each store's last price. g comes from pricechecker/site/pages/phone.py store_lines_svg
+    (derive.store_lines: lowest EUR store price per day, any memory, before shipping and tax). -#}
+{%- macro store_lines(g, label="") -%}
+<svg viewBox="0 0 {{ g.w }} {{ g.h }}" role="img" aria-label="{{ label }}">
+{%- for s in g.stores %}<polyline points="{{ s.points }}" fill="none" stroke="var(--s{{ s.n }})" stroke-width="2.2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="{{ s.cx }}" cy="{{ s.cy }}" r="3.5" fill="var(--s{{ s.n }})"/>{% endfor -%}
+</svg>
+<div class="keys">{% for s in g.stores %}<span><i style="background:var(--s{{ s.n }})"></i>{{ s.name }} <b>{{ money(s.last, "eur") }}</b></span>{% endfor %}</div>
+{%- endmacro -%}

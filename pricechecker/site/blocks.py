@@ -166,6 +166,12 @@ def mem_options(rows: list[dict], edition: str) -> list[tuple[str, dict | None]]
     return [(st, view.best_of(rows, edition, st)) for st in sts]
 
 
+def ledger_rows(rows: list[dict], sort: str = "rank") -> list[tuple[int, dict]]:
+    """Priced rows (ok, nopay, stale) as (rank, row) in view.rows order, then sorted by "total" or "list" (stable)."""
+    lr = list(enumerate((r for r in rows if r["state"] in ("ok", "nopay", "stale")), 1))
+    return sorted(lr, key=lambda x: x[1][sort]) if sort in ("total", "list") else lr
+
+
 def stores_n(rows: list[dict]) -> int:
     return len({r["store"] for r in rows if r["state"] == "ok"})
 
@@ -174,5 +180,5 @@ def register(env) -> None:
     """Make the helpers and the view functions the blocks call available to every template."""
     env.globals.update(money=money, fixed=fixed, pct=pct, group=group, mem_parts=mem_parts, mem_label=mem_label, mem_text=mem_text, mem_short=mem_short,
                        mem_tiny=mem_tiny, stamp=stamp, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
-                       caveat=caveat, why=why, mem_options=mem_options, stores_n=stores_n,
+                       caveat=caveat, why=why, mem_options=mem_options, stores_n=stores_n, ledger_rows=ledger_rows,
                        best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY)

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = ROOT / "tests" / "fixtures" / "states_phone.json"
 HARNESS = ROOT / "tests" / "js" / "render_blocks.mjs"
 UK_PAYPAL = Settings("UK", "", "paypal", "gbp")
-NAMES = ["price_box", "gap_line", "mem_chips", "verdict", "receipt", "store_row", "store_list", "buy_bar", "home_row"]
+NAMES = ["price_box", "gap_line", "mem_chips", "verdict", "receipt", "store_row", "store_list", "buy_bar", "home_row", "ledger"]
 needs_node = pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 
 
@@ -83,6 +83,7 @@ def render_py(rows, s, labels, edition, storage, meta, now, root="../"):
         "store_list": macro("store_list", [r for r in pick if r is not best], s, labels, now),
         "buy_bar": macro("buy_bar", best, s, labels),
         "home_row": macro("home_row", meta, rows, s, labels, root),
+        "ledger": [macro("ledger", rows, s, labels, k) for k in ("rank", "total", "list")],
     }
 
 
@@ -99,7 +100,7 @@ def assert_same(py: dict, js: dict, where: str):
     assert set(js) == set(NAMES), where
     for name in NAMES:
         a, b = py[name], js[name]
-        if name == "store_row":
+        if name in ("store_row", "ledger"):
             assert len(a) == len(b), where
             pairs = list(zip(a, b))
         else:

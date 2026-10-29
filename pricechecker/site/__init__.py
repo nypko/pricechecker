@@ -120,7 +120,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                                   "/data/v1/*\n  Cache-Control: public, max-age=31536000, immutable\n")   # names carry a content hash
     if data.site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{data.site_cfg["indexnow_key"]}.txt').write_text(data.site_cfg["indexnow_key"])
-    data_files.write(data, OUT, phones)   # build/data/v1/: the browser's phone, home and tax files
+    files = data_files.write(data, OUT, phones)   # build/data/v1/: the browser's phone, home and tax files
+    ctx["data_files"], ctx["tax_file"] = files, files["tax"]   # published paths, for the pages that load them
     _share_cards(phones, ctx)   # also sets the cards' ?v= in ctx and on each phone, so it comes before the pages
     (OUT / "stores").mkdir()
     for page in PAGES:

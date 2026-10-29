@@ -158,3 +158,26 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 {%- if g %}<span class="gap">{{ labels.china if g.diff >= 0 else labels.global }} {{ money(g.diff|abs, s.cur) }} less at {{ mem_tiny(g.storage) }}</span>{% endif -%}
 <span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }}</span></a></li>
 {%- endmacro -%}
+
+{#- Every priced offer of the phone (both versions; ok, not payable, stale) with the parts of its total as columns and
+    its place in view.rows order. sort: rank | total | list (store price). The page puts it in details.ledger and wires
+    the header buttons (data-s). "" when nothing is priced. -#}
+{%- macro _th(key, label, sort) -%}<th scope="col"{% if sort == key %} aria-sort="ascending"{% endif %}><button type="button" data-s="{{ key }}">{{ label }}</button></th>{%- endmacro -%}
+
+{%- macro ledger(rows, s, labels, sort="rank") -%}
+{%- set lr = ledger_rows(rows, sort) -%}
+{%- if lr -%}
+<table class="lt" data-block="ledger"><thead><tr><th scope="col">Store · version · memory</th>{{ _th("list", "Store price", sort) }}<th scope="col">Sale</th><th scope="col">{{ cap(PAY_BY[s.pay]) }}</th><th scope="col">Shipping</th><th scope="col">{{ cap(lr[0][1].taxName) }}</th>{{ _th("total", "Total", sort) }}{{ _th("rank", "Rank", sort) }}</tr></thead><tbody>
+{%- for n, r in lr -%}
+<tr{% if r.state != "ok" %} class="{{ r.state }}"{% endif %}><td>{{ r.store }} · {{ labels[r.edition] }} · {{ mem_label(r.storage) }}
+{%- if r.state == "stale" %} <small>older price</small>{% elif r.state == "nopay" %} <small>doesn't take {{ PAY_BY[s.pay] }}</small>{% endif %}</td>
+<td>{{ money(r.list, s.cur, true) }}</td>
+{%- if r.promoAmt > 0.005 %}<td class="p">−{{ money(r.promoAmt, s.cur, true) }}</td>{% else %}<td>–</td>{% endif -%}
+{%- if r.adj is none %}<td class="q">?</td>{% elif r.adjAmt %}<td>{{ money(r.adjAmt, s.cur, true) }}</td>{% else %}<td>no fee</td>{% endif -%}
+{%- if r.ship is none %}<td class="q">not listed</td>{% elif r.ship == 0 %}<td>free</td>{% else %}<td>{{ "from " if r.shipMin }}{{ money(r.ship, s.cur, true) }}</td>{% endif -%}
+{%- if r.duties == true %}<td>store pays</td>{% elif r.taxEst is none %}<td>not estimated</td>{% elif r.duties == false %}<td>+{{ money(r.taxAdded, s.cur, true) }}</td>{% else %}<td class="q">not stated</td>{% endif -%}
+<td class="tot">{{ "≈" if r.approx }}{{ money(r.total, s.cur, true) }}{{ "+" if r.unknown }}</td><td>{{ n }}</td></tr>
+{%- endfor -%}
+</tbody></table>
+{%- endif -%}
+{%- endmacro -%}

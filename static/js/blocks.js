@@ -211,3 +211,28 @@ export function homeRow(phone, rows, s, labels, root = "") {
     (g ? `<span class="gap">${esc(g.diff >= 0 ? labels.china : labels.global)} ${money(Math.abs(g.diff), s.cur)} less at ${memTiny(g.storage)}</span>` : "") +
     `<span class="meta">${n} ${n === 1 ? "store" : "stores"}</span></a></li>`;
 }
+
+/** Priced rows (ok, nopay, stale) as [rank, row] in view.rows order, then sorted by "total" or "list" (stable). */
+export function ledgerRows(rows, sort = "rank") {
+  const lr = rows.filter((r) => ["ok", "nopay", "stale"].includes(r.state)).map((r, i) => [i + 1, r]);
+  return sort === "total" || sort === "list" ? lr.sort((a, b) => a[1][sort] - b[1][sort]) : lr;
+}
+
+/** Every priced offer with the parts of its total as columns and its rank; sort: rank | total | list. "" when none. */
+export function ledger(rows, s, labels, sort = "rank") {
+  const lr = ledgerRows(rows, sort);
+  if (!lr.length) return "";
+  const d = (v) => money(v, s.cur, true);
+  const th = (key, label) => `<th scope="col"${sort === key ? ' aria-sort="ascending"' : ""}><button type="button" data-s="${key}">${label}</button></th>`;
+  const td = (v, cls = "") => `<td${cls ? ` class="${cls}"` : ""}>${v}</td>`;
+  return '<table class="lt" data-block="ledger"><thead><tr><th scope="col">Store · version · memory</th>' + th("list", "Store price") +
+    `<th scope="col">Sale</th><th scope="col">${esc(cap(PAY_BY[s.pay]))}</th><th scope="col">Shipping</th><th scope="col">${esc(cap(lr[0][1].taxName))}</th>` +
+    th("total", "Total") + th("rank", "Rank") + "</tr></thead><tbody>" + lr.map(([n, r]) =>
+      `<tr${r.state !== "ok" ? ` class="${r.state}"` : ""}><td>${esc(r.store)} · ${esc(labels[r.edition])} · ${memLabel(r.storage)}` +
+      (r.state === "stale" ? " <small>older price</small>" : r.state === "nopay" ? ` <small>doesn't take ${PAY_BY[s.pay]}</small>` : "") + "</td>" +
+      td(d(r.list)) + (r.promoAmt > 0.005 ? td("−" + d(r.promoAmt), "p") : td("–")) +
+      (r.adj === null ? td("?", "q") : td(r.adjAmt ? d(r.adjAmt) : "no fee")) +
+      (r.ship === null ? td("not listed", "q") : td(r.ship === 0 ? "free" : (r.shipMin ? "from " : "") + d(r.ship))) +
+      (r.duties === true ? td("store pays") : r.taxEst === null ? td("not estimated") : r.duties === false ? td("+" + d(r.taxAdded)) : td("not stated", "q")) +
+      td((r.approx ? "≈" : "") + d(r.total) + (r.unknown ? "+" : ""), "tot") + td(n) + "</tr>").join("") + "</tbody></table>";
+}

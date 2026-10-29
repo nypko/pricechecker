@@ -62,7 +62,7 @@ regions:
       NS: {name: Nova Scotia, rate: 14, tax: "HST"}     # 15% until April 2025
       NT: {name: Northwest Territories, rate: 5, tax: "GST"}
       NU: {name: Nunavut, rate: 5, tax: "GST"}
-      ON: {name: Ontario, rate: 13, tax: "HST"}
+      "ON": {name: Ontario, rate: 13, tax: "HST"}
       PE: {name: Prince Edward Island, rate: 15, tax: "HST"}
       QC: {name: Quebec, rate: 14.975, tax: "GST + QST"}
       SK: {name: Saskatchewan, rate: 11, tax: "GST + PST"}

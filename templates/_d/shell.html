@@ -1,0 +1,80 @@
+{#- The D page shell: header, footer, and the "Delivered to ..." line under each H1. Imported with context by base.html, so
+    the footer sees updated, updated_label, fx_date and the sheet sees eu_countries, ca_provinces, eu_avg_vat, tax_regions.
+    static/js/settings.js paints the button label and the lines, and opens the sheet. -#}
+{% import "_brand.html" as brand %}
+
+{%- macro header(root, path="") -%}
+<header class="top"><div class="wrap">
+  <a class="home" href="{{ root or './' }}" aria-label="DoorPrice home">{{ brand.lockup("simple", "dph") }}</a>
+  <nav class="topnav" aria-label="Sections">
+    <a href="{{ root or './' }}"{% if path == "" or path.startswith("phone") %} aria-current="page"{% endif %}>Phones</a>
+    <a href="{{ root }}drops"{% if path.startswith("drops") %} aria-current="page"{% endif %}>Drops</a>
+    <a href="{{ root }}compare"{% if path.startswith("compare") %} aria-current="page"{% endif %}>Compare</a>
+  </nav>
+  <a class="icon-btn" href="{{ root }}?q=" aria-label="Search phones"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></a>
+  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: the EU, card, euro. Change">EU · Card · €</button>
+</div></header>
+{%- endmacro -%}
+
+{#- under an H1: what the totals on the page are worked out for -#}
+{%- macro settings_line() -%}<p class="for" data-for>Delivered to the EU by card</p>{%- endmacro -%}
+
+{#- The settings sheet. Country and province names ride along as data attributes for the "Delivered to ..." line. -#}
+{%- macro sheet() -%}
+<dialog id="prefs-sheet" class="sheet" aria-labelledby="prefs-h"
+  data-countries='{{ eu_names|tojson }}'
+  data-provinces='{{ ca_names|tojson }}'>
+<form method="dialog">
+  <h2 id="prefs-h">Your totals</h2>
+  <p class="sheet-sub">Every price on DoorPrice is worked out for these. Saved on this device.</p>
+  <fieldset><legend>Ship to</legend>
+    <div class="sheet-opts" role="radiogroup">
+      {%- for v, n in [("EU", "EU"), ("UK", "UK"), ("US", "US"), ("CA", "Canada"), ("AU", "Australia"), ("Global", "Elsewhere")] %}
+      <label><input type="radio" name="r" value="{{ v }}"{% if v == "EU" %} checked{% endif %}><span>{{ n }}</span></label>
+      {%- endfor %}
+    </div>
+    <label class="sheet-sel" data-area="EU">Country (sets import VAT)
+      <select><option value="">EU average ({{ eu_avg_vat }}% VAT)</option>
+        {%- for code, c in eu_countries %}<option value="{{ code }}">{{ c.name }} ({{ c.vat }}% VAT)</option>{% endfor %}</select></label>
+    <label class="sheet-sel" data-area="CA" hidden>Province (sets GST/HST)
+      <select><option value="">Not picked (Ontario's {{ tax_regions.CA.rate_pct }}% HST)</option>
+        {%- for code, c in ca_provinces %}<option value="{{ code }}">{{ c.name }} ({{ c.rate }}% {{ c.tax }})</option>{% endfor %}</select></label>
+  </fieldset>
+  <fieldset><legend>Pay with</legend>
+    <div class="sheet-opts" role="radiogroup">
+      {%- for v, n in [("card", "Card"), ("paypal", "PayPal"), ("bank", "Bank transfer")] %}
+      <label><input type="radio" name="p" value="{{ v }}"{% if v == "card" %} checked{% endif %}><span>{{ n }}</span></label>
+      {%- endfor %}
+    </div>
+  </fieldset>
+  <fieldset><legend>Show prices in</legend>
+    <div class="sheet-opts" role="radiogroup">
+      {%- for v, n in [("eur", "€ EUR"), ("gbp", "£ GBP"), ("usd", "$ USD"), ("cad", "C$ CAD"), ("aud", "A$ AUD")] %}
+      <label><input type="radio" name="c" value="{{ v }}"{% if v == "eur" %} checked{% endif %}><span>{{ n }}</span></label>
+      {%- endfor %}
+    </div>
+  </fieldset>
+  <button class="sheet-done" value="ok">Done</button>
+</form>
+</dialog>
+{%- endmacro -%}
+
+{%- macro footer(root, site) -%}
+<footer><div class="wrap">
+  <p class="foot-links"><a href="{{ root }}stores">Stores</a> · <a href="{{ root }}methodology">How we work out totals</a> · <a href="{{ root }}about">About</a> · <a href="{{ root }}privacy">Privacy</a>
+    {%- if site.telegram %} · <a href="https://t.me/{{ site.telegram }}" rel="noopener">Telegram</a>{% endif %}
+    {%- if site.reddit %} · <a href="https://www.reddit.com/r/{{ site.reddit }}/" rel="noopener">r/{{ site.reddit }}</a>{% endif %}</p>
+  <noscript><p>Other countries and payment methods need JavaScript</p></noscript>
+  {%- if site.telegram or site.reddit %}
+  <p>
+    {%- if site.telegram %}Price drops on Telegram: a post when a phone gets cheaper or is new.{% endif %}
+    {%- if site.reddit %} r/{{ site.reddit }} on Reddit: buyers' orders, customs experiences and feedback.{% endif %}</p>
+  {%- endif %}
+  <p><strong>Affiliate disclosure:</strong> some links on this site are affiliate links. If you buy through them we may earn a
+     commission, at no extra cost to you. It never affects which store is listed as cheapest.</p>
+  <p>Prices are checked every hour and can change at any time – always confirm the final price at the store.
+     Prices are the store's own price in the selected currency where the store sets one; prices marked ≈ are
+     converted with European Central Bank rates{% if fx_date %} ({{ fx_date }}){% endif %} and are approximate.
+     Last update: <time datetime="{{ updated }}">{{ updated_label }}</time>.</p>
+</div></footer>
+{%- endmacro -%}

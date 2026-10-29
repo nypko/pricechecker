@@ -365,3 +365,14 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .verdict .mpill { background: rgb(255 255 255 / .14); color: var(--on-ink); }
 .buybar .bb-l1 { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .buybar .bb-w { font: 700 .82rem var(--body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- shell: header slides away on scroll down, back on scroll up; the "Delivered to ..." line; footer ---- */
+@media (prefers-reduced-motion: no-preference) { header.top { transition: transform .2s ease; } }
+header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
+.topnav + .icon-btn { margin-left: 4px; }
+.for { margin: -4px 0 14px; font-size: .92rem; color: var(--ink-2); }
+.foot-links a { white-space: nowrap; }
+@media (max-width: 420px) {
+  .top .wrap { gap: 6px; } .topnav { gap: 10px; font-size: .84rem; } .prefs { padding: 0 10px; font-size: .8rem; }
+  .icon-btn { width: 36px; height: 36px; }
+}

@@ -47,3 +47,21 @@ def test_built_js_matches_asset_hash(site_build):
     v = context.page_context(data, offers.assemble(data))["asset_v"]
     for f in (site_build / "static/js").glob("*.js"):
         assert hashlib.sha256(f.read_bytes()).hexdigest()[:10] == v[f"js/{f.name}"]
+
+
+def test_every_page_has_the_shell(site_build):
+    pages = [f for f in site_build.rglob("*.html") if "mock" not in f.relative_to(site_build).parts]
+    assert pages
+    for f in pages:
+        html = f.read_text()
+        assert 'class="top' in html, f
+        assert "data-prefs" in html, f
+        for label in (">Phones<", ">Drops<", ">Compare<"):
+            assert label in html, (f, label)
+        for link in (">Stores<", ">How we work out totals<", ">About<", ">Privacy<", ">Telegram<", ">r/DoorPrice<"):
+            assert link in html, (f, link)
+        assert "https://t.me/DoorPriceDeals" in html and "https://www.reddit.com/r/DoorPrice/" in html, f
+        assert "static/app.js" not in html and 'id="import-tax"' not in html and "phone-names" not in html, f
+        assert "Other countries and payment methods need JavaScript" in html, f
+        assert 'type="module" src=' in html and "js/settings.js?v=" in html, f
+        assert 'aria-label="Search phones"' in html, f

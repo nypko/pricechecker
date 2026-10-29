@@ -111,9 +111,10 @@ def page_context(data: SiteData, phones: list[dict]) -> dict:
             "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
             "report_stores": [{"name": s, "label": c.get("label", s)} for s, c in stores_cfg.items() if c.get("enabled", True)],
             "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
-            "nav_phones": [{"name": p["name"], "slug": p["slug"]} for p in phones],   # header search suggestions on every page
             "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
             "ca_provinces": sorted(tax_cfg["CA"]["provinces"].items(), key=lambda kv: kv[1]["name"]),
+            "eu_names": {k: c["name"] for k, c in tax_cfg["EU"]["countries"].items()},   # code -> name, for settings.js's "Delivered to ..." line
+            "ca_names": {k: c["name"] for k, c in tax_cfg["CA"]["provinces"].items()},
             "store_page_map": json.dumps({n: c.get("part_of") or n for n, c in stores_cfg.items() if c.get("enabled", True)
                                           and (c.get("terms") or {}).get("shipping")}),
-            "tax_regions": tax_cfg, "import_tax_json": json.dumps(tax_cfg)}
+            "tax_regions": tax_cfg}

@@ -30,8 +30,8 @@ function row(o, c, s, st, taxName) {
   };
 }
 
-// Ranked ok/nopay/stale first (pricing.better order, offers with no listed RAM/storage included), then stores that
-// don't deliver, then sold out.
+// The one order every store list shows: priced rows in pricing.better order (offers with no listed RAM/storage
+// included) except that stale rows come after all the others, then stores that don't deliver, then sold out.
 export function rows(inputs, tax, s) {
   const rule = taxRule(tax, s);
   const all = inputs.map((o) => [o, cost(o, s, rule)]);
@@ -39,7 +39,8 @@ export function rows(inputs, tax, s) {
   // same order as pricing.rank: payment accepted, current, fewer unknowns, lower total (stable)
   live.sort(([, a], [, b]) => (!a.payOk - !b.payOk) || (a.old - b.old) || (unknowns(a) - unknowns(b)) || (a.total - b.total));
   const rest = all.filter(([o]) => !live.some(([x]) => x === o));
-  const out = live.map(([o, c]) => row(o, c, s, state(o, c, s), rule.name));
+  const priced = live.map(([o, c]) => row(o, c, s, state(o, c, s), rule.name));
+  const out = [...priced.filter((r) => r.state !== "stale"), ...priced.filter((r) => r.state === "stale")];
   for (const want of ["nodelivery", "soldout"]) {
     for (const [o, c] of rest) if (state(o, c, s) === want) out.push(row(o, c, s, want, rule.name));
   }

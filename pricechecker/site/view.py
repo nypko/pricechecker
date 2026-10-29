@@ -41,12 +41,14 @@ def _state(o: dict, c: pricing.Cost, s: Settings) -> str:
 
 
 def rows(inputs: list[dict], tax_cfg: dict, s: Settings) -> list[dict]:
-    """Every offer as a row: ranked ok/nopay/stale first (pricing.better order, offers whose RAM/storage the store
-    doesn't list included, as the page title does), then stores that don't deliver, then sold out."""
+    """Every offer as a row, in the one order every store list shows: priced rows in pricing.better order (offers whose
+    RAM/storage the store doesn't list included, as the page title does) except that stale rows come after all the
+    others, then stores that don't deliver, then sold out."""
     rule = pricing.tax_rule(tax_cfg, s)
     ranked = pricing.rank(inputs, s, rule, with_base=True)
     ids = {id(o) for o, _ in ranked}
-    out = [_row(o, c, s, _state(o, c, s), rule.name) for o, c in ranked]
+    priced = [_row(o, c, s, _state(o, c, s), rule.name) for o, c in ranked]
+    out = [r for r in priced if r["state"] != "stale"] + [r for r in priced if r["state"] == "stale"]
     rest = [(o, pricing.cost(o, s, rule)) for o in inputs if id(o) not in ids]
     for want in ("nodelivery", "soldout"):
         out += [_row(o, c, s, want, rule.name) for o, c in rest if _state(o, c, s) == want]

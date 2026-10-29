@@ -90,7 +90,7 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 {#- How the total adds up: cost bar, store price, sale, payment, shipping, import tax, "You pay at the door". -#}
 {%- macro receipt(row, s, labels) -%}
 <section class="receipt" data-block="receipt" aria-label="How the total adds up">
-{%- if row -%}
+{%- if row and row.state == "ok" -%}
 {%- set fee = row.adjAmt if row.adjAmt > 0 else 0 -%}
 <h3>How {{ money(row.total, s.cur) }} adds up</h3>
 <div class="costbar" aria-hidden="true">{{ _seg(row.base, "--bar-phone") }}{{ _seg(fee, "--bar-fee") }}{{ _seg(row.ship or 0, "--bar-ship") }}{{ _seg(row.taxAdded, "--bar-tax") }}</div><dl>
@@ -126,18 +126,19 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 </li>
 {%- endmacro -%}
 
-{#- Stores for one version and memory: current, then not payable, stale, not delivered; sold-out ones under "Sold out at". -#}
+{#- Stores for one version and memory, in view.rows order; the sold-out ones apart under "Sold out at". -#}
 {%- macro store_list(rows, s, labels, now=None) -%}
-{%- set parts = list_order(rows) -%}
+{%- set main = rows|rejectattr("state", "equalto", "soldout")|list -%}
+{%- set sold = rows|selectattr("state", "equalto", "soldout")|list -%}
 <div class="stores" data-block="store_list">
-{%- if parts[0] %}<ul class="offers">{% for r in parts[0] %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
-{%- if parts[1] %}<h3 class="soldout-h">Sold out at</h3><ul class="offers soldout-list">{% for r in parts[1] %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
+{%- if main %}<ul class="offers">{% for r in main %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
+{%- if sold %}<h3 class="soldout-h">Sold out at</h3><ul class="offers soldout-list">{% for r in sold %}{{ store_row(r, s, labels, now) }}{% endfor %}</ul>{% endif -%}
 </div>
 {%- endmacro -%}
 
-{#- Pinned at the bottom once the price boxes scroll away; the page shows and hides it. -#}
+{#- Pinned at the bottom once the price boxes scroll away; the page shows and hides it. Only an ok row. -#}
 {%- macro buy_bar(row, s, labels) -%}
-{%- if row -%}
+{%- if row and row.state == "ok" -%}
 <div class="buybar" data-block="buy_bar" hidden><div class="bb-t"><span class="bb-l1"><b class="num">{{ "≈" if row.approx }}{{ money(row.total, s.cur) }}</b><b class="bb-w">{{ labels[row.edition] }} · {{ mem_short(row.storage) }}</b></span><span>{{ (row.tail ~ " · ") if row.tail }}{{ row.store }}</span></div><a class="bb-go" href="{{ row.link }}" rel="sponsored nofollow noopener" target="_blank" aria-label="View deal at {{ row.store }}">View deal<span aria-hidden="true"> ↗</span></a></div>
 {%- endif -%}
 {%- endmacro -%}

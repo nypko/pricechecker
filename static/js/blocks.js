@@ -102,13 +102,6 @@ export function memOptions(rows, edition) {
   return sts.sort(memCmp).map((st) => [st, bestOf(rows, edition, st)]);
 }
 
-/** Store list order: [current payable, not payable, stale, doesn't deliver], and the sold-out ones apart. */
-export function listOrder(rows) {
-  const order = ["ok", "nopay", "stale", "nodelivery"];
-  const main = rows.filter((r) => order.includes(r.state)).sort((a, b) => order.indexOf(a.state) - order.indexOf(b.state));
-  return [main, rows.filter((r) => r.state === "soldout")];
-}
-
 const go = (r, cls) => `<a class="${cls}" href="${esc(r.link)}" ${LINK}>View at ${esc(r.store)}<span aria-hidden="true"> ↗</span></a>`;
 const total = (r, s) => (r.approx ? "≈" : "") + money(r.total, s.cur) + (r.tail ? `<small>${esc(r.tail)}</small>` : "");
 const memDiv = (st) => { const p = memParts(st); return `<div class="mem">${p ? `<b>${p[0]}</b> RAM · <b>${p[1]}</b> storage` : NOMEM}</div>`; };
@@ -163,7 +156,7 @@ const dt = (c, label) => `<dt><i style="background:var(${c})"></i>${label}</dt>`
 /** How the total adds up: cost bar, store price, sale, payment, shipping, import tax, "You pay at the door". */
 export function receipt(row, s, labels) {
   const open = '<section class="receipt" data-block="receipt" aria-label="How the total adds up">';
-  if (!row) return open + "</section>";
+  if (!row || row.state !== "ok") return open + "</section>";   // never a stale, sold-out, undelivered or unpayable row
   const fee = row.adjAmt > 0 ? row.adjAmt : 0, d = (v) => money(v, s.cur, true);
   const tax = row.duties === true ? "paid by the store" : row.taxEst === null ? "not estimated" : row.duties === false ? "≈" + d(row.taxAdded) : `not stated (≈${money(row.taxEst, s.cur)} if due)`;
   return open + `<h3>How ${money(row.total, s.cur)} adds up</h3><div class="costbar" aria-hidden="true">` +
@@ -191,16 +184,16 @@ export function storeRow(row, s, labels, now = null) {
     `<span class="c">${c}</span>` + (["ok", "nopay", "stale"].includes(st) ? go(row, "g") : "") + "</li>";
 }
 
-/** Stores for one version and memory: current, then not payable, stale, not delivered; sold-out ones under "Sold out at". */
+/** Stores for one version and memory, in view.rows order; the sold-out ones apart under "Sold out at". */
 export function storeList(rows, s, labels, now = null) {
-  const [main, sold] = listOrder(rows), li = (rs) => rs.map((r) => storeRow(r, s, labels, now)).join("");
+  const main = rows.filter((r) => r.state !== "soldout"), sold = rows.filter((r) => r.state === "soldout"), li = (rs) => rs.map((r) => storeRow(r, s, labels, now)).join("");
   return '<div class="stores" data-block="store_list">' + (main.length ? `<ul class="offers">${li(main)}</ul>` : "") +
     (sold.length ? `<h3 class="soldout-h">Sold out at</h3><ul class="offers soldout-list">${li(sold)}</ul>` : "") + "</div>";
 }
 
 /** Pinned at the bottom once the price boxes scroll away; the page shows and hides it. "" without a row. */
 export function buyBar(row, s, labels) {
-  if (!row) return "";
+  if (!row || row.state !== "ok") return "";   // never a stale, sold-out, undelivered or unpayable row
   return `<div class="buybar" data-block="buy_bar" hidden><div class="bb-t"><span class="bb-l1"><b class="num">${row.approx ? "≈" : ""}${money(row.total, s.cur)}</b>` +
     `<b class="bb-w">${esc(labels[row.edition])} · ${memShort(row.storage)}</b></span><span>${row.tail ? esc(row.tail) + " · " : ""}${esc(row.store)}</span></div>` +
     `<a class="bb-go" href="${esc(row.link)}" ${LINK} aria-label="View deal at ${esc(row.store)}">View deal<span aria-hidden="true"> ↗</span></a></div>`;

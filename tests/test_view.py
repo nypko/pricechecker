@@ -45,10 +45,21 @@ def test_headline_matches_title_price(phones, data):
     assert seen
 
 
+def _stale_case():
+    """Stale rows go after every other priced row, a store that doesn't take the payment included (spec 4.2)."""
+    return [_o(money={"eur": 500}, old=True, store_label="old"), _o(money={"eur": 900}, store_label="new"),
+            _o(money={"eur": 400}, pay_ok={"card": False}, store_label="nopay"), _o(money={"eur": 300}, ship={}, store_label="unk"),
+            _o(available=False, store_label="sold"), _o(ship={"EU": False}, store_label="nod")]
+
+
+STALE_ORDER = [("new", "ok"), ("unk", "ok"), ("nopay", "nopay"), ("old", "stale"), ("nod", "nodelivery"), ("sold", "soldout")]
+
+
 def test_stale_cheaper_offer_ranks_after_current_and_best_of_skips_it():
     cheap_old, dear = _o(money={"eur": 500}, old=True, store_label="old"), _o(money={"eur": 900}, store_label="new")
     rs = view.rows([cheap_old, dear], {}, view.DEFAULT)
     assert [(r["store"], r["state"]) for r in rs] == [("new", "ok"), ("old", "stale")]
+    assert [(r["store"], r["state"]) for r in view.rows(_stale_case(), {}, view.DEFAULT)] == STALE_ORDER
     assert view.best_of(rs, "global")["store"] == "new"
     assert view.best_of(view.rows([cheap_old], {}, view.DEFAULT), "global") is None
 
@@ -129,3 +140,16 @@ def test_js_view_matches_python(site_build, phones, data):
                                check=False, capture_output=True, text=True)
             assert r.returncode == 0, r.stdout + r.stderr
             _close(json.loads(r.stdout), json.loads(json.dumps(view.rows(inputs, tax, pricing.Settings(*st)))), f"{pid}{st}")
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_rows_order_stale_last(tmp_path):
+    """The saved prices may have no stale store, so the JS order is checked on a made-up phone too."""
+    f = tmp_path / "phone.json"
+    f.write_text(json.dumps({"offers": _stale_case()}))
+    tax = tmp_path / "tax.json"
+    tax.write_text("{}")
+    r = subprocess.run(["node", "tests/js/view_cases.mjs", "--phone", str(f), "--tax", str(tax), "--settings", "EU,,card,eur"],
+                       check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert [(x["store"], x["state"]) for x in json.loads(r.stdout)] == STALE_ORDER

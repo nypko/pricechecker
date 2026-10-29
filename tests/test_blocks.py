@@ -5,6 +5,7 @@ import json
 import re
 import shutil
 import subprocess
+from html.parser import HTMLParser
 from pathlib import Path
 
 import pytest
@@ -35,6 +36,26 @@ def root_of(h: str) -> str:
     cls = re.search(r'class="([^"]*)"', m[2])
     blk = re.search(r'data-block="([^"]*)"', m[2])
     return f"{m[1]}|{cls[1] if cls else ''}|{blk[1] if blk else ''}"
+
+
+class _Tags(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.seq: list = []
+
+    def handle_starttag(self, tag, attrs):
+        self.seq.append((tag, tuple(sorted(attrs))))
+
+    def handle_endtag(self, tag):
+        self.seq.append(("/" + tag, ()))
+
+
+def structure(h: str) -> list:
+    """Every element in order: (tag, sorted (attribute, unescaped value) pairs), and the end tags."""
+    t = _Tags()
+    t.feed(h)
+    t.close()
+    return t.seq
 
 
 _ENV = None
@@ -86,6 +107,7 @@ def assert_same(py: dict, js: dict, where: str):
         for x, y in pairs:
             assert text(x) == text(y), f"{where} {name}"
             assert root_of(x) == root_of(y), f"{where} {name}"
+            assert structure(x) == structure(y), f"{where} {name}"
             if x.strip():
                 assert f'data-block="{name}"' in x, f"{where} {name}"
 
@@ -197,7 +219,8 @@ def test_state_markers(states, tax):
     pick = [r for r in rows if r["edition"] == "china" and r["storage"] == "12/256"]
     best = view.best_of(rows, "china", "12/256")
 
-    # stale: "price from N days ago", last among the priced rows, never the verdict
+    # stale: "price from N days ago", last among the priced rows (view.rows order, kept by store_list), never the
+    # verdict, receipt or buy bar
     stale = macro("store_row", by["Old Store"], view.DEFAULT, labels, now)
     assert "stale" in root_of(stale) and "price from 5 days ago" in text(stale)
     lst = macro("store_list", pick, view.DEFAULT, labels, now)
@@ -208,6 +231,10 @@ def test_state_markers(states, tax):
     assert "Old Store" not in text(v) and "€700" not in text(v)
     assert "Old Store" not in text(macro("verdict", by["Old Store"], pick, view.DEFAULT, labels, now))
     assert "Old Store" not in text(macro("price_box", rows, "china", view.DEFAULT, labels, True))
+    for st in ("Old Store", "Gone Shop", "No Ship Co"):
+        r = by[st] if st != "No Ship Co" else {**by[st], "state": "nopay"}
+        assert macro("buy_bar", r, view.DEFAULT, labels) == ""
+        assert text(macro("receipt", r, view.DEFAULT, labels)) == ""
 
     # sold out: under "Sold out at", last price, no store button
     assert "Gone Shop" in sold and "Gone Shop" not in main
@@ -254,3 +281,17 @@ def test_base_storage_and_home_row(states):
     assert "Oct 2026" in t and "State Phone <X>" in t and f"{labels['china']} €170 less at 12 + 256" in t
     china_only = macro("home_row", doc["meta"], [r for r in rows if r["edition"] == "china"], view.DEFAULT, labels, "")
     assert "–" in text(china_only) and "less at" not in text(china_only)
+
+
+@needs_node
+def test_js_buy_bar_and_receipt_refuse_rows_not_ok(states):
+    *_, by = states
+    picked = [by["Old Store"], by["Gone Shop"], {**by["No Ship Co"], "state": "nopay"}, {**by["Card Only"], "state": "nodelivery"}]
+    src = (ROOT / "static" / "js" / "blocks.js").as_uri()
+    js = (f'import {{ buyBar, receipt }} from "{src}";\n'
+          f'const rows = {json.dumps(picked)}, s = {{region: "EU", area: "", pay: "card", cur: "eur"}}, l = {{global: "Global", china: "China"}};\n'
+          'console.log(JSON.stringify(rows.map((r) => [buyBar(r, s, l), receipt(r, s, l)])));')
+    r = subprocess.run(["node", "--input-type=module", "-e", js], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    for bb, rc in json.loads(r.stdout):
+        assert bb == "" and text(rc) == ""

@@ -166,13 +166,6 @@ def mem_options(rows: list[dict], edition: str) -> list[tuple[str, dict | None]]
     return [(st, view.best_of(rows, edition, st)) for st in sts]
 
 
-def list_order(rows: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Store list order: (current payable, not payable, stale, doesn't deliver), and the sold-out ones apart."""
-    order = ["ok", "nopay", "stale", "nodelivery"]
-    main = sorted((r for r in rows if r["state"] in order), key=lambda r: order.index(r["state"]))
-    return main, [r for r in rows if r["state"] == "soldout"]
-
-
 def stores_n(rows: list[dict]) -> int:
     return len({r["store"] for r in rows if r["state"] == "ok"})
 
@@ -181,5 +174,5 @@ def register(env) -> None:
     """Make the helpers and the view functions the blocks call available to every template."""
     env.globals.update(money=money, fixed=fixed, pct=pct, group=group, mem_parts=mem_parts, mem_label=mem_label, mem_text=mem_text, mem_short=mem_short,
                        mem_tiny=mem_tiny, stamp=stamp, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
-                       caveat=caveat, why=why, mem_options=mem_options, list_order=list_order, stores_n=stores_n,
+                       caveat=caveat, why=why, mem_options=mem_options, stores_n=stores_n,
                        best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY)

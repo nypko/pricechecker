@@ -127,10 +127,10 @@ export function gapLine(g, both, s, labels) {
   return `<div class="gapline slim" data-block="gap_line">Same memory, <b>${memLabel(g.storage)}</b>: the ${esc(cheap)} version is <b>${money(Math.abs(g.diff), s.cur)} less</b> delivered (${money(g.china, s.cur)} vs ${money(g.global, s.cur)}).</div>`;
 }
 
-/** One chip per memory of the edition with its best current price ("+" when something is left out). */
+/** One chip per memory of the edition with its best current price ("+" when something is left out); "–" chips are disabled. */
 export function memChips(rows, edition, storage, s) {
   return '<div class="mems" data-block="mem_chips" role="group" aria-label="Memory">' + memOptions(rows, edition).map(([st, b]) =>
-    `<button type="button" data-m="${esc(st)}" aria-pressed="${st === storage ? "true" : "false"}">${memLabel(st)} · ${b ? money(b.total, s.cur) + (b.unknown ? "+" : "") : "–"}</button>`).join("") + "</div>";
+    `<button type="button" data-m="${esc(st)}" aria-pressed="${st === storage ? "true" : "false"}"${b ? "" : " disabled"}>${memLabel(st)} · ${b ? money(b.total, s.cur) + (b.unknown ? "+" : "") : "–"}</button>`).join("") + "</div>";
 }
 
 /** The pick for this version and memory: row = bestOf(rows, edition, storage); pick = every row of that version and memory. */

@@ -35,7 +35,7 @@
 
   <p class="lbl" id="mem-lbl">Memory</p>
   <div id="s-mems">{{ b.mem_chips(v.rows, v.ed, v.mem, s) }}</div>
-  <div id="s-verdict">{{ b.verdict(v.best, v.pick, s, L, v.now) }}</div>
+  <div id="s-verdict" aria-live="polite">{{ b.verdict(v.best, v.pick, s, L, v.now) }}</div>
   <div id="s-receipt">{{ b.receipt(v.best, s, L) }}</div>
   <p class="buyers" id="buyers"{% if not v.buyers_line %} hidden{% endif %}>{{ v.buyers_line }}</p>
 
@@ -135,7 +135,7 @@
           <span class="rf-amount"><label>How much <input name="amount" id="rf-amount" type="number" min="0" max="5000" step="0.01" inputmode="decimal"></label>
             <select name="currency" aria-label="Currency"><option>EUR</option><option>GBP</option><option>USD</option><option>CAD</option><option>AUD</option></select></span>
         </fieldset>
-        <p class="rf-actions"><button type="submit" class="rf-send">Send report</button> <span class="rf-status" role="status"></span></p>
+        <p class="rf-actions"><button type="submit" class="rf-send">Send report</button> <span class="rf-status" id="rf-status" role="status"></span></p>
       </form>
     </details>
   </section>

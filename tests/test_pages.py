@@ -151,3 +151,31 @@ def test_phone_pages_within_budget(site_build):
 def test_switching_version_falls_back_to_its_best_memory():
     r = subprocess.run(["node", str(ROOT / "tests/js/phone_cases.mjs")], check=False, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_phone_page_report_status_and_live_verdict():
+    """The report form (when switched on) has the status line that #report-thanks / #report-error fill; the verdict's
+    slot is a polite live region, so a repainted total is read out."""
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    from pricechecker.site.pages import phone
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    phones = offers.assemble(data)
+    ctx = context.page_context(data, phones)
+    ctx["site"] = {**ctx["site"], "reports_live": True}
+    h = phone.render(_env(), data, ctx, phones)["phones/oppo-find-x9-ultra.html"]
+    report = h[h.index('class="report"'):]
+    assert 'action="../api/report"' in report and 'id="rf-status"' in report and 'role="status"' in report
+    assert '<div id="s-verdict" aria-live="polite">' in h
+
+
+def test_memory_chip_without_a_current_price_is_disabled(site_build):
+    from pricechecker.site import _env
+    tpl = _env().from_string('{% from "_d/blocks.html" import mem_chips %}{{ mem_chips(rows, "china", "12/256", s) }}')
+    from pricechecker.site.view import DEFAULT
+    rows = [{"edition": "china", "storage": "12/256", "state": "ok", "total": 1000, "unknown": 0},
+            {"edition": "china", "storage": "16/512", "state": "stale", "total": 900, "unknown": 0}]
+    h = tpl.render(rows=rows, s=DEFAULT)
+    assert 'data-m="16/512" aria-pressed="false" disabled>16 GB · 512 GB · –<' in h
+    assert not re.search(r'data-m="12/256"[^>]*disabled', h)

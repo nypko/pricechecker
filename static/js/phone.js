@@ -39,6 +39,29 @@ export function buyersText(b, region) {
   return out.length ? `${x.n} ${x.n === 1 ? "buyer" : "buyers"} to ${PLACE[region]}: ${out.join(" · ")}` : "";
 }
 
+/** The shareable pick, as the live site wrote it: "#16-512-china" (RAM-storage-version); "" when the memory isn't listed. */
+export function pickHash(ed, mem) {
+  const m = /^(\d+)\/(\d+)$/.exec(mem || "");
+  return m && (ed === "global" || ed === "china") ? `#${m[1]}-${m[2]}-${ed}` : "";
+}
+
+/** "#16-512-china" -> {ed: "china", mem: "16/512"}; null for anything else. */
+export function parseHash(hash) {
+  const m = /^#(\d+)-(\d+)-(global|china)$/.exec(hash || "");
+  return m ? { ed: m[3], mem: `${m[1]}/${m[2]}` } : null;
+}
+
+/** A selector for the same control after a repaint: its container's id, its first class and its data-e / data-m /
+ *  data-s / data-f value ("#duel button.pickbtn[data-e=\"china\"]"); null for anything else. */
+export function focusSelector(el) {
+  if (!el || !el.getAttribute || el.tagName !== "BUTTON") return null;
+  const attr = ["data-e", "data-m", "data-s", "data-f"].find((a) => el.hasAttribute(a));
+  const box = attr && el.closest("[id]");
+  if (!box) return null;
+  const cls = el.classList && el.classList[0];
+  return `#${box.id} button${cls ? "." + cls : ""}[${attr}="${String(el.getAttribute(attr)).replace(/["\\]/g, "\\$&")}"]`;
+}
+
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
 const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 
@@ -48,7 +71,8 @@ function wire(root) {
   const eds = (root.dataset.eds || "").split(",").filter(Boolean), buyers = json(root.dataset.buyers, {});
   const S = { ed: root.dataset.ed || null, mem: root.dataset.mem || null, f: {}, sort: "rank", touched: false };
   let docs = null;   // the [phone file, tax file] promise
-  const loadDocs = () => docs || (docs = Promise.all([getJson(root.dataset.file), getJson(root.dataset.tax)]));
+  // a failed load is forgotten, so the next tap tries again
+  const loadDocs = () => docs || (docs = Promise.all([getJson(root.dataset.file), getJson(root.dataset.tax)]).catch((e) => { docs = null; throw e; }));
   const set = (el, h) => { if (el) el.innerHTML = h; };
 
   // ---- buy bar: pinned once the price boxes have scrolled away, hidden while the verdict's own button shows ----
@@ -71,6 +95,7 @@ function wire(root) {
   // ---- paint every settings-dependent block from rows ----
   function paint(rows, s) {
     if (!$("duel")) return;
+    const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;   // keyboard focus survives the repaint
     set($("duel"), eds.map((e) => B.priceBox(rows, e, s, L, e === S.ed)).join(""));
     set($("s-gap"), B.gapLine(gap(rows), ["china", "global"].every((e) => bestOf(rows, e)), s, L));
     set($("s-mems"), B.memChips(rows, S.ed, S.mem, s));
@@ -98,6 +123,8 @@ function wire(root) {
     $("hist").querySelectorAll(":scope > [data-e]").forEach((d) => { d.hidden = d.dataset.e !== S.ed; });
     set($("s-buybar"), B.buyBar(best, s, L));
     watchCta();
+    const back = again && document.querySelector(again);
+    if (back && back !== document.activeElement && !back.disabled) back.focus({ preventScroll: true });
   }
 
   // ---- "More from <brand>": each phone's own file, only when the settings differ from the defaults ----
@@ -113,15 +140,18 @@ function wire(root) {
   }
 
   // the current settings' rows (loading the files the first time), then paint
-  function update(fresh = false) {
+  // remember: also put the pick in the address ("#16-512-china"), as the live site did, without a history entry
+  function update(fresh = false, remember = false) {
     const s = load();
     return loadDocs().then(([doc, tax]) => {
       const rows = viewRows(doc.offers, tax, s);
       if (fresh && !S.touched) Object.assign(S, initialPick(rows, eds));
       else if (S.ed) S.mem = pickAfterSwitch(rows, S.ed, S.mem);
       paint(rows, s);
+      if (remember && history.replaceState) history.replaceState(null, "", location.pathname + location.search + pickHash(S.ed, S.mem));
       if (!isDefault(s) || moreFor) paintMore(s, tax);
-    }).catch(() => {});   // offline or a missing file: the server's default-settings prices stay
+    }, () => {})   // offline or a missing file: the server's default-settings prices stay
+      .catch((e) => console.error(e));   // a bug while painting: say so in the console
   }
 
   root.addEventListener("pointerdown", () => { if (root.dataset.file) loadDocs().catch(() => {}); }, { once: true });   // warm up before the tap lands
@@ -129,15 +159,27 @@ function wire(root) {
     const t = ev.target;
     const pick = t.closest("#duel button[data-e]"), mem = t.closest("#s-mems button[data-m]");
     const f = t.closest("#dfilt button[data-f]"), sort = t.closest("#s-ledger button[data-s]");
-    if (pick) { S.touched = true; S.ed = pick.dataset.e; S.f = {}; update(); }
-    else if (mem) { S.touched = true; S.mem = mem.dataset.m; S.f = {}; update(); }
+    if (pick) { S.touched = true; S.ed = pick.dataset.e; S.f = {}; update(false, true); }
+    else if (mem && !mem.disabled) { S.touched = true; S.mem = mem.dataset.m; S.f = {}; update(false, true); }
     else if (f && !f.disabled) { S.f[f.dataset.f] = !S.f[f.dataset.f]; update(); }
     else if (sort) { S.sort = sort.dataset.s; update(); }
   });
   const again = () => update(true);
   window.addEventListener("dp:settings", again);
   window.addEventListener("storage", (e) => { if (!e.key || (e.key.startsWith("pc-") && e.key !== "pc-watch")) again(); });
-  if (!isDefault(load()) && root.dataset.file) again();
+  // a shared link's pick ("#16-512-china"), else other settings than the defaults: paint once the files are in
+  const shared = parseHash(location.hash);
+  if (shared && eds.includes(shared.ed) && root.dataset.file) { Object.assign(S, shared, { touched: true }); update(); }
+  else if (!isDefault(load()) && root.dataset.file) again();
+
+  // ---- the buyer report form posts natively; the endpoint sends the visitor back here with #report-thanks or #report-error ----
+  const rs = $("rf-status");
+  if (rs && (location.hash === "#report-thanks" || location.hash === "#report-error")) {
+    const ok = location.hash === "#report-thanks";
+    rs.closest("details").open = true;
+    rs.className = "rf-status " + (ok ? "ok" : "err");
+    rs.textContent = ok ? "Thanks! We check each report before it counts." : "Please check the store, country and days, then send again.";
+  }
 
   // ---- Watch (this device's list) and Share (the device's share sheet, else copy the link) ----
   const wb = root.querySelector(".watch"), note = root.querySelector(".watch-note");
@@ -153,7 +195,7 @@ function wire(root) {
     sb.hidden = false;
     sb.addEventListener("click", () => {
       const canon = document.querySelector('link[rel="canonical"]');
-      const url = (canon ? canon.href : location.href.split("#")[0]) + location.hash;
+      const url = (canon ? canon.href : location.href.split("#")[0]) + pickHash(S.ed, S.mem);   // the pick on screen
       if (navigator.share) { navigator.share({ title: document.title, url }).catch(() => {}); return; }   // closed without sharing: fine
       navigator.clipboard.writeText(url).then(() => { sb.textContent = "Link copied"; setTimeout(() => { sb.textContent = "Share"; }, 2000); });
     });

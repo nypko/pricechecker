@@ -434,3 +434,5 @@ details.explain summary { cursor: pointer; min-height: 48px; display: flex; alig
 .rf-actions { margin: 0; display: flex; align-items: center; gap: 12px; }
 .rf-send { min-height: 44px; padding: 0 18px; border-radius: 12px; border: 0; background: var(--ink); color: var(--paper); font: 700 .92rem var(--body); cursor: pointer; }
 .rf-status { color: var(--ink-2); font-size: .86rem; }
+.rf-status.ok { color: var(--good); font-weight: 600; } .rf-status.err { color: var(--warn); font-weight: 600; }
+.mems button:disabled { opacity: .5; cursor: default; }

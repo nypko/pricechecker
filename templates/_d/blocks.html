@@ -50,11 +50,12 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 {%- endif -%}
 {%- endmacro -%}
 
-{#- One chip per memory of the edition with its best current price ("+" when something is left out). -#}
+{#- One chip per memory of the edition with its best current price ("+" when something is left out); a memory with no
+    current price in this version ("–") is a disabled chip, so a tap on it can't be undone by the page. -#}
 {%- macro mem_chips(rows, edition, storage, s) -%}
 <div class="mems" data-block="mem_chips" role="group" aria-label="Memory">
 {%- for st, b in mem_options(rows, edition) -%}
-<button type="button" data-m="{{ st }}" aria-pressed="{{ 'true' if st == storage else 'false' }}">{{ mem_label(st) }} · {% if b %}{{ money(b.total, s.cur) }}{{ "+" if b.unknown }}{% else %}–{% endif %}</button>
+<button type="button" data-m="{{ st }}" aria-pressed="{{ 'true' if st == storage else 'false' }}"{% if not b %} disabled{% endif %}>{{ mem_label(st) }} · {% if b %}{{ money(b.total, s.cur) }}{{ "+" if b.unknown }}{% else %}–{% endif %}</button>
 {%- endfor -%}
 </div>
 {%- endmacro -%}

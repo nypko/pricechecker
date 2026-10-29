@@ -1,8 +1,8 @@
 name: newsite preview
 
 # newsite.pricechecker-87q.pages.dev: the redesign (docs/superpowers/specs/2026-10-26-newsite-backend-design.md).
-# Until the new build exists this deploys direction D's mockup pages from newsite-preview/ (real prices from the
-# 25 Oct check, three sample phones; noindex). Deployed as the Cloudflare Pages branch "newsite": production is untouched.
+# Deploys the real site build (offline, from the saved prices: DOORPRICE_ENV=testing, so noindex) with the direction
+# mockups from newsite-preview/ under /mock/. Deployed as the Cloudflare Pages branch "newsite": production is untouched.
 # No store is contacted, no Telegram, no IndexNow, nothing committed. Publishing = merging newsite into main.
 on:
   push:
@@ -30,9 +30,13 @@ jobs:
       - run: python -m pytest -q
         env:
           DOORPRICE_CHECK_BUDGETS: "1"
+      - name: Build the site offline
+        run: |
+          DOORPRICE_ENV=testing python -m pricechecker.run --build-only --offline
+          cp -r newsite-preview build/mock
       - name: Deploy as the "newsite" branch
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy newsite-preview --project-name=${{ vars.CF_PAGES_PROJECT || 'pricechecker' }} --branch=newsite --commit-dirty=true
+          command: pages deploy build --project-name=${{ vars.CF_PAGES_PROJECT || 'pricechecker' }} --branch=newsite --commit-dirty=true

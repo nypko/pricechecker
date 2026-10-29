@@ -91,3 +91,11 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+
+
+=============================================================================
+Schibsted Grotesk and Albert Sans (static/fonts/schibsted-grotesk-*.woff2, albert-sans-*.woff2)
+Both are licensed under the SIL Open Font License, Version 1.1, the same text as above.
+
+Copyright 2023 The Schibsted-Grotesk Project Authors (https://github.com/schibsted/schibsted-grotesk)
+Copyright 2021 The Albert Sans Project Authors (https://github.com/usted/Albert-Sans)

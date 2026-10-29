@@ -1,0 +1,8 @@
+Self-hosted fonts for static/d.css. Latin subset, woff2, normal style only.
+
+Schibsted Grotesk 500/600/700/800 and Albert Sans 400/500/600/700, from the fontsource npm packages via jsDelivr:
+  https://cdn.jsdelivr.net/npm/@fontsource/schibsted-grotesk@5.3.0/files/schibsted-grotesk-latin-<weight>-normal.woff2
+  https://cdn.jsdelivr.net/npm/@fontsource/albert-sans@5.3.0/files/albert-sans-latin-<weight>-normal.woff2
+Package versions: @fontsource/schibsted-grotesk 5.3.0, @fontsource/albert-sans 5.3.0.
+Saved as <family>-<weight>.woff2. The IBM Plex Sans files (plex-sans-*.woff2) were already here.
+Licence: SIL OFL 1.1, see OFL.txt.

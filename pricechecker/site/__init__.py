@@ -106,10 +106,12 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static", ignore=shutil.ignore_patterns("package.json"))  # package.json only makes node read pricing.js as a module
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
-    # Cloudflare Pages caching: app.js and style.css are linked with ?v=<content hash>, so a year is safe; fonts and
+    # Cloudflare Pages caching: app.js, style.css, d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and
     # icons keep their names when they change, so a month. Pages themselves keep the default (revalidate every visit).
     (OUT / "_headers").write_text("/static/app.js\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/style.css\n  Cache-Control: public, max-age=31536000, immutable\n"
+                                  "/static/d.css\n  Cache-Control: public, max-age=31536000, immutable\n"
+                                  "/static/js/*\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
                                   "/static/icons/*\n  Cache-Control: public, max-age=2592000\n"
                                   "/data/v1/*\n  Cache-Control: public, max-age=31536000, immutable\n")   # names carry a content hash

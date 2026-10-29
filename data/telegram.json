@@ -29,8 +29,8 @@
    "ref": 917.95
   },
   "honor-magic-8-pro-air": {
-   "left": "",
-   "ref": 757.0
+   "left": "import tax",
+   "ref": 752.43
   },
   "honor-magic-9": {
    "left": "",
@@ -190,7 +190,7 @@
   },
   "redmi-k100-pro-max": {
    "left": "",
-   "ref": 687.0
+   "ref": 809.01
   },
   "redmi-k90-pro-max": {
    "left": "",
@@ -206,7 +206,7 @@
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
-   "ref": 980.95
+   "ref": 990.95
   },
   "samsung-galaxy-z-fold-8": {
    "left": "",
@@ -222,7 +222,7 @@
   },
   "vivo-x-fold-6": {
    "left": "",
-   "ref": 1137.0
+   "ref": 1285.29
   },
   "vivo-x300": {
    "left": "",
@@ -246,11 +246,11 @@
   },
   "vivo-x500": {
    "left": "",
-   "ref": 867.0
+   "ref": 1027.55
   },
   "vivo-x500-pro": {
    "left": "",
-   "ref": 1037.0
+   "ref": 1184.35
   },
   "vivo-x500-pro-max": {
    "left": "",
@@ -290,7 +290,7 @@
   },
   "xiaomi-18-fold": {
    "left": "",
-   "ref": 1687.0
+   "ref": 1734.13
   },
   "xiaomi-18-pro": {
    "left": "",
@@ -305,5 +305,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-10-29T02:51:51Z"
+ "updated": "2026-10-29T10:55:46Z"
 }

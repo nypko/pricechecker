@@ -10,7 +10,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import cards, context, data_files, offers, seo
+from . import assets, cards, context, data_files, offers, seo
 from .charts import (
     LABELS,
     _all_stats,
@@ -105,6 +105,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "phones").mkdir(parents=True)
     (OUT / "history").mkdir()
     shutil.copytree("static", OUT / "static", ignore=shutil.ignore_patterns("package.json"))  # package.json only makes node read pricing.js as a module
+    for name, (text, _) in assets.versioned_modules(Path("static/js")).items():   # imports between modules get ?v=<hash>
+        (OUT / "static/js" / name).write_text(text)
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
     # Cloudflare Pages caching: app.js, style.css, d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and
     # icons keep their names when they change, so a month. Pages themselves keep the default (revalidate every visit).

@@ -1,7 +1,6 @@
 import pytest
 
-from pricechecker import fx, run, terms
-from pricechecker import site
+from pricechecker import fx, run, site, terms
 
 
 @pytest.fixture(scope="session")

@@ -15,7 +15,6 @@ def test_headers_cache_js_modules_and_d_css(site_build):
 
 
 def test_asset_hashes_cover_d_css_and_js_modules(site_build):
-    from pathlib import Path
     from pricechecker import fx, run, terms
     from pricechecker.site import context, offers
     stores, catalog = run.load_config()
@@ -23,3 +22,28 @@ def test_asset_hashes_cover_d_css_and_js_modules(site_build):
     v = context.page_context(data, offers.assemble(data))["asset_v"]
     assert {"app.js", "style.css", "d.css", "js/pricing.js"} <= set(v)
     assert all(len(h) == 10 for h in v.values())
+
+
+def test_js_imports_carry_the_hash_of_the_imported_module(tmp_path):
+    from pricechecker.site import assets
+    (tmp_path / "b.js").write_text("export const b = 1;\n")
+    (tmp_path / "a.js").write_text('import { b } from "./b.js";\nexport { b } from \'./b.js\';\nexport const a = b;\n')
+    m = assets.versioned_modules(tmp_path)
+    hb = m["b.js"][1]
+    assert f'from "./b.js?v={hb}"' in m["a.js"][0] and f"from './b.js?v={hb}'" in m["a.js"][0]
+    (tmp_path / "b.js").write_text("export const b = 2;\n")
+    m2 = assets.versioned_modules(tmp_path)
+    assert m2["b.js"][1] != hb and m2["a.js"][1] != m["a.js"][1]
+    assert 'from "./b.js"' in (tmp_path / "a.js").read_text()   # sources stay unmodified
+
+
+def test_built_js_matches_asset_hash(site_build):
+    import hashlib
+
+    from pricechecker import fx, run, terms
+    from pricechecker.site import context, offers
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    v = context.page_context(data, offers.assemble(data))["asset_v"]
+    for f in (site_build / "static/js").glob("*.js"):
+        assert hashlib.sha256(f.read_bytes()).hexdigest()[:10] == v[f"js/{f.name}"]

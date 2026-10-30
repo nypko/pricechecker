@@ -10,6 +10,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from .. import terms
 from . import assets, blocks, cards, context, data_files, offers, seo
 from .charts import (
     LABELS,
@@ -122,6 +123,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         (OUT / f'{data.site_cfg["indexnow_key"]}.txt').write_text(data.site_cfg["indexnow_key"])
     files = data_files.write(data, OUT, phones)   # build/data/v1/: the browser's phone, home and tax files
     ctx["data_files"], ctx["tax_file"] = files, files["tax"]   # published paths, for the pages that load them
+    ctx["home_files"] = {r: files[f"home/{r}"] for r in terms.REGIONS}   # the home page's parts per region
     _share_cards(phones, ctx)   # also sets the cards' ?v= in ctx and on each phone, so it comes before the pages
     (OUT / "stores").mkdir()
     for page in PAGES:

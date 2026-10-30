@@ -179,3 +179,61 @@ def test_memory_chip_without_a_current_price_is_disabled(site_build):
     h = tpl.render(rows=rows, s=DEFAULT)
     assert 'data-m="16/512" aria-pressed="false" disabled>16 GB · 512 GB · –<' in h
     assert not re.search(r'data-m="12/256"[^>]*disabled', h)
+
+
+# ---- home page (spec §5.1) ----
+def _home(site_build):
+    return (site_build / "index.html").read_text()
+
+
+def test_home_sections(site_build):
+    h = _home(site_build)
+    assert "China version or Global? <em>Both prices, delivered.</em>" in h and "data-for" in h
+    assert re.search(r'<input id="q" type="search" placeholder="Which phone\? e\.g\. “x9 ultra”"', h)
+    assert re.search(r'<a class="teaser" href="drops">\s*<b>\d+ price drops? this week</b>', h)
+    chips = h[h.index('id="chips"'):h.index('id="sorts"')]
+    for label in (">All<", ">Both versions<", ">China<", ">Global<", "Watched (<span"):
+        assert label in chips, label
+    assert chips.index(">Global<") < chips.index("Watched (<span") < chips.index('data-b="oppo"')
+    assert 'data-b="oppo"' in chips and 'data-b="samsung"' in chips
+    sel = h[h.index('id="rom"'):]
+    sel = sel[:sel.index("</select>")]
+    for o in ("any storage", ">256 GB<", ">512 GB<", ">1 TB<"):
+        assert o in sel, o
+    sorts = h[h.index('id="sorts"'):h.index('id="count"')]
+    for label in (">Newest<", ">Biggest China saving<", ">Lowest price<", ">Dropped this week<"):
+        assert label in sorts, label
+    n = h.count('data-block="home_row"')   # every phone is linked from the page; the first 20 show, then "Show all N"
+    assert n > 50 and 'id="list" data-cap="20"' in h and f">Show all {n} phones<" in h and f"{n} phones · lowest" in h
+    assert "The stores, and what they cover" in h
+    assert 'id="no-results"' in h and ">Clear search<" in h
+    assert re.search(r'id="home"[^>]*data-files=', h) and re.search(r'data-tax="data/v1/tax\.[0-9a-f]{10}\.json"', h)
+    assert re.search(r'"EU": \["data/v1/home-EU-1\.[0-9a-f]{10}\.json"', h)
+    assert "js/home.js?v=" in h and "offers_json" not in h and "data-offers" not in h
+    assert 'class="prow' not in h
+
+
+def test_home_within_budget(site_build):
+    assert (site_build / "index.html").stat().st_size <= 120_000
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_home_filter_sort_and_region_cases():
+    r = subprocess.run(["node", str(ROOT / "tests/js/home_cases.mjs")], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_home_summaries_match_the_browsers(site_build):
+    """The per-phone summaries the server embeds (default settings) are what home.js works out from the EU files."""
+    import json
+    h = _home(site_build)
+    meta = json.loads(html.unescape(re.search(r'<script type="application/json" id="home-meta">(.*?)</script>', h, re.DOTALL).group(1)))
+    files = sorted((site_build / "data/v1").glob("home-EU-*.json"))
+    r = subprocess.run(["node", str(ROOT / "tests/js/home_cases.mjs"), "--summaries", ",".join(map(str, files)),
+                        str(next((site_build / "data/v1").glob("tax.*.json")))], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stderr
+    got = json.loads(r.stdout)
+    assert len(meta) > 50
+    for m in meta:
+        assert got.get(m["id"], {}) == m.get("s", {}), m["id"]

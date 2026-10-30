@@ -73,13 +73,19 @@ def _home_offer(p: dict, o: dict, region: str) -> dict:
     return _lean(out)
 
 
+def home_offers(p: dict, region: str) -> list[dict]:
+    """A phone's rows in the home files for the region: in stock, current, and delivered there. The home page renders
+    its default-settings (EU) list from these, the same data the browser loads for other settings."""
+    return [_home_offer(p, o, region) for o in p["offers"]
+            if o["available"] and not o["old"] and (o.get("ship") or {}).get(region) is not False]
+
+
 def _home_parts(data: SiteData, phones: list[dict], region: str) -> list[list[dict]]:
     """Every in-stock, current offer that delivers to the region, grouped into parts that each stay inside BUDGET
     (a phone's offers are never split across parts)."""
     parts: list[list[dict]] = [[]]
     for p in phones:
-        rows = [_home_offer(p, o, region) for o in p["offers"]
-                if o["available"] and not o["old"] and (o.get("ship") or {}).get(region) is not False]
+        rows = home_offers(p, region)
         if parts[-1] and len(_dump(_home_doc(region, parts[-1] + rows))) > BUDGET:
             parts.append([])
         parts[-1] += rows

@@ -1,97 +1,68 @@
 {% extends "base.html" %}
-{% from "_price.html" import price %}
-{% import "_explain.html" as explain %}
-{% import "_brand.html" as brand %}
+{% import "_d/blocks.html" as b %}
+{% import "_d/shell.html" as shell with context %}
+{#- Spec §5.1. Every phone row is the home_row block rendered for the default settings from v.rows (pages/home.py);
+    static/js/home.js filters, sorts and, for other settings or a storage size, re-renders the same block with
+    blocks.js from the region's home files. #}
 {% block main %}
-{% set connected = stores|rejectattr("ok", "none")|list %}
-{% set store_count = connected|rejectattr("part_of")|list|length %}   {#- an EU warehouse is part of its store -#}
-<section class="intro">
-  <p class="hero-brand">{{ brand.lockup("full", "dpf") }}</p>
-  <h1>What a flagship phone really costs, delivered to your door</h1>
-  <p>{{ phones|length }} phones, newest first, from {{ store_count }} stores (mostly importers), with payment fees, shipping and estimated import tax worked in. Checked every hour. <a class="nowrap" href="compare">Compare phones side by side</a></p>
-  {{ explain.editions(["global", "china"]) }}
-</section>
-
-{#- only the search stays pinned while the list scrolls; the filters scroll away with the page -#}
-<div class="list-tools">
-  <input id="q" type="search" placeholder="Search phones, e.g. “x9 ultra”" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
-</div>
-<div class="chips">
-  <div class="chip-set chip-filters" role="group" aria-label="Filters">
-    <button type="button" class="chip" id="global-only" aria-pressed="false">Global version only</button>
-    <button type="button" class="chip" id="watch-only" aria-pressed="false" hidden>Watched (<span class="n">0</span>)</button>
+{%- set connected = stores|rejectattr("ok", "none")|list -%}
+{%- set s = v.s -%}
+{%- set L = {"china": "China", "global": "Global"} -%}
+<div class="wrap home" id="home" data-files='{{ v.files|tojson }}' data-tax="{{ v.tax_file }}">
+  <section class="hero">
+    <h1>China version or Global? <em>Both prices, delivered.</em></h1>
+    {{ shell.settings_line() }}
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="sr-only">Search phones</span><input id="q" type="search" placeholder="Which phone? e.g. “x9 ultra”" enterkeyhint="search" autocomplete="off"></label>
+  </section>
+  {%- if v.n_drops %}
+  <a class="teaser" href="drops">
+    <b>{{ v.n_drops }} price drop{{ "s" if v.n_drops != 1 }} this week</b><span>Stores that got cheaper by 3% and €20 or more</span><em>See all →</em></a>
+  {%- endif %}
+  <div class="chips js-only" id="chips" role="group" aria-label="Filter">
+    {%- for f, label in [("all", "All"), ("both", "Both versions"), ("china", "China"), ("global", "Global")] %}<button type="button" data-f="{{ f }}" aria-pressed="{{ 'true' if f == 'all' else 'false' }}">{{ label }}</button>{% endfor -%}
+    <button type="button" data-f="watched" aria-pressed="false" hidden>Watched (<span class="n">0</span>)</button>
+    {%- for br in v.brands %}<button type="button" data-b="{{ br|lower }}" aria-pressed="false">{{ br }}</button>{% endfor -%}
   </div>
-  <div class="chip-set" role="group" aria-label="Brand">
-    <button class="chip" data-brand="" aria-pressed="true">All brands</button>
-    {% for b in brands %}<button class="chip" data-brand="{{ b|lower }}" aria-pressed="false">{{ b }}</button>{% endfor %}
-  </div>
-</div>
-
-<div class="list-head">
-  <p class="list-meta"><span class="count">{{ phones|length }}</span> phones with
-    {#- storage filter: prices become each phone's cheapest at that storage, phones not sold with it are hidden (app.js) #}
-    <label class="sr-only" for="rom">Storage</label><select id="rom" class="rom-select"><option value="">any storage</option>
-      {%- for r, label in roms %}<option value="{{ r }}">{{ label }}</option>{% endfor %}</select>
-    · delivered to <strong class="for-region">the EU</strong>
-    <button type="button" class="link-btn" data-prefs>Change</button></p>
-  <div class="seg seg-sm sort" role="group" aria-label="Sort by">
-    <button type="button" data-sort="date" aria-pressed="true">Newest</button><button type="button" data-sort="price" aria-pressed="false">Cheapest</button><button type="button" data-sort="gap" aria-pressed="false">China saving</button><button type="button" data-sort="drop" aria-pressed="false">Price drops</button><button type="button" data-sort="name" aria-pressed="false">A–Z</button>
-  </div>
-</div>
-
-<p class="nojs-only muted small">Without JavaScript these are store prices, before shipping, payment fees and import tax.</p>
-
-<div class="no-results" id="no-results" hidden>
-  <p>No phones match “<span class="nr-q"></span>”.</p>
-  <button type="button" class="chip" id="clear-search">Clear search</button>
-</div>
-
-<ol class="plist" id="phones">
-{% for p in phones %}
-  <li class="prow{% if not p.best %} out{% endif %}" data-brand="{{ p.brand|lower }}" data-name="{{ p.name|lower }}" data-slug="{{ p.slug }}" data-date="{{ p.announced }}" data-cl="{{ p.ed_label.china }}"
-      {% if p.best %}data-offers="{{ p.offers_json }}"{% endif %}>
-    <a class="prow-link" href="phones/{{ p.slug }}">
-      <span class="prow-name">{{ p.name }}{% if p.announced %} <time class="prow-date" datetime="{{ p.announced }}">{{ p.announced|month }}</time>{% endif %}</span>
-      {% if p.best %}
-      <span class="prow-sub"><span class="badge {{ p.best.edition }}">{{ p.ed_label[p.best.edition] }}</span>
-        <span class="prow-spec">{{ p.best.storage|spec }}</span><span class="prow-store"> · {{ p.best.store_label }}</span><span class="prow-count"></span> <span class="pill prow-trend" hidden></span> <span class="pill prow-watch" hidden></span></span>
-      <span class="prow-price"><span class="prow-v">{{ price(p.best.money) }}</span><span class="prow-plus"></span></span>
-      <span class="prow-gap" hidden></span>
-      {% elif p.offers %}
-      <span class="prow-sub muted">Out of stock everywhere</span>
-      {% else %}
-      <span class="prow-sub muted">No store prices yet</span>
-      {% endif %}
-    </a>
-  </li>
-{% endfor %}
-</ol>
-
-<section class="status" id="terms">
-  <details class="explain terms-box">
-    <summary>How we calculate totals: store fees &amp; shipping</summary>
-    <div class="panel">
-    <table class="terms">
-      <thead><tr><th>Store</th><th>Prices</th><th>Bank transfer</th><th>PayPal</th><th>Card</th><th>Shipping</th></tr></thead>
-      <tbody>
-      {% for s in connected %}
-        <tr>
-          <td class="t-store"><span class="dot {{ 'ok' if s.ok else 'bad' }}"></span>{{ s.label }}
-            {% if not s.terms_ok %}<span class="recheck" data-note="This store's terms page changed since we last checked it. We're re-checking; the terms below may be out of date.">terms changed</span>{% endif %}</td>
-          <td class="muted" data-label="Prices"><span>{% if s.ok %}{{ s.count }}{% else %}last check failed{% endif %}</span></td>
-          {% for m in ["bank", "paypal", "card"] %}
-          {% set v = s.pay[m] %}
-          <td data-label="{{ {'bank': 'Bank transfer', 'paypal': 'PayPal', 'card': 'Card'}[m] }}"><span data-note="{{ s.notes.pay[m] }}">{% if s.pay_min[m] %}<span class="muted">orders over {{ price(s.pay_min[m]) }} only</span>{% elif v is none %}<span class="muted">unknown</span>{% elif v < 0 %}<strong class="good">{{ v|round(2) }}%</strong>{% elif v > 0 %}<span class="bad">+{{ v|round(2) }}%</span>{% else %}no fee{% endif %}</span></td>
-          {% endfor %}
-          <td class="muted small t-ship" data-label="Shipping">{% for note, regions in s.ship_notes %}<div><strong>{{ regions|join(" / ") }}:</strong> {{ note }}</div>{% else %}unknown{% endfor %}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="opts js-only">
+    <label class="rom">Storage <select id="rom"><option value="">any storage</option>
+      {%- for r, label in v.roms %}<option value="{{ r }}">{{ label }}</option>{% endfor %}</select></label>
+    <div class="sorts" id="sorts" role="group" aria-label="Sort"><span>Sort:</span>
+      {%- for k, label in [("new", "Newest"), ("save", "Biggest China saving"), ("cheap", "Lowest price"), ("drop", "Dropped this week")] %}<button type="button" data-s="{{ k }}" aria-pressed="{{ 'true' if k == 'new' else 'false' }}">{{ label }}</button>{% endfor -%}
     </div>
-    <p class="muted small">Taken from each store's payment, shipping and customs pages and re-checked daily. Tap an underlined value for details.
-      Where buyers' experience differs from a store's promise (reviews on Trustpilot and XDA forums), the note says so.
-      Courier fees and import tax rules: courier and tax-office guidance, checked October 2026.</p>
-  </details>
-</section>
+  </div>
+  <p class="count" id="count" aria-live="polite">{{ v.ordered|length }} phones · lowest delivered price per version</p>
+  <div class="no-results" id="no-results" hidden>
+    <p>No phones match “<span class="nr-q"></span>”. Try fewer words.</p>
+    <button type="button" id="clear-search">Clear search</button>
+  </div>
+  <ul class="pairs" id="list" data-cap="{{ v.first }}">
+  {%- for p in v.ordered %}
+    {{ b.home_row(p, v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}) }}
+  {%- endfor %}
+  </ul>
+  <button class="showall js-only" type="button" id="showall"{% if v.ordered|length <= v.first %} hidden{% endif %}>Show all {{ v.ordered|length }} phones</button>
+  <script type="application/json" id="home-meta">{{ v.meta|tojson }}</script>
+
+  <h2 id="stores">The stores, and what they cover</h2>
+  <ul class="terms" id="terms">
+  {%- for st in connected %}
+    <li><b>{% if st.name in v.store_pages %}<a href="stores/{{ st.part_of or st.name }}">{{ st.label }}</a>{% else %}{{ st.label }}{% endif %}</b>
+      <span class="t-n">{% if st.ok %}{{ st.count }} price{{ "s" if st.count != 1 }} listed{% else %}last check failed{% endif %}
+        {%- if not st.terms_ok %} · <em class="recheck">terms changed, re-checking</em>{% endif %}</span>
+      <span class="t-fees">
+        {%- for m, name in [("card", "Card"), ("paypal", "PayPal"), ("bank", "Bank transfer")] -%}
+        {%- set pct = st.pay[m] -%}
+        {{ name }}: {% if st.pay_min[m] %}orders over {{ money(st.pay_min[m].eur, "eur") }} only{% elif pct is none %}unknown{% elif pct < 0 %}<strong class="good">{{ pct|abs|round(2) }}% off</strong>{% elif pct > 0 %}+{{ pct|round(2) }}%{% else %}no fee{% endif %}{{ " · " if not loop.last }}
+        {%- endfor -%}
+      </span>
+      <details><summary>Shipping and import tax</summary>
+        {%- for note, regions in st.ship_notes %}<span class="t-ship"><strong>{{ regions|join(" / ") }}:</strong> {{ note }}</span>{% else %}<span class="t-ship">Not published.</span>{% endfor %}
+      </details>
+    </li>
+  {%- endfor %}
+  </ul>
+  <p class="fine terms-fine">Taken from each store's payment, shipping and customs pages and re-checked daily. Where buyers' experience differs from a store's promise (Trustpilot reviews, XDA forums), the note says so. <a href="methodology">How we work out totals</a></p>
+</div>
 {% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/home.js?v={{ asset_v['js/home.js'] }}"></script>{% endblock %}

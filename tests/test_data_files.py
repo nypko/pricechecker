@@ -5,7 +5,6 @@ import os
 import re
 import shutil
 import subprocess
-from pathlib import Path
 
 import pytest
 
@@ -120,12 +119,12 @@ def test_offer_inputs_feed_pricing_js(built, data, phones):
     p = max(phones, key=lambda p: len(p["offers"]))
     f = out / names["phone/" + p["id"]].lstrip("/")
     r = subprocess.run(["node", "tests/js/pricing_cases.mjs", "--offers", str(f), "--tax", str(out / names["tax"].lstrip("/"))],
-                       capture_output=True, text=True)
+                       check=False, capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
     got = json.loads(r.stdout)
     # non-EU combo through the same runner: UK, bank, GBP
     r2 = subprocess.run(["node", "tests/js/pricing_cases.mjs", "--offers", str(f), "--tax", str(out / names["tax"].lstrip("/")),
-                         "--settings", "UK,,bank,gbp"], capture_output=True, text=True)
+                         "--settings", "UK,,bank,gbp"], check=False, capture_output=True, text=True)
     assert r2.returncode == 0, r2.stderr
     uk = pricing.Settings("UK", "", "bank", "gbp")
     offers_in = json.loads(f.read_text())["offers"]

@@ -25,7 +25,10 @@
 {%- set other = best_of(rows, "global" if edition == "china" else "china") -%}
 {%- set cls = "cn" if edition == "china" else "gl" -%}
 {%- if not b -%}
-<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">No current price for your settings</p></div>
+{#- every listing of this version sold out: other settings would not help, so say so -#}
+{%- set ed_rows = rows|selectattr("edition", "equalto", edition)|list -%}
+{%- set sold = ed_rows and not (ed_rows|rejectattr("state", "equalto", "soldout")|list) -%}
+<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">{{ "Sold out at every store we check" if sold else "No current price for your settings" }}</p></div>
 {%- else -%}
 <div class="side {{ cls }}{{ ' on' if switch and on and other }}" data-block="price_box" data-e="{{ edition }}">{% if switch %}<button type="button" class="pickbtn" data-e="{{ edition }}" aria-pressed="{{ 'true' if on else 'false' }}">{% endif %}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div><p class="st">at <b>{{ b.store }}</b></p>
 {%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}

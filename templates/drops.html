@@ -22,7 +22,7 @@
   <p class="kicker"><a href="{{ root }}">All phones</a></p>
   <h1>Price drops <em>this week</em></h1>
   {{ shell.settings_line() }}
-  <p class="lead">A store listing counts when its price for the same version and memory is at least {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} lower than a week ago. Old and new are the store's own price; the total on the right is what it costs delivered to you now.</p>
+  <p class="lead">A store listing counts when its price for the same version and memory is at least {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} lower than a week ago. Old and new are the store's price in euros (converted at today's ECB rate); the total on the right is what it costs delivered to you now.</p>
   <p class="tgline">{% if site.telegram %}The biggest ones also go to <a href="https://t.me/{{ site.telegram }}" rel="noopener">Telegram</a>. Those are marked <span class="mark tg">Posted to Telegram</span>.{% endif %}
     Follow <a href="feeds/drops.xml">this list as a feed</a>.</p>
   {%- if v.week %}

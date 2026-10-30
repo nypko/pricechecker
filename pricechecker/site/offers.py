@@ -1,10 +1,8 @@
-"""Per phone: every store's offers with terms, payment, shipping, trend and trust attached, plus what each page shows
+"""Per phone: every store's offers with terms, payment, shipping and trust attached, plus what each page shows
 from them (charts, stats, title price, related phones). assemble() returns the phone dicts the pages use."""
-from collections import defaultdict
 from datetime import datetime, timedelta
 
 from .. import affiliate, fx, normalize, promos, terms
-from .charts import _trend
 from .common import EDITIONS, _money, _specs, ed_labels
 from .context import SiteData
 from .seo import _product_ld, _title_price
@@ -52,12 +50,8 @@ def assemble(data: SiteData) -> list[dict]:
     live_stores, buyers, tax_cfg, specs, google, variants = data.live_stores, data.buyers, data.tax_cfg, data.specs, data.google, data.variants
     site_cfg = data.site_cfg
     old = {s: _too_old(st.get("checked"), updated_at) for s, st in live_stores.items()}
-    by_model = defaultdict(list)   # history rows per phone, so each phone's trends scan only its own rows
-    for r in data.rows:
-        by_model[r["model_id"]].append(r)
     phones = []
     for m in _models(data.catalog, [o for st in live_stores.values() for o in st["offers"]]):
-        mrows = by_model[m["id"]]
         offers = []
         for store, st in live_stores.items():
             # an EU-warehouse section (part_of) shares its store's promotions, coupons and their watch state
@@ -82,7 +76,6 @@ def assemble(data: SiteData) -> list[dict]:
                                    "gplay": stores_cfg[store].get("google_play") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("google_play")
                                             if o["edition"] == "china" else None,
                                    "trust": _trust(stores_cfg[store].get("trust") or stores_cfg.get(stores_cfg[store].get("part_of"), {}).get("trust")),
-                                   "trend": _trend(mrows, m["id"], {**o, "store": store}, updated_at),
                                    "terms_ok": terms_status.get(store, {}).get("ok", True)})
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last

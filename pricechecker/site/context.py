@@ -2,7 +2,6 @@
 history, import tax, variants, specs, site settings, Google Play notes and buyer reports (SiteData) - and the template
 context every page shares (page_context)."""
 import hashlib
-import json
 import os
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -13,7 +12,7 @@ import yaml
 from .. import buyer_reports, fx, history, terms
 from .. import specs as specs_cfg
 from . import assets
-from .common import CURRENCIES, EDITION_LABEL, STORE_COLORS, _google, _usd_money
+from .common import CURRENCIES, _google, _usd_money
 
 
 @dataclass
@@ -35,7 +34,6 @@ class SiteData:
     google: dict                     # config/google.yaml: Google Play on each brand's China version
     buyers: dict                     # approved buyer reports per store and region (buyer_reports.summary)
     live_stores: dict                # latest["stores"] limited to stores still enabled in stores.yaml
-    colors: dict                     # store key -> chart line colour, by stores.yaml order
 
 
 def _tax_config(rates: dict) -> dict:
@@ -54,8 +52,6 @@ def load(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: 
     latest = history.load_latest()
     rows_all = history.load_history()        # every change: history pages and feeds
     rows = history.load_history(months=3)    # charts, trends and stats only look back a few weeks
-    store_names = list(stores_cfg)
-    colors = {s: STORE_COLORS[i % len(STORE_COLORS)] for i, s in enumerate(store_names)}
     try:
         updated_at = datetime.strptime(latest.get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
     except ValueError:
@@ -73,7 +69,7 @@ def load(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: 
     live_stores = {s: st for s, st in latest["stores"].items() if s in stores_cfg and stores_cfg[s].get("enabled", True)}
     return SiteData(catalog=catalog, stores_cfg=stores_cfg, rates_info=rates_info, rates=rates, terms_status=terms_status,
                     latest=latest, rows_all=rows_all, rows=rows, updated_at=updated_at, tax_cfg=tax_cfg, variants=variants,
-                    site_cfg=site_cfg, specs=specs, spec_sheets=spec_sheets, google=google, buyers=buyers, live_stores=live_stores, colors=colors)
+                    site_cfg=site_cfg, specs=specs, spec_sheets=spec_sheets, google=google, buyers=buyers, live_stores=live_stores)
 
 
 def _ship_notes(by_region: dict) -> list[tuple[str, list[str]]]:
@@ -98,7 +94,7 @@ def page_context(data: SiteData, phones: list[dict]) -> dict:
     # keyed by path relative to static/: d.css and every js/*.js module
     ver = {f: hashlib.sha256(Path("static", f).read_bytes()).hexdigest()[:10] for f in ("d.css",)}
     ver.update({f"js/{n}": h for n, (_, h) in assets.versioned_modules(Path("static/js")).items()})   # hash of the rewritten module
-    return {"asset_v": ver, "updated": upd, "updated_label": upd_label, "fx_date": data.rates_info.get("date"), "colors": data.colors,
+    return {"asset_v": ver, "updated": upd, "updated_label": upd_label, "fx_date": data.rates_info.get("date"),
             "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"), "part_of": c.get("part_of"),
                         "error": latest["stores"].get(s, {}).get("error", ""), "count": len(latest["stores"].get(s, {}).get("offers", [])),
                         "terms_ok": terms_status.get(s, {}).get("ok", True), "notes": terms.notes(c),
@@ -108,13 +104,11 @@ def page_context(data: SiteData, phones: list[dict]) -> dict:
                        for s, c in stores_cfg.items() if c.get("enabled", True)],
             "month": data.updated_at.strftime("%B %Y") if data.updated_at else "",   # "October 2026" in page titles
             "site": data.site_cfg,
-            "brands": sorted({p["brand"] for p in phones}), "edition_label": EDITION_LABEL,
+            "brands": sorted({p["brand"] for p in phones}),
             "report_stores": [{"name": s, "label": c.get("label", s)} for s, c in stores_cfg.items() if c.get("enabled", True)],
             "report_countries": sorted(buyer_reports.COUNTRIES.items(), key=lambda kv: (kv[0] == "XX", kv[1])),
             "eu_countries": sorted(tax_cfg["EU"]["countries"].items(), key=lambda kv: kv[1]["name"]), "eu_avg_vat": tax_cfg["EU"]["rate_pct"],
             "ca_provinces": sorted(tax_cfg["CA"]["provinces"].items(), key=lambda kv: kv[1]["name"]),
             "eu_names": {k: c["name"] for k, c in tax_cfg["EU"]["countries"].items()},   # code -> name, for settings.js's "Delivered to ..." line
             "ca_names": {k: c["name"] for k, c in tax_cfg["CA"]["provinces"].items()},
-            "store_page_map": json.dumps({n: c.get("part_of") or n for n, c in stores_cfg.items() if c.get("enabled", True)
-                                          and (c.get("terms") or {}).get("shipping")}),
             "tax_regions": tax_cfg}

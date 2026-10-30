@@ -112,7 +112,11 @@ const edCls = (e) => (e === "china" ? "cn" : "gl");
 export function priceBox(rows, edition, s, labels, on = false, sw = true) {
   const b = bestOf(rows, edition), other = bestOf(rows, edition === "china" ? "global" : "china"), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
-  if (!b) return `<div class="side ${cls} none" data-block="price_box" data-e="${edition}">${lab}<div class="big num">–</div><p class="st">No current price for your settings</p></div>`;
+  if (!b) {
+    // every listing of this version sold out: other settings would not help, so say so
+    const ed = rows.filter((r) => r.edition === edition), sold = ed.length > 0 && ed.every((r) => r.state === "soldout");
+    return `<div class="side ${cls} none" data-block="price_box" data-e="${edition}">${lab}<div class="big num">–</div><p class="st">${sold ? "Sold out at every store we check" : "No current price for your settings"}</p></div>`;
+  }
   return `<div class="side ${cls}${sw && on && other ? " on" : ""}" data-block="price_box" data-e="${edition}">` + (sw ? `<button type="button" class="pickbtn" data-e="${edition}" aria-pressed="${on ? "true" : "false"}">` : "") +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div><p class="st">at <b>${esc(b.store)}</b></p>` +
     (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + (sw ? "</button>" : "") +

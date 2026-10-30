@@ -24,7 +24,7 @@ def _build(cwd: Path) -> Path:
 
 
 def _attr(h: str, tag_re: str, attr: str) -> str | None:
-    for m in re.finditer(tag_re, h, re.I):
+    for m in re.finditer(tag_re, h, re.IGNORECASE):
         a = re.search(rf'\s{attr}="([^"]*)"', m.group(0))
         if a:
             return html.unescape(a.group(1))
@@ -33,7 +33,7 @@ def _attr(h: str, tag_re: str, attr: str) -> str | None:
 
 def _ld_types(h: str) -> list[str]:
     out = []
-    for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', h, re.S):
+    for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', h, re.DOTALL):
         try:
             doc = json.loads(m.group(1).replace("<\\/", "</"))
         except ValueError:
@@ -46,7 +46,7 @@ def _ld_types(h: str) -> list[str]:
 
 
 def seo_fields(h: str) -> dict:
-    title = re.search(r"<title>(.*?)</title>", h, re.S)
+    title = re.search(r"<title>(.*?)</title>", h, re.DOTALL)
     return {"title": html.unescape(title.group(1).strip()) if title else None,
             "canonical": _attr(h, r'<link\b[^>]*rel="canonical"[^>]*>', "href"),
             "description": _attr(h, r'<meta\b[^>]*name="description"[^>]*>', "content"),

@@ -139,14 +139,19 @@ def phones():
 
 
 def _fixture_cases(doc, tmp_path):
-    """(phone file, offers, settings, edition, storage): the full fixture under both settings, the China-only variant."""
+    """(phone file, offers, settings, edition, storage): the full fixture under both settings, the China-only variant,
+    the variant whose China listings are all sold out."""
     full = tmp_path / "states.json"
     full.write_text(json.dumps(doc))
     china = tmp_path / "states-china.json"
     china_offers = [o for o in doc["offers"] if o["edition"] == "china"]
     china.write_text(json.dumps({**doc, "offers": china_offers}))
+    sold = tmp_path / "states-soldout.json"   # the China version sold out everywhere, Global still selling
+    sold_offers = [{**o, "available": False} if o["edition"] == "china" else o for o in doc["offers"]]
+    sold.write_text(json.dumps({**doc, "offers": sold_offers}))
     return [(full, doc["offers"], view.DEFAULT, "china", "12/256"), (full, doc["offers"], UK_PAYPAL, "global", "12/256"),
-            (full, doc["offers"], view.DEFAULT, "global", "12/512"), (china, china_offers, view.DEFAULT, "china", "12/256")]
+            (full, doc["offers"], view.DEFAULT, "global", "12/512"), (china, china_offers, view.DEFAULT, "china", "12/256"),
+            (sold, sold_offers, view.DEFAULT, "china", "12/256")]
 
 
 @needs_node
@@ -157,6 +162,22 @@ def test_blocks_parity_fixture(fixture_doc, tax_file, tax, tmp_path):
         py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         assert_same(py, js, f"{f.name} {tuple(s)} {e} {st}")
+
+
+@needs_node
+def test_price_box_of_a_version_sold_out_everywhere(fixture_doc, tax_file, tax, tmp_path):
+    """All of a version's listings sold out: its box says so (Jinja and JS alike), not "No current price for your
+    settings" (no setting would help); a version with no price for the settings keeps that line."""
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    f, inputs, s, e, st = _fixture_cases(fixture_doc, tmp_path)[-1]
+    rows = view.rows(inputs, tax, s)
+    for box in (render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])["price_box"],
+                render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])["price_box"]):
+        assert "Sold out at every store we check" in text(box) and "No current price" not in text(box)
+    # China listings that don't deliver to the UK (one of them sold out): a setting would help, so the usual line
+    nod = [{**o, "ship": {**o["ship"], "UK": False}} if o["edition"] == "china" else o for o in fixture_doc["offers"]]
+    box = macro("price_box", view.rows(nod, tax, UK_PAYPAL), "china", UK_PAYPAL, labels, True)
+    assert "No current price for your settings" in text(box) and "Sold out" not in text(box)
 
 
 def test_home_row_marks_parity(fixture_doc, tax_file, tax, tmp_path):

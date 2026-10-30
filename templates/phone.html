@@ -49,9 +49,9 @@
   <details class="ledger" id="ledger"><summary>Compare every offer (<span id="n-ledger">{{ v.n_ledger }}</span>)</summary>
     <div class="scroll" id="s-ledger">{{ b.ledger(v.rows, s, L) }}</div></details>
   {%- endif %}
-{% elif p.offers %}
-  <p class="empty">Every store that lists this phone is out of stock right now. We check again every hour.</p>
 {% else %}
+  {#- v.eds lists every version with a listing, sold out ones included (their price box says "Sold out at every store
+      we check"), so this is the phone no store lists at all -#}
   <p class="empty">No store we check lists this phone right now. We check every hour; meanwhile, see its <a href="../history/{{ p.slug }}">price history</a>{% if p.related.near %} or <a href="{{ p.related.near[0].slug }}">{{ p.related.near[0].name }}</a>, at a similar price{% endif %}.</p>
 {% endif %}
 

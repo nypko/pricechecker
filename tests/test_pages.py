@@ -381,6 +381,8 @@ def test_only_the_real_drop_is_listed_and_the_home_count_agrees():
     h = drops.render(env, data, ctx, phones)["drops.html"]
     assert h.count('<li class="drop" ') == 1 and "−5%" in h and "€1,000" in h and "€950" in h
     assert "No drops this week" not in h and "Posted to Telegram</span>" not in h.split("</p>", 6)[-1]
+    assert "Old and new are the store's price in euros (converted at today's ECB rate)" in html.unescape(h)
+    assert '<link rel="alternate" type="application/atom+xml" title="DoorPrice price drops" href="feeds/drops.xml">' in h
 
 
 def test_a_drop_the_telegram_channel_posted_is_marked(monkeypatch):

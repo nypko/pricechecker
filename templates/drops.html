@@ -5,6 +5,7 @@
     static/js/drops.js re-renders it with blocks.js for other settings and filters the rows by the chips. #}
 {% set crumbs = [("Price drops", "drops")] %}
 {% block title %}Phone price drops this week – DoorPrice{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="DoorPrice price drops" href="feeds/drops.xml">{% endblock %}
 {% block description %}Stores that cut a phone's price by {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} or more in the last 7 days, with what each costs delivered to you now.{% endblock %}
 {% macro drop(d, v) %}
 {%- set L = d.labels -%}

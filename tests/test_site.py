@@ -133,6 +133,30 @@ def test_indexnow_only_real_changes(tmp_path, monkeypatch):
     assert u == ["https://x.app/", "https://x.app/compare", "https://x.app/phones/phone-a", "https://x.app/history/phone-a"]
 
 
+def test_indexnow_submits_drops_when_this_weeks_drops_change(tmp_path, monkeypatch):
+    import json
+
+    from pricechecker import history, indexnow
+    monkeypatch.chdir(tmp_path)
+    rates = {"EUR": 1.0, "USD": 1.0}
+    T0, T1, T2 = "2026-10-15T10:00:00Z", "2026-10-26T10:00:00Z", "2026-10-27T10:00:00Z"
+    history.append([[T0, "a", "phone-a", "china", "12/256", 1000, "USD", 1], [T0, "a", "phone-b", "china", "12/256", 500, "USD", 1],
+                    [T1, "a", "phone-a", "china", "12/256", 900, "USD", 1],     # -10% / EUR 100: a real drop
+                    [T2, "a", "phone-b", "china", "12/256", 499, "USD", 1]])    # a cent-level move: no drop
+    l = tmp_path / "l.json"
+    # compared with an hour before: the run that recorded the drop submits /drops, the next ones don't
+    for at, want in ((T0, False), (T1, True), ("2026-10-26T11:00:00Z", False), (T2, False)):
+        l.write_text(json.dumps({"updated": at}))
+        assert indexnow.drops_changed(l, rates) is want, at
+    for at, want in (("2026-11-02T10:30:00Z", True), ("2026-11-02T11:30:00Z", False)):   # the drop leaves the 7-day window
+        l.write_text(json.dumps({"updated": at}))
+        assert indexnow.drops_changed(l, rates) is want, at
+    assert indexnow.urls({"base_url": "https://x.app"}, [], set(), drops=True) == ["https://x.app/", "https://x.app/drops"]
+    assert indexnow.urls({"base_url": "https://x.app"}, ["p"], {"p"}, drops=True) == [
+        "https://x.app/", "https://x.app/compare", "https://x.app/drops", "https://x.app/phones/p", "https://x.app/history/p"]
+    assert indexnow.urls({"base_url": "https://x.app"}, [], set()) == []
+
+
 def test_ship_cell_starting_price():
     from pricechecker import site
     rates = {"EUR": 1.0, "USD": 1.08, "GBP": 0.86, "AUD": 1.65}

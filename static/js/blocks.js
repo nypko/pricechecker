@@ -169,7 +169,7 @@ export function receipt(row, s, labels) {
     seg(row.base, "--bar-phone") + seg(fee, "--bar-fee") + seg(row.ship || 0, "--bar-ship") + seg(row.taxAdded, "--bar-tax") + "</div><dl>" +
     dt("--bar-phone", "Store price") + `<dd>${d(row.list)}</dd>` +
     (row.promoAmt > 0.005 ? dt("--bar-promo", `${esc(row.promoLabel || "Sale")}, ${pct(row.promoPct)}% off at checkout`) + `<dd class="neg">−${d(row.promoAmt)}</dd>` : "") +
-    dt("--bar-fee", "Paying by " + PAY_BY[s.pay]) + `<dd>${row.adj === null ? "unknown" : row.adjAmt ? d(row.adjAmt) : "no fee"}</dd>` +
+    dt("--bar-fee", "Paying by " + esc(PAY_BY[s.pay])) + `<dd>${row.adj === null ? "unknown" : row.adjAmt ? d(row.adjAmt) : "no fee"}</dd>` +
     dt("--bar-ship", "Shipping to " + PLACE[s.region]) + `<dd>${row.ship === null ? "not listed" : row.ship === 0 ? "free" : (row.shipMin ? "from " : "") + d(row.ship)}</dd>` +
     dt("--bar-tax", esc(cap(row.taxName))) + `<dd>${tax}</dd>` +
     `<dt class="sum">You pay at the door</dt><dd class="sum">${row.approx ? "≈" : ""}${d(row.total)}${row.tail ? `<small>${esc(row.tail)}</small>` : ""}</dd></dl></section>`;
@@ -182,7 +182,7 @@ export function storeRow(row, s, labels, now = null) {
   if (st === "nodelivery") c = "Doesn't deliver to " + PLACE[s.region];
   else if (st === "soldout") c = "Sold out";
   else if (st === "stale") { const n = daysAgo(row.checked, now); c = n !== null ? `price from ${n}${n === 1 ? " day ago" : " days ago"}` : "price from an earlier check"; }
-  else if (st === "nopay") c = "Doesn't take " + PAY_BY[s.pay];
+  else if (st === "nopay") c = "Doesn't take " + esc(PAY_BY[s.pay]);
   else c = esc(daysText(row.days) + " · " + caveat(row, s)) + (row.trust && row.trust.reviews ? " · ★ " + fixed(row.trust.reviews.score, 1) : "");
   return `<li${st !== "ok" ? ` class="${st}"` : ""} data-block="store_row" data-state="${st}"><span class="s">${esc(row.store)}` +
     (row.promoAmt > 0.005 && st !== "nodelivery" ? `<span class="promo">${pct(row.promoPct)}% sale</span>` : "") + "</span>" +
@@ -236,7 +236,7 @@ export function ledger(rows, s, labels, sort = "rank") {
     `<th scope="col">Sale</th><th scope="col">${esc(cap(PAY_BY[s.pay]))}</th><th scope="col">Shipping</th><th scope="col">${esc(cap(lr[0][1].taxName))}</th>` +
     th("total", "Total") + th("rank", "Rank") + "</tr></thead><tbody>" + lr.map(([n, r]) =>
       `<tr${r.state !== "ok" ? ` class="${r.state}"` : ""}><td>${esc(r.store)} · ${esc(labels[r.edition])} · ${memLabel(r.storage)}` +
-      (r.state === "stale" ? " <small>older price</small>" : r.state === "nopay" ? ` <small>doesn't take ${PAY_BY[s.pay]}</small>` : "") + "</td>" +
+      (r.state === "stale" ? " <small>older price</small>" : r.state === "nopay" ? ` <small>doesn't take ${esc(PAY_BY[s.pay])}</small>` : "") + "</td>" +
       td(d(r.list)) + (r.promoAmt > 0.005 ? td("−" + d(r.promoAmt), "p") : td("–")) +
       (r.adj === null ? td("?", "q") : td(r.adjAmt ? d(r.adjAmt) : "no fee")) +
       (r.ship === null ? td("not listed", "q") : td(r.ship === 0 ? "free" : (r.shipMin ? "from " : "") + d(r.ship))) +

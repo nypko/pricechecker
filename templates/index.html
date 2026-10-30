@@ -17,7 +17,7 @@
   </section>
   {%- if v.n_drops %}
   <a class="teaser" href="drops">
-    <b>{{ v.n_drops }} price drop{{ "s" if v.n_drops != 1 }} this week</b><span>Stores that got cheaper by 3% and €20 or more</span><em>See all →</em></a>
+    <b>{{ v.n_drops }} price drop{{ "s" if v.n_drops != 1 }} this week</b><span>Stores that got cheaper by {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} or more</span><em>See all →</em></a>
   {%- endif %}
   <div class="chips js-only" id="chips" role="group" aria-label="Filter">
     {%- for f, label in [("all", "All"), ("both", "Both versions"), ("china", "China"), ("global", "Global")] %}<button type="button" data-f="{{ f }}" aria-pressed="{{ 'true' if f == 'all' else 'false' }}">{{ label }}</button>{% endfor -%}

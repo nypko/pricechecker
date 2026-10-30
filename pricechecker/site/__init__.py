@@ -39,7 +39,7 @@ from .common import (
 )
 from .context import SiteData, _ship_notes, _tax_config
 from .offers import OLD_AFTER, _changes, _models, _too_old, _trust
-from .pages import compare, home, phone, static, stores
+from .pages import compare, drops, home, phone, static, stores
 from .pages import history as history_pages
 from .pages import specs as specs_pages
 from .pages.stores import REGION_CUR, REGION_LABEL, _ship_cell, _store_pages
@@ -52,7 +52,7 @@ __all__ = ["CURRENCIES", "EDITIONS", "EDITION_LABEL", "LABELS", "OLD_AFTER", "OU
            "_usd_money", "build", "ed_labels", "spec"]
 
 OUT = Path("build")
-PAGES = (home, phone, specs_pages, history_pages, compare, stores, static)
+PAGES = (home, drops, phone, specs_pages, history_pages, compare, stores, static)
 
 
 def _write(files: dict[str, str]) -> None:
@@ -130,5 +130,5 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for page in PAGES:
         _write(page.render(env, data, ctx, phones))
     _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg)))
-    _write(seo._feeds(ctx["site"], phones, data.rows_all, stores_cfg, data.updated_at))
+    _write(seo._feeds(ctx["site"], phones, data.rows_all, stores_cfg, data.updated_at, drops.this_week(data, phones)))
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

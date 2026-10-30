@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from .pricing import Settings, cost, unknowns
 
 MIN_PCT, MIN_EUR = 3, 20      # a "real" drop; the same rule as telegram.MIN_PCT / MIN_EUR
+OLDER_DAYS = 30               # how far back the Drops page looks for earlier drops in a week with none
 _EU = Settings("EU", "", "card", "eur")
 
 
@@ -77,6 +78,24 @@ def mark_headline(drops: list[dict], telegram_state: dict, now: datetime, window
     cutoff = now - timedelta(days=window_days)
     slugs = {p["slug"] for p in posted if _when(p["at"]) >= cutoff}
     return [{**d, "headline": True} if d["slug"] in slugs else d for d in drops]
+
+
+def _key(d: dict) -> tuple:
+    return (d["slug"], d["store"], d["edition"], d["storage"])
+
+
+def week_drops(rows: list[dict], rates: dict, now: datetime, telegram_state: dict | None = None, window_days: int = 7) -> list[dict]:
+    """The drops of the last `window_days` that count (real: MIN_PCT and MIN_EUR), those of a phone the Telegram channel
+    posted marked headline. The one list behind the home page's count and the Drops page and its feed."""
+    return mark_headline([d for d in listing_drops(rows, rates, now, window_days) if d["real"]], telegram_state or {}, now, window_days)
+
+
+def older_drops(rows: list[dict], rates: dict, now: datetime, window_days: int = OLDER_DAYS) -> list[dict]:
+    """Real drops against the price `window_days` ago that are not in this week's list, the latest change first: what
+    the Drops page shows in a week with none. Not cut to a number here (the page drops listings it can't show first)."""
+    week = {_key(d) for d in week_drops(rows, rates, now)}
+    out = [d for d in listing_drops(rows, rates, now, window_days) if d["real"] and _key(d) not in week]
+    return sorted(out, key=lambda d: (d["when"], d["eur"]), reverse=True)
 
 
 def gap(offers: list[dict], rule) -> dict | None:

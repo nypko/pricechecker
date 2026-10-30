@@ -3,7 +3,6 @@ the default settings from the same rows the browser loads (data_files.home_offer
 and, for other settings or a storage size, re-renders the rows from the region's home files with blocks.js. The page
 also embeds a small summary per phone (what the chips, sorts and storage list need) so they work without fetching."""
 from collections import Counter
-from datetime import UTC
 
 from jinja2 import Environment
 
@@ -12,6 +11,7 @@ from ..context import SiteData
 from ..data_files import home_offers
 from ..view import DEFAULT, best_of, gap
 from ..view import rows as view_rows
+from . import drops as drops_page
 from .stores import page_names
 
 MIN_PHONES_PER_ROM = 3   # a storage size is offered in the list when this many phones are sold with it
@@ -42,20 +42,13 @@ def summary(rows: list[dict]) -> dict:
     return out
 
 
-def _drops(data: SiteData) -> list[dict]:
-    """Listings that got cheaper this week by at least 3% and EUR 20 (the Drops page's rule)."""
-    if not data.updated_at:
-        return []
-    return [d for d in derive.listing_drops(data.rows, data.rates, data.updated_at.replace(tzinfo=UTC)) if d["real"]]
-
-
 def _label(n: int) -> str:
     return f"{n // 1024} TB" if n >= 1024 else f"{n} GB"
 
 
 def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     """The home page's own context, `v`."""
-    drops = _drops(data)
+    drops = drops_page.this_week(data, phones)
     big: dict[str, float] = {}
     for d in drops:
         big[d["slug"]] = max(big.get(d["slug"], 0), d["eur"])
@@ -72,7 +65,7 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     count = Counter(r for m in meta for r in m["s"].get("roms", []))
     files = ctx.get("home_files") or {}
     pages = set(page_names(data.stores_cfg))
-    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "n_drops": len(drops), "drops": set(big), "first": FIRST,
+    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "n_drops": len(drops), "min_pct": derive.MIN_PCT, "min_eur": derive.MIN_EUR, "drops": set(big), "first": FIRST,
             "roms": [(r, _label(r)) for r in sorted(count) if count[r] >= MIN_PHONES_PER_ROM],
             "brands": sorted({p["brand"] for p in phones}),
             "files": {r: [x.lstrip("/") for x in paths] for r, paths in files.items()},

@@ -286,3 +286,119 @@ def test_specs_page_exists_exactly_where_the_phone_page_links_it(site_build):
         assert has_link == page.exists() == specs.has_page(sheet), pid
         linked += has_link
     assert linked and not all(specs.has_page(s) for s in sheets.values())
+
+
+# ---- drops page and feed (spec §5.4) ----
+
+def _drops(site_build):
+    return (site_build / "drops.html").read_text()
+
+
+def test_drops_page_lists_what_the_home_page_counts(site_build):
+    h, home = _drops(site_build), _home(site_build)
+    n = len(re.findall(r'<li class="drop" ', h))
+    m = re.search(r"<b>(\d+) price drops? this week</b>", home)
+    assert n == (int(m.group(1)) if m else 0)
+    assert '<link rel="canonical"' in h and "feeds/drops.xml" in h and "https://t.me/DoorPriceDeals" in h
+    assert h.count('data-block="store_row"') == n   # every row's current total is the store_row block
+    entries = (site_build / "feeds/drops.xml").read_text().count("<entry>")
+    assert entries == n
+
+
+def test_home_teaser_names_the_rule_it_counts_by(site_build):
+    from pricechecker import derive
+    home = _home(site_build)
+    if "class=\"teaser\"" in home:
+        assert f"cheaper by {derive.MIN_PCT}% and €{derive.MIN_EUR} or more" in home
+
+
+def test_drops_page_is_in_the_sitemap_and_loads_its_module(site_build):
+    assert 'static/js/drops.js?v=' in _drops(site_build)
+    sm = (site_build / "sitemap.xml").read_text()
+    assert "<loc>https://doorprice.app/drops</loc>" in sm
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_drops_js_filter_and_row_lookup():
+    r = subprocess.run(["node", str(ROOT / "tests/js/drops_cases.mjs")], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def _synthetic(n, days_then, days_now, pct_down, eur_down):
+    """The real site's data with its history swapped for `n` listings (one per phone) that went from price X to
+    X - drop: returns (data, phones, env, ctx, listings) to render the drops page from."""
+    import dataclasses
+    from datetime import timedelta
+
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    phones = offers.assemble(data)
+    label_key = {c.get("label", k): k for k, c in data.stores_cfg.items() if k in data.live_stores}
+    picks = []
+    for p in phones:
+        o = next((o for o in p["offers"] if o["available"] and not o["old"] and o["store_label"] in label_key), None)
+        if o:
+            picks.append((p, o))
+        if len(picks) == n:
+            break
+    stamp = lambda days: (data.updated_at - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    rows = []
+    for (p, o), pd, ed in zip(picks, pct_down, eur_down, strict=True):
+        was = ed / (pd / 100)
+        base = {"store": label_key[o["store_label"]], "model_id": p["id"], "edition": o["edition"], "storage": o["storage"],
+                "currency": "EUR", "available": True}
+        rows += [{**base, "time": stamp(days_then), "price": was}, {**base, "time": stamp(days_now), "price": was - ed}]
+    data = dataclasses.replace(data, rows=rows, rows_all=rows)
+    return data, phones, _env(), context.page_context(data, phones), picks
+
+
+def test_only_the_real_drop_is_listed_and_the_home_count_agrees():
+    from pricechecker.site.pages import drops, home
+    # 5% / EUR 50, 2% / EUR 20 (too small a share), 4% / EUR 15 (too small a sum)
+    data, phones, env, ctx, picks = _synthetic(3, 10, 1, (5, 2, 4), (50, 20, 15))
+    items = drops.this_week(data, phones)
+    assert [d["slug"] for d in items] == [picks[0][0]["id"]]
+    assert home.page(data, ctx, phones)["n_drops"] == len(items) == 1
+    h = drops.render(env, data, ctx, phones)["drops.html"]
+    assert h.count('<li class="drop" ') == 1 and "−5%" in h and "€1,000" in h and "€950" in h
+    assert "No drops this week" not in h and "Posted to Telegram</span>" not in h.split("</p>", 6)[-1]
+
+
+def test_a_drop_the_telegram_channel_posted_is_marked(monkeypatch):
+    from pricechecker.site.pages import drops
+    data, phones, env, ctx, picks = _synthetic(1, 10, 1, (5,), (50,))
+    at = data.updated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    state = {"phones": {"posted": [{"slug": picks[0][0]["id"], "at": at, "was": 1000, "eur": 950}]}}
+    monkeypatch.setattr(drops, "_telegram_state", lambda: state)
+    h = drops.render(env, data, ctx, phones)["drops.html"]
+    li = h[h.index('<li class="drop" '):h.index("</li>\n", h.index('<li class="drop" '))]
+    assert '<span class="mark tg">Posted to Telegram</span>' in li
+    monkeypatch.setattr(drops, "_telegram_state", dict)
+    assert 'class="mark tg">Posted to Telegram' not in drops.render(env, data, ctx, phones)["drops.html"].split('id="list"')[1]
+
+
+def test_an_empty_week_shows_at_most_five_earlier_drops(monkeypatch):
+    from pricechecker.site.pages import drops
+    # seven drops 14 days ago: none this week
+    data, phones, env, ctx, picks = _synthetic(7, 40, 14, (10,) * 7, (100,) * 7)
+    assert len(picks) == 7 and drops.this_week(data, phones) == []
+    h = drops.render(env, data, ctx, phones)["drops.html"]
+    assert "No drops this week" in h and 'id="chips"' not in h
+    assert h.count('<li class="drop" ') == 5 == len(drops.earlier(data, phones))
+    # two drops that happened longer ago than the 30-day look-back are not offered
+    data2, phones2, env2, ctx2, _ = _synthetic(2, 90, 70, (10, 10), (100, 100))
+    h2 = drops.render(env2, data2, ctx2, phones2)["drops.html"]
+    assert "No drops this week" in h2 and '<li class="drop" ' not in h2
+
+
+def test_drops_feed_has_one_entry_per_listed_drop():
+    from pricechecker.site import seo
+    from pricechecker.site.pages import drops
+    data, phones, _env, ctx, picks = _synthetic(3, 10, 1, (5, 8, 2), (50, 60, 20))
+    items = drops.this_week(data, phones)
+    assert len(items) == 2
+    out = seo._feeds(ctx["site"], phones, data.rows_all, data.stores_cfg, data.updated_at, items)["feeds/drops.xml"]
+    assert out.count("<entry>") == 2 and "down 5% to €950 (was €1,000)" in out and "&" not in out.replace("&amp;", "").replace("&lt;", "")
+    assert f'<link href="https://doorprice.app/phones/{picks[0][0]["slug"]}"/>' in out

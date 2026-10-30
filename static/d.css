@@ -464,3 +464,26 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .mark { font: 600 .72rem var(--body); border-radius: 999px; padding: 2px 9px; background: var(--ground); color: var(--ink-2); border: 1px solid var(--rule); }
 .mark.drop { background: var(--good-soft); color: var(--good); border-color: transparent; }
 .mark.watch { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* ---- Drops page (spec §5.4) ---- */
+.dpage .lead, .dpage .tgline { margin: 0 0 10px; color: var(--ink-2); font-size: .92rem; max-width: 62ch; }
+.dpage .tgline { margin-bottom: 16px; }
+.drops-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.drops-list li.drop { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+.drops-list li.drop[hidden] { display: none; }
+.drop .dh { padding: 13px 14px 8px; display: grid; gap: 6px; }
+.drop .nm { font: 600 1.15rem/1.2 var(--serif); color: var(--ink); text-decoration: none; }
+.drop .nm:hover { text-decoration: underline; }
+.drop .dv { display: flex; flex-wrap: wrap; gap: 6px; }
+.drop .vp, .drop .mp { font: 600 .74rem var(--body); border-radius: 999px; padding: 2px 9px; }
+.drop .vp.cn { background: var(--cn-soft); color: var(--cn-ink); } .drop .vp.gl { background: var(--gl-soft); color: var(--gl-ink); }
+.drop .mp { background: var(--ground); color: var(--ink-2); border: 1px solid var(--rule); }
+.drop .chg { margin: 0; font-size: .88rem; color: var(--ink-2); }
+.drop .chg s { color: var(--ink-2); }
+.drop .chg b { color: var(--ink); }
+.drop .down { margin-left: 8px; font-weight: 700; color: var(--good); }
+.mark.tg { margin-left: 8px; background: var(--gl-soft); color: var(--gl-ink); border-color: transparent; }
+.drops-list .offers { border: 0; border-top: 1px solid var(--rule); border-radius: 0; }
+.empty-week { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+.empty-week h2 { margin: 0 0 6px; font: 700 1.2rem var(--serif); }
+.empty-week p { margin: 0; color: var(--ink-2); font-size: .92rem; }

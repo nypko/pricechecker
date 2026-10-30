@@ -105,3 +105,36 @@ def test_promo_split():
     o = {"money": {"eur": 1056.95}, "promo": {"pct": 2}}
     assert derive.promo_split(o, "eur") == (1056.95, 21.14, 1035.81)
     assert derive.promo_split({"money": {"eur": 500}}, "eur") == (500, 0, 500)
+
+
+# --- the Drops page's lists (spec §5.4) ---
+
+def _three_cases():
+    """One 5% / EUR 50 drop, one 2% drop, one 4% but EUR 15 drop - all within the week."""
+    return [row("2026-10-01T00:00:00Z", 1000, model="big"), row("2026-10-26T00:00:00Z", 950, model="big"),
+            row("2026-10-01T00:00:00Z", 2000, model="two"), row("2026-10-26T00:00:00Z", 1960, model="two"),
+            row("2026-10-01T00:00:00Z", 375, model="cheap"), row("2026-10-26T00:00:00Z", 360, model="cheap")]
+
+
+def test_week_drops_lists_only_real_drops():
+    out = derive.week_drops(_three_cases(), RATES, NOW)
+    assert [d["slug"] for d in out] == ["big"]
+    assert out[0]["pct"] == -5.0 and out[0]["eur"] == 50 and "headline" not in out[0]
+
+
+def test_week_drops_marks_the_telegram_headline():
+    state = {"phones": {"posted": [{"slug": "big", "at": "2026-10-26T08:00:00Z", "was": 1000, "eur": 950}]}}
+    (d,) = derive.week_drops(_three_cases(), RATES, NOW, state)
+    assert d["headline"] is True
+    (d,) = derive.week_drops(_three_cases(), RATES, NOW, {})   # no state: nothing marked
+    assert "headline" not in d
+
+
+def test_older_drops_are_real_drops_outside_this_week_latest_first():
+    rows = [row("2026-09-20T00:00:00Z", 1000, model="a"), row("2026-10-05T00:00:00Z", 900, model="a"),
+            row("2026-09-20T00:00:00Z", 800, model="b"), row("2026-10-15T00:00:00Z", 700, model="b"),
+            row("2026-09-20T00:00:00Z", 600, model="c"), row("2026-10-25T00:00:00Z", 500, model="c")]   # c: this week
+    assert [d["slug"] for d in derive.week_drops(rows, RATES, NOW)] == ["c"]
+    assert [d["slug"] for d in derive.older_drops(rows, RATES, NOW)] == ["b", "a"]   # not c; the later change first
+    assert derive.older_drops(rows[:2], RATES, datetime(2026, 12, 20, tzinfo=UTC)) == []   # past the 30-day look-back
+

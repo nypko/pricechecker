@@ -8,9 +8,10 @@ from .. import pricing
 from .common import spec
 
 
-def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dict, updated_at: datetime | None) -> dict[str, str]:
+def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dict, updated_at: datetime | None,
+           drops: list[dict] | None = None) -> dict[str, str]:
     """Atom feeds of price changes, so people can follow a phone without an account: feeds/<slug>.xml per phone and
-    feeds/all.xml for every phone. Each entry is one store price change, in the store's own currency, with the price before."""
+    feeds/all.xml for every phone and feeds/drops.xml for this week's real drops (pages/drops.this_week). Each entry is one store price change, in the store's own currency, with the price before."""
     base = (site_cfg.get("base_url") or "https://doorprice.app").rstrip("/")
     names = {p["id"]: p["name"] for p in phones}
     labels = {p["id"]: p["ed_label"] for p in phones}
@@ -44,7 +45,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     def feed(title: str, link: str, items: list[dict]) -> str:
         stamp = items[0]["time"] if items else (f"{updated_at:%Y-%m-%dT%H:%M:%SZ}" if updated_at else "2026-01-01T00:00:00Z")
         body = "".join(f"<entry><title>{escape(e['title'])}</title><id>{escape(e['id'])}</id><updated>{e['time']}</updated>"
-                       f'<link href="{escape(base)}/history/{e["model"]}"/></entry>' for e in items[:50])
+                       f'<link href="{escape(e.get("href") or base + "/history/" + e["model"])}"/></entry>' for e in items[:50])
         return ('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">'
                 f"<title>{escape(title)}</title><id>{escape(link)}</id><updated>{stamp}</updated>"
                 f'<link href="{escape(link)}"/><author><name>DoorPrice</name></author>{body}</feed>\n')
@@ -53,6 +54,12 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
         out[f"feeds/{ph['slug']}.xml"] = feed(f"{ph['name']} price changes – DoorPrice", f"{base}/phones/{ph['slug']}",
                                               [e for e in entries if e["model"] == ph["id"]])
     out["feeds/all.xml"] = feed("Phone price changes – DoorPrice", f"{base}/", entries)
+    out["feeds/drops.xml"] = feed("Phone price drops this week – DoorPrice", f"{base}/drops", [
+        {"href": f"{base}/phones/{d['slug']}", "model": d["slug"], "time": f"{d['when']}T00:00:00Z",
+         "title": f"{d['name']} {d['labels'][d['edition']]}" + (f" {spec(d['storage'])}" if "/" in d["storage"] else "")
+                  + f" at {d['store_label']}: down {abs(d['pct']):g}% to €{d['now']:,.0f} (was €{d['then']:,.0f})",
+         "id": f"{base}/drops#{d['when']}-{d['store']}-{d['slug']}-{d['edition']}-{d['storage']}"}
+        for d in sorted(drops or [], key=lambda d: d["when"], reverse=True)])
     return out
 
 
@@ -72,7 +79,7 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) 
     out = {"robots.txt": robots}
     if not live:
         return out
-    paths = ["", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "drops", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     out["sitemap.xml"] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')

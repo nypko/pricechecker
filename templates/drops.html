@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "_d/blocks.html" as b %}
+{% import "_d/shell.html" as shell with context %}
+{#- Spec §5.4. Rows from pages/drops.py; each row's current total is the store_row block for the default settings, and
+    static/js/drops.js re-renders it with blocks.js for other settings and filters the rows by the chips. #}
+{% set crumbs = [("Price drops", "drops")] %}
+{% block title %}Phone price drops this week – DoorPrice{% endblock %}
+{% block description %}Stores that cut a phone's price by {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} or more in the last 7 days, with what each costs delivered to you now.{% endblock %}
+{% macro drop(d, v) %}
+{%- set L = d.labels -%}
+<li class="drop" data-slug="{{ d.slug }}" data-b="{{ d.brand|lower }}" data-e="{{ d.edition }}" data-st="{{ d.storage }}" data-store="{{ d.store_label }}" data-l='{{ L|tojson }}'>
+  <div class="dh"><a class="nm" href="phones/{{ d.slug }}">{{ d.name }}</a>
+    <span class="dv"><span class="vp {{ 'cn' if d.edition == 'china' else 'gl' }}">{{ L[d.edition] }} version</span><span class="mp">{{ mem_text(d.storage) }}</span></span>
+    <p class="chg">Store price <s>{{ money(d.then, "eur") }}</s> → <b class="num">{{ money(d.now, "eur") }}</b><span class="down">−{{ pct(d.pct|abs) }}%</span>
+      {%- if d.headline %}<span class="mark tg">Posted to Telegram</span>{% endif %}</p></div>
+  <ul class="offers">{{ b.store_row(d.row, v.s, L, v.now) }}</ul>
+</li>
+{%- endmacro %}
+{% block main %}
+{%- set shown = v.week or v.older -%}
+<div class="wrap dpage" id="drops" data-files='{{ v.files|tojson }}' data-tax="{{ v.tax_file }}" data-now="{{ v.now or '' }}">
+  <p class="kicker"><a href="{{ root }}">All phones</a></p>
+  <h1>Price drops <em>this week</em></h1>
+  {{ shell.settings_line() }}
+  <p class="lead">A store listing counts when its price for the same version and memory is at least {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} lower than a week ago. Old and new are the store's own price; the total on the right is what it costs delivered to you now.</p>
+  <p class="tgline">{% if site.telegram %}The biggest ones also go to <a href="https://t.me/{{ site.telegram }}" rel="noopener">Telegram</a>. Those are marked <span class="mark tg">Posted to Telegram</span>.{% endif %}
+    Follow <a href="feeds/drops.xml">this list as a feed</a>.</p>
+  {%- if v.week %}
+  <div class="chips js-only" id="chips" role="group" aria-label="Filter">
+    {%- for f, label in [("all", "All"), ("china", "China"), ("global", "Global")] %}<button type="button" data-f="{{ f }}" aria-pressed="{{ 'true' if f == 'all' else 'false' }}">{{ label }}</button>{% endfor -%}
+    {%- for br in v.brands %}<button type="button" data-b="{{ br|lower }}" aria-pressed="false">{{ br }}</button>{% endfor -%}
+  </div>
+  <p class="count" id="count" aria-live="polite">{{ v.week|length }} price drop{{ "s" if v.week|length != 1 }} in the last 7 days</p>
+  {%- else %}
+  <div class="empty-week"><h2>No drops this week</h2>
+    {%- if v.older %}<p>No store cut a price by {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} in the last 7 days. The latest earlier drops, within the last {{ v.older_days }} days and still below the price then:</p>{% endif %}</div>
+  {%- endif %}
+  <div class="no-results" id="no-results" role="status" hidden><p>No drops match this filter.</p></div>
+  {%- if shown %}
+  <ul class="drops-list" id="list">
+  {%- for d in shown %}{{ drop(d, v) }}{% endfor %}
+  </ul>
+  {%- endif %}
+</div>
+{% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/drops.js?v={{ asset_v['js/drops.js'] }}"></script>{% endblock %}

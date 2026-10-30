@@ -84,9 +84,9 @@ const phone = (rows, editions = ["china", "global"]) => column({ editions, cl: "
 const two = phone([row("china", "16/512", 900), row("global", "12/256", 800)]);
 const both = two.html(true);
 assert.ok(txt(both).includes("Not sold with 16 GB + 512 GB"), "global lacks 16/512");
-assert.match(both, /<button type="button" class="near" data-m="12\/256">Nearest: 12 GB \+ 256 GB · €800 →<\/button>/);
+assert.match(both, /<button type="button" class="near" data-m="12\/256">Nearest: 12 GB \+ 256 GB · €800&nbsp;→<\/button>/);
 assert.ok(!both.includes("cm-near") && !both.includes("cm-box near") && !both.includes("No 16"), "no dashed substitute");
-assert.equal(both.split('class="big num"').length - 1, 2);
+assert.equal(both.split('class="big num"').length - 1, 1);   // China's price only; the not-sold box has no placeholder
 assert.ok(!both.includes('class="big num">€800'), "the nearest price is only on the button, not shown as the global price");
 assert.ok(!both.includes("pickbtn") && !both.includes('role="tab"'), "plain boxes, no version switch");
 // the winner ignores a column showing Not sold: €800 at 12/256 is not 16/512's price

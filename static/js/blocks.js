@@ -124,13 +124,13 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     let pool = all.filter((r) => r.storage === storage);
     // no row at this memory and no current price anywhere: the whole version's state, as before the memory pick
     if (!pool.length && !all.some((r) => r.state === "ok")) pool = all;
-    const none = (txt) => `${root} none" data-block="price_box" data-e="${edition}">${tabOpen}${lab}<div class="big num">–</div><p class="st">${txt}</p>${tabClose}`;
+    const none = (txt, dash = true) => `${root} none" data-block="price_box" data-e="${edition}">${tabOpen}${lab}${dash ? '<div class="big num">–</div>' : ""}<p class="st">${txt}</p>${tabClose}`;
     // every listing sold out: other settings would not help, so say so
     if (pool.length) return none(pool.every((r) => r.state === "soldout") ? "Sold out at every store we check" : "No current price for your settings") + "</div>";
     if (!all.length) return none("No current price for your settings") + "</div>";
     const nm = nearestMemory(rows, edition, storage);
-    return none(`Not sold with ${memShort(storage)}`) +
-      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)} →</button>` : "") + "</div>";
+    return none(`Not sold with ${memShort(storage)}`, false) +
+      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)}&nbsp;→</button>` : "") + "</div>";
   }
   return `${root}" data-block="price_box" data-e="${edition}">${tabOpen}` +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div>` +

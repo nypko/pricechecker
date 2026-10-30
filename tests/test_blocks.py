@@ -475,7 +475,8 @@ def test_price_box_not_sold_with_the_memory_offers_the_nearest(oppo):
     rows, rows_sold = oppo
     labels = {"global": "Global", "china": "China"}
     box = macro("price_box", rows, "global", "16/1024", view.DEFAULT, labels, False)
-    assert text(box) == "Global version – Not sold with 16 GB + 1 TB Nearest: 16 GB + 512 GB · €1,500 →"
+    assert text(box) == "Global version Not sold with 16 GB + 1 TB Nearest: 16 GB + 512 GB · €1,500 →"
+    assert "big" not in box and "€1,500&nbsp;→</button>" in box   # no lone placeholder; the arrow stays with the price
     assert '<button type="button" class="near" data-m="16/512">' in box and "less" not in box and "€" in text(box)
     # the select button is the tab; the root and the nearest button are not, and the nearest button is not inside the tab
     assert '<button type="button" class="pickbtn" data-e="global" role="tab" aria-selected="false" aria-controls="pick-panel" id="tab-global">' in box

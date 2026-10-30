@@ -48,8 +48,8 @@
 <div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">No current price for your settings</p>{{ tab_close|safe }}</div>
 {%- else -%}
 {%- set nm = nearest_memory(rows, edition, storage) -%}
-<div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">Not sold with {{ mem_short(storage) }}</p>{{ tab_close|safe }}
-{%- if nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }} →</button>{% endif -%}
+<div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><p class="st">Not sold with {{ mem_short(storage) }}</p>{{ tab_close|safe }}
+{%- if nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }}&nbsp;→</button>{% endif -%}
 </div>
 {%- endif -%}
 {%- else -%}

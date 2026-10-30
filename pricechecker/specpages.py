@@ -58,8 +58,7 @@ def _lines(text: str) -> list[str]:
 
 
 def _get(url: str) -> str:
-    import requests
-    r = requests.get(url, headers={"User-Agent": http.USER_AGENT, "Accept-Language": "en"}, timeout=30)
+    r = http.capped_get(url)   # the scraper's session (same User-Agent), body capped at http.MAX_BYTES
     r.raise_for_status()
     return r.text
 

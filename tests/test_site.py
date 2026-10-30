@@ -290,3 +290,41 @@ def test_every_saved_offer_link_survives_the_host_check():
         if store in cfg:
             for o in st.get("offers", [])[:5]:
                 assert offers.safe_link(o["url"], store, cfg), (store, o["url"])
+
+
+def test_failure_text_hides_url_paths_and_queries():
+    from pricechecker.run import redact
+    e = ("HTTPSConnectionPool(host='feed.example', port=443): Max retries exceeded with url: /export?token=s3cret "
+         "(Caused by NameResolutionError) for https://feed.example/export.csv?token=s3cret&x=1, see http://a.example")
+    out = redact(e)
+    assert "s3cret" not in out and "export" not in out
+    assert "https://feed.example/[redacted]" in out and "http://a.example/[redacted]" in out and "with url: /[redacted]" in out
+    assert redact("ValueError: no offers") == "ValueError: no offers"
+
+
+class _FakeResponse:
+    def __init__(self, chunks, length=None):
+        self.chunks, self.headers, self.closed, self.status_code = chunks, ({"Content-Length": str(length)} if length else {}), False, 200
+
+    def iter_content(self, n):
+        yield from self.chunks
+
+    def close(self):
+        self.closed = True
+
+
+def test_downloads_stop_past_the_size_cap(monkeypatch):
+    from pricechecker import http
+    fake = _FakeResponse([b"x" * 1000] * 5)
+    monkeypatch.setattr(http._session, "get", lambda url, **kw: fake)
+    r = http.capped_get("https://s.example/a", max_bytes=10_000)
+    assert r._content == b"x" * 5000 and r._content_consumed and fake.closed
+    endless = _FakeResponse(iter(lambda: b"y" * 4096, None))
+    monkeypatch.setattr(http._session, "get", lambda url, **kw: endless)
+    with pytest.raises(http.TooLarge):
+        http.capped_get("https://s.example/b", max_bytes=10_000)
+    assert endless.closed
+    big = _FakeResponse([b""], length=50_000)
+    monkeypatch.setattr(http._session, "get", lambda url, **kw: big)
+    with pytest.raises(http.TooLarge):
+        http.capped_get("https://s.example/c", max_bytes=10_000)

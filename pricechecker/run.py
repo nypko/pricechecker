@@ -3,6 +3,7 @@ Usage: python -m pricechecker.run [--only wonda,giztop] [--no-build]
 Exit codes: 0 ok, 3 no store could be checked this time (the site is still rebuilt from the last known prices)."""
 import argparse
 import os
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -12,6 +13,15 @@ import yaml
 from . import fx, history, promos, site, terms
 from .models import StoreNotConfigured
 from .stores import ADAPTERS
+
+_URL = re.compile(r"([a-z][a-z0-9+.-]*)://([^/\s'\"<>]+)[^\s'\"<>)]*", re.IGNORECASE)
+_PATH = re.compile(r"(\burl[:=] ?)/[^\s'\"<>)]*")   # urllib3: "Max retries exceeded with url: /path?token=..."
+
+
+def redact(text: str) -> str:
+    """Exception text for the public Actions log: every URL keeps only its scheme and host (scheme://host/[redacted]),
+    so a secret path or query (a feed token) never shows."""
+    return _PATH.sub(r"\1/[redacted]", _URL.sub(r"\1://\2/[redacted]", text))
 
 
 def load_config():
@@ -54,8 +64,8 @@ def main(argv=None) -> int:
             print(f"  skipped: {e}")
             continue
         except Exception as e:  # noqa: BLE001
-            print(f"  FAILED: {type(e).__name__}: {e}")
-            failures[name] = f"{type(e).__name__}: {e}"[:300]
+            print(f"  FAILED: {type(e).__name__}: {redact(str(e))}")   # the log is public: no secret feed URL in it
+            failures[name] = f"{type(e).__name__}: {redact(str(e))}"[:300]
             for sub, sub_cfg in stores.items():
                 if sub_cfg.get("part_of") == name:
                     failures[sub] = failures[name]

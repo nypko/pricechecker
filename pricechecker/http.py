@@ -14,6 +14,7 @@ _session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "en"})
 _robots: dict[str, urllib.robotparser.RobotFileParser] = {}
 _last_hit: dict[str, float] = {}
 MIN_DELAY_SEC = 3.0
+MAX_BYTES = 20 * 1024 * 1024   # no product page, sitemap or feed is near this: a bigger body is an error, not data
 HOST_DELAY: dict[str, float] = {}   # stricter per-host spacing, e.g. Shopify allows ~1 request/min per IP
 HOST_GROUP: dict[str, str] = {}     # hosts that share one rate limit (all Shopify shops) are spaced as one
 ROBOTS_CACHE = Path("data/robots_cache.json")
@@ -61,6 +62,29 @@ def _wait(host: str) -> None:
     _last_hit[key] = time.monotonic()
 
 
+class TooLarge(requests.RequestException):
+    """The body passed MAX_BYTES: the download was stopped."""
+
+
+def capped_get(url: str, max_bytes: int = MAX_BYTES, **kw) -> requests.Response:
+    """_session.get, streamed and stopped past max_bytes (a hostile or broken server can't stall or fill memory with
+    an endless body; the 30 s timeout is per read, not total). Returns the response with its body read, as usual."""
+    r = _session.get(url, timeout=30, stream=True, **kw)
+    try:
+        if int(r.headers.get("Content-Length") or 0) > max_bytes:
+            raise TooLarge(f"{urlparse(url).netloc}: body of {r.headers['Content-Length']} bytes is over the {max_bytes}-byte limit")
+        body = bytearray()
+        for chunk in r.iter_content(64 * 1024):
+            body += chunk
+            if len(body) > max_bytes:
+                raise TooLarge(f"{urlparse(url).netloc}: body over the {max_bytes}-byte limit, download stopped")
+    finally:
+        r.close()
+    r._content = bytes(body)   # what requests itself sets once a streamed body is read
+    r._content_consumed = True
+    return r
+
+
 def get(url: str, *, retries: int = 2, respect_robots: bool = True, **kw) -> requests.Response:
     if respect_robots and not allowed(url):
         raise Blocked(f"robots.txt disallows {url}")
@@ -68,7 +92,9 @@ def get(url: str, *, retries: int = 2, respect_robots: bool = True, **kw) -> req
     for attempt in range(retries + 1):
         _wait(host)
         try:
-            r = _session.get(url, timeout=30, **kw)
+            r = capped_get(url, **kw)
+        except TooLarge:
+            raise
         except requests.RequestException:
             if attempt == retries:
                 raise

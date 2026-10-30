@@ -27,6 +27,7 @@ if (arg("--money")) {
   const both = ["china", "global"].every((x) => bestOf(rows, x));
   console.log(JSON.stringify({
     price_box: B.priceBox(rows, e, s, labels, true),
+    price_box_plain: B.priceBox(rows, e, s, labels, false, false),
     gap_line: B.gapLine(gap(rows), both, s, labels),
     mem_chips: B.memChips(rows, e, st, s),
     verdict: B.verdict(best, pick, s, labels, now),

@@ -80,14 +80,23 @@ export function differs(cells) {
   return cells.length > 1 && new Set(cells.map((c) => JSON.stringify(c ?? null))).size > 1;
 }
 
-/** A shared price box for a page with no version switch: the two buttons and the in-page "means" link are dropped,
- *  so nothing in it is a control that does nothing. The store link stays. */
-export function plain(html) {
-  return html
-    .replace(/<button type="button" class="pick"[^>]*>.*?<\/button>/g, "")
-    .replace(/<a class="means-link"[^>]*>.*?<\/a>/g, "")
-    .replace(/<button type="button" class="pickbtn"[^>]*>/g, '<div class="pickbtn">')
-    .replace(/<\/button>/g, "</div>");
+/** One-tap comparisons to start from (the live site's rules). Nothing chosen: the three newest phones, then the two newest of
+ *  each of the (up to) three brands with the most phones. One chosen: its brand's two newest others, then the newest from
+ *  another brand, each paired with it. Returns {heading, items: [{t, ids}]}; phones are {id, name, brand, announced}. */
+export function starters(phones, chosen) {
+  const newest = phones.map((p, i) => [p, i]).sort(([a, i], [b, j]) => String(b.announced || "").localeCompare(String(a.announced || "")) || i - j).map(([p]) => p);
+  if (chosen.length) {
+    const q0 = phones.find((p) => p.id === chosen[0]);
+    if (!q0) return { heading: "", items: [] };
+    const pick = newest.filter((q) => q.id !== q0.id && q.brand === q0.brand).slice(0, 2).concat(newest.filter((q) => q.brand !== q0.brand).slice(0, 1));
+    return { heading: `Or compare ${q0.name} with:`, items: pick.map((q) => ({ t: q.name, ids: [q0.id, q.id] })) };
+  }
+  const items = [{ t: "The three newest phones", ids: newest.slice(0, 3).map((q) => q.id) }];
+  const brands = new Map();
+  newest.forEach((q) => brands.set(q.brand, [...(brands.get(q.brand) || []), q]));
+  [...brands.values()].filter((l) => l.length > 1).sort((a, b) => b.length - a.length).slice(0, 3)
+    .forEach((l) => items.push({ t: `${l[0].name} vs ${l[1].name}`, ids: [l[0].id, l[1].id] }));
+  return { heading: "Start with one of these", items };
 }
 
 // ---- the page ----
@@ -144,7 +153,7 @@ function wire(root) {
       const best = bestOf(rs, e);
       const t = best && best.settled ? best.total : null;
       if (t !== null) total.push(t);
-      return (win) => `<div class="cm-box${near ? " near" : ""}${win && t !== null && t === Math.min(...total) ? " low" : ""}">${plain(B.priceBox(rs, e, s, L, false))}` +
+      return (win) => `<div class="cm-box${near ? " near" : ""}${win && t !== null && t === Math.min(...total) ? " low" : ""}">${B.priceBox(rs, e, s, L, false, false)}` +
         (near ? `<p class="cm-near">No ${B.memShort(S.mem)} in stock: priced at ${B.memShort(mem)}</p>` : "") + "</div>";
     });
     return { html: (win) => boxes.map((b) => b(win)).join(""), total: total.length ? Math.min(...total) : null };
@@ -182,8 +191,14 @@ function wire(root) {
   }
 
   // ---- paint ----
+  function start(chosen) {
+    if (chosen.length > 1) return "";
+    const st = starters(data.phones, S.ids);
+    return st.items.length ? `<p class="lbl" id="cm-start-h">${B.esc(st.heading)}</p><div class="mems cm-start" role="group" aria-labelledby="cm-start-h">` +
+      st.items.map((x) => `<button type="button" data-s="${B.esc(x.ids.join(","))}">${B.esc(x.t)}</button>`).join("") + "</div>" : "";
+  }
   function frame(chosen, n, inner) {
-    return `<p class="cm-prompt"${chosen.length ? " hidden" : ""}>Pick two or three phones to compare.</p>` + head(chosen, n) + inner;
+    return `<p class="cm-prompt"${chosen.length ? " hidden" : ""}>Pick two or three phones to compare.</p>` + head(chosen, n) + inner + start(chosen);
   }
   async function paint() {
     const my = ++token, chosen = S.ids.map((id) => by.get(id)), n = Math.max(2, Math.min(3, chosen.length + 1));
@@ -221,7 +236,7 @@ function wire(root) {
 
   // a selector for the same control after a repaint
   function focusKey(el) {
-    for (const a of ["data-m", "data-x"]) if (el.hasAttribute && el.hasAttribute(a)) return `button[${a}="${String(el.getAttribute(a)).replace(/["\\]/g, "\\$&")}"]`;
+    for (const a of ["data-m", "data-x", "data-s"]) if (el.hasAttribute && el.hasAttribute(a)) return `button[${a}="${String(el.getAttribute(a)).replace(/["\\]/g, "\\$&")}"]`;
     if (el.id === "cm-only" || el.id === "cm-retry") return "#" + el.id;
     return el.hasAttribute && el.hasAttribute("data-add") ? "[data-add]" : null;
   }
@@ -231,8 +246,9 @@ function wire(root) {
     if (sel && sel.value && by.has(sel.value) && S.ids.length < 3) go([...S.ids, sel.value], S.mem);
   });
   app.addEventListener("click", (ev) => {
-    const t = ev.target, m = t.closest("button[data-m]"), x = t.closest("button[data-x]");
-    if (m) go(S.ids, S.mem === m.dataset.m ? "" : m.dataset.m);
+    const t = ev.target, m = t.closest("button[data-m]"), x = t.closest("button[data-x]"), st = t.closest("button[data-s]");
+    if (st) go(st.dataset.s.split(","), "");
+    else if (m) go(S.ids, S.mem === m.dataset.m ? "" : m.dataset.m);
     else if (x) go(S.ids.filter((id) => id !== x.dataset.x), S.mem);
     else if (t.closest("#cm-only")) { S.only = !S.only; paint(); }
     else if (t.closest("#cm-retry")) paint();

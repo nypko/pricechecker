@@ -510,7 +510,6 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .cmp .cm-box .side .big { font-size: clamp(1.1rem, 5.6vw, 2rem); letter-spacing: -.03em; overflow-wrap: anywhere; }
 .cmp .cm-box .side .st { font-size: .78rem; }
 .cmp .cm-box .side .mem { font-size: .76rem; }
-.cmp .cm-box .pickbtn { cursor: default; }
 .cmp .cm-box .side .go { min-height: 44px; font-size: .82rem; }
 .cmp .cm-box.near .side { border-style: dashed; }
 .cmp .cm-near { margin: 6px 2px 0; font-size: .76rem; color: var(--warn); line-height: 1.35; }

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = ROOT / "tests" / "fixtures" / "states_phone.json"
 HARNESS = ROOT / "tests" / "js" / "render_blocks.mjs"
 UK_PAYPAL = Settings("UK", "", "paypal", "gbp")
-NAMES = ["price_box", "gap_line", "mem_chips", "verdict", "receipt", "store_row", "store_list", "buy_bar", "home_row", "ledger"]
+NAMES = ["price_box", "price_box_plain", "gap_line", "mem_chips", "verdict", "receipt", "store_row", "store_list", "buy_bar", "home_row", "ledger"]
 needs_node = pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 
 
@@ -75,6 +75,7 @@ def render_py(rows, s, labels, edition, storage, meta, now, root="../", marks=()
     both = all(view.best_of(rows, e) for e in ("china", "global"))
     return {
         "price_box": macro("price_box", rows, edition, s, labels, True),
+        "price_box_plain": macro("price_box", rows, edition, s, labels, False, False),
         "gap_line": macro("gap_line", view.gap(rows), both, s, labels),
         "mem_chips": macro("mem_chips", rows, edition, storage, s),
         "verdict": macro("verdict", best, pick, s, labels, now),
@@ -110,7 +111,7 @@ def assert_same(py: dict, js: dict, where: str):
             assert root_of(x) == root_of(y), f"{where} {name}"
             assert structure(x) == structure(y), f"{where} {name}"
             if x.strip():
-                assert f'data-block="{name}"' in x, f"{where} {name}"
+                assert f'data-block="{name.removesuffix("_plain")}"' in x, f"{where} {name}"
 
 
 @pytest.fixture(scope="module")
@@ -315,3 +316,16 @@ def test_js_buy_bar_and_receipt_refuse_rows_not_ok(states):
     assert r.returncode == 0, r.stdout + r.stderr
     for bb, rc in json.loads(r.stdout):
         assert bb == "" and text(rc) == ""
+
+
+def test_price_box_without_the_version_switch(fixture_doc, tax):
+    """switch=False: no buttons and no means-link, the store link stays; the default box keeps all of them."""
+    rows = view.rows(fixture_doc["offers"], tax, view.DEFAULT)
+    labels = {"global": "Global", "china": "China"}
+    for e in ("china", "global"):
+        plain = macro("price_box", rows, e, view.DEFAULT, labels, False, False)
+        full = macro("price_box", rows, e, view.DEFAULT, labels, True)
+        assert "<button" not in plain and "means-link" not in plain and "aria-pressed" not in plain and " on" not in root_of(plain)
+        assert 'rel="sponsored nofollow noopener"' in plain and "View at" in plain and "delivered" in plain
+        assert "<button" in full
+    assert "means-link" in macro("price_box", rows, "china", view.DEFAULT, labels, True)

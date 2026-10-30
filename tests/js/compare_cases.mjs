@@ -1,6 +1,6 @@
 // static/js/compare.js's pure helpers: node compare_cases.mjs exits non-zero on the first failed case.
 import assert from "node:assert/strict";
-import { closest, winners, parseHash, formatHash, differs, plain, shownMemory } from "../../static/js/compare.js";
+import { closest, winners, parseHash, formatHash, differs, starters, shownMemory } from "../../static/js/compare.js";
 
 // closest(): the same distance rule as the live app.js distance() (storage steps count double, RAM steps by 4 GB)
 assert.equal(closest(["12/256", "16/512"], "16/1024"), "16/512");
@@ -58,15 +58,22 @@ assert.equal(differs([["a", "b"], ["a", "b"]]), false);
 assert.equal(differs([["a", "b"], ["a", "c"]]), true);
 assert.equal(differs(["x"]), false);
 
-// plain(): the shared price box without its two buttons or the dead in-page link (the compare page has no version switch)
-const box = '<div class="side cn on" data-block="price_box" data-e="china"><button type="button" class="pickbtn" data-e="china" aria-pressed="true">' +
-  '<div class="lab">China version</div><div class="big num">€900</div></button>' +
-  '<a class="means-link" href="#means-h">Chinese software</a><a class="go" href="https://s/x" rel="sponsored nofollow noopener" target="_blank">View at S ↗</a>' +
-  '<button type="button" class="pick" data-e="china">Details below ↓</button></div>';
-const p = plain(box);
-assert.ok(!/<button/.test(p) && !/means-link/.test(p) && !/Details below/.test(p), p);
-assert.match(p, /<div class="pickbtn"[^>]*>.*€900.*<\/div>/);
-assert.match(p, /View at S/);
-assert.match(p, /data-block="price_box"/);
-assert.ok(!/aria-pressed/.test(p));
+// starters(): the live site's one-tap comparisons, from the phone list
+const ph = (id, brand, announced) => ({ id, name: id.toUpperCase(), brand, announced });
+const list = [ph("a1", "A", "2026-01-01"), ph("a2", "A", "2026-05-01"), ph("a3", "A", "2026-03-01"), ph("b1", "B", "2026-09-01"),
+  ph("b2", "B", "2026-02-01"), ph("c1", "C", "2026-10-01"), ph("d1", "D", "2025-01-01"), ph("e1", "E", "2026-06-01"), ph("e2", "E", "2026-07-01"),
+  ph("e3", "E", "2026-08-01"), ph("f1", "F", "2024-01-01"), ph("f2", "F", "2024-02-01"), ph("f3", "F", "2024-03-01")];
+// nothing chosen: the three newest, then the two newest of the brands with most phones (at most three, most first)
+assert.deepEqual(starters(list, []), { heading: "Start with one of these", items: [
+  { t: "The three newest phones", ids: ["c1", "b1", "e3"] },
+  { t: "E3 vs E2", ids: ["e3", "e2"] },   // E, A and F have 3 each: the first-seen brand of equal size goes first
+  { t: "A2 vs A3", ids: ["a2", "a3"] },
+  { t: "F3 vs F2", ids: ["f3", "f2"] }] });
+// the brands with one phone (C, D) are never offered a pair; with fewer than three phones there is still the newest line
+assert.deepEqual(starters([ph("x", "X", "2026-01-01")], []).items, [{ t: "The three newest phones", ids: ["x"] }]);
+// one chosen: its brand's two newest others, then the newest from another brand
+assert.deepEqual(starters(list, ["a1"]), { heading: "Or compare A1 with:", items: [
+  { t: "A2", ids: ["a1", "a2"] }, { t: "A3", ids: ["a1", "a3"] }, { t: "C1", ids: ["a1", "c1"] }] });
+assert.deepEqual(starters(list, ["c1"]).items.map((x) => x.t), ["B1"]);   // no other C phone: only the newest of another brand
+assert.deepEqual(starters(list, ["zzz"]), { heading: "", items: [] });
 console.log("compare cases ok");

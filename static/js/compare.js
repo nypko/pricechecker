@@ -37,6 +37,10 @@ export function shownMemory(storages, want) {
   return { mem, near: mem !== want };
 }
 
+/** One price box; the winning one carries its own "Lowest delivered" label, inside the box it describes. */
+export const boxHtml = (inner, near, low) => `<div class="cm-box${near ? " near" : ""}${low ? " low" : ""}">${inner}` +
+  (low ? '<p class="cm-win"><span class="tick">✓</span> Lowest delivered<span class="sr-only"> of these</span></p>' : "") + "</div>";
+
 /** Index of the single lowest (dir -1) or highest (dir 1) usable value, else -1 (a tie, or nothing to rank). */
 function single(vals, dir) {
   const ok = vals.filter((v) => v !== null);
@@ -153,8 +157,8 @@ function wire(root) {
       const best = bestOf(rs, e);
       const t = best && best.settled ? best.total : null;
       if (t !== null) total.push(t);
-      return (win) => `<div class="cm-box${near ? " near" : ""}${win && t !== null && t === Math.min(...total) ? " low" : ""}">${B.priceBox(rs, e, s, L, false, false)}` +
-        (near ? `<p class="cm-near">No ${B.memShort(S.mem)} in stock: priced at ${B.memShort(mem)}</p>` : "") + "</div>";
+      return (win) => boxHtml(B.priceBox(rs, e, s, L, false, false) +
+        (near ? `<p class="cm-near">No ${B.memShort(S.mem)} in stock: priced at ${B.memShort(mem)}</p>` : ""), near, win && t !== null && t === Math.min(...total));
     });
     return { html: (win) => boxes.map((b) => b(win)).join(""), total: total.length ? Math.min(...total) : null };
   }
@@ -229,7 +233,7 @@ function wire(root) {
     }
     inner += `<div class="cm-grid cm-prices" style="--n:${n}">` + chosen.map((p, j) =>
       `<div class="cm-col${win.price === j ? " win" : ""}">${cols[j].html(win.price === j)}` +
-      (win.price === j ? '<p class="cm-win"><span class="tick">✓</span> Lowest delivered<span class="sr-only"> of these</span></p>' : "") + "</div>").join("") + "</div>";
+"</div>").join("") + "</div>";
     inner += specs(chosen, n, win);
     done(frame(chosen, n, inner));
   }

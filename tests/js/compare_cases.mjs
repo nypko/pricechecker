@@ -1,6 +1,6 @@
 // static/js/compare.js's pure helpers: node compare_cases.mjs exits non-zero on the first failed case.
 import assert from "node:assert/strict";
-import { closest, winners, parseHash, formatHash, differs, starters, shownMemory } from "../../static/js/compare.js";
+import { boxHtml, closest, winners, parseHash, formatHash, differs, starters, shownMemory } from "../../static/js/compare.js";
 
 // closest(): the distance rule the old front end used (storage steps count double, RAM steps by 4 GB)
 assert.equal(closest(["12/256", "16/512"], "16/1024"), "16/512");
@@ -76,4 +76,9 @@ assert.deepEqual(starters(list, ["a1"]), { heading: "Or compare A1 with:", items
   { t: "A2", ids: ["a1", "a2"] }, { t: "A3", ids: ["a1", "a3"] }, { t: "C1", ids: ["a1", "c1"] }] });
 assert.deepEqual(starters(list, ["c1"]).items.map((x) => x.t), ["B1"]);   // no other C phone: only the newest of another brand
 assert.deepEqual(starters(list, ["zzz"]), { heading: "", items: [] });
+// boxHtml(): the "Lowest delivered" label is inside the winning box, and only there
+const w = boxHtml("<i>x</i>", false, true);
+assert.match(w, /^<div class="cm-box low"><i>x<\/i><p class="cm-win">.*Lowest delivered.*<\/p><\/div>$/s);
+assert.ok(!boxHtml("<i>x</i>", false, false).includes("Lowest delivered"));
+assert.ok(boxHtml("x", true, false).startsWith('<div class="cm-box near">'));
 console.log("compare cases ok");

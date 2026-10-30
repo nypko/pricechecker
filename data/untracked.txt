@@ -198,7 +198,6 @@ giztop	motorola-x40/china
 giztop	motorola-x50-ultra/china
 giztop	motorola-x70-air-pro/china
 giztop	motorola-x70-air/china
-giztop	nothing-phone-3/china
 giztop	nothing-phone-3a-pro/china
 giztop	nubia-navix-ultra/china
 giztop	oneplus-12r-genshin-impact-edition/china

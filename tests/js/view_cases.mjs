@@ -1,9 +1,19 @@
-// Prints the view rows for one phone data file: node view_cases.mjs --phone <v1 file> --tax <tax file> --settings region,area,pay,cur
+// Prints the view rows for one phone data file (--picks: the pick rules over them instead): node view_cases.mjs --phone <v1 file> --tax <tax file> --settings region,area,pay,cur
 import { readFileSync } from "node:fs";
-import { rows } from "../../static/js/view.js";
+import { rows, nearestMemory, pickForMemory, defaultPick } from "../../static/js/view.js";
 
 const arg = (n) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : null; };
 const doc = JSON.parse(readFileSync(arg("--phone"), "utf8"));
 const tax = JSON.parse(readFileSync(arg("--tax"), "utf8"));
 const [region, area, pay, cur] = (arg("--settings") ?? "EU,,card,eur").split(",");
-console.log(JSON.stringify(rows(doc.offers, tax, { region, area, pay, cur })));
+const rs = rows(doc.offers, tax, { region, area, pay, cur });
+if (process.argv.includes("--picks")) {
+  const out = { default: defaultPick(rs), nearest: {}, pick: {} };
+  for (const mem of new Set(rs.map((r) => r.storage))) {
+    for (const ed of ["china", "global"]) {
+      out.nearest[`${ed} ${mem}`] = nearestMemory(rs, ed, mem);
+      out.pick[`${ed} ${mem}`] = pickForMemory(rs, mem, ed);
+    }
+  }
+  console.log(JSON.stringify(out));
+} else console.log(JSON.stringify(rs));

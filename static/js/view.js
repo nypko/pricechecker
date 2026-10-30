@@ -66,3 +66,42 @@ export function gap(rows) {
   const china = best.get(`${st}\0china`), glob = best.get(`${st}\0global`);
   return { storage: st, china, global: glob, diff: Math.round((glob - china) * 100) / 100 };
 }
+
+export const size = (s) => { const p = String(s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; };
+
+/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (the old front end's distance()). */
+export function distance(a, b) {
+  const x = size(a), y = size(b);
+  if (!x || !y) return 99;
+  return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
+}
+
+/** The option in `storages` nearest to `want` (the first listed on a tie); "" when there are none. */
+export function closest(storages, want) {
+  let best = "", bd = Infinity;
+  for (const s of storages) {
+    const d = s === want ? 0 : distance(s, want);
+    if (d < bd) { best = s; bd = d; }
+  }
+  return best;
+}
+
+// The memory nearest `storage` among those the edition has a current, payable row for (never "base").
+export function nearestMemory(rows, edition, storage) {
+  const have = rows.filter((r) => r.state === "ok" && r.edition === edition && r.storage !== "base").map((r) => r.storage);
+  return closest(have, storage) || null;
+}
+
+// The first (best) current, payable row's edition and storage.
+export function defaultPick(rows) {
+  const r = rows.find((x) => x.state === "ok");
+  return r ? { ed: r.edition, mem: r.storage } : null;
+}
+
+// The version to show once a memory is picked: the preferred one if it has a current price there, else the other
+// version, else the default pick; with nothing current at all, the preferred version at that memory.
+export function pickForMemory(rows, storage, preferred) {
+  const other = preferred === "china" ? "global" : "china";
+  for (const ed of [preferred, other]) if (bestOf(rows, ed, storage)) return { ed, mem: storage };
+  return defaultPick(rows) ?? { ed: preferred, mem: storage };
+}

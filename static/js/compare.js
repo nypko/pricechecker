@@ -2,31 +2,14 @@
 // URL hash ("#a,b,c@16-512") so a comparison can be shared. Each chosen phone's v1 data file is fetched and priced with the
 // visitor's settings; every price is the shared price box (blocks.js). Key specs come with the page (pages/compare.py).
 // The pure helpers are exported for tests/js/compare_cases.mjs; everything touching the page is guarded.
-import { rows as viewRows, bestOf } from "./view.js";
+import { rows as viewRows, bestOf, closest, size } from "./view.js";
+export { closest };   // the rule lives in view.js now; compare_cases.mjs still imports it from here
 import * as B from "./blocks.js";
 import { load } from "./settings.js";
 
 const EDS = ["china", "global"];   // box order: the China version (red) first, Global (blue) second
 
 // ---- pure helpers ----
-
-const size = (s) => { const p = String(s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; };
-/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (the old front end's distance()). */
-function distance(a, b) {
-  const x = size(a), y = size(b);
-  if (!x || !y) return 99;
-  return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
-}
-
-/** The option in `storages` nearest to `want` (the first listed on a tie); "" when there are none. */
-export function closest(storages, want) {
-  let best = "", bd = Infinity;
-  for (const s of storages) {
-    const d = s === want ? 0 : distance(s, want);
-    if (d < bd) { best = s; bd = d; }
-  }
-  return best;
-}
 
 /** The memory one version is priced at when `want` is picked: {mem, near}. `near` marks a substitute; mem is null when
  *  nothing is picked (the version's own best memory shows) or the version lists no memory. */

@@ -1,5 +1,7 @@
 # pricing.py vs today's app.js: parity run (2026-10-27)
 
+> Historical: `tools/parity.py` and `tools/parity_appjs.mjs` were removed with `static/app.js` (Task 12 of the newsite work); `tests/fixtures/pricing_cases.json` and `static/js/pricing.js` now carry this check.
+
 One-off check before the site's Python callers moved onto `pricechecker/pricing.py` (plan Task 3).
 
 How: `.venv/bin/python -m pricechecker.run --build-only --offline`, then `.venv/bin/python tools/parity.py`.

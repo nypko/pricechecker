@@ -736,21 +736,38 @@ def test_home_search_links_resolve_to_home(site_build):
 
 
 def _store_hosts():
+    """Every host a store link can have: stores.yaml base_url / sitemap_url / affiliate templates, and the url and link
+    of every offer in the saved data (so a store with no base_url, or an affiliate redirect, is covered too)."""
+    import json
     from urllib.parse import urlsplit
 
     import yaml
+
+    host = lambda u: (urlsplit(u).hostname or "").removeprefix("www.")
     cfg = yaml.safe_load((ROOT / "config/stores.yaml").read_text())["stores"]
     hosts = set()
     for c in cfg.values():
         for k in ("base_url", "sitemap_url"):
             if c.get(k):
-                hosts.add(urlsplit(c[k]).hostname.removeprefix("www."))
+                hosts.add(host(c[k]))
+        for w in (c.get("terms") or {}).get("watch") or []:   # the store's own terms pages we link to
+            hosts.add(host(w["url"]))
+        tpl = c.get("affiliate_link") or ""
+        if tpl.startswith("http"):
+            hosts.add(host(re.sub(r"\{[a-z_]+\}", "x", tpl)))
+    latest = json.loads((ROOT / "data/latest.json").read_text())
+    for st in latest["stores"].values():
+        for o in st.get("offers", []):
+            for k in ("url", "link"):
+                if o.get(k):
+                    hosts.add(host(o[k]))
+    hosts.discard("")
     return hosts
 
 
 def test_store_links_are_sponsored(site_build):
     hosts = _store_hosts()
-    assert hosts
+    assert "ww.etoren.com" in hosts and "wondamobile.com" in hosts
     seen = 0
     for f in site_build.rglob("*.html"):
         for m in re.finditer(r'<a\b([^>]*)>', f.read_text()):
@@ -808,3 +825,14 @@ def test_privacy_says_fonts_are_self_hosted(site_build):
     t = (site_build / "privacy.html").read_text()
     assert "Google Fonts" not in t and "fonts.g" not in t
     assert "Cloudflare Web Analytics" in t
+
+
+def test_store_hosts_cover_every_store_in_stores_yaml():
+    from urllib.parse import urlsplit
+
+    import yaml
+    hosts = _store_hosts()
+    for name, c in yaml.safe_load((ROOT / "config/stores.yaml").read_text())["stores"].items():
+        url = c.get("base_url") or c.get("sitemap_url")
+        if url:
+            assert (urlsplit(url).hostname or "").removeprefix("www.") in hosts, name

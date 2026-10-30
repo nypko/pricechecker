@@ -329,3 +329,25 @@ def test_price_box_without_the_version_switch(fixture_doc, tax):
         assert 'rel="sponsored nofollow noopener"' in plain and "View at" in plain and "delivered" in plain
         assert "<button" in full
     assert "means-link" in macro("price_box", rows, "china", view.DEFAULT, labels, True)
+
+
+@needs_node
+def test_js_store_links_are_sponsored_and_open_in_a_new_tab(fixture_doc, tax_file):
+    """Every store <a> the JS blocks build (View at ..., the bottom bar's View deal) carries the same rel and target as the
+    templates' - for every version and memory of the sample phone, each in two currencies."""
+    labels = {"global": "Global", "china": "China"}
+    meta = {"id": "state-phone", "name": "State Phone", "announced": "2026-10", "brand": "State"}
+    seen = set()
+    for edition, storage in sorted({(o["edition"], o["storage"]) for o in fixture_doc["offers"]}):
+        for cur in ("eur", "usd"):
+            out = render_js(FIXTURE, tax_file, ("EU", "", "card", cur), labels, edition, storage, meta, "2026-10-20T12:00:00Z")
+            htmls = [out[k] for k in NAMES if isinstance(out[k], str)] + [h for k in ("store_row", "ledger") for h in out[k]]
+            for h in htmls:
+                for m in re.finditer(r"<a\b([^>]*)>", h):
+                    href = re.search(r'href="([^"]*)"', m[1])
+                    if href and href[1].startswith("http"):
+                        rel = re.search(r'rel="([^"]*)"', m[1])
+                        assert rel and {"sponsored", "nofollow", "noopener"} <= set(rel[1].split()), m[0]
+                        assert 'target="_blank"' in m[1], m[0]
+                        seen.add(re.search(r'class="([^"]*)"', m[1])[1])
+    assert {"go", "bb-go"} <= seen, seen

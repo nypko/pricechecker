@@ -152,7 +152,7 @@ export function memChips(rows, storage, s) {
 /** The details panel under the picked version's box: row = bestOf(rows, edition, storage); pick = every row of that version and memory. */
 export function verdict(row, pick, s, labels, now = null) {
   const ed = row ? row.edition : pick.length ? pick[0].edition : null;
-  const open = `<section class="verdict panel" id="pick-panel" role="tabpanel"${ed ? ` aria-labelledby="tab-${esc(ed)}"` : ""} data-block="verdict" aria-live="polite">`;
+  const open = `<section class="verdict panel" id="pick-panel" role="tabpanel"${ed ? ` aria-labelledby="tab-${esc(ed)}"` : ""} data-block="verdict">`;
   if (!row || row.state !== "ok") return open + '<p class="q">No store we check has a current price for this version and memory.</p></section>';
   const t = row.trust || {}, rv = t.reviews, w = why(row, pick, s);
   return open + `<div class="what"><span class="vpill ${edCls(row.edition)}">${esc(labels[row.edition])} version</span><span class="mpill">${memText(row.storage)}</span></div>` +

@@ -81,7 +81,7 @@
     or not-payable row); pick = every row of that version and memory, for "why this one". -#}
 {%- macro verdict(row, pick, s, labels, now=None) -%}
 {%- set ed = row.edition if row else (pick[0].edition if pick else none) -%}
-<section class="verdict panel" id="pick-panel" role="tabpanel"{% if ed %} aria-labelledby="tab-{{ ed }}"{% endif %} data-block="verdict" aria-live="polite">
+<section class="verdict panel" id="pick-panel" role="tabpanel"{% if ed %} aria-labelledby="tab-{{ ed }}"{% endif %} data-block="verdict">
 {%- if not row or row.state != "ok" -%}
 <p class="q">No store we check has a current price for this version and memory.</p>
 {%- else -%}

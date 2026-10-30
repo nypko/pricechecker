@@ -165,7 +165,7 @@ def test_memory_first_pick_rules_in_the_page_module():
 
 def test_phone_page_report_status_and_live_verdict():
     """The report form (when switched on) has the status line that #report-thanks / #report-error fill; the verdict's
-    panel is a polite live region, so a repainted total is read out."""
+    wrapper is a polite live region, so a repainted total is read out."""
     from pricechecker import fx, run, terms
     from pricechecker.site import _env, context, offers
     from pricechecker.site.pages import phone
@@ -177,7 +177,9 @@ def test_phone_page_report_status_and_live_verdict():
     h = phone.render(_env(), data, ctx, phones)["phones/oppo-find-x9-ultra.html"]
     report = h[h.index('class="report"'):]
     assert 'action="../api/report"' in report and 'id="rf-status"' in report and 'role="status"' in report
-    assert re.search(r'<section class="verdict panel" id="pick-panel"[^>]* aria-live="polite"', h)
+    # the live region is the wrapper that persists across repaints, not the panel paint() replaces inside it
+    assert '<div id="s-verdict" aria-live="polite"><section class="verdict panel" id="pick-panel"' in h
+    assert not re.search(r'<section class="verdict panel"[^>]*aria-live', h)
 
 
 def test_memory_chip_without_a_current_price_is_disabled(site_build):

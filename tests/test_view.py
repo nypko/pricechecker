@@ -8,6 +8,9 @@ import pytest
 from pricechecker import derive, fx, pricing, run, terms
 from pricechecker.site import context, data_files, offers, seo, view
 
+# reads the saved prices or the real build: excluded from the hourly production run (pytest -m "not live")
+live = pytest.mark.live
+
 SETTINGS = [("EU", "", "card", "eur"), ("EU", "DE", "paypal", "eur"), ("UK", "", "bank", "gbp"),
             ("CA", "ON", "card", "cad"), ("US", "", "card", "usd")]
 
@@ -33,6 +36,7 @@ def _o(**kw):
     return {**base, **kw}
 
 
+@live
 def test_headline_matches_title_price(phones, data):
     seen = 0
     for p in phones:
@@ -86,6 +90,7 @@ def test_nopay_and_tail_and_base():
     assert view.best_of(rs, "global", "base")["store"] == "unk"
 
 
+@live
 def test_gap_matches_derive_gap(phones, data):
     rule = pricing.tax_rule(data.tax_cfg, view.DEFAULT)
     n = 0
@@ -125,6 +130,7 @@ def _samples(phones):
     return ids + [i for i in (promo, stale) if i]
 
 
+@live
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_js_view_matches_python(site_build, phones, data):
     v1 = site_build / "data" / "v1"

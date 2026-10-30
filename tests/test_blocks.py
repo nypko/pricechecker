@@ -15,6 +15,9 @@ from pricechecker.pricing import Settings
 from pricechecker.site import _env, blocks, context, offers, view
 from pricechecker.site.common import ed_labels
 
+# reads the saved prices or the real build: excluded from the hourly production run (pytest -m "not live")
+live = pytest.mark.live
+
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = ROOT / "tests" / "fixtures" / "states_phone.json"
 HARNESS = ROOT / "tests" / "js" / "render_blocks.mjs"
@@ -191,6 +194,7 @@ def _real_samples(phones):
     return out
 
 
+@live
 @needs_node
 def test_blocks_parity_real_phones(site_build, phones, tax_file, tax):
     v1 = site_build / "data" / "v1"

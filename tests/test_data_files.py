@@ -12,6 +12,9 @@ import pytest
 from pricechecker import fx, pricing, run, terms
 from pricechecker.site import context, data_files, offers
 
+# reads the saved prices or the real build: excluded from the hourly production run (pytest -m "not live")
+live = pytest.mark.live
+
 BUDGET = 60_000
 # sizes of the real saved prices are checked in the newsite/testing workflows only: the hourly production run must not
 # be blocked by data growth (data_files.write prints a warning instead)
@@ -61,6 +64,7 @@ def test_phone_file_has_no_notes_text(built, phones):
     assert "notes" not in raw
 
 
+@live
 @live_budgets
 def test_budgets(built):
     out, _ = built
@@ -74,6 +78,7 @@ def _load(out, paths):
     return [o for path in paths for o in json.loads((out / path.lstrip("/")).read_text())["offers"]]
 
 
+@live
 @live_budgets
 def test_every_region_has_home_files_within_budget(built):
     out, names = built
@@ -88,6 +93,7 @@ def test_every_region_has_home_files_within_budget(built):
 
 @pytest.mark.parametrize("s", [pricing.Settings("UK", "", "bank", "gbp"), pricing.Settings("US", "", "card", "usd"),
                                pricing.Settings("EU", "DE", "paypal", "eur"), pricing.Settings("CA", "ON", "card", "cad")])
+@live
 def test_home_files_rerank_like_the_phone_pages(built, data, phones, s):
     out, names = built
     rule = pricing.tax_rule(data.tax_cfg, s)
@@ -107,6 +113,7 @@ def test_home_files_rerank_like_the_phone_pages(built, data, phones, s):
     assert checked > 10
 
 
+@live
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_offer_inputs_feed_pricing_js(built, data, phones):
     out, names = built

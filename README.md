@@ -73,6 +73,9 @@ one Jinja macro in `templates/_d/blocks.html` (what the build outputs for the de
 
 Tests: `.venv/bin/python -m pytest -q` (set `DOORPRICE_CHECK_BUDGETS=1` to also check the page and data size budgets); the JS cases are plain scripts under node (pytest runs them; run one by hand with e.g. `node tests/js/pricing_cases.mjs`,
 `node tests/js/settings_cases.mjs`; `render_blocks.mjs` feeds the blocks parity test).
+Tests that assert on the saved prices or the real build made from them are marked `live` (`pytest.ini`): the hourly production job runs
+`pytest -q -m "not live"` so changing data can never block a price update; newsite.yml and testing.yml run them all. A new test that reads
+`data/` (or the `site_build` fixture) and checks something the data decides is `@live`, with a twin on made-up data when the behaviour matters.
 
 Screenshots: after `python -m pricechecker.run --build-only --offline`, `tools/screenshots.sh [outdir] [store]` serves `build/` and captures home, phone,
 specs, drops, compare, history, a store page and 404 at 390 and 1280 px wide, light and dark (32 PNGs; needs chromium).

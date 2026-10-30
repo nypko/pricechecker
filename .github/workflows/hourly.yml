@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: "22"
       - run: pip install -r requirements.txt
-      - run: python -m pytest -q
+      - run: python -m pytest -q -m "not live"   # tests that read the saved prices run in newsite.yml / testing.yml only: data must never block the hourly run
       - name: Check prices and build site
         env:
           TSZ_FEED_URL: ${{ secrets.TSZ_FEED_URL }}

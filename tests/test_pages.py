@@ -1,10 +1,16 @@
 import html
+import os
 import re
 import shutil
 import subprocess
 from pathlib import Path
 
 import pytest
+
+# reads the saved prices or the real build: excluded from the hourly production run (pytest -m "not live")
+live = pytest.mark.live
+# page sizes of the real build: checked in the newsite/testing workflows (DOORPRICE_CHECK_BUDGETS=1), never hourly
+live_budgets = pytest.mark.skipif(os.environ.get("DOORPRICE_CHECK_BUDGETS") != "1", reason="set DOORPRICE_CHECK_BUDGETS=1")
 
 
 def test_d_css_and_fonts_are_built(site_build):
@@ -85,6 +91,7 @@ def _phone(site_build, pid):
     return (site_build / "phones" / f"{pid}.html").read_text()
 
 
+@live
 def test_phone_page_sections(site_build):
     h = _phone(site_build, "oppo-find-x9-ultra")
     assert h.count('data-block="price_box"') == 2
@@ -119,6 +126,7 @@ def _old_title_rules(p, month):
     return title, desc, alt
 
 
+@live
 def test_phone_title_rules_unchanged(site_build):
     from pricechecker import fx, run, terms
     from pricechecker.site import context, offers
@@ -134,6 +142,7 @@ def test_phone_title_rules_unchanged(site_build):
         assert got == list(_old_title_rules(phones[pid], month)), pid
 
 
+@live
 def test_china_only_phone_has_one_box_and_reason(site_build):
     h = _phone(site_build, "oneplus-16")
     assert h.count('data-block="price_box"') == 1
@@ -142,6 +151,8 @@ def test_china_only_phone_has_one_box_and_reason(site_build):
     assert "OnePlus 16 price: <em>China version</em>" in h
 
 
+@live
+@live_budgets
 def test_phone_pages_within_budget(site_build):
     big = {f.name: f.stat().st_size for f in (site_build / "phones").glob("*.html") if f.stat().st_size > 60_000}
     assert not big, big
@@ -186,6 +197,7 @@ def _home(site_build):
     return (site_build / "index.html").read_text()
 
 
+@live
 def test_home_sections(site_build):
     h = _home(site_build)
     assert "China version or Global? <em>Both prices, delivered.</em>" in h and "data-for" in h
@@ -213,6 +225,8 @@ def test_home_sections(site_build):
     assert 'prow-link' not in h
 
 
+@live
+@live_budgets
 def test_home_within_budget(site_build):
     assert (site_build / "index.html").stat().st_size <= 120_000
 
@@ -223,6 +237,7 @@ def test_home_filter_sort_and_region_cases():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+@live
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_home_summaries_match_the_browsers(site_build):
     """The per-phone summaries the server embeds (default settings) are what home.js works out from the EU files."""
@@ -239,6 +254,7 @@ def test_home_summaries_match_the_browsers(site_build):
         assert got.get(m["id"], {}) == m.get("s", {}), m["id"]
 
 
+@live
 def test_home_rows_carry_the_drop_mark(site_build):
     import json
     h = _home(site_build)
@@ -294,6 +310,7 @@ def _drops(site_build):
     return (site_build / "drops.html").read_text()
 
 
+@live
 def test_drops_page_lists_what_the_home_page_counts(site_build):
     h, home = _drops(site_build), _home(site_build)
     n = len(re.findall(r'<li class="drop" ', h))
@@ -338,7 +355,7 @@ def _synthetic(n, days_then, days_now, pct_down, eur_down):
     label_key = {c.get("label", k): k for k, c in data.stores_cfg.items() if k in data.live_stores}
     picks = []
     for p in phones:
-        o = next((o for o in p["offers"] if o["available"] and not o["old"] and o["store_label"] in label_key), None)
+        o = next((o for o in p["offers"] if o["store_label"] in label_key), None)   # any stock state or age: no fresh prices needed
         if o:
             picks.append((p, o))
         if len(picks) == n:
@@ -419,6 +436,7 @@ def test_compare_page_is_small_and_has_no_offer_data(site_build):
     assert "js/compare.js?v=" in h
 
 
+@live
 def test_compare_page_phone_list(site_build):
     import json
     h = (site_build / "compare.html").read_text()
@@ -560,9 +578,12 @@ def test_quiet_phone_still_shows_stats_and_chart_and_unrecorded_phone_says_so():
     assert "No price history recorded yet" in pages[other] and "hstats" not in pages[other] and "<polyline" not in pages[other]
 
 
+@live
+@live_budgets
 def test_built_history_pages_stay_small(site_build):
     sizes = {f: f.stat().st_size for f in [*(site_build / "history").glob("*.html"), *(site_build / "history").glob("*/*.html")]}
-    assert sizes and max(sizes.values()) <= 120_000, max(sizes.items(), key=lambda kv: kv[1])
+    # a phone's 90-day page grows with its price changes (~120-150 KB projected for the busiest phones): headroom
+    assert sizes and max(sizes.values()) <= 200_000, max(sizes.items(), key=lambda kv: kv[1])
 
 
 # ---- Stores pages (spec §5.7) ----
@@ -599,6 +620,7 @@ def test_stores_list_chips_count_the_eu_terms(site_build):
     assert h.count('<li class="st" ') == len(names)
 
 
+@live
 def test_stores_list_row_shows_regions_shipping_tax_fees_trust_and_checked(site_build):
     h = (site_build / "stores.html").read_text()
     tsz = re.search(r'<li class="st" data-store="tradingshenzhen".*?</li>\s*(?=<li class="st"|</ul>)', h, re.DOTALL).group(0)
@@ -632,6 +654,7 @@ def test_store_page_has_full_terms_notes_and_sources(site_build):
     assert "How it is worked out" in h or "methodology" in h
 
 
+@live
 def test_store_page_cheapest_for_matches_default_rows(site_build):
     from pricechecker import fx, run, terms
     from pricechecker.site import context, offers
@@ -656,6 +679,7 @@ def test_store_page_cheapest_for_matches_default_rows(site_build):
             assert f'href="../phones/{slug}"' in h
 
 
+@live
 def test_store_page_promos_and_terms_changed(site_build):
     import json
     h = _store_html(site_build, "tradingshenzhen")
@@ -714,6 +738,7 @@ def _resolves(site_build, page, href):
     return t.with_name(t.name + ".html").exists() or (t / "index.html").exists() or t.is_file()
 
 
+@live
 def test_internal_links_resolve(site_build):
     bad = []
     for f in site_build.rglob("*.html"):
@@ -765,6 +790,7 @@ def _store_hosts():
     return hosts
 
 
+@live
 def test_store_links_are_sponsored(site_build):
     hosts = _store_hosts()
     assert "ww.etoren.com" in hosts and "wondamobile.com" in hosts
@@ -836,3 +862,78 @@ def test_store_hosts_cover_every_store_in_stores_yaml():
         url = c.get("base_url") or c.get("sitemap_url")
         if url:
             assert (urlsplit(url).hostname or "").removeprefix("www.") in hosts, name
+
+
+# ---- made-up prices: what the live tests above check on the saved prices, on data that never changes (not live) ----
+
+def _made_up(listings, rows=()):
+    """The site's config with the saved prices swapped for `listings` [(store, phone id, edition, storage, EUR price,
+    available)], all checked at the saved `updated` time, and `rows` as the price history: (data, phones, env, ctx)."""
+    import dataclasses
+
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    at = data.updated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    host = {"wonda": "https://wondamobile.com", "giztop": "https://www.giztop.com", "mobilemarvel": "https://www.themobilemarvel.com"}
+    live_stores = {}
+    for store, pid, ed, mem, eur, avail in listings:
+        st = live_stores.setdefault(store, {"ok": True, "checked": at, "offers": []})
+        st["offers"].append({"store": store, "model_id": pid, "edition": ed, "storage": mem, "title": f"{pid} {mem}",
+                             "price": eur, "currency": "EUR", "available": avail, "url": f"{host[store]}/products/{pid}-{ed}",
+                             "prices": {"EUR": eur}})
+    latest = {"updated": at, "stores": live_stores}
+    data = dataclasses.replace(data, latest=latest, live_stores=live_stores, rows=list(rows), rows_all=list(rows))
+    phones = offers.assemble(data)
+    return data, phones, _env(), context.page_context(data, phones)
+
+
+def test_phone_page_sections_on_made_up_prices():
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "china", "12/256", 1020.0, True),
+                                       ("wonda", pid, "global", "12/256", 1300.0, True), ("giztop", pid, "global", "16/512", 1500.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    assert h.count('data-block="price_box"') == 2
+    for blk in ("gap_line", "mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
+        assert f'data-block="{blk}"' in h, blk
+    assert "Oppo Find X9 Ultra price: <em>China vs Global</em>" in h and "Compare every offer (" in h
+
+
+def test_china_only_phone_on_made_up_prices():
+    from pricechecker.site.pages import phone
+    pid = "oneplus-16"
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 900.0, True), ("giztop", pid, "china", "16/512", 1000.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    assert h.count('data-block="price_box"') == 1 and 'data-block="gap_line"' not in h
+    assert "No Global version so far: OnePlus sells this phone in China only" in h and "OnePlus 16 price: <em>China version</em>" in h
+
+
+def _home_row(h, pid):
+    i = h.index(f'<li class="pair" data-block="home_row" data-id="{pid}">')
+    return h[i:h.index("</li>", i)]
+
+
+def test_home_drop_mark_and_teaser_on_made_up_drops():
+    """One real drop (5% / EUR 50) and one too small (2% / EUR 20): the teaser counts one, only that phone's row is marked."""
+    import json
+
+    from pricechecker.site.pages import home
+    data, phones, env, ctx, picks = _synthetic(2, 10, 1, (5, 2), (50, 20))
+    h = home.render(env, data, ctx, phones)["index.html"]
+    assert re.search(r'<a class="teaser" href="drops">\s*<b>1 price drop this week</b>', h)
+    meta = json.loads(re.search(r'id="home-meta">(.*?)</script>', h, re.DOTALL).group(1))
+    assert [m["id"] for m in meta if m.get("drop")] == [picks[0][0]["id"]]
+    assert _home_row(h, picks[0][0]["id"]).endswith('</a><span class="marks"><span class="mark drop">↓ this week</span></span>')
+    assert "mark" not in _home_row(h, picks[1][0]["id"])
+    assert h.count('class="mark drop"') == 1
+
+
+def test_home_in_a_week_without_drops_has_no_teaser_and_no_marks():
+    from pricechecker.site.pages import drops, home
+    data, phones, env, ctx, _ = _synthetic(2, 40, 14, (10, 10), (100, 100))   # drops 14 days ago: none this week
+    h = home.render(env, data, ctx, phones)["index.html"]
+    assert 'class="teaser"' not in h and 'class="mark drop"' not in h and "price drops this week" not in h
+    d = drops.render(env, data, ctx, phones)["drops.html"]
+    assert "No drops this week" in d and h.count('data-block="home_row"') > 50

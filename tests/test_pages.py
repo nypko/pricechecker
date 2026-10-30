@@ -341,6 +341,15 @@ def test_drops_js_filter_and_row_lookup():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+def _assemble(offers, data):
+    """offers.assemble without the saved promotion scan (data/promos.json, rewritten hourly): whether a store's
+    promotion counts then comes from stores.yaml alone, so made-up pages don't change with the hourly data."""
+    from pricechecker import promos
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(promos, "STATE", Path("/nonexistent/promos.json"))
+        return offers.assemble(data)
+
+
 def _synthetic(n, days_then, days_now, pct_down, eur_down):
     """The real site's data with its history swapped for `n` listings (one per phone) that went from price X to
     X - drop: returns (data, phones, env, ctx, listings) to render the drops page from."""
@@ -351,7 +360,7 @@ def _synthetic(n, days_then, days_now, pct_down, eur_down):
     from pricechecker.site import _env, context, offers
     stores, catalog = run.load_config()
     data = context.load(catalog, stores, fx.cached(), terms.saved_status())
-    phones = offers.assemble(data)
+    phones = _assemble(offers, data)
     label_key = {c.get("label", k): k for k, c in data.stores_cfg.items() if k in data.live_stores}
     picks = []
     for p in phones:
@@ -475,7 +484,7 @@ def _history_site(extra=None, label=None, only=None):
     from pricechecker.site.pages import history as hp
     stores, catalog = run.load_config()
     data = context.load(catalog, stores, fx.cached(), terms.saved_status())
-    phones = offers.assemble(data)
+    phones = _assemble(offers, data)
     key = next(k for k, c in data.stores_cfg.items() if c.get("label") == "Wonda Mobile")
     cfg = {**data.stores_cfg, key: {**data.stores_cfg[key], "label": label}} if label else data.stores_cfg
     slug = "oppo-find-x9-ultra"
@@ -886,8 +895,8 @@ def _made_up(listings, rows=()):
                              "price": eur, "currency": "EUR", "available": avail, "url": f"{host[store]}/products/{pid}-{ed}",
                              "prices": {"EUR": eur}})
     latest = {"updated": at, "stores": live_stores}
-    data = dataclasses.replace(data, latest=latest, live_stores=live_stores, rows=list(rows), rows_all=list(rows))
-    phones = offers.assemble(data)
+    data = dataclasses.replace(data, latest=latest, live_stores=live_stores, rows=list(rows), rows_all=list(rows), terms_status={})
+    phones = _assemble(offers, data)
     return data, phones, _env(), context.page_context(data, phones)
 
 

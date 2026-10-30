@@ -76,14 +76,13 @@ export function sortRows(phones, sort) {
   return [...has, ...rest].map((p) => p.id);
 }
 
-const marks = (p, w) => (p.drop ? '<span class="mark drop">↓ this week</span>' : "") + (w && w.has(p.id) ? '<span class="mark watch">Watched</span>' : "");
+/** The marks a phone's row carries: "↓ this week" for phones with a listing drop, "Watched" for ids in `w`. */
+export const marksOf = (p, w = new Set()) => [...(p.drop ? [{ kind: "drop", text: "↓ this week" }] : []), ...(w.has(p.id) ? [{ kind: "watch", text: "Watched" }] : [])];
 
-/** The phones' rows as HTML: each home_row block in its wrapper, with the marks beside it (not part of the block):
- *  "↓ this week" for phones with a listing drop, "Watched" for ids in `w`.
- *  phone: {id, name, announced, drop?, l?: the China version's label, rows}. */
+/** The phones' rows as HTML: one home_row block each, carrying its marks (they are part of the block).
+ *  phone: {id, name, announced, drop?, l?: the China version's label, rows}; w: Set of watched ids. */
 export function listHtml(phones, s, root = "", w = new Set()) {
-  return phones.map((p) => `<div class="prow" data-id="${B.esc(p.id)}"><ul>${B.homeRow(p, p.rows || [], s, { china: p.l || "China", global: "Global" }, root)}</ul>` +
-    `<span class="marks">${marks(p, w)}</span></div>`).join("");
+  return phones.map((p) => B.homeRow(p, p.rows || [], s, { china: p.l || "China", global: "Global" }, root, marksOf(p, w))).join("");
 }
 
 /** The empty list's message and button: filters when no search text is typed, else the search. */
@@ -101,7 +100,7 @@ function wire(root) {
   const files = json(root.dataset.files, {}), list = $("list"), q = $("q");
   const phones = json($("home-meta").textContent, []);
   const stock = new Map(phones.map((p) => [p.id, p.s || {}]));   // the server's default-settings summaries
-  const dflt = new Map([...list.children].map((el) => [el.dataset.id, el]));   // and its rows
+  const dflt = new Map([...list.children].map((li) => [li.dataset.id, li]));   // and its rows
   let els = dflt, seq = 0, note = "";
   const S = { chip: "all", brand: "", sort: "new", rom: "", q: "", all: false };
 
@@ -136,10 +135,13 @@ function wire(root) {
     list.removeAttribute("data-cap");
     const w = watched();
     list.replaceChildren(...vis.map((id) => els.get(id)).filter(Boolean));
-    list.querySelectorAll(".prow").forEach((el) => {   // the Watched mark follows this device's list
-      const m = el.querySelector(".marks"), on = m.querySelector(".watch");
-      if (w.has(el.dataset.id) && !on) m.insertAdjacentHTML("beforeend", '<span class="mark watch">Watched</span>');
-      else if (!w.has(el.dataset.id) && on) on.remove();
+    list.querySelectorAll("li[data-id]").forEach((li) => {   // the Watched mark follows this device's list
+      const on = li.querySelector(".mark.watch"), want = w.has(li.dataset.id);
+      if (want && !on) {
+        let m = li.querySelector(".marks");
+        if (!m) { m = document.createElement("span"); m.className = "marks"; li.append(m); }
+        m.insertAdjacentHTML("beforeend", '<span class="mark watch">Watched</span>');
+      } else if (!want && on) { const m = on.parentElement; on.remove(); if (!m.children.length) m.remove(); }
     });
     $("count").textContent = note || (ids.length ? `${ids.length} ${ids.length === 1 ? "phone" : "phones"} · lowest delivered price per version` : "");
     const sa = $("showall");
@@ -168,7 +170,7 @@ function wire(root) {
       els = new Map();
       const tpl = document.createElement("template");
       tpl.innerHTML = listHtml(view, s, "", watched());
-      tpl.content.querySelectorAll(".prow[data-id]").forEach((el) => els.set(el.dataset.id, el));
+      tpl.content.querySelectorAll("li[data-id]").forEach((li) => els.set(li.dataset.id, li));
       phones.forEach((p) => { p.s = summarize(by.get(p.id) || [], rom); });
       note = ""; render();
     }, () => {

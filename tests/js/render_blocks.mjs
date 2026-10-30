@@ -34,7 +34,7 @@ if (arg("--money")) {
     store_row: rows.map((r) => B.storeRow(r, s, labels, now)),
     store_list: B.storeList(pick.filter((r) => r !== best), s, labels, now),
     buy_bar: B.buyBar(best, s, labels),
-    home_row: B.homeRow(meta, rows, s, labels, root),
+    home_row: B.homeRow(meta, rows, s, labels, root, JSON.parse(arg("--marks", "[]"))),
     ledger: ["rank", "total", "list"].map((k) => B.ledger(rows, s, labels, k)),
   }));
 }

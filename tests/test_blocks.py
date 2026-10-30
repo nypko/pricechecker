@@ -68,7 +68,7 @@ def macro(name: str, *args):
     return tpl.render(a=args)
 
 
-def render_py(rows, s, labels, edition, storage, meta, now, root="../"):
+def render_py(rows, s, labels, edition, storage, meta, now, root="../", marks=()):
     """The same set of blocks render_blocks.mjs prints, from the Jinja macros."""
     pick = [r for r in rows if r["edition"] == edition and r["storage"] == storage]
     best = view.best_of(rows, edition, storage)
@@ -82,15 +82,15 @@ def render_py(rows, s, labels, edition, storage, meta, now, root="../"):
         "store_row": [macro("store_row", r, s, labels, now) for r in rows],
         "store_list": macro("store_list", [r for r in pick if r is not best], s, labels, now),
         "buy_bar": macro("buy_bar", best, s, labels),
-        "home_row": macro("home_row", meta, rows, s, labels, root),
+        "home_row": macro("home_row", meta, rows, s, labels, root, list(marks)),
         "ledger": [macro("ledger", rows, s, labels, k) for k in ("rank", "total", "list")],
     }
 
 
-def render_js(phone_file, tax_file, s, labels, edition, storage, meta, now, root="../"):
+def render_js(phone_file, tax_file, s, labels, edition, storage, meta, now, root="../", marks=()):
     r = subprocess.run(["node", str(HARNESS), "--phone", str(phone_file), "--tax", str(tax_file), "--edition", edition,
                         "--storage", storage, "--settings", ",".join(s), "--labels", json.dumps(labels),
-                        "--meta", json.dumps(meta), "--now", now, "--root", root],
+                        "--meta", json.dumps(meta), "--now", now, "--root", root, "--marks", json.dumps(list(marks))],
                        check=False, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
     return json.loads(r.stdout)
@@ -153,6 +153,25 @@ def test_blocks_parity_fixture(fixture_doc, tax_file, tax, tmp_path):
         py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         assert_same(py, js, f"{f.name} {tuple(s)} {e} {st}")
+
+
+def test_home_row_marks_parity(fixture_doc, tax_file, tax, tmp_path):
+    """home_row with marks (a drop and a watch pill, one text needing escapes) is the same in Jinja and JS, and the
+    marks sit inside the li after the link; without marks no marks element is written."""
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    marks = [{"kind": "drop", "text": "↓ this week"}, {"kind": "watch", "text": "Watched <&>"}]
+    f, inputs, s, e, st = next(iter(_fixture_cases(fixture_doc, tmp_path)))
+    rows = view.rows(inputs, tax, s)
+    for m in (marks, []):
+        py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"], marks=m)
+        js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"], marks=m)
+        assert_same(py, js, f"marks {len(m)}")
+        h = py["home_row"]
+        if m:
+            assert h.endswith('</a><span class="marks"><span class="mark drop">↓ this week</span>'
+                              '<span class="mark watch">Watched &lt;&amp;&gt;</span></span></li>')
+        else:
+            assert "marks" not in h
 
 
 def _real_samples(phones):

@@ -204,12 +204,13 @@ const cell = (b, e, s, labels) => (b
   : `<span class="p none">${esc(labels[e])}<b>–</b></span>`);
 
 /** A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. */
-export function homeRow(phone, rows, s, labels, root = "") {
+export function homeRow(phone, rows, s, labels, root = "", marks = []) {
   const g = gap(rows), n = new Set(rows.filter((r) => r.state === "ok").map((r) => r.store)).size;
   return `<li class="pair" data-block="home_row" data-id="${esc(phone.id)}"><a href="${esc(root)}phones/${esc(phone.id)}"><span class="nm">${esc(phone.name)}<small>${month(phone.announced)}</small></span>` +
     `<span class="two">${cell(bestOf(rows, "china"), "china", s, labels)}${cell(bestOf(rows, "global"), "global", s, labels)}</span>` +
     (g ? `<span class="gap">${esc(g.diff >= 0 ? labels.china : labels.global)} ${money(Math.abs(g.diff), s.cur)} less at ${memTiny(g.storage)}</span>` : "") +
-    `<span class="meta">${n} ${n === 1 ? "store" : "stores"}</span></a></li>`;
+    `<span class="meta">${n} ${n === 1 ? "store" : "stores"}</span></a>` +
+    (marks.length ? `<span class="marks">${marks.map((m) => `<span class="mark ${esc(m.kind)}">${esc(m.text)}</span>`).join("")}</span>` : "") + "</li>";
 }
 
 /** Priced rows (ok, nopay, stale) as [rank, row] in view.rows order, then sorted by "total" or "list" (stable). */

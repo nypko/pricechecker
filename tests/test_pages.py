@@ -239,7 +239,7 @@ def test_home_summaries_match_the_browsers(site_build):
         assert got.get(m["id"], {}) == m.get("s", {}), m["id"]
 
 
-def test_home_rows_have_the_drop_mark_beside_the_block(site_build):
+def test_home_rows_carry_the_drop_mark(site_build):
     import json
     h = _home(site_build)
     meta = json.loads(re.search(r'id="home-meta">(.*?)</script>', h, re.DOTALL).group(1))
@@ -248,11 +248,12 @@ def test_home_rows_have_the_drop_mark_beside_the_block(site_build):
     assert with_drop and without
 
     def row(pid):
-        i = h.index(f'<div class="prow" data-id="{pid}">')
-        return h[i:h.index("</div>", i)]
+        i = h.index(f'<li class="pair" data-block="home_row" data-id="{pid}">')
+        return h[i:h.index("</li>", i)]
 
     for pid in with_drop:
-        assert '</ul><span class="marks"><span class="mark drop">↓ this week</span></span>' in row(pid), pid
+        assert row(pid).endswith('</a><span class="marks"><span class="mark drop">↓ this week</span></span>'), pid
     for pid in without:
-        assert "mark" not in row(pid).replace('class="marks"', ""), pid
+        assert "mark" not in row(pid), pid
+    assert '<ul class="pairs" id="list" data-cap="20"><' not in h and re.search(r'<ul class="pairs" id="list"[^>]*>\s*<li class="pair"', h)
     assert h.count('class="mark drop"') == len(with_drop)

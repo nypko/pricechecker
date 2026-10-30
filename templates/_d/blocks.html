@@ -152,12 +152,14 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 {%- endif -%}
 {%- endmacro -%}
 
-{#- A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. -#}
-{%- macro home_row(phone, rows, s, labels, root="") -%}
+{#- A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. marks: [{kind: "drop"|"watch", text}] -> small
+    pills after the link, inside the li (nothing when empty). -#}
+{%- macro home_row(phone, rows, s, labels, root="", marks=[]) -%}
 {%- set g = gap_of(rows) -%}{%- set n = stores_n(rows) -%}
 <li class="pair" data-block="home_row" data-id="{{ phone.id }}"><a href="{{ root }}phones/{{ phone.id }}"><span class="nm">{{ phone.name }}<small>{{ month_of(phone.announced) }}</small></span><span class="two">{{ _cell(best_of(rows, "china"), "china", s, labels) }}{{ _cell(best_of(rows, "global"), "global", s, labels) }}</span>
 {%- if g %}<span class="gap">{{ labels.china if g.diff >= 0 else labels.global }} {{ money(g.diff|abs, s.cur) }} less at {{ mem_tiny(g.storage) }}</span>{% endif -%}
-<span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }}</span></a></li>
+<span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }}</span></a>
+{%- if marks %}<span class="marks">{% for m in marks %}<span class="mark {{ m.kind }}">{{ m.text }}</span>{% endfor %}</span>{% endif -%}</li>
 {%- endmacro -%}
 
 {#- Every priced offer of the phone (both versions; ok, not payable, stale) with the parts of its total as columns and

@@ -98,15 +98,15 @@ assert.match(listHtml([{ ...meta[0], rows: [] }], s, "../"), /href="\.\.\/phones
 // no price at all: both cells read "–" (the row stays; the server writes the same)
 assert.match(listHtml([{ ...meta[5], rows: [] }], s, ""), /<span class="p none">China<b>–<\/b><\/span><span class="p none">Global<b>–<\/b><\/span>/);
 
-// marks beside the block: "↓ this week" from the phone's drop (kept when rows are rebuilt), "Watched" for watched ids
+// marks, inside the row's li after its link: "↓ this week" from the phone's drop (kept when rows are rebuilt), "Watched" for watched ids
 const mk = (id, drop) => listHtml([{ ...meta.find((m) => m.id === id), drop, rows: by.get(id) || [] }], s, "", new Set(["pixel-11"]));
 const dropped = mk("galaxy-s27", 120), plain = mk("oppo-find-x9-pro", 0), watchedRow = mk("pixel-11", 0);
-assert.match(dropped, /<\/ul><span class="marks"><span class="mark drop">↓ this week<\/span><\/span>/, "the mark sits after the block's ul");
+assert.match(dropped, /<\/a><span class="marks"><span class="mark drop">↓ this week<\/span><\/span><\/li>$/);
 assert.doesNotMatch(dropped, /mark watch/);
-assert.doesNotMatch(plain, /class="mark /);
-assert.match(watchedRow, /<span class="mark watch">Watched<\/span>/);
+assert.doesNotMatch(plain, /marks|class="mark /);
+assert.match(watchedRow, /<\/a><span class="marks"><span class="mark watch">Watched<\/span><\/span><\/li>$/);
 assert.match(mk("pixel-11", 30), /mark drop">↓ this week<\/span><span class="mark watch">Watched/);
-assert.ok(!/data-block="home_row"[^>]*>[^]*mark/.test(dropped.slice(0, dropped.indexOf("</ul>"))), "no mark inside the block");
+assert.equal((dropped.match(/<li /g) || []).length, 1, "one li per phone, no wrapper");
 // empty list: filters wording without search text, search wording with it
 assert.deepEqual(emptyState(""), { text: "No phones match these filters.", button: "Clear filters", clear: "filters" });
 assert.deepEqual(emptyState("   "), { text: "No phones match these filters.", button: "Clear filters", clear: "filters" });

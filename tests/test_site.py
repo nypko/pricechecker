@@ -1,4 +1,9 @@
+import shutil
+import subprocess
 from datetime import UTC
+from pathlib import Path
+
+import pytest
 
 from pricechecker import site
 
@@ -217,3 +222,40 @@ def test_telegram_posts_real_drops_only():
     drops, _, st = telegram.changes([d("a", 900, "import tax"), d("b", 500)], st)
     assert not drops and st["a"] == {"ref": 900, "left": "import tax"}            # total covers something else: reset
     assert "€1,000" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x") and "−€40" in telegram.drop_message({**d("a", 1000), "was": 1040}, "https://x")
+
+
+def test_report_allowlist_matches_stores_yaml_and_countries():
+    """functions/_shared/report-allowlist.js is generated: re-run `python -m pricechecker.buyer_reports allowlist`."""
+    import yaml
+
+    from pricechecker import buyer_reports
+    stores = yaml.safe_load(Path("config/stores.yaml").read_text())["stores"]
+    assert buyer_reports.ALLOWLIST_JS.read_text() == buyer_reports.allowlist_js(stores)
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_report_endpoints():
+    r = subprocess.run(["node", "tests/js/report_cases.mjs"], check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_form_reports_tolerate_a_truncated_answer(monkeypatch, capsys):
+    import io
+    import json
+    from datetime import UTC, datetime
+
+    from pricechecker import buyer_reports
+    rows = [{"key": f"{1700000000000 + i}-abcd", "store": "wonda", "country": "DE", "days": 9, "ts": 1700000000000 + i} for i in range(500)]
+    monkeypatch.setenv("REPORTS_URL", "https://x.app")
+    monkeypatch.setenv("REPORTS_ADMIN_KEY", "k")
+    monkeypatch.setattr(buyer_reports.urllib.request, "urlopen",
+                        lambda req, timeout: io.BytesIO(json.dumps({"reports": rows, "truncated": True}).encode()))
+    out = buyer_reports.form_reports(datetime(2023, 1, 1, tzinfo=UTC))
+    assert len(out) == 500 and "only the first 500" in capsys.readouterr().out
+
+
+def test_collect_days_must_be_a_whole_number():
+    from pricechecker import buyer_reports
+    assert [buyer_reports.parse_days(x) for x in ("7", "62", "400")] == [7, 62, 400]
+    for bad in ("7; rm -rf /", '7"; curl x|sh; "', "-1", "", "0", "401", "1e3", "٣"):
+        assert buyer_reports.parse_days(bad) is None, bad

@@ -443,7 +443,7 @@ def test_offer_data_is_gone_from_the_phone_dicts():
     assert "offers_json" not in src and '"compare": compare' not in src
 
 
-def _history_site(extra=None, label=None):
+def _history_site(extra=None, label=None, only=None):
     """Oppo Find X9 Ultra with hand-made history rows (updated 30 Oct 2026, so the 90-day window opens on 1 Aug):
     May first sighting, June cut, July only a rounding wobble, Sept and Oct cuts, a Global 1 TB listing in Oct.
     Returns (rendered pages, store label, slug)."""
@@ -464,6 +464,8 @@ def _history_site(extra=None, label=None):
     rows = [r("2026-05-14T08:00:00Z", 1100.0), r("2026-06-10T09:00:00Z", 1080.0), r("2026-07-05T09:00:00Z", 1080.2),
             r("2026-09-12T09:00:00Z", 1049.0), r("2026-10-20T09:00:00Z", 1030.0), r("2026-10-02T09:00:00Z", 1500.0, "global", "16/1024"),
             *(extra(r) if extra else [])]
+    if only is not None:
+        rows = only(r)
     rows.sort(key=lambda x: x["time"])
     data = dataclasses.replace(data, rows=rows, rows_all=rows, stores_cfg=cfg, updated_at=datetime(2026, 10, 30, 12, 0))
     ctx = context.page_context(data, phones)
@@ -521,3 +523,43 @@ def test_history_stock_changes_and_stats_and_escaping():
 def test_history_page_serves_beside_its_month_folder():
     pages, _, slug = _history_site()
     assert f"history/{slug}.html" in pages and f"history/{slug}/2026-10.html" in pages
+
+
+def test_history_pages_have_the_share_button_and_share_module():
+    pages, _, slug = _history_site()
+    for k in (f"history/{slug}.html", f"history/{slug}/2026-06.html"):
+        assert '<button type="button" class="share" hidden>Share</button>' in pages[k], k
+    js = Path("static/js/history.js").read_text()
+    assert 'from "./share.js"' in js and 'from "./share.js"' in Path("static/js/phone.js").read_text()
+
+
+def test_history_same_day_price_moves_collapse_to_one_line():
+    extra = lambda r: [r("2026-10-20T10:00:00Z", 1032.0), r("2026-10-20T11:00:00Z", 1029.0),     # 1049 -> 1030 -> 1032 -> 1029
+                       r("2026-10-21T08:00:00Z", 1031.0), r("2026-10-21T09:00:00Z", 1029.0)]    # +2 then back: nets to nothing
+    pages, label, slug = _history_site(extra=extra)
+    h = pages[f"history/{slug}.html"]
+    assert f"{label} · China 12 + 256 · €1,049 → €1,029" in h
+    assert h.count(" → €1,0") == 2 and "21 Oct 2026" not in h        # the 20 Oct line and the 12 Sep line; 21 Oct nets out
+
+
+def test_history_stock_events_do_not_merge_into_price_runs():
+    extra = lambda r: [r("2026-10-22T08:00:00Z", 1029.0, avail=False), r("2026-10-22T09:00:00Z", 1020.0)]
+    pages, label, slug = _history_site(extra=extra)
+    h = pages[f"history/{slug}.html"]
+    assert " · out of stock" in h and f"{label} · China 12 + 256 · back in stock at €1,020" in h
+
+
+def test_quiet_phone_still_shows_stats_and_chart_and_unrecorded_phone_says_so():
+    only = lambda r: [r("2026-05-14T08:00:00Z", 1100.0)]      # in stock since May, nothing in the last 90 days
+    pages, _, slug = _history_site(only=only)
+    h = pages[f"history/{slug}.html"]
+    assert re.search(r"Lowest(?:\s*<[^>]+>)+\s*€1,100", h) and re.search(r"Highest(?:\s*<[^>]+>)+\s*€1,100", h)
+    assert re.search(r"Now(?:\s*<[^>]+>)+\s*€1,100", h) and "<polyline" in h
+    assert "No price history recorded yet" not in h and "No price changes in the last 90 days" in h
+    other = next(k for k in pages if k.count("/") == 1 and slug not in k)
+    assert "No price history recorded yet" in pages[other] and "hstats" not in pages[other] and "<polyline" not in pages[other]
+
+
+def test_built_history_pages_stay_small(site_build):
+    sizes = {f: f.stat().st_size for f in [*(site_build / "history").glob("*.html"), *(site_build / "history").glob("*/*.html")]}
+    assert sizes and max(sizes.values()) <= 120_000, max(sizes.items(), key=lambda kv: kv[1])

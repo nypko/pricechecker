@@ -32,29 +32,46 @@ def _day_label(d: str) -> str:
 
 def change_lines(rows: list[dict], names: dict, labels: dict, rates: dict) -> list[dict]:
     """One line per recorded change of a phone's listings, newest first. `rows` hold only this phone's rows, oldest
-    first, from the start of its history (a change is told against the listing's previous row). A row that moves the
-    price by less than a euro on screen is no change and gets no line."""
+    first, from the start of its history (a change is told against the listing's previous row). Consecutive price
+    moves of one listing within a UTC day make ONE line, from the day's first "was" to its last "now" (none when they
+    net to the same price on screen); stock events stay separate lines."""
     prev: dict[tuple, tuple[float, bool]] = {}
-    out = []
+    open_run: dict[tuple, dict] = {}   # listing -> its price-move event of the current day, still open to merging
+    events = []
     for r in rows:
         key = (r["store"], r["edition"], r["storage"])
         eur, avail = derive._eur(r["price"], r["currency"], rates), bool(r["available"])
         was = prev.get(key)
         prev[key] = (eur, avail)
+        ev = {"day": r["time"][:10], "hm": r["time"][11:16], "edition": r["edition"], "store": r["store"], "storage": r["storage"]}
         if was is None:
-            tail, kind = (f"first seen at {money(eur, 'eur')}" if avail else "first seen out of stock"), ""
+            ev["tail"] = f"first seen at {money(eur, 'eur')}" if avail else "first seen out of stock"
         elif not avail:
             if not was[1]:
                 continue
-            tail, kind = "out of stock", ""
+            ev["tail"] = "out of stock"
         elif not was[1]:
-            tail, kind = f"back in stock at {money(eur, 'eur')}", ""
-        elif money(was[0], "eur") == money(eur, "eur"):
+            ev["tail"] = f"back in stock at {money(eur, 'eur')}"
+        elif eur == was[0]:
             continue
         else:
-            tail, kind = f"{money(was[0], 'eur')} → {money(eur, 'eur')}", "down" if eur < was[0] else "up"
-        out.append({"day": r["time"][:10], "hm": r["time"][11:16], "edition": r["edition"], "dir": kind,
-                    "text": f"{names.get(r['store'], r['store'])} · {labels[r['edition']]} {mem_tiny(r['storage'])} · {tail}"})
+            run = open_run.get(key)
+            if run and run["day"] == ev["day"]:
+                run["new"], run["hm"] = eur, ev["hm"]
+            else:
+                open_run[key] = {**ev, "was": was[0], "new": eur}
+                events.append(open_run[key])
+            continue
+        open_run.pop(key, None)
+        events.append(ev)
+    out = []
+    for ev in events:
+        if "was" in ev:
+            if money(ev["was"], "eur") == money(ev["new"], "eur"):
+                continue
+            ev["tail"], ev["dir"] = f"{money(ev['was'], 'eur')} → {money(ev['new'], 'eur')}", "down" if ev["new"] < ev["was"] else "up"
+        out.append({"day": ev["day"], "hm": ev["hm"], "edition": ev["edition"], "dir": ev.get("dir", ""),
+                    "text": f"{names.get(ev['store'], ev['store'])} · {labels[ev['edition']]} {mem_tiny(ev['storage'])} · {ev['tail']}"})
     return out[::-1]
 
 
@@ -80,17 +97,20 @@ def _stats(lines: dict, last_day: str | None) -> dict | None:
     return {"lowest": min(vals), "highest": max(vals), "now": min(now) if now else None}
 
 
-def _sections(p: dict, rows: list[dict], names: dict, rates: dict, start: str, end: str | None) -> list[dict]:
+def _sections(p: dict, rows: list[dict], names: dict, rates: dict, start: str, end: str | None, today: str | None = None) -> list[dict]:
     """Per version: chart, stats and the day-grouped changes of [start, end). rows: this phone's, oldest first."""
     labels = ed_labels(p["brand"])
     upto = [r for r in rows if end is None or r["time"][:10] < end]
     days = sorted({r["time"][:10] for r in upto})
     first_day = next((d for d in days if d >= start), None)
-    last_day = days[-1] if first_day else None
+    quiet = first_day is None and end is None and bool(days)   # nothing changed in the window: draw what still stands, flat
+    last_day = today if quiet else (days[-1] if first_day else None)
     changes = [c for c in change_lines(upto, names, labels, rates) if c["day"] >= start]
     out = []
     for e in sorted(p["editions"], key=EDITION_ORDER.index):
-        lines = _clip(derive.store_lines(upto, p["id"], e, rates), first_day, start)
+        full = derive.store_lines(upto, p["id"], e, rates)
+        lines = {s: [(start, pts[-1][1]), (today, pts[-1][1])] for s, pts in full.items() if pts[-1][0] == days[-1]} if quiet \
+            else _clip(full, first_day, start)
         by_day: dict[str, list[dict]] = defaultdict(list)
         for c in changes:
             if c["edition"] == e:
@@ -108,11 +128,11 @@ def _default_edition(p: dict, sections: list[dict]) -> str:
     return want if want in withdata else (withdata or p["editions"])[0]
 
 
-def _page(p: dict, rows: list[dict], months: list[str], names: dict, rates: dict, start: str, month: str | None) -> dict:
+def _page(p: dict, rows: list[dict], months: list[str], names: dict, rates: dict, start: str, month: str | None, today: str) -> dict:
     end = _next_month(month) + "-01" if month else None
-    sections = _sections(p, rows, names, rates, month + "-01" if month else start, end)
+    sections = _sections(p, rows, names, rates, month + "-01" if month else start, end, today)
     v = {"month": month, "month_label": _month_label(month) if month else "", "sections": sections,
-         "default": _default_edition(p, sections), "since": _day_label(rows[0]["time"][:10]) if rows else None,
+         "default": _default_edition(p, sections), "has_rows": bool(rows), "since": _day_label(rows[0]["time"][:10]) if rows else None,
          "window": WINDOW_DAYS}
     if month:
         i = months.index(month)
@@ -132,16 +152,17 @@ def render(env: Environment, data: SiteData, ctx: dict, phones: list[dict]) -> d
     latest = max((r["time"] for r in data.rows_all), default=None)
     now = data.updated_at or (datetime.strptime(latest, "%Y-%m-%dT%H:%M:%SZ") if latest else datetime.now())
     start = (now - timedelta(days=WINDOW_DAYS)).strftime("%Y-%m-%d")
+    today = now.strftime("%Y-%m-%d")
     t = env.get_template("history.html")
     out = {}
     for p in phones:
         slug = p["slug"]
         rows = sorted((r for r in by_model.get(p["id"], []) if r["edition"] in p["editions"]), key=lambda r: r["time"])
         months = sorted({r["time"][:7] for r in rows})
-        out[f"history/{slug}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, None),
+        out[f"history/{slug}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, None, today),
                                                root="../", path=f"history/{slug}", **ctx)
         for m in months:
-            out[f"history/{slug}/{m}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, m),
+            out[f"history/{slug}/{m}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, m, today),
                                                        root="../../", path=f"history/{slug}/{m}", **ctx)
     return out
 

@@ -5,6 +5,7 @@
 // The pure helpers are exported for tests/js/phone_cases.mjs; everything touching the page is guarded.
 import { rows as viewRows, bestOf, gap } from "./view.js";
 import * as B from "./blocks.js";
+import { wireShare } from "./share.js";
 import { load, isDefault, watched, toggleWatch, PLACE } from "./settings.js";
 
 /** The memory to show after switching to `edition`: the one shown when that version has a current price for it, else
@@ -190,16 +191,7 @@ function wire(root) {
     if (note) note.hidden = !on;
   };
   if (wb) { wb.hidden = false; showWatch(); wb.addEventListener("click", () => { toggleWatch(id); showWatch(); }); }
-  const sb = root.querySelector(".share"), canCopy = navigator.clipboard && window.isSecureContext;
-  if (sb && (navigator.share || canCopy)) {
-    sb.hidden = false;
-    sb.addEventListener("click", () => {
-      const canon = document.querySelector('link[rel="canonical"]');
-      const url = (canon ? canon.href : location.href.split("#")[0]) + pickHash(S.ed, S.mem);   // the pick on screen
-      if (navigator.share) { navigator.share({ title: document.title, url }).catch(() => {}); return; }   // closed without sharing: fine
-      navigator.clipboard.writeText(url).then(() => { sb.textContent = "Link copied"; setTimeout(() => { sb.textContent = "Share"; }, 2000); });
-    });
-  }
+  wireShare(root.querySelector(".share"), () => pickHash(S.ed, S.mem));   // the pick on screen
 }
 
 if (typeof document !== "undefined") {

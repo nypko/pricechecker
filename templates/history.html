@@ -26,6 +26,7 @@
     {%- else %}Every price and stock change in the last {{ v.window }} days{% if v.since %} (we have recorded this phone since {{ v.since }}){% endif %}, as the store listed it, converted to euro.{% endif %}
     Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
     <a href="{{ root }}feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
+  <div class="actions"><button type="button" class="share" hidden>Share</button></div>
   {{ monthnav(v, p, root) }}
   {%- if p.editions|length > 1 %}
   <div class="chips js-only" id="hver" role="group" aria-label="Version">
@@ -54,7 +55,7 @@
       {%- for c in d.lines %}<li{% if c.dir %} class="{{ c.dir }}"{% endif %}><span class="hm">{{ c.hm }}</span><span class="tx">{{ c.text }}</span></li>{% endfor %}
     </ul>
     {%- else %}
-    <p class="empty-note">{% if v.month %}No price changes this month{% else %}No price changes in the last {{ v.window }} days{% endif %}.</p>
+    <p class="empty-note">{% if not v.has_rows %}No price history recorded yet. It will appear here after the next hourly check.{% elif v.month %}No price changes this month{% else %}No price changes in the last {{ v.window }} days{% endif %}.</p>
     {%- endfor %}
   </section>
   {%- endfor %}

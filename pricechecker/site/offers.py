@@ -4,8 +4,8 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 from .. import affiliate, fx, normalize, promos, terms
-from .charts import _all_stats, _charts, _series, _tier_chart, _trend
-from .common import EDITIONS, _money, _specs, _storage_key, ed_labels
+from .charts import _trend
+from .common import EDITIONS, _money, _specs, ed_labels
 from .context import SiteData
 from .seo import _product_ld, _title_price
 
@@ -26,19 +26,6 @@ def _too_old(checked: str | None, updated_at: datetime | None) -> bool:
 def _trust(t: dict | None) -> dict | None:
     """stores.yaml trust block, JSON-ready (YAML reads the checked date as a date)."""
     return {**t, "checked": str(t["checked"])} if t and t.get("checked") else t
-
-
-def _changes(rows: list[dict], model: dict, stores_cfg: dict, rates: dict) -> list[dict]:
-    """Every recorded price/stock change for the phone, newest first, for the table on its history page."""
-    out = []
-    for r in rows:
-        if r["model_id"] != model["id"] or r["edition"] not in model["editions"]:
-            continue
-        cfg = stores_cfg.get(r["store"], {})
-        out.append({"time": datetime.strptime(r["time"], "%Y-%m-%dT%H:%M:%SZ"), "store_label": cfg.get("label", r["store"]),
-                    "edition": r["edition"], "storage": r["storage"], "available": bool(int(r["available"])),
-                    "money": _money({"price": float(r["price"]), "currency": r["currency"]}, rates)})
-    return out[::-1]
 
 
 def _models(catalog: list[dict], offers: list[dict] = ()) -> list[dict]:
@@ -63,14 +50,11 @@ def assemble(data: SiteData) -> list[dict]:
     """One dict per phone, newest first, with its offers and everything its pages show; `related` links them up."""
     stores_cfg, rates, terms_status, updated_at = data.stores_cfg, data.rates, data.terms_status, data.updated_at
     live_stores, buyers, tax_cfg, specs, google, variants = data.live_stores, data.buyers, data.tax_cfg, data.specs, data.google, data.variants
-    site_cfg, colors = data.site_cfg, data.colors
+    site_cfg = data.site_cfg
     old = {s: _too_old(st.get("checked"), updated_at) for s, st in live_stores.items()}
-    by_model = defaultdict(list)   # history rows per phone, so each phone's charts and trends scan only its own rows
+    by_model = defaultdict(list)   # history rows per phone, so each phone's trends scan only its own rows
     for r in data.rows:
         by_model[r["model_id"]].append(r)
-    all_by_model = defaultdict(list)
-    for r in data.rows_all:
-        all_by_model[r["model_id"]].append(r)
     phones = []
     for m in _models(data.catalog, [o for st in live_stores.values() for o in st["offers"]]):
         mrows = by_model[m["id"]]
@@ -104,17 +88,13 @@ def assemble(data: SiteData) -> list[dict]:
         offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last
         in_stock = [o for o in offers if o["available"] and not o["old"]]   # what the index, compare, title and search data rank
         js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old", "grom")}
-        by_storage = defaultdict(list)
         for o in offers:
-            o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
-            by_storage[o["storage"]].append(o)
-        storages = sorted(by_storage, key=_storage_key)
+            o["js"] = js(o)
         eds = [{"edition": e, "label": ed_labels(m["brand"])[e],
                 "best": next((o for o in in_stock if o["edition"] == e), None),
                 "listed": any(o["edition"] == e for o in offers)} for e in m["editions"]]
         phones.append({**m, "slug": m["id"], "best": in_stock[0] if in_stock else None, "eds": eds,
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
-                       "by_storage": [(s, by_storage[s]) for s in storages],
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
                        "title_price": _title_price(offers, tax_cfg),
                        "title_offer": (_title_price(offers, tax_cfg, with_offer=True) or [None] * 4)[3],
@@ -122,11 +102,7 @@ def assemble(data: SiteData) -> list[dict]:
                        "specs": _specs(specs.get(m["id"])),
                        "ed_label": ed_labels(m["brand"]),
                        "google": {**google["brands"].get(m["brand"].lower(), google["brands"]["default"]),
-                                  "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""},
-                       "chart": _charts(mrows, m, rates, colors, updated_at),
-                       "chart_stats": _all_stats(mrows, m, rates, updated_at),
-                       "tier_charts": {s: _tier_chart(mrows, m, s, rates, colors, updated_at) for s in storages}, "changes": _changes(all_by_model[m["id"]], m, stores_cfg, rates),
-                       "series_stores": sorted({s for s, _ in _series(mrows, m, rates)})})
+                                  "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""}})
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
     # end of each phone page: the same brand's other phones (newest first) and the nearest in price from other brands

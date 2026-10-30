@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 from .. import fx
-from .common import CURRENCIES, EDITION_LABEL, SYMBOL, ed_labels
+from .common import EDITION_LABEL, SYMBOL
 
 LABELS: dict[str, str] = {}   # store key -> name shown in chart readouts; set by build()
 
@@ -86,29 +86,6 @@ def _series(rows: list[dict], model: dict, rates: dict, storage: str | None = No
         if (out[line] or best is not None) and (not out[line] or out[line][-1][1] != best):
             out[line].append((t, best))
     return out
-
-
-def _charts(rows: list[dict], model: dict, rates: dict, colors: dict, now: datetime | None, storage: str | None = None) -> dict:
-    """The chart once per site currency ({"usd": svg, ...}; {} if no history yet), so it follows the visitor's currency.
-    History records each store's own price; other currencies are converted at the current ECB rate."""
-    out = {c.lower(): _chart(_series(rows, model, rates, storage, c), colors, now, c, ed_labels(model["brand"])) for c in CURRENCIES}
-    return out if all(out.values()) else {}
-
-
-def _all_stats(rows: list[dict], model: dict, rates: dict, now: datetime | None, storage: str | None = None) -> dict:
-    """_stats once per site currency, like the charts: {"usd": {...}, ...}; {} if no history."""
-    out = {c.lower(): _stats(_series(rows, model, rates, storage, c), now, c) for c in CURRENCIES}
-    return out if all(out.values()) else {}
-
-
-def _tier_chart(rows: list[dict], model: dict, storage: str, rates: dict, colors: dict, now: datetime | None) -> dict:
-    """Price history for one RAM/storage option (the toggle under each table on the phone page)."""
-    series = _series(rows, model, rates, storage)
-    eds = defaultdict(list)   # store -> versions it has lines for, so the legend can follow the version filter
-    for s, e in series:
-        eds[s].append(e)
-    return {"svg": _charts(rows, model, rates, colors, now, storage), "stats": _all_stats(rows, model, rates, now, storage), "stores": {s: " ".join(sorted(eds[s])) for s in sorted(eds)},
-            "china": any(e == "china" for _, e in series)}
 
 
 def _trend(rows: list[dict], model_id: str, o: dict, now: datetime | None) -> dict | None:

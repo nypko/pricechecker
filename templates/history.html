@@ -1,76 +1,70 @@
 {% extends "base.html" %}
-{% from "_price.html" import price %}
-{% import "_stats.html" as hstats %}
-{% set crumbs = [(p.name, "phones/" ~ p.slug), ("Price history", "history/" ~ p.slug)] %}
-{% block title %}{{ p.name }} price history – DoorPrice{% endblock %}
-{% block description %}How {{ p.name }} prices have changed at each store, checked every hour.{% endblock %}
-{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% endblock %}
+{% import "_d/history_svg.html" as hist %}
+{#- Spec §5.6. Built by pages/history.py: per version a chart, lowest / highest / now and the changes grouped by day. Without
+    JS both versions show stacked; static/js/history.js adds the version switch. The month pages use the same layout. -#}
+{% set crumbs = [(p.name, "phones/" ~ p.slug), ("Price history", "history/" ~ p.slug)] + ([(v.month_label, "history/" ~ p.slug ~ "/" ~ v.month)] if v.month else []) %}
+{% block title %}{{ p.name }} price history{% if v.month %}, {{ v.month_label }}{% endif %} – DoorPrice{% endblock %}
+{% block description %}{% if v.month %}Every store price change for the {{ p.name }} in {{ v.month_label }}.{% else %}How the {{ p.name }}'s price has changed at each store over the last {{ v.window }} days, checked every hour.{% endif %}{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="{{ root }}feeds/{{ p.slug }}.xml">{% endblock %}
 {% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
 {% block og_alt %}{{ p.name }} on DoorPrice: price history{% endblock %}
+{% macro monthnav(v, p, root) %}
+{%- if v.month %}
+  <nav class="mnav" aria-label="Other months">
+    {%- if v.prev %}<a rel="prev" href="{{ root }}history/{{ p.slug }}/{{ v.prev[0] }}">← {{ v.prev[1] }}</a>{% else %}<span></span>{% endif %}
+    <a href="{{ root }}history/{{ p.slug }}">Last {{ v.window }} days</a>
+    {%- if v.next %}<a rel="next" href="{{ root }}history/{{ p.slug }}/{{ v.next[0] }}">{{ v.next[1] }} →</a>{% else %}<span></span>{% endif %}
+  </nav>
+{%- endif %}
+{% endmacro %}
 {% block main %}
-<div class="page-nav">
-  <a class="crumb" href="../phones/{{ p.slug }}">{{ p.name }} prices</a>
-  <div class="page-actions"><button type="button" class="btn-quiet share" hidden>Share</button></div>
-</div>
-<h1>{{ p.name }} price history</h1>
-{% set first = p.changes[-1].time if p.changes else none %}
-<p class="lede">Every price and stock change we've recorded{% if first %} since <strong>{{ first.strftime("%-d %b %Y") }}</strong>{% endif %}.
-  Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
-  <a href="../feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
-
-{% macro legend(store_names, china) %}
-  <ul class="legend">
-    {% for s in store_names %}{% set st = stores|selectattr("name", "equalto", s)|first %}
-    <li><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="{{ colors[s] }}" stroke-width="3"/></svg>{{ st.label if st else s }}</li>
-    {% endfor %}
-    {% if china and p.editions|length > 1 %}<li class="muted"><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/></svg>{{ p.ed_label.china }} version</li>{% endif %}
+<div class="wrap hpage" id="history" data-default="{{ v.default }}">
+  <p class="kicker"><a href="{{ root }}phones/{{ p.slug }}">{{ p.name }} prices</a></p>
+  <h1>{{ p.name }} <em>{% if v.month %}{{ v.month_label }}{% else %}price history{% endif %}</em></h1>
+  <p class="lead">
+    {%- if v.month %}Every price and stock change in {{ v.month_label }}, as the store listed it, converted to euro.
+    {%- else %}Every price and stock change in the last {{ v.window }} days{% if v.since %} (we have recorded this phone since {{ v.since }}){% endif %}, as the store listed it, converted to euro.{% endif %}
+    Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
+    <a href="{{ root }}feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
+  {{ monthnav(v, p, root) }}
+  {%- if p.editions|length > 1 %}
+  <div class="chips js-only" id="hver" role="group" aria-label="Version">
+    {%- for s in v.sections %}<button type="button" data-e="{{ s.e }}" aria-pressed="{{ 'true' if s.e == v.default else 'false' }}">{{ s.label }} version</button>{% endfor -%}
+  </div>
+  {%- endif %}
+  {%- for s in v.sections %}
+  <section class="hv" data-e="{{ s.e }}">
+    <h2>{{ s.label }} version</h2>
+    {%- if s.stats %}
+    <dl class="hstats">
+      <div><dt>Lowest</dt><dd>{{ money(s.stats.lowest, "eur") }}</dd></div>
+      <div><dt>Highest</dt><dd>{{ money(s.stats.highest, "eur") }}</dd></div>
+      <div><dt>{{ "Month end" if v.month else "Now" }}</dt><dd>{{ money(s.stats.now, "eur") if s.stats.now is not none else "Not in stock" }}</dd></div>
+    </dl>
+    {%- endif %}
+    {%- if s.svg %}
+    <div class="box hist">
+      {{ hist.store_lines(s.svg, "Lowest " ~ s.label ~ " price at each store since " ~ s.svg.since) }}
+      <p>Lowest {{ s.label }} version price at each store, any memory, in euro, before shipping and tax. One line per store.</p>
+    </div>
+    {%- endif %}
+    {%- for d in s.days %}
+    <h3 class="hday"><time datetime="{{ d.day }}">{{ d.label }}</time></h3>
+    <ul class="hchg">
+      {%- for c in d.lines %}<li{% if c.dir %} class="{{ c.dir }}"{% endif %}><span class="hm">{{ c.hm }}</span><span class="tx">{{ c.text }}</span></li>{% endfor %}
+    </ul>
+    {%- else %}
+    <p class="empty-note">{% if v.month %}No price changes this month{% else %}No price changes in the last {{ v.window }} days{% endif %}.</p>
+    {%- endfor %}
+  </section>
+  {%- endfor %}
+  {%- if not v.month and v.earlier %}
+  <h2>Earlier months</h2>
+  <ul class="months">
+    {%- for m, label in v.earlier %}<li><a href="{{ root }}history/{{ p.slug }}/{{ m }}">{{ label }}</a></li>{% endfor %}
   </ul>
-{%- endmacro %}
-{% macro charts(svgs) %}{% for c, svg in svgs.items() %}<div class="chart-wrap" data-cur="{{ c }}"{{ " hidden" if c != "usd" }}>{{ svg|safe }}</div>{% endfor %}{% endmacro %}
-{% if p.chart %}
-<section class="panel">
-  <p class="hist-variant"><label for="hist-var">Variant</label>
-    <span class="select"><select id="hist-var"><option value="all">All RAM/storage options</option>{% for storage, offers in p.by_storage %}<option value="{{ storage }}">{{ storage|spec or "RAM/storage not listed" }}</option>{% endfor %}</select></span></p>
-  <div class="hist-one" data-storage="all">
-    <h2>Lowest in-stock price per store <span class="muted">(any RAM/storage, in <span class="for-cur">USD</span>{% if p.editions|length > 1 %}; dashed line = {{ p.ed_label.china }} version{% endif %})</span></h2>
-    {{ hstats.stats(p.chart_stats) }}
-    {{ charts(p.chart) }}
-    {{ legend(p.series_stores, p.editions|length > 1) }}
-  </div>
-  {% for storage, offers in p.by_storage %}{% set th = p.tier_charts[storage] %}
-  <div class="hist-one" data-storage="{{ storage }}" hidden>
-    <h2>Lowest in-stock price per store <span class="muted">(in <span class="for-cur">USD</span>{% if th.china %}; dashed line = {{ p.ed_label.china }} version{% endif %})</span></h2>
-    {% if th.svg %}{{ hstats.stats(th.stats) }}{{ charts(th.svg) }}{{ legend(th.stores.keys(), th.china) }}
-    {% else %}<p class="muted small">No prices recorded at this RAM/storage yet.</p>{% endif %}
-  </div>
-  {% endfor %}
-  <p class="muted small">Where a store prices in another currency, its line is converted at today's European Central Bank rate.</p>
-  {% if p.changes and (p.changes[0].time - p.changes[-1].time).days < 7 %}
-  <p class="muted small">Less than a week of data so far, so most lines are still flat.</p>
-  {% endif %}
-</section>
-{% endif %}
-
-<section class="panel">
-  <h2>All changes <span class="muted">(newest first, the store's own price in your currency)</span></h2>
-  {% if p.changes %}
-  <table class="changes">
-    <thead><tr><th>When (UTC)</th><th>Store</th><th>Version</th><th>RAM/storage</th><th>Price</th><th>Stock</th></tr></thead>
-    <tbody>
-    {% for c in p.changes %}
-      <tr class="{{ '' if c.available else 'out' }}" data-storage="{{ c.storage }}">
-        <td data-label="When"><time datetime="{{ c.time.isoformat() }}Z">{{ c.time.strftime("%-d %b, %H:%M") }}</time></td>
-        <td data-label="Store">{{ c.store_label }}</td>
-        <td data-label="Version"><span class="badge {{ c.edition }}">{{ p.ed_label[c.edition] }}</span></td>
-        <td data-label="RAM/storage">{{ c.storage|spec or "not listed" }}</td>
-        <td data-label="Price">{{ price(c.money) }}</td>
-        <td data-label="Stock">{{ "In stock" if c.available else "Out of stock" }}</td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-  {% else %}
-  <p class="muted">No price changes recorded for this phone yet. They'll appear here as stores change their prices.</p>
-  {% endif %}
-</section>
+  {%- endif %}
+  <p class="fine">Times are UTC. A "first seen" line is the first time we saw that listing, not a price change. A listing that sells out drops off the chart until it is back in stock.</p>
+</div>
 {% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/history.js?v={{ asset_v['js/history.js'] }}"></script>{% endblock %}

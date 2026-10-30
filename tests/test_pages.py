@@ -441,3 +441,83 @@ def test_offer_data_is_gone_from_the_phone_dicts():
     from pricechecker.site import offers
     src = Path(offers.__file__).read_text()
     assert "offers_json" not in src and '"compare": compare' not in src
+
+
+def _history_site(extra=None, label=None):
+    """Oppo Find X9 Ultra with hand-made history rows (updated 30 Oct 2026, so the 90-day window opens on 1 Aug):
+    May first sighting, June cut, July only a rounding wobble, Sept and Oct cuts, a Global 1 TB listing in Oct.
+    Returns (rendered pages, store label, slug)."""
+    import dataclasses
+    from datetime import datetime
+
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    from pricechecker.site.pages import history as hp
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    phones = offers.assemble(data)
+    key = next(k for k, c in data.stores_cfg.items() if c.get("label") == "Wonda Mobile")
+    cfg = {**data.stores_cfg, key: {**data.stores_cfg[key], "label": label}} if label else data.stores_cfg
+    slug = "oppo-find-x9-ultra"
+    r = lambda t, price, ed="china", mem="12/256", avail=True, store=key: {
+        "time": t, "store": store, "model_id": slug, "edition": ed, "storage": mem, "price": price, "currency": "EUR", "available": avail}
+    rows = [r("2026-05-14T08:00:00Z", 1100.0), r("2026-06-10T09:00:00Z", 1080.0), r("2026-07-05T09:00:00Z", 1080.2),
+            r("2026-09-12T09:00:00Z", 1049.0), r("2026-10-20T09:00:00Z", 1030.0), r("2026-10-02T09:00:00Z", 1500.0, "global", "16/1024"),
+            *(extra(r) if extra else [])]
+    rows.sort(key=lambda x: x["time"])
+    data = dataclasses.replace(data, rows=rows, rows_all=rows, stores_cfg=cfg, updated_at=datetime(2026, 10, 30, 12, 0))
+    ctx = context.page_context(data, phones)
+    return hp.render(_env(), data, ctx, phones), cfg[key]["label"], slug
+
+
+def test_history_main_page_is_the_last_90_days_grouped_by_day_with_month_links():
+    pages, label, slug = _history_site()
+    h = pages[f"history/{slug}.html"]
+    assert f"{label} · China 12 + 256 · €1,080 → €1,049" in h and f"{label} · China 12 + 256 · €1,049 → €1,030" in h
+    assert "Global 16 + 1 TB" in h
+    assert h.index("20 Oct 2026") < h.index("12 Sep 2026")                 # days newest first
+    assert "€1,100 → €1,080" not in h and "first seen at €1,100" not in h   # older than 90 days: on the monthly pages
+    links = set(re.findall(rf'href="\.\./history/{slug}/(\d{{4}}-\d{{2}})"', h))
+    assert links == {"2026-05", "2026-06", "2026-07"}                       # earlier months with rows; none before the first row
+    assert "<polyline" in h and 'src="../static/js/history.js?v=' in h
+
+
+def test_history_monthly_pages_cover_every_month_with_rows():
+    pages, label, slug = _history_site()
+    months = {k.rsplit("/", 1)[1][:-5] for k in pages if k.startswith(f"history/{slug}/")}
+    assert months == {"2026-05", "2026-06", "2026-07", "2026-09", "2026-10"}
+    jun = pages[f"history/{slug}/2026-06.html"]
+    assert f"{label} · China 12 + 256 · €1,100 → €1,080" in jun and "€1,049" not in jun
+    assert "June 2026" in jun and 'href="../../history/' + slug + '"' in jun
+
+
+def test_history_month_navigation_stays_inside_the_phones_months():
+    pages, _, slug = _history_site()
+    nav = lambda m: re.findall(rf'<a [^>]*rel="(prev|next)"[^>]*href="\.\./\.\./history/{slug}/(\d{{4}}-\d{{2}})"', pages[f"history/{slug}/{m}.html"])
+    nav2 = lambda m: [(rel, mo) for rel, mo in nav(m)]
+    assert nav2("2026-05") == [("next", "2026-06")]                        # nothing before the first row
+    assert sorted(nav2("2026-06")) == [("next", "2026-07"), ("prev", "2026-05")]
+    assert sorted(nav2("2026-07")) == [("next", "2026-09"), ("prev", "2026-06")]   # August has no rows: skipped
+    assert nav2("2026-10") == [("prev", "2026-09")]                        # nothing after the last row
+
+
+def test_history_month_with_rows_but_no_price_changes_says_so():
+    pages, _, slug = _history_site()
+    jul = pages[f"history/{slug}/2026-07.html"]   # 1080 -> 1080.2: the same price to the euro
+    assert "No price changes this month" in jul and " → €" not in jul
+    assert f"history/{slug}/2026-08.html" not in pages
+
+
+def test_history_stock_changes_and_stats_and_escaping():
+    extra = lambda r: [r("2026-10-25T09:00:00Z", 1030.0, avail=False)]
+    pages, _, slug = _history_site(extra=extra, label="<b>Wonda</b> & Co")
+    h = pages[f"history/{slug}.html"]
+    assert "&lt;b&gt;Wonda&lt;/b&gt; &amp; Co · China 12 + 256 · €1,049 → €1,030" in h and "<b>Wonda</b>" not in h
+    assert " · China 12 + 256 · out of stock" in h
+    assert re.search(r"Lowest(?:\s*<[^>]+>)+\s*€1,030", h) and re.search(r"Highest(?:\s*<[^>]+>)+\s*€1,080", h)
+    assert re.search(r"Now(?:\s*<[^>]+>)+\s*Not in stock", h)
+
+
+def test_history_page_serves_beside_its_month_folder():
+    pages, _, slug = _history_site()
+    assert f"history/{slug}.html" in pages and f"history/{slug}/2026-10.html" in pages

@@ -20,20 +20,34 @@
 <div class="mem">{% if p %}<b>{{ p[0] }}</b> RAM · <b>{{ p[1] }}</b> storage{% else %}RAM/storage not listed{% endif %}</div>
 {%- endmacro -%}
 
-{#- One version's best current price: version, memory, price, store, settled mark or what is left out, store link.
-    on: this version is the one the page shows below. switch=False: a plain box for a page with no version switch
-    (the compare page): no pick buttons and no "means" link, just the price and the store link. -#}
-{%- macro price_box(rows, edition, s, labels, on=False, switch=True) -%}
-{%- set b = best_of(rows, edition) -%}
-{%- set other = best_of(rows, "global" if edition == "china" else "china") -%}
+{#- One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what
+    is left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the
+    state text if the version has rows there (sold out, not delivered, stale), else "Not sold with <memory>" and a
+    button to the nearest memory it is sold with. on: this version is the one the page shows in the details panel.
+    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no pick buttons and no
+    "means" link, just the price and the store link. -#}
+{%- macro price_box(rows, edition, storage, s, labels, on=False, switch=True) -%}
+{%- set b = best_of(rows, edition, storage) -%}
+{%- set o_ed = "global" if edition == "china" else "china" -%}
+{%- set other = best_of(rows, o_ed, storage) -%}
 {%- set cls = "cn" if edition == "china" else "gl" -%}
+{%- set tab = ' role="tab" aria-selected="' ~ ('true' if on else 'false') ~ '" aria-controls="pick-panel" id="tab-' ~ edition ~ '"' if switch else "" -%}
 {%- if not b -%}
-{#- every listing of this version sold out: other settings would not help, so say so -#}
-{%- set ed_rows = rows|selectattr("edition", "equalto", edition)|list -%}
-{%- set sold = ed_rows and not (ed_rows|rejectattr("state", "equalto", "soldout")|list) -%}
-<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">{{ "Sold out at every store we check" if sold else "No current price for your settings" }}</p></div>
+{%- set ed_rows = rows|selectattr("edition", "equalto", edition)|selectattr("storage", "equalto", storage)|list -%}
+{%- if ed_rows -%}
+{#- every listing of this version at this memory sold out: other settings would not help, so say so -#}
+{%- set sold = not (ed_rows|rejectattr("state", "equalto", "soldout")|list) -%}
+<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">{{ "Sold out at every store we check" if sold else "No current price for your settings" }}</p></div>
 {%- else -%}
-<div class="side {{ cls }}{{ ' on' if switch and on and other }}" data-block="price_box" data-e="{{ edition }}">{% if switch %}<button type="button" class="pickbtn" data-e="{{ edition }}" aria-pressed="{{ 'true' if on else 'false' }}">{% endif %}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div><p class="st">at <b>{{ b.store }}</b></p>
+{%- set nm = nearest_memory(rows, edition, storage) -%}
+<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">Not sold with {{ mem_short(storage) }}</p>
+{%- if switch and nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }} →</button>{% endif -%}
+</div>
+{%- endif -%}
+{%- else -%}
+<div class="side {{ cls }}{{ ' on' if switch and on }}" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}>{% if switch %}<button type="button" class="pickbtn" data-e="{{ edition }}" aria-pressed="{{ 'true' if on else 'false' }}">{% endif %}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div>
+{%- if b.settled and other and other.settled and b.total < other.total %}<p class="less">{{ money(other.total - b.total, s.cur) }} less</p>{% endif -%}
+<p class="st">at <b>{{ b.store }}</b></p>
 {%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}
 {% if switch %}</button>{% endif %}
 {%- if switch and edition == "china" %}<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>{% endif -%}
@@ -43,34 +57,24 @@
 {%- endif -%}
 {%- endmacro -%}
 
-{#- Under the two boxes: the same-memory gap (view.gap), or why there is no number. Nothing when only one version sells. -#}
-{%- macro gap_line(gap, both, s, labels) -%}
-{%- if both -%}
-<div class="gapline slim" data-block="gap_line">
-{%- if gap -%}
-{%- set cheap = labels.china if gap.diff >= 0 else labels.global -%}
-Same memory, <b>{{ mem_label(gap.storage) }}</b>: the {{ cheap }} version is <b>{{ money(gap.diff|abs, s.cur) }} less</b> delivered ({{ money(gap.china, s.cur) }} vs {{ money(gap.global, s.cur) }}).
-{%- else -%}
-No memory has a settled delivered price for both versions yet, so we don't put a number on the gap.
-{%- endif -%}
-</div>
-{%- endif -%}
-{%- endmacro -%}
-
-{#- One chip per memory of the edition with its best current price ("+" when something is left out); a memory with no
-    current price in this version ("–") is a disabled chip, so a tap on it can't be undone by the page. -#}
-{%- macro mem_chips(rows, edition, storage, s) -%}
+{#- Above the boxes: one chip per memory either version has a row for (never "base"), smallest first, sizes only. A
+    memory neither version has a current price for is a disabled chip, so a tap on it can't be undone by the page. -#}
+{%- macro mem_chips(rows, storage, s) -%}
+{%- set opts = mem_union(rows) -%}
+{%- if opts -%}
 <div class="mems" data-block="mem_chips" role="group" aria-label="Memory">
-{%- for st, b in mem_options(rows, edition) -%}
-<button type="button" data-m="{{ st }}" aria-pressed="{{ 'true' if st == storage else 'false' }}"{% if not b %} disabled{% endif %}>{{ mem_label(st) }} · {% if b %}{{ money(b.total, s.cur) }}{{ "+" if b.unknown }}{% else %}–{% endif %}</button>
+{%- for st, live in opts -%}
+<button type="button" data-m="{{ st }}" aria-pressed="{{ 'true' if st == storage else 'false' }}"{% if not live %} disabled{% endif %}>{{ mem_short(st) }}</button>
 {%- endfor -%}
 </div>
+{%- endif -%}
 {%- endmacro -%}
 
-{#- The pick for this version and memory: row is view.best_of(rows, edition, storage) (never a stale, sold-out or
-    not-payable row); pick = every row of that version and memory, for "why this one". -#}
+{#- The details panel under the picked version's box: row is view.best_of(rows, edition, storage) (never a stale, sold-out
+    or not-payable row); pick = every row of that version and memory, for "why this one". -#}
 {%- macro verdict(row, pick, s, labels, now=None) -%}
-<section class="verdict" data-block="verdict" aria-live="polite">
+{%- set ed = row.edition if row else (pick[0].edition if pick else none) -%}
+<section class="verdict panel" id="pick-panel" role="tabpanel"{% if ed %} aria-labelledby="tab-{{ ed }}"{% endif %} data-block="verdict" aria-live="polite">
 {%- if not row or row.state != "ok" -%}
 <p class="q">No store we check has a current price for this version and memory.</p>
 {%- else -%}

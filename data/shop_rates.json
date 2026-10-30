@@ -3,9 +3,9 @@
   "currency": "USD",
   "rates": {
    "USD": 1.0,
-   "EUR": 0.894949,
-   "GBP": 0.751504,
-   "AUD": 1.432767
+   "EUR": 0.903274,
+   "GBP": 0.755363,
+   "AUD": 1.428185
   },
   "checked": [
    "USD",
@@ -14,16 +14,16 @@
    "GBP",
    "AUD"
   ],
-  "fetched": "2026-10-23T22:20:22+00:00"
+  "fetched": "2026-10-30T22:31:29+00:00"
  },
  "https://www.themobilemarvel.com": {
   "currency": "HKD",
   "rates": {
    "HKD": 1.0,
-   "USD": 0.13006326,
-   "EUR": 0.11610864,
-   "GBP": 0.09723813,
-   "AUD": 0.18490662
+   "USD": 0.13001124,
+   "EUR": 0.11649012,
+   "GBP": 0.09706932,
+   "AUD": 0.18488826
   },
   "checked": [
    "HKD",
@@ -32,7 +32,7 @@
    "GBP",
    "AUD"
   ],
-  "fetched": "2026-10-23T22:31:37+00:00"
+  "fetched": "2026-10-30T22:42:44+00:00"
  },
  "https://www.giztop.com": {
   "currency": "USD",
@@ -42,7 +42,7 @@
    "GBP": 0.772502,
    "AUD": 1.59
   },
-  "fetched": "2026-10-30T02:25:53+00:00"
+  "fetched": "2026-10-30T23:05:22+00:00"
  },
  "https://averagedadofficial.com": {
   "currency": "GBP",

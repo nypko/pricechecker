@@ -13,6 +13,7 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from . import http
+from .issue_text import fence
 
 STATE = Path("data/promos.json")
 REPORT = Path(".promo_report.md")   # picked up by the workflow and filed as a GitHub issue; not committed
@@ -141,7 +142,7 @@ def write_report(new_found: dict, ended: list, started: list, stores_cfg: dict, 
         out += ["## New promotion text", ""]
         for name, lines in new_found.items():
             cfg = stores_cfg[name]
-            out += [f"**{cfg.get('label', name)}** ({', '.join(pages(name, cfg))})", ""] + [f"- {s}" for s in lines] + [""]
+            out += [f"**{cfg.get('label', name)}** ({', '.join(pages(name, cfg))})", "", *fence(lines), ""]   # scraped text
         out += ["To count an automatic store-wide discount in totals, add it to the store in `config/stores.yaml`:",
                 "", "```yaml", "      promo: {pct: 2, label: \"Summer sale\", watch: \"2% summer sale\", until: 2026-10-31,",
                 "              stacks_with_bank: false, note: \"Applied automatically at checkout.\"}", "```", "",

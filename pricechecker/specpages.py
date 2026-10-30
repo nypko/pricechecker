@@ -13,6 +13,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 from . import http, specs
+from .issue_text import fence
 
 SNAP_DIR = Path("data/spec_pages")
 REPORT = Path(".spec_report.md")   # filed as a GitHub issue by the workflow; not committed
@@ -87,7 +88,7 @@ def watch(snap_dir: Path = SNAP_DIR, report: Path = REPORT, sheets: dict | None 
             continue
         diff = [ln for ln in difflib.unified_diff(old_l, new_l, lineterm="", n=0) if ln[:1] in "+-" and ln[:3] not in ("+++", "---")]
         shown = diff[:MAX_DIFF] + ([f"... {len(diff) - MAX_DIFF} more changed lines"] if len(diff) > MAX_DIFF else [])
-        changed.append(f"### `{pid}` ({edition})\n{url}\n\n```diff\n" + "\n".join(shown) + "\n```")
+        changed.append(f"### `{pid}` ({edition})\n{url}\n\n" + "\n".join(fence(shown, "diff")))
     if not changed:   # pages to check by hand alone never raise a report (no weekly issue); they ride along with a real change
         for ln in by_hand:
             print(ln)

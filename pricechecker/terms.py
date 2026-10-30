@@ -10,6 +10,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import fx, http
+from .issue_text import fence
 
 STATUS = Path("data/terms_status.json")
 PAGES = Path("data/terms_pages.json")
@@ -145,7 +146,7 @@ def check_pages(stores_cfg: dict, force: bool = False) -> dict:
             if old is not None and old["lines"] != lines:
                 diff = page_diff(old["lines"], lines)
                 if diff:
-                    report += [f"**{cfg.get('label', name)}**: {u} (last read {old['checked'][:10]})", "", "```diff", *diff, "```", ""]
+                    report += [f"**{cfg.get('label', name)}**: {u} (last read {old['checked'][:10]})", "", *fence(diff, "diff"), ""]
             snaps[u] = snapshot(old, lines, now)
         status[name] = {"ok": not problems, "problems": problems, "checked": now.isoformat(timespec="seconds")}
         print(f"  [terms] {name}: {'unchanged' if not problems else 'NEEDS REVIEW - ' + '; '.join(problems)}")

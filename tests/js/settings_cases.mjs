@@ -1,6 +1,6 @@
 // Pure-function cases for static/js/settings.js: node tests/js/settings_cases.mjs (exit 1 on the first failure).
 import assert from "node:assert/strict";
-import { load, save, guess, isDefault, label, forLine, watched, toggleWatch } from "../../static/js/settings.js";
+import { load, save, guess, isDefault, label, forLine, watched, toggleWatch, refresh } from "../../static/js/settings.js";
 
 const mem = (init = {}) => { const d = { ...init }; return { getItem: (k) => (k in d ? d[k] : null), setItem: (k, v) => { d[k] = String(v); }, d }; };
 const names = { countries: { BG: "Bulgaria", DE: "Germany" }, provinces: { QC: "Quebec", ON: "Ontario" } };
@@ -10,8 +10,12 @@ assert.deepEqual(load(mem({ "pc-region": "CA", "pc-prov": "ON", "pc-cur": "cad" 
 assert.deepEqual(load(mem({ "pc-region": "EU", "pc-country": "BG", "pc-pay": "paypal", "pc-cur": "eur" }), "", ""), { region: "EU", area: "BG", pay: "paypal", cur: "eur" });
 // nothing stored: guessed from the time zone; junk values fall back to the defaults
 assert.deepEqual(load(mem(), "Europe/Sofia", "bg"), { region: "EU", area: "BG", pay: "card", cur: "eur" });
-assert.deepEqual(load(mem(), "", ""), { region: "EU", area: "", pay: "card", cur: "usd" });
-assert.deepEqual(load(mem({ "pc-region": "XX", "pc-cur": "yen", "pc-pay": "gold" }), "", ""), { region: "EU", area: "", pay: "card", cur: "usd" });
+assert.deepEqual(load(mem(), "", ""), { region: "EU", area: "", pay: "card", cur: "eur" });
+assert.deepEqual(load(mem({ "pc-region": "XX", "pc-cur": "yen", "pc-pay": "gold" }), "", ""), { region: "EU", area: "", pay: "card", cur: "eur" });
+assert.deepEqual(load(mem({ "pc-region": "US" }), "", ""), { region: "US", area: "", pay: "card", cur: "usd" });
+// prototype keys are not settings
+assert.deepEqual(load(mem({ "pc-cur": "constructor", "pc-pay": "__proto__" }), "", ""), { region: "EU", area: "", pay: "card", cur: "eur" });
+assert.deepEqual(load(mem({ "pc-cur": "toString", "pc-pay": "hasOwnProperty" }), "", ""), { region: "EU", area: "", pay: "card", cur: "eur" });
 assert.deepEqual(load(mem({ "pc-region": "US" }), "Europe/Sofia", ""), { region: "US", area: "", pay: "card", cur: "eur" });
 
 // guess
@@ -57,4 +61,14 @@ assert.deepEqual([...watched(w)].sort(), ["a", "b"]);
 assert.equal(toggleWatch("c", w), true);
 assert.equal(toggleWatch("a", w), false);
 assert.deepEqual([...watched(w)].sort(), ["b", "c"]);
+
+// refresh() paints only the button's visible label (the [data-prefs-label] span); the sr-only suffix is left alone
+const span = { textContent: "EU · Card · €" };
+globalThis.document = {
+  getElementById: () => null,
+  querySelectorAll: (sel) => (sel === "[data-prefs] [data-prefs-label]" ? [span] : []),
+};
+refresh();
+assert.equal(span.textContent, label(load()));
+delete globalThis.document;
 console.log("settings ok");

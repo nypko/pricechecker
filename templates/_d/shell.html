@@ -12,7 +12,8 @@
     <a href="{{ root }}compare"{% if path.startswith("compare") %} aria-current="page"{% endif %}>Compare</a>
   </nav>
   <a class="icon-btn" href="{{ root }}?q=" aria-label="Search phones"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></a>
-  <button class="prefs" type="button" data-prefs aria-label="Delivery settings: the EU, card, euro. Change">EU · Card · €</button>
+  {#- the accessible name starts with the visible text (WCAG 2.5.3): "EU · Card · €, delivery settings, change" -#}
+  <button class="prefs" type="button" data-prefs><span data-prefs-label>EU · Card · €</span><span class="sr-only">, delivery settings, change</span></button>
 </div></header>
 {%- endmacro -%}
 

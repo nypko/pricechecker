@@ -55,8 +55,9 @@ export function load(storage = store(), tz = zone(), lang = language()) {
   const pick = (k) => get(storage, "pc-" + k) || g[k];
   let region = pick("region"), cur = pick("cur"), pay = pick("pay");
   if (!REGIONS.includes(region)) region = DEFAULT.region;
-  if (!SYMBOL[cur]) cur = "usd";
-  if (!PAY_LABEL[pay]) pay = DEFAULT.pay;
+  // own keys only: "constructor" or "__proto__" in storage must not pass as a currency or payment method
+  if (!Object.hasOwn(SYMBOL, cur)) cur = region === "EU" ? DEFAULT.cur : "usd";
+  if (!Object.hasOwn(PAY_LABEL, pay)) pay = DEFAULT.pay;
   const saved = region === "EU" ? get(storage, "pc-country") : region === "CA" ? get(storage, "pc-prov") : "";
   const area = region === "EU" || region === "CA" ? saved || (g.region === region ? g.area : "") || "" : "";
   return { region, area, pay, cur };
@@ -105,10 +106,8 @@ function namesOf(d) {
 export function refresh() {
   if (typeof document === "undefined") return;
   const s = load(), d = dialog(), names = d ? namesOf(d) : {};
-  document.querySelectorAll("[data-prefs]").forEach((b) => {
-    b.textContent = label(s);
-    b.setAttribute("aria-label", `Delivery settings: ${forLine(s, names).replace("Delivered to ", "")}, ${SYMBOL[s.cur]}. Change`);
-  });
+  // only the visible part changes: the button's sr-only ", delivery settings, change" stays, so its name keeps the label
+  document.querySelectorAll("[data-prefs] [data-prefs-label]").forEach((t) => { t.textContent = label(s); });
   document.querySelectorAll("[data-for]").forEach((p) => { p.textContent = forLine(s, names); });
 }
 

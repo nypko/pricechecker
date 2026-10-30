@@ -937,3 +937,27 @@ def test_home_in_a_week_without_drops_has_no_teaser_and_no_marks():
     assert 'class="teaser"' not in h and 'class="mark drop"' not in h and "price drops this week" not in h
     d = drops.render(env, data, ctx, phones)["drops.html"]
     assert "No drops this week" in d and h.count('data-block="home_row"') > 50
+
+
+def test_settings_button_name_starts_with_its_visible_text(site_build):
+    """WCAG 2.5.3: no aria-label; the visible "EU · Card · €" (which settings.js repaints) plus an sr-only suffix."""
+    for f in (site_build / "index.html", next(site_build.glob("phones/*.html"))):
+        h = f.read_text()
+        b = re.search(r'<button class="prefs"[^>]*>.*?</button>', h, re.DOTALL).group(0)
+        assert "aria-label" not in b, b
+        assert b.endswith('<span data-prefs-label>EU · Card · €</span><span class="sr-only">, delivery settings, change</span></button>'), b
+
+
+def test_head_preloads_the_first_view_fonts(site_build):
+    h = (site_build / "index.html").read_text()
+    preloads = re.findall(r'<link rel="preload" href="([^"]+)" as="font"', h)
+    assert preloads == ["static/fonts/albert-sans-400.woff2", "static/fonts/schibsted-grotesk-800.woff2"]
+    css = (site_build / "static/d.css").read_text()
+    assert 'font-weight: 800' in css and re.search(r"h1 \{ font: 800 [^;]*var\(--serif\)", css)
+    assert all((site_build / p).exists() for p in preloads) and (site_build / "static/fonts/plex-sans-400.woff2").exists()
+
+
+def test_watch_note_promises_only_the_mark_and_filter(site_build):
+    h = next(site_build.glob("phones/*.html")).read_text()
+    assert "Watched phones get a mark and a filter on the phone list (saved on this device)." in h
+    assert "since your last visit" not in h

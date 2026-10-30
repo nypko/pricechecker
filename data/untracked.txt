@@ -26,6 +26,7 @@ mobilemarvel	huawei-matebook-fold-2026/china
 mobilemarvel	huawei-matebook-fold-ultimate-design-2025/china
 mobilemarvel	huawei-pura-80-pro-plus/china
 mobilemarvel	huawei-pura-x/china
+mobilemarvel	iphone-duo/china
 mobilemarvel	leica-leitzphone-xiaomi-17-ultra-leica-edition/global
 mobilemarvel	oneplus-15-with/china
 mobilemarvel	oppo-bubble/china
@@ -197,7 +198,6 @@ giztop	motorola-x40/china
 giztop	motorola-x50-ultra/china
 giztop	motorola-x70-air-pro/china
 giztop	motorola-x70-air/china
-giztop	nothing-phone-3/china
 giztop	nothing-phone-3a-pro/china
 giztop	nubia-navix-ultra/china
 giztop	oneplus-12r-genshin-impact-edition/china
@@ -242,7 +242,6 @@ giztop	red-magic-9s-pro-plus/china
 giztop	red-magic-9s-pro/china
 giztop	red-magic-gaming-pad-pro/china
 giztop	red-magic-gaming-tablet-5-pro/china
-giztop	redmagic-gaming-tablet-3-pro-golden-saga/china
 giztop	redmi-k100-pro/china
 giztop	redmi-k80-ultra/china
 giztop	redmi-k90-max/china

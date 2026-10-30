@@ -111,7 +111,7 @@ const edCls = (e) => (e === "china" ? "cn" : "gl");
 /** One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what is
  *  left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the state
  *  text if the version has rows there, else "Not sold with <memory>" and a button to the nearest memory it is sold with.
- *  sw = false: the plain box for a page with no version switch (no tab button, no "means" link). */
+ *  sw = false: the plain box for a page with no version switch (no tab button, no "means" link; the nearest button stays). */
 export function priceBox(rows, edition, storage, s, labels, on = false, sw = true) {
   const b = bestOf(rows, edition, storage), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
@@ -130,7 +130,7 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     if (!all.length) return none("No current price for your settings") + "</div>";
     const nm = nearestMemory(rows, edition, storage);
     return none(`Not sold with ${memShort(storage)}`) +
-      (sw && nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)} →</button>` : "") + "</div>";
+      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)} →</button>` : "") + "</div>";
   }
   return `${root}" data-block="price_box" data-e="${edition}">${tabOpen}` +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div>` +

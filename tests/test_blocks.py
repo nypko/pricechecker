@@ -483,9 +483,10 @@ def test_price_box_not_sold_with_the_memory_offers_the_nearest(oppo):
     # China does have it: priced, no "not sold" text
     ch = macro("price_box", rows, "china", "16/1024", view.DEFAULT, labels, True)
     assert "€1,700" in text(ch) and "Not sold" not in text(ch) and "near" not in ch
-    # the plain box (compare page) states it but has no button
+    # the plain box (compare page) states it and keeps the nearest button, but has no tab
     plain = macro("price_box", rows, "global", "16/1024", view.DEFAULT, labels, False, False)
-    assert "Not sold with 16 GB + 1 TB" in text(plain) and "<button" not in plain and "role=" not in plain
+    assert "Not sold with 16 GB + 1 TB" in text(plain) and plain.count("<button") == 1 and 'class="near" data-m="16/512"' in plain
+    assert "role=" not in plain and "pickbtn" not in plain
     # sold out at that memory: the existing text, no nearest button (Global's 16/1024 is sold out in the second phone)
     so = macro("price_box", rows_sold, "global", "16/1024", view.DEFAULT, labels, True)
     assert "Sold out at every store we check" in text(so) and "Not sold" not in text(so) and "near" not in so

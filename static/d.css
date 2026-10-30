@@ -509,8 +509,6 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .cmp .cm-box .side .st { font-size: .78rem; }
 .cmp .cm-box .side .mem { font-size: .76rem; }
 .cmp .cm-box .side .go { min-height: 44px; font-size: .82rem; }
-.cmp .cm-box.near .side { border-style: dashed; }
-.cmp .cm-near { margin: 6px 2px 0; font-size: .76rem; color: var(--warn); line-height: 1.35; }
 .cmp .cm-box.low { box-shadow: 0 0 0 1px var(--good); border: 1px solid var(--good); border-radius: 16px; background: var(--paper); }
 .cmp .cm-box.low .side { border-color: transparent; }
 .cmp .cm-win { margin: 0; padding: 0 12px 10px; font: 700 .8rem var(--body); color: var(--good); }

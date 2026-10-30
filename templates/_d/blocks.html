@@ -24,8 +24,8 @@
     is left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the
     state text if the version has rows there (sold out, not delivered, stale), else "Not sold with <memory>" and a
     button to the nearest memory it is sold with. on: this version is the one the page shows in the details panel.
-    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no nearest button and no
-    "means" link, just the price and the store link. -#}
+    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no "means" link; the
+    nearest button stays, so a column can reprice the page. -#}
 {%- macro price_box(rows, edition, storage, s, labels, on=False, switch=True) -%}
 {%- set b = best_of(rows, edition, storage) -%}
 {%- set o_ed = "global" if edition == "china" else "china" -%}
@@ -49,7 +49,7 @@
 {%- else -%}
 {%- set nm = nearest_memory(rows, edition, storage) -%}
 <div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">Not sold with {{ mem_short(storage) }}</p>{{ tab_close|safe }}
-{%- if switch and nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }} →</button>{% endif -%}
+{%- if nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }} →</button>{% endif -%}
 </div>
 {%- endif -%}
 {%- else -%}

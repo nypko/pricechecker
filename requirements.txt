@@ -1,5 +1,6 @@
-requests>=2.31
-PyYAML>=6.0
-Jinja2>=3.1
-pytest>=8.0
-Pillow>=11
+# exact versions (CI installs these; bump on purpose, after the tests pass locally)
+requests==2.34.2
+PyYAML==6.0.3
+Jinja2==3.1.6
+pytest==9.1.1
+Pillow==13.0.0

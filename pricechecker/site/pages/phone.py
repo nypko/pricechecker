@@ -9,7 +9,7 @@ from ... import derive, specs
 from ..blocks import PLACE, ledger_rows
 from ..context import SiteData
 from ..data_files import offer_inputs
-from ..view import DEFAULT, best_of, gap
+from ..view import DEFAULT, best_of, default_pick
 from ..view import rows as view_rows
 
 EDS = ("china", "global")   # box order: the China version (red) left, Global (blue) right
@@ -89,10 +89,11 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
     labels = p["ed_label"]
     rows = _rows(p, data.tax_cfg)
     eds = [e for e in EDS if any(r["edition"] == e for r in rows)]
-    first = next((r for r in rows if r["state"] == "ok"), None)
-    ed = first["edition"] if first else (eds[0] if eds else None)
-    top = best_of(rows, ed) if ed else None
-    mem = top["storage"] if top else next((r["storage"] for r in rows if r["edition"] == ed), None)
+    # the page opens on the cheapest current row of both versions (its total is the <title> price); with none, the first
+    # version's first listed memory
+    dp = default_pick(rows)
+    ed = dp["ed"] if dp else (eds[0] if eds else None)
+    mem = dp["mem"] if dp else next((r["storage"] for r in rows if r["edition"] == ed), None)
     best = best_of(rows, ed, mem) if ed else None
     pick = [r for r in rows if r["edition"] == ed and r["storage"] == mem]
     rest = [r for r in pick if r is not best]
@@ -107,7 +108,7 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
     files = ctx.get("data_files") or {}
     rel = lambda path: ctx["root_rel"] + path.lstrip("/") if path else ""
     return {
-        "s": DEFAULT, "rows": rows, "eds": eds, "both": all(best_of(rows, e) for e in EDS), "gap": gap(rows),
+        "s": DEFAULT, "rows": rows, "eds": eds,
         "missing": [_missing(p, e, labels) for e in EDS if e not in eds] if eds else [],
         "ed": ed, "mem": mem, "best": best, "pick": pick, "rest": rest,
         "filters": [(k, label, sum(1 for r in cand if f(r))) for k, label, f in FILTERS],

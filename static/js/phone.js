@@ -1,30 +1,18 @@
 // The phone page (spec §5.2, templates/phone.html). The server renders every price block for the default settings; this
-// module re-renders them with blocks.js when the visitor's settings differ (or when they pick another version or
-// memory), from the phone's v1 data file and the tax file, and wires the page: version boxes, memory chips, delivery
+// module re-renders them with blocks.js when the visitor's settings differ (or when they pick another memory or
+// version), from the phone's v1 data file and the tax file, and wires the page: memory chips, version boxes, delivery
 // filters with counts, the ledger sort, the buy bar, Watch and Share. No markup of its own beyond blocks.js output.
 // The pure helpers are exported for tests/js/phone_cases.mjs; everything touching the page is guarded.
-import { rows as viewRows, bestOf, gap } from "./view.js";
+import { rows as viewRows, bestOf, defaultPick, pickForMemory } from "./view.js";
 import * as B from "./blocks.js";
 import { wireShare } from "./share.js";
 import { load, isDefault, watched, toggleWatch, PLACE } from "./settings.js";
 
-/** The memory to show after switching to `edition`: the one shown when that version has a current price for it, else
- *  the version's best memory (its first ok row), else its first listed memory, else the one shown. */
-export function pickAfterSwitch(rows, edition, storage) {
-  if (bestOf(rows, edition, storage)) return storage;
-  const best = bestOf(rows, edition);
-  if (best) return best.storage;
-  const any = rows.find((r) => r.edition === edition);
-  return any ? any.storage : storage;
-}
-
-/** The version and memory the page opens on: the best current row's (pricechecker/site/pages/phone.py: the same). */
-export function initialPick(rows, eds) {
-  const first = rows.find((r) => r.state === "ok");
-  const ed = first ? first.edition : eds[0] || null;
-  const top = ed ? bestOf(rows, ed) : null;
-  const mem = top ? top.storage : (rows.find((r) => r.edition === ed) || {}).storage || null;
-  return { ed, mem };
+/** The pick a shared link ("#16-512-china") opens: its memory for both boxes, on its version when that has a current price
+ *  there, else the other version, else the default pick (view.js pickForMemory); null when the hash isn't a pick. */
+export function pickFromHash(rows, hash) {
+  const h = parseHash(hash);
+  return h ? pickForMemory(rows, h.mem, h.ed) : null;
 }
 
 /** "Other stores" delivery filters (pages/phone.py FILTERS: the same three tests). */
@@ -53,11 +41,11 @@ export function parseHash(hash) {
 }
 
 /** A selector for the same control after a repaint: its container's id, its first class and its data-e / data-m /
- *  data-s / data-f value ("#duel button.pickbtn[data-e=\"china\"]"); null for anything else. */
+ *  data-s / data-f value ("#duel button.near[data-m=\"12/256\"]"); null for anything else. */
 export function focusSelector(el) {
   if (!el || !el.getAttribute || el.tagName !== "BUTTON") return null;
   const attr = ["data-e", "data-m", "data-s", "data-f"].find((a) => el.hasAttribute(a));
-  const box = attr && el.closest("[id]");
+  const box = attr && el.parentElement && el.parentElement.closest("[id]");   // not the button itself: a tab has an id of its own
   if (!box) return null;
   const cls = el.classList && el.classList[0];
   return `#${box.id} button${cls ? "." + cls : ""}[${attr}="${String(el.getAttribute(attr)).replace(/["\\]/g, "\\$&")}"]`;
@@ -76,14 +64,14 @@ function wire(root) {
   const loadDocs = () => docs || (docs = Promise.all([getJson(root.dataset.file), getJson(root.dataset.tax)]).catch((e) => { docs = null; throw e; }));
   const set = (el, h) => { if (el) el.innerHTML = h; };
 
-  // ---- buy bar: pinned once the price boxes have scrolled away, hidden while the verdict's own button shows ----
+  // ---- buy bar: pinned once the price boxes have scrolled away, hidden while the details panel's own button shows ----
   const seen = { duel: true, cta: false };
   let ctaObs = null;
   const bb = () => { const bar = document.querySelector("#s-buybar .buybar"); if (bar) bar.hidden = seen.duel || seen.cta; };
   const watchCta = () => {
     if (!ctaObs) return;
     ctaObs.disconnect(); seen.cta = false;
-    const c = document.querySelector("#s-verdict .cta");
+    const c = document.querySelector("#pick-panel .cta");
     if (c) ctaObs.observe(c);
     bb();
   };
@@ -97,9 +85,8 @@ function wire(root) {
   function paint(rows, s) {
     if (!$("duel")) return;
     const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;   // keyboard focus survives the repaint
-    set($("duel"), eds.map((e) => B.priceBox(rows, e, s, L, e === S.ed)).join(""));
-    set($("s-gap"), B.gapLine(gap(rows), ["china", "global"].every((e) => bestOf(rows, e)), s, L));
-    set($("s-mems"), B.memChips(rows, S.ed, S.mem, s));
+    set($("s-mems"), B.memChips(rows, S.mem, s));
+    set($("duel"), eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed)).join(""));   // each box's tab button repaints with aria-selected
     const best = bestOf(rows, S.ed, S.mem), pick = rows.filter((r) => r.edition === S.ed && r.storage === S.mem);
     set($("s-verdict"), B.verdict(best, pick, s, L, now));
     set($("s-receipt"), B.receipt(best, s, L));
@@ -141,13 +128,17 @@ function wire(root) {
   }
 
   // the current settings' rows (loading the files the first time), then paint
+  // fresh: the settings changed, so the pick is the default (until the visitor picks) or is re-checked against the new rows
+  // pickOf(rows): the visitor's tap (or a shared link) -> the new {ed, mem}, applied as it is: a tap on a box whose version
+  //   isn't sold with the memory keeps it, that box says so
   // remember: also put the pick in the address ("#16-512-china"), as the live site did, without a history entry
-  function update(fresh = false, remember = false) {
+  function update(fresh = false, remember = false, pickOf = null) {
     const s = load();
     return loadDocs().then(([doc, tax]) => {
       const rows = viewRows(doc.offers, tax, s);
-      if (fresh && !S.touched) Object.assign(S, initialPick(rows, eds));
-      else if (S.ed) S.mem = pickAfterSwitch(rows, S.ed, S.mem);
+      if (pickOf) Object.assign(S, pickOf(rows));
+      else if (fresh && !S.touched) Object.assign(S, defaultPick(rows));
+      else if (fresh && S.mem) Object.assign(S, pickForMemory(rows, S.mem, S.ed));   // the memory may have no current price now
       paint(rows, s);
       if (remember && history.replaceState) history.replaceState(null, "", location.pathname + location.search + pickHash(S.ed, S.mem));
       if (!isDefault(s) || moreFor) paintMore(s, tax);
@@ -158,10 +149,12 @@ function wire(root) {
   root.addEventListener("pointerdown", () => { if (root.dataset.file) loadDocs().catch(() => {}); }, { once: true });   // warm up before the tap lands
   root.addEventListener("click", (ev) => {
     const t = ev.target;
-    const pick = t.closest("#duel button[data-e]"), mem = t.closest("#s-mems button[data-m]");
+    const tab = t.closest("#duel button.pickbtn"), near = t.closest("#duel button.near"), mem = t.closest("#s-mems button[data-m]");
     const f = t.closest("#dfilt button[data-f]"), sort = t.closest("#s-ledger button[data-s]");
-    if (pick) { S.touched = true; S.ed = pick.dataset.e; S.f = {}; update(false, true); }
-    else if (mem && !mem.disabled) { S.touched = true; S.mem = mem.dataset.m; S.f = {}; update(false, true); }
+    const pickMem = (m, ed) => { S.touched = true; S.f = {}; update(false, true, (rows) => pickForMemory(rows, m, ed)); };
+    if (tab) { S.touched = true; S.f = {}; const ed = tab.dataset.e; update(false, true, () => ({ ed, mem: S.mem })); }
+    else if (near) pickMem(near.dataset.m, near.closest(".side").dataset.e);
+    else if (mem && !mem.disabled) pickMem(mem.dataset.m, S.ed);
     else if (f && !f.disabled) { S.f[f.dataset.f] = !S.f[f.dataset.f]; update(); }
     else if (sort) { S.sort = sort.dataset.s; update(); }
   });
@@ -170,8 +163,10 @@ function wire(root) {
   window.addEventListener("storage", (e) => { if (!e.key || (e.key.startsWith("pc-") && e.key !== "pc-watch")) again(); });
   // a shared link's pick ("#16-512-china"), else other settings than the defaults: paint once the files are in
   const shared = parseHash(location.hash);
-  if (shared && eds.includes(shared.ed) && root.dataset.file) { Object.assign(S, shared, { touched: true }); update(); }
-  else if (!isDefault(load()) && root.dataset.file) again();
+  if (shared && root.dataset.file) {
+    S.touched = true;
+    update(false, false, (rows) => { const p = pickFromHash(rows, location.hash); return p && eds.includes(p.ed) ? p : {}; });
+  } else if (!isDefault(load()) && root.dataset.file) again();
 
   // ---- the buyer report form posts natively; the endpoint sends the visitor back here with #report-thanks or #report-error ----
   const rs = $("rf-status");

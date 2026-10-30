@@ -219,8 +219,6 @@ footer p { margin: 0 0 8px; }
 .side.on.gl { box-shadow: 0 0 0 2px var(--gl); border-color: var(--gl); }
 .side .go { margin-top: auto; padding: 0 10px; text-align: center; line-height: 1.2; }
 .side .ok, .side .unk { margin-bottom: 10px; }
-.side .pick { all: unset; display: block; margin-top: 8px; font: 600 .78rem var(--body); color: var(--ink-2); cursor: pointer; text-align: center; min-height: 28px; line-height: 28px; }
-.side .pick:focus-visible { outline: 2px solid var(--ink); border-radius: 6px; }
 .duel { margin-top: 4px; }
 
 /* the buy bar: price, what it is, and the store button, pinned to the bottom once the boxes are gone */

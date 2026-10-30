@@ -95,7 +95,7 @@ def _phone(site_build, pid):
 def test_phone_page_sections(site_build):
     h = _phone(site_build, "oppo-find-x9-ultra")
     assert h.count('data-block="price_box"') == 2
-    for blk in ("gap_line", "mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
+    for blk in ("mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
         assert f'data-block="{blk}"' in h, blk
     for t in ("Compare every offer (", "What the China version means", "Price history by store", "More from Oppo",
               "Oppo Find X9 Ultra price: <em>China vs Global</em>", "data-for"):
@@ -147,7 +147,6 @@ def test_china_only_phone_has_one_box_and_reason(site_build):
     h = _phone(site_build, "oneplus-16")
     assert h.count('data-block="price_box"') == 1
     assert "No Global version so far: OnePlus sells this phone in China only" in h
-    assert 'data-block="gap_line"' not in h
     assert "OnePlus 16 price: <em>China version</em>" in h
 
 
@@ -159,14 +158,14 @@ def test_phone_pages_within_budget(site_build):
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
-def test_switching_version_falls_back_to_its_best_memory():
+def test_memory_first_pick_rules_in_the_page_module():
     r = subprocess.run(["node", str(ROOT / "tests/js/phone_cases.mjs")], check=False, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
 
 
 def test_phone_page_report_status_and_live_verdict():
     """The report form (when switched on) has the status line that #report-thanks / #report-error fill; the verdict's
-    slot is a polite live region, so a repainted total is read out."""
+    panel is a polite live region, so a repainted total is read out."""
     from pricechecker import fx, run, terms
     from pricechecker.site import _env, context, offers
     from pricechecker.site.pages import phone
@@ -178,17 +177,17 @@ def test_phone_page_report_status_and_live_verdict():
     h = phone.render(_env(), data, ctx, phones)["phones/oppo-find-x9-ultra.html"]
     report = h[h.index('class="report"'):]
     assert 'action="../api/report"' in report and 'id="rf-status"' in report and 'role="status"' in report
-    assert '<div id="s-verdict" aria-live="polite">' in h
+    assert re.search(r'<section class="verdict panel" id="pick-panel"[^>]* aria-live="polite"', h)
 
 
 def test_memory_chip_without_a_current_price_is_disabled(site_build):
     from pricechecker.site import _env
-    tpl = _env().from_string('{% from "_d/blocks.html" import mem_chips %}{{ mem_chips(rows, "china", "12/256", s) }}')
+    tpl = _env().from_string('{% from "_d/blocks.html" import mem_chips %}{{ mem_chips(rows, "12/256", s) }}')
     from pricechecker.site.view import DEFAULT
     rows = [{"edition": "china", "storage": "12/256", "state": "ok", "total": 1000, "unknown": 0},
             {"edition": "china", "storage": "16/512", "state": "stale", "total": 900, "unknown": 0}]
     h = tpl.render(rows=rows, s=DEFAULT)
-    assert 'data-m="16/512" aria-pressed="false" disabled>16 GB · 512 GB · –<' in h
+    assert re.search(r'data-m="16/512" aria-pressed="false" disabled>', h)
     assert not re.search(r'data-m="12/256"[^>]*disabled', h)
 
 
@@ -907,7 +906,7 @@ def test_phone_page_sections_on_made_up_prices():
                                        ("wonda", pid, "global", "12/256", 1300.0, True), ("giztop", pid, "global", "16/512", 1500.0, True)])
     h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
     assert h.count('data-block="price_box"') == 2
-    for blk in ("gap_line", "mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
+    for blk in ("mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
         assert f'data-block="{blk}"' in h, blk
     assert "Oppo Find X9 Ultra price: <em>China vs Global</em>" in h and "Compare every offer (" in h
 
@@ -917,8 +916,54 @@ def test_china_only_phone_on_made_up_prices():
     pid = "oneplus-16"
     data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 900.0, True), ("giztop", pid, "china", "16/512", 1000.0, True)])
     h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
-    assert h.count('data-block="price_box"') == 1 and 'data-block="gap_line"' not in h
+    assert h.count('data-block="price_box"') == 1
     assert "No Global version so far: OnePlus sells this phone in China only" in h and "OnePlus 16 price: <em>China version</em>" in h
+
+
+def _memory_first(h):
+    """The phone page's memory-first structure: the chips, then the boxes, then the one details panel."""
+    assert 'data-block="gap_line"' not in h and 'id="s-gap"' not in h
+    assert h.count('id="pick-panel"') == 1
+    assert h.index('id="s-mems"') < h.index('id="duel"') < h.index('id="s-verdict"') < h.index('id="s-receipt"')
+
+
+def test_phone_page_is_memory_first_on_made_up_prices():
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "china", "16/512", 1100.0, True),
+                                       ("wonda", pid, "global", "12/256", 1300.0, True), ("giztop", pid, "global", "16/512", 1500.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    _memory_first(h)
+    assert 'id="duel" role="tablist"' in h and 'class="pick"' not in h
+    assert h.count('data-block="mem_chips"') == 1 and h.count('role="tab"') == 2
+    assert 'data-mem="12/256"' in h and 'data-ed="china"' in h
+    assert len(h.encode()) <= 60_000
+
+
+def test_default_pick_total_is_the_title_price_on_made_up_prices():
+    """The panel opens on the cheapest current row of both versions: its total is the <title> price."""
+    from pricechecker.site.pages import phone
+    ids = ("oppo-find-x9-ultra", "oneplus-16", "google-pixel-11")
+    data, phones, env, ctx = _made_up([("wonda", ids[0], "china", "16/512", 1100.0, True), ("giztop", ids[0], "global", "12/256", 1000.0, True),
+                                       ("wonda", ids[0], "global", "16/512", 1200.0, True),
+                                       ("wonda", ids[1], "china", "12/256", 900.0, True), ("giztop", ids[1], "china", "16/512", 800.0, True),
+                                       ("wonda", ids[2], "global", "12/256", 700.0, True), ("giztop", ids[2], "china", "12/256", 760.0, True)])
+    out = phone.render(env, data, ctx, phones)
+    for pid in ids:
+        h = out[f"phones/{pid}.html"]
+        _memory_first(h)
+        title = re.search(r"<title>.*?: from €([\d,]+)", h)[1]
+        panel = h[h.index('id="pick-panel"'):]
+        total = re.search(r'<div class="total num">[≈]?€([\d,]+)', panel)[1]
+        assert total == title, pid
+
+
+def test_phone_page_without_listed_memory_has_a_panel_and_no_chips():
+    from pricechecker.site.pages import phone
+    pid = "oneplus-16"
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "base", 900.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    assert h.count('id="pick-panel"') == 1 and 'data-block="mem_chips"' not in h and 'data-mem="base"' in h
 
 
 def _home_row(h, pid):

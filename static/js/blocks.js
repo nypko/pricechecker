@@ -111,7 +111,7 @@ const edCls = (e) => (e === "china" ? "cn" : "gl");
 /** One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what is
  *  left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the state
  *  text if the version has rows there, else "Not sold with <memory>" and a button to the nearest memory it is sold with.
- *  sw = false: the plain box for a page with no version switch (no tab button, no pick buttons, no "means" link). */
+ *  sw = false: the plain box for a page with no version switch (no tab button, no "means" link). */
 export function priceBox(rows, edition, storage, s, labels, on = false, sw = true) {
   const b = bestOf(rows, edition, storage), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
@@ -137,8 +137,7 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     (b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${money(other.total - b.total, s.cur)} less</p>` : "") +
     `<p class="st">at <b>${esc(b.store)}</b></p>` +
     (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose +
-    (sw && edition === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") + go(b, "go") +
-    (sw && other ? `<button type="button" class="pick" data-e="${edition}">${on ? "Details below ↓" : "Show this version ↓"}</button>` : "") + "</div>";
+    (sw && edition === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") + go(b, "go") + "</div>";
 }
 
 /** Above the boxes: one chip per memory either version has a row for (no "base"), smallest first, sizes only; a memory

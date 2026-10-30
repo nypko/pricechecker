@@ -24,7 +24,7 @@
     is left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the
     state text if the version has rows there (sold out, not delivered, stale), else "Not sold with <memory>" and a
     button to the nearest memory it is sold with. on: this version is the one the page shows in the details panel.
-    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no pick buttons and no
+    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no nearest button and no
     "means" link, just the price and the store link. -#}
 {%- macro price_box(rows, edition, storage, s, labels, on=False, switch=True) -%}
 {%- set b = best_of(rows, edition, storage) -%}
@@ -60,7 +60,6 @@
 {{ tab_close|safe }}
 {%- if switch and edition == "china" %}<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>{% endif -%}
 {{ _go(b, "go") }}
-{%- if switch and other %}<button type="button" class="pick" data-e="{{ edition }}">{{ "Details below ↓" if on else "Show this version ↓" }}</button>{% endif -%}
 </div>
 {%- endif -%}
 {%- endmacro -%}

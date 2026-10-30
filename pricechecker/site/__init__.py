@@ -41,6 +41,7 @@ from .context import SiteData, _ship_notes, _tax_config
 from .offers import OLD_AFTER, _changes, _models, _too_old, _trust
 from .pages import compare, home, phone, static, stores
 from .pages import history as history_pages
+from .pages import specs as specs_pages
 from .pages.stores import REGION_CUR, REGION_LABEL, _ship_cell, _store_pages
 from .seo import _feeds, _product_ld, _seo_files, _title_price
 
@@ -51,7 +52,7 @@ __all__ = ["CURRENCIES", "EDITIONS", "EDITION_LABEL", "LABELS", "OLD_AFTER", "OU
            "_usd_money", "build", "ed_labels", "spec"]
 
 OUT = Path("build")
-PAGES = (home, phone, history_pages, compare, stores, static)
+PAGES = (home, phone, specs_pages, history_pages, compare, stores, static)
 
 
 def _write(files: dict[str, str]) -> None:

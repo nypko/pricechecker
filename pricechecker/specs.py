@@ -162,3 +162,14 @@ def differences(sheet: dict) -> int:
                     and v["global"] is not None and v["china"] != v["global"]:
                 n += 1
     return n
+
+
+def spec_count(sheet: dict) -> int:
+    """How many fields the sheet's groups list (what "All N specs" counts)."""
+    return sum(len(fields or {}) for fields in (sheet.get("groups") or {}).values())
+
+
+def has_page(sheet: dict) -> bool:
+    """Whether the phone gets a phones/<id>/specs page, and so a link to it: the sheet lists at least one field.
+    The phone page and the specs page both use this one rule."""
+    return spec_count(sheet) > 0

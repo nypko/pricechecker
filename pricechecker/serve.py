@@ -11,8 +11,10 @@ BUILD = Path(__file__).resolve().parent.parent / "build"
 class Handler(http.server.SimpleHTTPRequestHandler):
     def translate_path(self, path):
         local = Path(super().translate_path(path))
-        if not local.exists() and local.with_name(local.name + ".html").is_file():
-            return str(local.with_name(local.name + ".html"))
+        page = local.with_name(local.name + ".html")
+        # a folder without an index (phones/x/ holds only specs.html) must not hide the page phones/x.html
+        if page.is_file() and not (local.exists() and (not local.is_dir() or (local / "index.html").is_file())):
+            return str(page)
         return str(local)
 
 

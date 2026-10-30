@@ -257,3 +257,32 @@ def test_home_rows_carry_the_drop_mark(site_build):
         assert "mark" not in row(pid), pid
     assert '<ul class="pairs" id="list" data-cap="20"><' not in h and re.search(r'<ul class="pairs" id="list"[^>]*>\s*<li class="pair"', h)
     assert h.count('class="mark drop"') == len(with_drop)
+
+
+# --- Task 7: specs pages ---
+
+def test_specs_page_for_a_full_sheet(site_build):
+    html_ = (site_build / "phones/oppo-find-x9-ultra/specs.html").read_text()
+    assert "Show only the 7 differences" in html_
+    assert 'class="split"' in html_ and "page only" not in html_
+    assert 'href="../oppo-find-x9-ultra"' in html_
+    assert "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/" in html_ and "26 Oct 2026" in html_
+    # same-hardware field only one page lists: one plain cell, not split; "in the box" splits with Not listed
+    assert "AMOLED, Gorilla Glass Victus 2</td>" in html_ and "Not listed" in html_
+    assert html_.count('class="split"') == 8   # the 7 differences + "In the box" (market-dependent, split but not counted)
+    assert "static/js/specs.js" in html_
+
+
+def test_specs_page_exists_exactly_where_the_phone_page_links_it(site_build):
+    from pricechecker import specs
+    sheets = specs.load()
+    linked = 0
+    for pid, sheet in sheets.items():
+        page = site_build / f"phones/{pid}/specs.html"
+        phone = site_build / f"phones/{pid}.html"
+        if not phone.exists():
+            continue
+        has_link = f'href="{pid}/specs"' in phone.read_text()
+        assert has_link == page.exists() == specs.has_page(sheet), pid
+        linked += has_link
+    assert linked and not all(specs.has_page(s) for s in sheets.values())

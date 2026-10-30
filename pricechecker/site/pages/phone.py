@@ -113,7 +113,7 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "filters": [(k, label, sum(1 for r in cand if f(r))) for k, label, f in FILTERS],
         "n_ledger": len(ledger_rows(rows)), "hist": hist,
         "bands": [_bands(sheet, e) for e in (eds or p["editions"])],
-        "spec_count": sum(len(f or {}) for f in sheet["groups"].values()) if sheet.get("groups") else 0,
+        "spec_count": specs.spec_count(sheet) if specs.has_page(sheet) else 0,
         "more": [(q, _rows(q, data.tax_cfg)) for q in more],
         "more_meta": [{"id": q["id"], "name": q["name"], "announced": q["announced"], "file": rel(files.get(f"phone/{q['id']}"))}
                       for q in more],

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{#- Spec §5.3. Rows from pages/specs.py (config/specs/<id>.yaml); static/js/specs.js only toggles "Show only the N differences". -#}
+{% set crumbs = [(p.name, "phones/" ~ p.slug), ("Specs", "phones/" ~ p.slug ~ "/specs")] %}
+{% set L = v.labels %}
+{% block title %}{{ p.name }} specs{% if p.editions|length > 1 %}: {{ L.china }} vs {{ L.global }} version{% endif %} – DoorPrice{% endblock %}
+{% block description %}{{ p.name }} full specs from {{ p.brand }}'s own spec page{% if v.sources|length > 1 %}s{% endif %}{% if v.diffs %}, with the {{ v.diffs }} that differ between the {{ L.china }} and {{ L.global }} versions{% endif %}, and which EU network bands each version has.{% endblock %}
+{% macro half(e, text) -%}
+<div class="half {{ 'cn' if e == 'china' else 'gl' }}"><span class="htag">{{ L[e] }}</span>{% if text is none %}<span class="na">Not listed</span>{% else %}{{ text }}{% endif %}</div>
+{%- endmacro %}
+{% block main %}
+<div class="wrap" id="specs">
+  <p class="kicker"><a href="{{ root }}">All phones</a> · <a href="../{{ p.slug }}">{{ p.name }} prices</a></p>
+  <h1>{{ p.name }} specs{% if p.editions|length > 1 %}: <em>{{ L.china }} vs {{ L.global }}</em>{% endif %}</h1>
+  {%- for s in v.sources %}
+  <p class="src">{{ L[s.e] }} version: from <a href="{{ s.url }}" rel="noopener" target="_blank">{{ p.brand }}'s spec page</a>{% if s.lang %} (in {{ s.lang }}, translated){% endif %}, checked {{ s.day }}.</p>
+  {%- endfor %}
+  {%- for e in v.unread %}
+  <p class="src">{{ L[e] }} version: we haven't read its spec page yet. Most specs match; network bands and software can differ.</p>
+  {%- endfor %}
+  {%- if v.one_sided %}
+  <p class="src">Some specs appear on only one of {{ p.brand }}'s two pages. Where it's the same hardware we show it once, for both versions.</p>
+  {%- endif %}
+  {%- if v.diffs %}
+  <div class="difbar" id="difbar">
+    <span class="legend2"><i class="cn"></i>{{ L.china }} <i class="gl"></i>{{ L.global }}</span>
+    <span>{{ v.diffs }} specs differ between the versions; those cells are split.</span>
+    <button type="button" id="only" aria-pressed="false" data-all="Show all specs" data-only="Show only the {{ v.diffs }} differences" hidden>Show only the {{ v.diffs }} differences</button>
+  </div>
+  {%- endif %}
+  <nav class="jump" aria-label="Spec sections">
+    {%- for g in v.groups %}<a href="#{{ g.id }}">{{ g.title }}</a>{% endfor %}<a href="#bands-sec">Network bands</a>
+  </nav>
+  <div id="sheet">
+  {%- for g in v.groups %}
+    <section class="sgroup" id="{{ g.id }}"><h2>{{ g.title }}</h2>
+      <table class="sheet-t"><tbody>
+      {%- for r in g.rows %}
+        <tr{% if r.diff %} class="diff"{% endif %}><th scope="row">{{ r.label }}</th>
+        {%- if r.kind == "none" %}<td class="na">Not on {{ p.brand }}'s page</td>
+        {%- elif r.kind == "plain" %}<td>{{ r.text }}</td>
+        {%- else %}<td class="split-td"><div class="split">{{ half("china", r.china) }}{{ half("global", r.global) }}</div></td>{% endif %}</tr>
+      {%- endfor %}
+      </tbody></table>
+    </section>
+  {%- endfor %}
+  </div>
+  <section class="sgroup" id="bands-sec"><h2>Network bands</h2>
+  {%- for e, b in v.bands %}
+    {%- if not b %}
+    <p class="src"><b>{{ L[e] }} version:</b> not checked yet.</p>
+    {%- else %}
+    <table class="sheet-t" style="margin-bottom:10px"><tbody>
+      <tr><th scope="row">{{ L[e] }} version, EU check</th><td>
+        {%- if b.missing %}<span style="color:var(--warn);font-weight:600">Missing {{ b.missing|join(", ") }}</span>
+          {%- for band, why in b.why %}<br>Band {{ band }} = {{ why }}{% endfor %}
+        {%- else %}<span style="color:var(--good);font-weight:600">Has all the main EU bands</span>{% endif %}</td></tr>
+      <tr><th scope="row">4G LTE</th><td class="bandlist">{{ b.lte|join(" · ") }}{% if b.miss_lte %} · <b>missing {{ b.miss_lte|join(", ") }}</b>{% endif %}</td></tr>
+      <tr><th scope="row">5G</th><td class="bandlist">{% for n in b.nr %}n{{ n }}{{ " · " if not loop.last }}{% endfor %}{% if b.miss_nr %} · <b>missing {% for n in b.miss_nr %}n{{ n }}{{ ", " if not loop.last }}{% endfor %}</b>{% endif %}</td></tr>
+    </tbody></table>
+    {%- endif %}
+  {%- endfor %}
+    <p class="src">Main EU bands we check: LTE {{ v.eu.lte|join(", ") }}; 5G n{{ v.eu.nr|join(", n") }}. Operators differ, so check your own before buying.</p>
+  </section>
+  <p class="src" style="margin-top:20px">Copied from the brand's own spec page; we don't fill gaps from other sites. A value the brand doesn't give says so.</p>
+</div>
+{% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/specs.js?v={{ asset_v['js/specs.js'] }}"></script>{% endblock %}

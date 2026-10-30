@@ -1005,3 +1005,9 @@ def test_headers_hash_follows_the_script_text():
     a = headers.inline_script_hashes(['<script>x()</script><script type="application/ld+json">{}</script><script src="a.js"></script>'])
     b = headers.inline_script_hashes(["<script>y()</script>"])
     assert len(a) == 1 and a != b and a[0] in headers.csp(a)
+
+
+def test_privacy_says_single_reports_are_public_and_watch_keeps_no_price(site_build):
+    t = " ".join((site_build / "privacy.html").read_text().split())
+    assert "reviewed in a public GitHub issue and saved in our public GitHub repository" in t
+    assert "not single reports" not in t and "the price you last saw" not in t

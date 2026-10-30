@@ -82,7 +82,7 @@
     {%- if sp.sources.changed %} <b>{{ sp.sources.changed }}</b>{% else %} <span class="muted">no wording change recorded yet</span>{% endif %}.
     {%- if sp.sources.read %} <span class="muted">The pages were last read {{ sp.sources.read }}.</span>{% endif %}</p>
   {%- if sp.sources.pages %}
-  <ul class="plain">{% for u in sp.sources.pages %}<li><a href="{{ u.url }}" rel="nofollow noopener">{{ u.url|replace("https://", "") }}</a>
+  <ul class="plain">{% for u in sp.sources.pages %}<li><a href="{{ u.url }}" rel="sponsored nofollow noopener">{{ u.url|replace("https://", "") }}</a>
     {%- if u.checked %} <span class="muted small">read {{ u.checked }}{% if u.changed %}, wording changed {{ u.changed }}{% endif %}</span>{% endif %}</li>{% endfor %}</ul>
   {%- endif %}
   <p class="muted small">DoorPrice may earn a commission from some stores; it never changes the order. <a href="{{ root }}about">About DoorPrice</a>.</p>

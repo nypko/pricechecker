@@ -4,6 +4,7 @@ context.load() reads every input once (SiteData), offers.assemble() makes the pe
 renders its pages to {path: html}, seo makes robots.txt, sitemap.xml and the feeds; only build() writes files."""
 import hashlib
 import json
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -12,14 +13,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .. import terms
 from . import assets, blocks, cards, context, data_files, offers, seo
-from .charts import (
-    LABELS,
-    _chart,
-    _series,
-    _stats,
-    _ticks,
-    _trend,
-)
+from .charts import _trend
 from .common import (
     CURRENCIES,
     EDITION_LABEL,
@@ -42,10 +36,10 @@ from .pages import specs as specs_pages
 from .pages.stores import REGION_CUR, REGION_LABEL, _ship_cell, _store_pages
 from .seo import _feeds, _product_ld, _seo_files, _title_price
 
-__all__ = ["CURRENCIES", "EDITIONS", "EDITION_LABEL", "LABELS", "OLD_AFTER", "OUT", "REGION_CUR", "REGION_LABEL", "STORE_COLORS",
-           "SYMBOL", "SiteData", "_chart", "_feeds", "_models", "_money", "_product_ld",
-           "_seo_files", "_series", "_ship_cell", "_ship_notes", "_spec_parts", "_specs", "_stats", "_storage_key",
-           "_store_pages", "_tax_config", "_ticks", "_title_price", "_too_old", "_trend", "_trust",
+__all__ = ["CURRENCIES", "EDITIONS", "EDITION_LABEL", "OLD_AFTER", "OUT", "REGION_CUR", "REGION_LABEL", "STORE_COLORS",
+           "SYMBOL", "SiteData", "_feeds", "_models", "_money", "_product_ld",
+           "_seo_files", "_ship_cell", "_ship_notes", "_spec_parts", "_specs", "_storage_key",
+           "_store_pages", "_tax_config", "_title_price", "_too_old", "_trend", "_trust",
            "_usd_money", "build", "ed_labels", "spec"]
 
 OUT = Path("build")
@@ -96,7 +90,6 @@ def _share_cards(phones: list[dict], ctx: dict) -> None:
 
 def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: dict | None = None) -> None:
     data = context.load(catalog, stores_cfg, rates_info, terms_status)
-    LABELS.update({k: v.get("label", k) for k, v in stores_cfg.items()})
     phones = offers.assemble(data)
     env = _env()
     ctx = context.page_context(data, phones)
@@ -108,11 +101,9 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for name, (text, _) in assets.versioned_modules(Path("static/js")).items():   # imports between modules get ?v=<hash>
         (OUT / "static/js" / name).write_text(text)
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
-    # Cloudflare Pages caching: app.js, style.css, d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and
+    # Cloudflare Pages caching: d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and
     # icons keep their names when they change, so a month. Pages themselves keep the default (revalidate every visit).
-    (OUT / "_headers").write_text("/static/app.js\n  Cache-Control: public, max-age=31536000, immutable\n"
-                                  "/static/style.css\n  Cache-Control: public, max-age=31536000, immutable\n"
-                                  "/static/d.css\n  Cache-Control: public, max-age=31536000, immutable\n"
+    (OUT / "_headers").write_text("/static/d.css\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/js/*\n  Cache-Control: public, max-age=31536000, immutable\n"
                                   "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
                                   "/static/icons/*\n  Cache-Control: public, max-age=2592000\n"
@@ -124,8 +115,13 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     ctx["home_files"] = {r: files[f"home/{r}"] for r in terms.REGIONS}   # the home page's parts per region
     _share_cards(phones, ctx)   # also sets the cards' ?v= in ctx and on each phone, so it comes before the pages
     (OUT / "stores").mkdir()
+    rendered: list[str] = []
     for page in PAGES:
-        _write(page.render(env, data, ctx, phones))
-    _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg)))
+        files = page.render(env, data, ctx, phones)
+        _write(files)
+        rendered += files
+    # specs pages and monthly history pages are real pages too; the phones' own pages and the fixed ones are listed by seo itself
+    extra = [f[:-5] for f in rendered if re.fullmatch(r"phones/[^/]+/specs\.html|history/[^/]+/[^/]+\.html", f)]
+    _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg), extra))
     _write(seo._feeds(ctx["site"], phones, data.rows_all, stores_cfg, data.updated_at, drops.this_week(data, phones)))
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

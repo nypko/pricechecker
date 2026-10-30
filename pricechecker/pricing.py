@@ -1,6 +1,6 @@
 """The delivered-total rule: one phone offer plus the visitor's settings -> what it costs to get it.
 
-This is the single definition. static/app.js has a line-for-line mirror (cost1, taxRule1, unknowns, better) and
+This is the single definition. static/js/pricing.js has a line-for-line mirror (cost1, taxRule1, unknowns, better) and
 tests/fixtures/pricing_cases.json holds the cases both must agree on. No I/O here: offers and tax config come in as
 the dicts site.build already makes."""
 from dataclasses import dataclass

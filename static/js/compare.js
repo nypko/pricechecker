@@ -11,7 +11,7 @@ const EDS = ["china", "global"];   // box order: the China version (red) first, 
 // ---- pure helpers ----
 
 const size = (s) => { const p = String(s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; };
-/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (static/app.js distance()). */
+/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (the old front end's distance()). */
 function distance(a, b) {
   const x = size(a), y = size(b);
   if (!x || !y) return 99;

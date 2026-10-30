@@ -3,13 +3,13 @@
 {% block description %}This page doesn't exist on DoorPrice. Search the phones we compare, or start from the full list.{% endblock %}
 {% block head %}<meta name="robots" content="noindex">{% endblock %}
 {% block main %}
-<section class="intro">
+<div class="wrap tpage"><section class="prose">
   <h1>We can't find that page</h1>
   <p>The address may be mistyped, or the phone may no longer be on the site. Search for it, or start from the full list.</p>
   <form class="nf-search" action="/" method="get" role="search">
     <input id="nf-q" name="q" type="search" placeholder="Search phones, e.g. “x9 ultra”" aria-label="Search phones" enterkeyhint="search" autocomplete="off">
-    <button type="submit" class="prefs-done">Search</button>
+    <button type="submit">Search</button>
   </form>
   <p><a href="/">All phones</a> · <a href="/compare">Compare phones</a> · <a href="/stores">Stores compared</a></p>
-</section>
+</section></div>
 {% endblock %}

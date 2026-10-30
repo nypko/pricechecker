@@ -13,19 +13,6 @@ def test_editions_combined_per_model():
     assert models[1]["editions"] == ["global"]
 
 
-def test_chart_ticks_are_round():
-    assert site._ticks(1075, 1249) == [1050, 1100, 1150, 1200, 1250]
-    assert site._ticks(1099, 1700) == [1000, 1200, 1400, 1600, 1800]
-
-
-def test_chart_for_a_price_that_never_changed():
-    from datetime import datetime
-    first, now = datetime(2026, 10, 16, 8, 51), datetime(2026, 10, 19, 17, 0)
-    svg = site._chart({("wonda", "china"): [(first, 957.0)]}, {"wonda": "#123"}, now, "EUR")
-    assert "<path" in svg and "€" in svg                     # a flat line from first seen up to the last check
-    assert site._chart({("wonda", "china"): [(now, 957.0)]}, {"wonda": "#123"}, now) == ""   # seen only just now
-
-
 def test_variants_config_uses_catalog_ids_and_storage_keys():
     import re
     from pathlib import Path
@@ -53,15 +40,6 @@ def test_trend_reports_a_drop_since_first_seen_and_ignores_flat_prices():
     assert t == {"drop": round(50 / 950, 4), "since": "2026-10-16"}    # history shorter than a week: "since 16 Oct"
     assert site._trend([_row("2026-10-16T08:00:00Z", 950.0)], "x", offer, now) is None
     assert site._trend(rows, "x", {**offer, "available": False}, now) is None
-
-
-def test_stats_follow_the_cheapest_store_over_time():
-    from datetime import datetime
-    t1, t2, now = datetime(2026, 10, 16), datetime(2026, 10, 18), datetime(2026, 10, 20)
-    series = {("a", "china"): [(t1, 1000.0), (t2, 900.0)], ("b", "china"): [(t1, 950.0)]}
-    st = site._stats(series, now, "EUR")
-    assert (st["now"], st["low"], st["high"], st["avg"]) == ("€900", "€900", "€950", "€925")   # 2 days at 950, 2 at 900
-    assert st["low_at"] == "18 Oct" and st["since"] == "16 Oct"
 
 
 def test_delivery_days_come_from_store_terms():
@@ -163,24 +141,6 @@ def test_ship_cell_starting_price():
     assert site._ship_cell({"terms": {"shipping": {"UK": {"cost": 0}}}}, "UK", rates)["cost"] == "free"
 
 
-def test_sold_out_store_leaves_the_chart_and_stats():
-    from datetime import datetime
-    site.LABELS.setdefault("wonda", "Wonda")
-    site.LABELS.setdefault("giztop", "Giztop")
-    model = {"id": "x", "editions": ["china"], "brand": "Oppo"}
-    rates = {"USD": 1.0}
-    rows = [_row("2026-10-16T00:00:00Z", 900.0), _row("2026-10-16T00:00:00Z", 1000.0, store="giztop"),
-            _row("2026-10-18T00:00:00Z", 900.0, ok=False)]
-    s = site._series(rows, model, rates)
-    assert s[("wonda", "china")][-1][1] is None   # sold out from 18 Oct
-    st = site._stats(s, datetime(2026, 10, 20), "USD")
-    assert st["now"] == "$1,000" and st["low"] == "$900"
-    svg = site._chart(s, {"wonda": "#111", "giztop": "#222"}, datetime(2026, 10, 20), "USD")
-    assert "data-steps=\"" in svg and ":;" not in svg.split("Wonda")[0][-5:]
-    rows.append(_row("2026-10-19T00:00:00Z", 1000.0, ok=False, store="giztop"))
-    assert site._stats(site._series(rows, model, rates), datetime(2026, 10, 20), "USD") is None   # nothing in stock
-
-
 def test_store_prices_older_than_two_days_are_old():
     from datetime import datetime
     now = datetime(2026, 10, 20, 12)
@@ -199,7 +159,7 @@ def test_title_price_prefers_known_shipping_over_a_slightly_lower_unknown():
 
 
 def test_title_price_counts_an_offer_without_listed_ram_storage_as_the_phone_page_does():
-    # the page grid has a "not listed" row for it and app.js ranks it like any other (xiaomi-17-ultra-leica-edition)
+    # the page grid has a "not listed" row for it and the browser ranks it like any other (xiaomi-17-ultra-leica-edition)
     mk = lambda v, storage: {"available": True, "storage": storage, "money": {"eur": v}, "pay": {"card": 0},
                              "pay_ok": {"card": True}, "ship": {"EU": {"eur": 10}}, "duties": {"EU": True}}
     base, listed = mk(1137, "base"), mk(1292.95, "16/512")

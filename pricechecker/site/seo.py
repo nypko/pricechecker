@@ -63,8 +63,9 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     return out
 
 
-def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) -> dict[str, str]:
-    """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live."""
+def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), extra: list[str] = ()) -> dict[str, str]:
+    """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live.
+    extra: more page paths without .html (a phone's specs page, a history month page)."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
     live = bool(site_cfg.get("domain_live") and base)
     if site_cfg.get("testing"):   # the testing copy must never be indexed
@@ -79,7 +80,7 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = ()) 
     out = {"robots.txt": robots}
     if not live:
         return out
-    paths = ["", "drops", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+    paths = ["", "drops", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones] + sorted(extra)
     urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
     out["sitemap.xml"] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')

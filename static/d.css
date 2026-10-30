@@ -590,3 +590,29 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 @media (min-width: 720px) {
   .st-ship { grid-template-columns: 1fr 1fr; column-gap: 24px; }
 }
+
+/* ---- text pages: About, Methodology, Privacy, 404 ---- */
+.tpage { padding-block: 8px 28px; }
+.prose { max-width: 62ch; }
+.prose h1 { margin-top: 26px; }
+.prose h2 { margin: 30px 0 8px; font-size: 1.2rem; }
+.prose h3 { margin: 22px 0 6px; font: 700 1.02rem/1.2 var(--serif); }
+.prose p, .prose li { line-height: 1.65; }
+.prose ul, .prose ol { padding-left: 1.2em; display: grid; gap: 8px; }
+.prose ul.plain-list { columns: 2; column-gap: 24px; display: block; }
+.prose ul.plain-list li { break-inside: avoid; margin-bottom: 4px; }
+.prose .lede { font-size: 1.1rem; color: var(--ink-2); margin: 10px 0 8px; }
+.prose .muted { color: var(--ink-2); } .prose .small { font-size: .84rem; }
+.prose code { font-size: .9em; background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 1px 5px; }
+.prose a { text-decoration-thickness: 1.5px; }
+.link-btn { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+.table-wrap { overflow-x: auto; margin: 12px 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 4px 14px; }
+.tax-table { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.tax-table th, .tax-table td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tax-table tbody tr:last-child > * { border-bottom: 0; }
+.tax-table thead th { font: 600 .78rem var(--body); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); }
+.tax-table tbody th { font-weight: 600; white-space: nowrap; }
+.nf-search { display: flex; gap: 8px; margin: 18px 0; }
+.nf-search input { flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; border: 1.5px solid var(--rule); border-radius: 14px; background: var(--paper); color: var(--ink); font: 500 1rem var(--body); }
+.nf-search input:focus { outline: none; border-color: var(--ink); }
+.nf-search button { min-height: 48px; padding: 0 20px; border: 0; border-radius: 14px; background: var(--ink); color: var(--paper); font: 600 1rem var(--body); cursor: pointer; }

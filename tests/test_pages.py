@@ -29,7 +29,7 @@ def test_asset_hashes_cover_d_css_and_js_modules(site_build):
     stores, catalog = run.load_config()
     data = context.load(catalog, stores, fx.cached(), terms.saved_status())
     v = context.page_context(data, offers.assemble(data))["asset_v"]
-    assert {"app.js", "style.css", "d.css", "js/pricing.js"} <= set(v)
+    assert {"d.css", "js/pricing.js"} <= set(v) and not {"app.js", "style.css"} & set(v)
     assert all(len(h) == 10 for h in v.values())
 
 
@@ -691,3 +691,120 @@ def test_store_pages_escape_store_text():
     out = stores.render(_env(), data, context.page_context(data, phones), phones)
     assert "<script>x</script>" not in out["stores.html"] + out["stores/wonda.html"]
     assert "W&lt;script&gt;x&lt;/script&gt;" in out["stores/wonda.html"]
+
+
+# ---- Task 12: links, sitemap, old front end gone ----
+
+def _href_targets(html_text):
+    return re.findall(r'<a\b[^>]*?\shref="([^"]*)"', html_text)
+
+
+def _resolves(site_build, page, href):
+    import os
+    from urllib.parse import unquote, urlsplit
+    u = urlsplit(html.unescape(href))
+    if u.scheme or u.netloc or not u.path:
+        return True   # external (https:, mailto:, tel:, //host) or fragment/query only
+    rel = unquote(u.path)
+    if rel.startswith("mock/") or "/mock/" in rel:
+        return True
+    t = Path(os.path.normpath((site_build / rel.lstrip("/")) if rel.startswith("/") else (page.parent / rel)))
+    if rel.endswith("/") or t == site_build:
+        return (t / "index.html").exists()
+    return t.with_name(t.name + ".html").exists() or (t / "index.html").exists() or t.is_file()
+
+
+def test_internal_links_resolve(site_build):
+    bad = []
+    for f in site_build.rglob("*.html"):
+        if "mock" in f.relative_to(site_build).parts:
+            continue
+        for href in _href_targets(f.read_text()):
+            if not _resolves(site_build, f, href):
+                bad.append((str(f.relative_to(site_build)), href))
+    assert not bad, bad[:20]
+
+
+def test_home_search_links_resolve_to_home(site_build):
+    n = 0
+    for f in site_build.rglob("*.html"):
+        for href in _href_targets(f.read_text()):
+            if "?q=" in href and not href.startswith(("http", "mailto")):
+                n += 1
+                assert _resolves(site_build, f, href), (f, href)
+    assert n >= 1
+
+
+def _store_hosts():
+    from urllib.parse import urlsplit
+
+    import yaml
+    cfg = yaml.safe_load((ROOT / "config/stores.yaml").read_text())["stores"]
+    hosts = set()
+    for c in cfg.values():
+        for k in ("base_url", "sitemap_url"):
+            if c.get(k):
+                hosts.add(urlsplit(c[k]).hostname.removeprefix("www."))
+    return hosts
+
+
+def test_store_links_are_sponsored(site_build):
+    hosts = _store_hosts()
+    assert hosts
+    seen = 0
+    for f in site_build.rglob("*.html"):
+        for m in re.finditer(r'<a\b([^>]*)>', f.read_text()):
+            attrs = m.group(1)
+            h = re.search(r'\shref="(https?://[^"/]+)', attrs)
+            if not h or h.group(1).split("//")[1].removeprefix("www.") not in hosts:
+                continue
+            seen += 1
+            rel = re.search(r'\srel="([^"]*)"', attrs)
+            assert rel and {"sponsored", "nofollow", "noopener"} <= set(rel.group(1).split()), (f, attrs)
+    assert seen
+
+
+def test_sitemap_lists_new_pages(site_build):
+    sm = (site_build / "sitemap.xml").read_text()
+    locs = set(re.findall(r"<loc>https://doorprice.app/([^<]*)</loc>", sm))
+    assert "drops" in locs
+    specs_pages = {str(p.relative_to(site_build).with_suffix("")) for p in site_build.glob("phones/*/specs.html")}
+    months = {str(p.relative_to(site_build).with_suffix("")) for p in site_build.glob("history/*/*.html")}
+    assert specs_pages and months
+    assert specs_pages <= locs and months <= locs
+    assert "404" not in locs
+
+
+def test_testing_build_is_still_noindex(tmp_path):
+    from pricechecker.site import seo
+    assert seo._seo_files({"testing": True, "domain_live": True, "base_url": "https://x"}, [], [], ["phones/a/specs"]) == \
+        {"robots.txt": "User-agent: *\nDisallow: /\n"}
+
+
+def test_no_old_front_end(site_build):
+    assert not (site_build / "static/app.js").exists()
+    assert not (site_build / "static/style.css").exists()
+    assert "app.js" not in (site_build / "_headers").read_text() and "style.css" not in (site_build / "_headers").read_text()
+    for f in site_build.rglob("*.html"):
+        t = f.read_text()
+        assert "app.js" not in t and "style.css" not in t, f
+
+
+def test_methodology_explains_how_a_drop_is_counted(site_build):
+    from pricechecker import derive, telegram
+    t = (site_build / "methodology.html").read_text()
+    assert "How a drop is counted" in t
+    assert f"{derive.MIN_PCT}%" in t and f"€{derive.MIN_EUR}" in t
+    assert f"{telegram.MIN_PCT * 100:g}%" in t and f"€{telegram.MIN_EUR}" in t
+    assert "Telegram" in t
+
+
+def test_explainer_covers_the_eu_band_check(site_build):
+    p = next(site_build.glob("phones/*.html")).read_text()
+    assert "EU band check" in p and "own spec page" in p
+
+
+def test_privacy_says_fonts_are_self_hosted(site_build):
+    t = (site_build / "privacy.html").read_text()
+    assert "Google Fonts" not in t and "fonts.g" not in t
+    assert "Cloudflare Web Analytics" in t

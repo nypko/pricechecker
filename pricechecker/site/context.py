@@ -94,9 +94,9 @@ def page_context(data: SiteData, phones: list[dict]) -> dict:
     except ValueError:
         upd_label = upd
     # ?v=<content hash> on the script and stylesheet: browsers cache them for hours (Cloudflare's default), and an old
-    # app.js on a new page breaks it (Chrome on Android kept a pre-Phase-2 app.js and the brand filters stopped working)
-    # keyed by path relative to static/: app.js and style.css (old design, removed with it), d.css and every js/*.js module
-    ver = {f: hashlib.sha256(Path("static", f).read_bytes()).hexdigest()[:10] for f in ("app.js", "style.css", "d.css")}
+    # script on a new page breaks it (Chrome on Android once kept an old one and the brand filters stopped working)
+    # keyed by path relative to static/: d.css and every js/*.js module
+    ver = {f: hashlib.sha256(Path("static", f).read_bytes()).hexdigest()[:10] for f in ("d.css",)}
     ver.update({f"js/{n}": h for n, (_, h) in assets.versioned_modules(Path("static/js")).items()})   # hash of the rewritten module
     return {"asset_v": ver, "updated": upd, "updated_label": upd_label, "fx_date": data.rates_info.get("date"), "colors": data.colors,
             "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"), "part_of": c.get("part_of"),

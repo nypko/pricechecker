@@ -3,7 +3,7 @@
 {% block description %}DoorPrice is an independent price comparison site for flagship phones from import stores. How we check prices, work out delivered totals, and earn money.{% endblock %}
 {% block main %}
 {% set connected = stores|rejectattr("ok", "none")|rejectattr("part_of")|list %}   {#- an EU warehouse is part of its store -#}
-<article class="prose">
+<div class="wrap tpage"><article class="prose">
   <h1>About DoorPrice</h1>
   <p class="lede">DoorPrice shows what a flagship phone from an import store really costs once it reaches your door:
     the store's price plus payment fees, shipping and estimated import tax for your country.</p>
@@ -47,5 +47,5 @@
   <p>Spotted a wrong price, a changed term or a store we should add? A contact address will be listed here shortly.</p>
   {% endif %}
   <p class="muted small">See also the <a href="{{ root }}privacy">privacy notice</a>.</p>
-</article>
+</article></div>
 {% endblock %}

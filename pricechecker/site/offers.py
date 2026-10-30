@@ -87,9 +87,6 @@ def assemble(data: SiteData) -> list[dict]:
         offers.sort(key=lambda o: (not o["available"], o["usd"]))
         offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last
         in_stock = [o for o in offers if o["available"] and not o["old"]]   # what the index, compare, title and search data rank
-        js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old", "grom")}
-        for o in offers:
-            o["js"] = js(o)
         eds = [{"edition": e, "label": ed_labels(m["brand"])[e],
                 "best": next((o for o in in_stock if o["edition"] == e), None),
                 "listed": any(o["edition"] == e for o in offers)} for e in m["editions"]]

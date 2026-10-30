@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { closest, winners, parseHash, formatHash, differs, starters, shownMemory } from "../../static/js/compare.js";
 
-// closest(): the same distance rule as the live app.js distance() (storage steps count double, RAM steps by 4 GB)
+// closest(): the distance rule the old front end used (storage steps count double, RAM steps by 4 GB)
 assert.equal(closest(["12/256", "16/512"], "16/1024"), "16/512");
 assert.equal(closest(["12/256", "16/512"], "12/256"), "12/256");
 assert.equal(closest(["12/256", "16/512"], "12/512"), "16/512");   // 4 GB more RAM is a smaller step than half the storage

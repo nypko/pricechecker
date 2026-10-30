@@ -3,7 +3,7 @@
 {% block description %}How DoorPrice calculates the delivered price of an imported phone: payment fees, shipping, import VAT for every EU country, the UK, Canada's provinces, Australia and the US, courier fees, and how stores are ranked.{% endblock %}
 {% block main %}
 {% set eu = tax_regions.EU %}
-<article class="prose">
+<div class="wrap tpage"><article class="prose">
   <h1>How prices are worked out</h1>
   <p class="lede">Every total on DoorPrice is the price you would pay to get the phone to your door: the store's price,
     the fee or discount for how you pay, shipping, and the import tax due on delivery. This page shows exactly how each
@@ -79,6 +79,17 @@
   </ol>
   <p>Affiliate commissions never change the order, and stores without an affiliate deal are ranked the same way.</p>
 
+  <h2 id="drops">How a drop is counted</h2>
+  <p>The <a href="{{ root }}drops">Price drops</a> page compares each store listing with itself: the same store, the same
+    version (Global or China) and the same RAM and storage. A listing counts as a drop when its price is at least
+    {{ drop_pct }}% and €{{ drop_eur }} lower than it was 7 days before, both at once, so a small move on a cheap phone or
+    a fraction of a percent on an expensive one is left out. Prices are compared in euros at the European Central Bank rate.
+    A store we only started tracking in the last 7 days has no earlier price to compare with, so it is never a drop.
+    These are store prices, before shipping, payment fees and import tax.</p>
+  <p>The Telegram channel works from the delivered price instead. {% if site.telegram %}<a href="https://t.me/{{ site.telegram }}" rel="noopener">DoorPrice on Telegram</a>{% else %}The Telegram channel{% endif %}
+    posts a phone when its cheapest delivered price to the EU, paid by card, falls at least {{ tg_pct }}% and €{{ tg_eur }}
+    below the price at the last post about that phone. Smaller moves add up: the comparison stays at the last post until the price has fallen far enough.</p>
+
   <h2>Global, China and Asia versions</h2>
   <p>A <strong>Global</strong> version is made for sale worldwide, with Google apps and broad network bands. A
     <strong>China</strong> version runs the brand's Chinese software; on most brands Google Play can be switched on in
@@ -99,5 +110,5 @@
 
   <p class="muted small">Questions or a number that looks wrong? {% if site.contact_email %}Write to
     <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>.{% endif %} See also <a href="{{ root }}about">About DoorPrice</a>.</p>
-</article>
+</article></div>
 {% endblock %}

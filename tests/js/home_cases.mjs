@@ -2,7 +2,7 @@
 // node home_cases.mjs --summaries <home files, comma separated> <tax file>: prints {id: summary} for EU/card/EUR (parity check).
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { filterRows, sortRows, summarize, groupRows, narrow, matches, listHtml } from "../../static/js/home.js";
+import { filterRows, sortRows, summarize, groupRows, narrow, matches, listHtml, emptyState } from "../../static/js/home.js";
 import { DEFAULT } from "../../static/js/view.js";
 
 if (process.argv[2] === "--summaries") {
@@ -97,4 +97,18 @@ assert.match(listHtml([{ ...meta[0], l: "Asia", rows: by.get("oppo-find-x9-ultra
 assert.match(listHtml([{ ...meta[0], rows: [] }], s, "../"), /href="\.\.\/phones\/oppo-find-x9-ultra"/);
 // no price at all: both cells read "–" (the row stays; the server writes the same)
 assert.match(listHtml([{ ...meta[5], rows: [] }], s, ""), /<span class="p none">China<b>–<\/b><\/span><span class="p none">Global<b>–<\/b><\/span>/);
+
+// marks beside the block: "↓ this week" from the phone's drop (kept when rows are rebuilt), "Watched" for watched ids
+const mk = (id, drop) => listHtml([{ ...meta.find((m) => m.id === id), drop, rows: by.get(id) || [] }], s, "", new Set(["pixel-11"]));
+const dropped = mk("galaxy-s27", 120), plain = mk("oppo-find-x9-pro", 0), watchedRow = mk("pixel-11", 0);
+assert.match(dropped, /<\/ul><span class="marks"><span class="mark drop">↓ this week<\/span><\/span>/, "the mark sits after the block's ul");
+assert.doesNotMatch(dropped, /mark watch/);
+assert.doesNotMatch(plain, /class="mark /);
+assert.match(watchedRow, /<span class="mark watch">Watched<\/span>/);
+assert.match(mk("pixel-11", 30), /mark drop">↓ this week<\/span><span class="mark watch">Watched/);
+assert.ok(!/data-block="home_row"[^>]*>[^]*mark/.test(dropped.slice(0, dropped.indexOf("</ul>"))), "no mark inside the block");
+// empty list: filters wording without search text, search wording with it
+assert.deepEqual(emptyState(""), { text: "No phones match these filters.", button: "Clear filters", clear: "filters" });
+assert.deepEqual(emptyState("   "), { text: "No phones match these filters.", button: "Clear filters", clear: "filters" });
+assert.deepEqual(emptyState(" x99 "), { text: "No phones match “x99”. Try fewer words.", button: "Clear search", clear: "search" });
 console.log("home cases: ok");

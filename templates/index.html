@@ -32,15 +32,15 @@
     </div>
   </div>
   <p class="count" id="count" aria-live="polite">{{ v.ordered|length }} phones · lowest delivered price per version</p>
-  <div class="no-results" id="no-results" hidden>
-    <p>No phones match “<span class="nr-q"></span>”. Try fewer words.</p>
-    <button type="button" id="clear-search">Clear search</button>
+  <div class="no-results" id="no-results" role="status" hidden>
+    <p id="nr-text">No phones match these filters.</p>
+    <button type="button" id="nr-clear" data-clear="filters">Clear filters</button>
   </div>
-  <ul class="pairs" id="list" data-cap="{{ v.first }}">
+  <div class="pairs" id="list" data-cap="{{ v.first }}">
   {%- for p in v.ordered %}
-    {{ b.home_row(p, v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}) }}
+    <div class="prow" data-id="{{ p.id }}"><ul>{{ b.home_row(p, v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}) }}</ul><span class="marks">{% if p.id in v.drops %}<span class="mark drop">↓ this week</span>{% endif %}</span></div>
   {%- endfor %}
-  </ul>
+  </div>
   <button class="showall js-only" type="button" id="showall"{% if v.ordered|length <= v.first %} hidden{% endif %}>Show all {{ v.ordered|length }} phones</button>
   <script type="application/json" id="home-meta">{{ v.meta|tojson }}</script>
 

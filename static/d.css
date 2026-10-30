@@ -164,7 +164,7 @@ h2 { font: 700 1.35rem/1.15 var(--serif); letter-spacing: -.01em; margin: 30px 0
 .count { font-size: .86rem; color: var(--ink-2); margin: 0 0 8px; }
 .pairs { list-style: none; margin: 0; padding: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
 .pairs a { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 13px 14px; border-top: 1px solid var(--rule); text-decoration: none; color: var(--ink); }
-.pairs li:first-child a { border-top: 0; }
+.pairs .prow:first-child a { border-top: 0; }
 .pairs a:hover { background: var(--ground); }
 .pairs .nm { font: 600 1.15rem/1.2 var(--serif); }
 .pairs .nm small { font: 500 .78rem var(--body); color: var(--ink-2); margin-left: 6px; }
@@ -439,7 +439,7 @@ details.explain summary { cursor: pointer; min-height: 48px; display: flex; alig
 
 /* home page (templates/index.html, static/js/home.js) */
 .no-js .js-only { display: none; }
-html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* until home.js has run: the first rows only */
+html:not(.no-js) .pairs[data-cap] .prow:nth-child(n+21) { display: none; }   /* until home.js has run: the first rows only */
 .home .for { margin: 2px 0 6px; }
 .home .opts { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; margin-bottom: 6px; }
 .home .opts .sorts { margin: 0; }
@@ -460,3 +460,10 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .terms-fine { font-size: .84rem; color: var(--ink-2); margin: 12px 0 0; }
 .home .sorts { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
 .home .sorts button, .home .sorts span { flex: none; white-space: nowrap; }
+.pairs { margin: 0; }
+.pairs ul { list-style: none; margin: 0; padding: 0; }
+.prow { position: relative; }
+.prow .marks { position: absolute; right: 14px; bottom: 12px; display: flex; gap: 6px; pointer-events: none; }
+.mark { font: 600 .72rem var(--body); border-radius: 999px; padding: 2px 9px; background: var(--ground); color: var(--ink-2); border: 1px solid var(--rule); }
+.mark.drop { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.mark.watch { background: var(--ink); color: var(--paper); border-color: var(--ink); }

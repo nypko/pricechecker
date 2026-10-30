@@ -76,9 +76,21 @@ export function sortRows(phones, sort) {
   return [...has, ...rest].map((p) => p.id);
 }
 
-/** The phones' rows as HTML. phone: {id, name, announced, l?: the China version's label, rows}. */
-export function listHtml(phones, s, root = "") {
-  return phones.map((p) => B.homeRow(p, p.rows || [], s, { china: p.l || "China", global: "Global" }, root)).join("");
+const marks = (p, w) => (p.drop ? '<span class="mark drop">↓ this week</span>' : "") + (w && w.has(p.id) ? '<span class="mark watch">Watched</span>' : "");
+
+/** The phones' rows as HTML: each home_row block in its wrapper, with the marks beside it (not part of the block):
+ *  "↓ this week" for phones with a listing drop, "Watched" for ids in `w`.
+ *  phone: {id, name, announced, drop?, l?: the China version's label, rows}. */
+export function listHtml(phones, s, root = "", w = new Set()) {
+  return phones.map((p) => `<div class="prow" data-id="${B.esc(p.id)}"><ul>${B.homeRow(p, p.rows || [], s, { china: p.l || "China", global: "Global" }, root)}</ul>` +
+    `<span class="marks">${marks(p, w)}</span></div>`).join("");
+}
+
+/** The empty list's message and button: filters when no search text is typed, else the search. */
+export function emptyState(q) {
+  const t = String(q || "").trim();
+  return t ? { text: `No phones match “${t}”. Try fewer words.`, button: "Clear search", clear: "search" }
+    : { text: "No phones match these filters.", button: "Clear filters", clear: "filters" };
 }
 
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
@@ -89,7 +101,7 @@ function wire(root) {
   const files = json(root.dataset.files, {}), list = $("list"), q = $("q");
   const phones = json($("home-meta").textContent, []);
   const stock = new Map(phones.map((p) => [p.id, p.s || {}]));   // the server's default-settings summaries
-  const dflt = new Map([...list.children].map((li) => [li.dataset.id, li]));   // and its rows
+  const dflt = new Map([...list.children].map((el) => [el.dataset.id, el]));   // and its rows
   let els = dflt, seq = 0, note = "";
   const S = { chip: "all", brand: "", sort: "new", rom: "", q: "", all: false };
 
@@ -122,14 +134,23 @@ function wire(root) {
     const ids = order.filter((id) => keep.has(id));
     const vis = S.all || S.q ? ids : ids.slice(0, FIRST);
     list.removeAttribute("data-cap");
+    const w = watched();
     list.replaceChildren(...vis.map((id) => els.get(id)).filter(Boolean));
+    list.querySelectorAll(".prow").forEach((el) => {   // the Watched mark follows this device's list
+      const m = el.querySelector(".marks"), on = m.querySelector(".watch");
+      if (w.has(el.dataset.id) && !on) m.insertAdjacentHTML("beforeend", '<span class="mark watch">Watched</span>');
+      else if (!w.has(el.dataset.id) && on) on.remove();
+    });
     $("count").textContent = note || (ids.length ? `${ids.length} ${ids.length === 1 ? "phone" : "phones"} · lowest delivered price per version` : "");
     const sa = $("showall");
     sa.hidden = vis.length >= ids.length;
     sa.textContent = `Show all ${ids.length} phones`;
     const nr = $("no-results");
     nr.hidden = ids.length > 0;
-    nr.querySelector(".nr-q").textContent = S.q.trim();
+    const es = emptyState(S.q);
+    $("nr-text").textContent = es.text;
+    const nb = $("nr-clear");
+    nb.textContent = es.button; nb.dataset.clear = es.clear;
     list.hidden = !ids.length;
   }
 
@@ -146,8 +167,8 @@ function wire(root) {
       const view = phones.map((p) => ({ ...p, rows: narrow(by.get(p.id) || [], rom) }));
       els = new Map();
       const tpl = document.createElement("template");
-      tpl.innerHTML = listHtml(view, s, "");
-      tpl.content.querySelectorAll("li[data-id]").forEach((li) => els.set(li.dataset.id, li));
+      tpl.innerHTML = listHtml(view, s, "", watched());
+      tpl.content.querySelectorAll(".prow[data-id]").forEach((el) => els.set(el.dataset.id, el));
       phones.forEach((p) => { p.s = summarize(by.get(p.id) || [], rom); });
       note = ""; render();
     }, () => {
@@ -164,7 +185,11 @@ function wire(root) {
     render();
   };
   q.addEventListener("input", () => setQ(q.value));
-  $("clear-search").addEventListener("click", () => { q.value = ""; setQ(""); q.focus(); });
+  $("nr-clear").addEventListener("click", (e) => {
+    if (e.currentTarget.dataset.clear === "search") { q.value = ""; setQ(""); q.focus(); return; }
+    S.chip = "all"; S.brand = ""; S.all = false;
+    if (S.rom) { S.rom = ""; $("rom").value = ""; apply(); } else render();
+  });
   root.addEventListener("click", (ev) => {
     const t = ev.target, chip = t.closest("#chips button"), sort = t.closest("#sorts button");
     if (chip) {

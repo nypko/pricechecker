@@ -72,7 +72,7 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     count = Counter(r for m in meta for r in m["s"].get("roms", []))
     files = ctx.get("home_files") or {}
     pages = set(page_names(data.stores_cfg))
-    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "n_drops": len(drops), "first": FIRST,
+    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "n_drops": len(drops), "drops": set(big), "first": FIRST,
             "roms": [(r, _label(r)) for r in sorted(count) if count[r] >= MIN_PHONES_PER_ROM],
             "brands": sorted({p["brand"] for p in phones}),
             "files": {r: [x.lstrip("/") for x in paths] for r, paths in files.items()},

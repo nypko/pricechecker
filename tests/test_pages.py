@@ -206,11 +206,11 @@ def test_home_sections(site_build):
     n = h.count('data-block="home_row"')   # every phone is linked from the page; the first 20 show, then "Show all N"
     assert n > 50 and 'id="list" data-cap="20"' in h and f">Show all {n} phones<" in h and f"{n} phones · lowest" in h
     assert "The stores, and what they cover" in h
-    assert 'id="no-results"' in h and ">Clear search<" in h
+    assert re.search(r'<div class="no-results" id="no-results" role="status" hidden>\s*<p id="nr-text">No phones match these filters\.</p>\s*<button[^>]*>Clear filters</button>', h)
     assert re.search(r'id="home"[^>]*data-files=', h) and re.search(r'data-tax="data/v1/tax\.[0-9a-f]{10}\.json"', h)
     assert re.search(r'"EU": \["data/v1/home-EU-1\.[0-9a-f]{10}\.json"', h)
     assert "js/home.js?v=" in h and "offers_json" not in h and "data-offers" not in h
-    assert 'class="prow' not in h
+    assert 'prow-link' not in h
 
 
 def test_home_within_budget(site_build):
@@ -237,3 +237,22 @@ def test_home_summaries_match_the_browsers(site_build):
     assert len(meta) > 50
     for m in meta:
         assert got.get(m["id"], {}) == m.get("s", {}), m["id"]
+
+
+def test_home_rows_have_the_drop_mark_beside_the_block(site_build):
+    import json
+    h = _home(site_build)
+    meta = json.loads(re.search(r'id="home-meta">(.*?)</script>', h, re.DOTALL).group(1))
+    with_drop = [m["id"] for m in meta if m.get("drop")]
+    without = [m["id"] for m in meta if not m.get("drop")]
+    assert with_drop and without
+
+    def row(pid):
+        i = h.index(f'<div class="prow" data-id="{pid}">')
+        return h[i:h.index("</div>", i)]
+
+    for pid in with_drop:
+        assert '</ul><span class="marks"><span class="mark drop">↓ this week</span></span>' in row(pid), pid
+    for pid in without:
+        assert "mark" not in row(pid).replace('class="marks"', ""), pid
+    assert h.count('class="mark drop"') == len(with_drop)

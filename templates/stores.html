@@ -1,48 +1,43 @@
 {% extends "base.html" %}
-{% from "_price.html" import price %}
+{#- Spec §5.7. One row per store, every fact in the HTML; static/js/store.js adds the delivery chips (a filter over the rows, no prices). -#}
+{% set crumbs = [("Stores", "stores")] %}
 {% block title %}Import phone stores compared: {% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} – DoorPrice{% endblock %}
-{% block description %}{% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} side by side: reviews, warranty, returns, shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, and which store is cheapest for each phone.{% endblock %}
+{% block description %}{% for sp in store_pages %}{{ sp.label }}{{ ", " if not loop.last }}{% endfor %} side by side: reviews, warranty, returns, shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, payment fees, and which store is cheapest for each phone.{% endblock %}
 {% block main %}
-<div class="page-nav"><a class="crumb" href="./">All phones</a></div>
-<h1>Import phone stores compared</h1>
-<p class="lede">The {{ store_pages|length }} stores DoorPrice checks every hour, side by side. Terms come from each store's own
-  pages and are dated; prices are the stores' lowest in-stock prices, before shipping and tax.</p>
-
-{#- phones: one card per store (a five-column table doesn't fit); wider screens get the side-by-side table -#}
-<ul class="store-cards">
-{% for sp in store_pages %}
-  <li class="store-card">
-    <h2><a href="stores/{{ sp.name }}">{{ sp.label }}</a></h2>
-    <p class="sc-trust">{% if sp.trust.reviews %}★ {{ "%.1f"|format(sp.trust.reviews.score) }} <span class="muted">{{ sp.trust.reviews.source }}, {{ "{:,}".format(sp.trust.reviews.count) }} reviews</span>{% endif %}
-      {%- if sp.trust.warranty_months %}{{ " · " if sp.trust.reviews }}{{ sp.trust.warranty_months }}-month warranty{% endif %}
-      {%- if sp.trust.returns_days %} · {{ sp.trust.returns_days }}-day returns{% endif %}</p>
-    <dl class="sc-ship">
-    {% for c in sp.ship %}
-      <div><dt>{{ c.label }}</dt><dd>{{ c.cost }}{% if c.days %} <span class="muted">· {{ c.days }}</span>{% endif %}
-        <span class="small {{ 'good' if c.duties else 'muted' }}">· {{ "tax included" if c.duties else ("you pay tax on delivery" if c.duties == false else "tax not stated") }}</span></dd></div>
-    {% endfor %}
-    </dl>
-    <p class="sc-count muted small">{{ sp.phones|length }} phones in stock · lowest store price on {{ sp.n_cheapest }}</p>
-  </li>
-{% endfor %}
-</ul>
-
-<div class="table-wrap stores-table">
-<table class="cmp-table">
-  <thead><tr><th scope="col"></th>{% for sp in store_pages %}<th scope="col"><a href="stores/{{ sp.name }}">{{ sp.label }}</a></th>{% endfor %}</tr></thead>
-  <tbody>
-    <tr><th scope="row">Reviews</th>{% for sp in store_pages %}<td>{% if sp.trust.reviews %}★ {{ "%.1f"|format(sp.trust.reviews.score) }} <span class="muted">{{ sp.trust.reviews.source }}, {{ "{:,}".format(sp.trust.reviews.count) }}</span>{% else %}<span class="muted">–</span>{% endif %}</td>{% endfor %}</tr>
-    <tr><th scope="row">Store warranty</th>{% for sp in store_pages %}<td>{% if sp.trust.warranty_months %}{{ sp.trust.warranty_months }} months{% else %}<span class="muted">not stated</span>{% endif %}</td>{% endfor %}</tr>
-    <tr><th scope="row">Returns</th>{% for sp in store_pages %}<td>{% if sp.trust.returns_days %}{{ sp.trust.returns_days }} days{% else %}<span class="muted">not stated</span>{% endif %}</td>{% endfor %}</tr>
-    {% for i in range(store_pages[0].ship|length) %}
-    <tr><th scope="row">Shipping to {{ store_pages[0].ship[i].label }}</th>{% for sp in store_pages %}{% set c = sp.ship[i] %}<td>{{ c.cost }}{% if c.days %}<br><span class="muted small">{{ c.days }}</span>{% endif %}{% if c.ships %}<br><span class="small {{ 'good' if c.duties else 'muted' }}">{{ "tax included" if c.duties else ("you pay tax on delivery" if c.duties == false else "tax not stated") }}</span>{% endif %}</td>{% endfor %}</tr>
-    {% endfor %}
-    <tr><th scope="row">Phones in stock</th>{% for sp in store_pages %}<td>{{ sp.phones|length }}</td>{% endfor %}</tr>
-    <tr><th scope="row">Lowest store price on</th>{% for sp in store_pages %}<td>{{ sp.n_cheapest }} phone{{ "s" if sp.n_cheapest != 1 }}</td>{% endfor %}</tr>
-  </tbody>
-</table>
+<div class="wrap spage" id="stores">
+  <p class="kicker"><a href="{{ root }}">All phones</a></p>
+  <h1>Import phone <em>stores</em></h1>
+  <p class="lead">The {{ store_pages|length }} stores DoorPrice checks every hour, side by side. Terms come from each store's own pages and are dated;
+    prices are the stores' lowest in-stock prices, before shipping and tax.</p>
+  <div class="chips js-only" id="chips" role="group" aria-label="Filter stores by delivery">
+    {%- for k, label in chips %}<button type="button" data-f="{{ k }}" aria-pressed="false">{{ label }} <span class="n">{{ counts[k] }}</span></button>{% endfor -%}
+  </div>
+  <p class="count" id="count" aria-live="polite">Counts are for delivery to the EU. Other regions are in each store's row.</p>
+  <div class="no-results" id="no-results" role="status" hidden><p>No store matches every chosen filter.</p></div>
+  <ul class="st-list" id="list">
+  {%- for sp in store_pages %}
+    {%- set t = sp.trust %}
+    <li class="st" data-store="{{ sp.name }}" {%- for k, v in sp.flags.items() %}{% if v %} data-f-{{ k }}="1"{% endif %}{% endfor %}>
+      <h2><a href="{{ root }}stores/{{ sp.name }}">{{ sp.label }}</a></h2>
+      <p class="st-trust">{% if t.reviews %}★ <b class="num">{{ "%.1f"|format(t.reviews.score) }}</b> <span class="muted">{{ t.reviews.source }}, {{ "{:,}".format(t.reviews.count) }} reviews</span>{% else %}<span class="muted">No public review score</span>{% endif %}
+        {%- if t.warranty_months %} · {{ t.warranty_months }}-month warranty{% endif %}
+        {%- if t.returns_days %} · {{ t.returns_days }}-day returns{% endif %}</p>
+      <p class="st-line"><b>Delivers to</b> {{ sp.served|join(", ") or "no region listed" }}{% if sp.not_served %}. <span class="muted">Not to {{ sp.not_served|join(", ") }}.</span>{% endif %}</p>
+      <dl class="st-ship">
+      {%- for c in sp.ship %}
+        <div><dt>{{ c.label }}</dt><dd>{{ c.cost }}{% if c.days %} <span class="muted">· {{ c.days }}</span>{% endif %}
+          {%- if c.ships %}<span class="tx {{ 'good' if c.duties else 'muted' }}">{{ "tax included" if c.duties else ("you pay tax on delivery" if c.duties == false else "tax not stated") }}</span>{% endif %}</dd></div>
+      {%- endfor %}
+      </dl>
+      <p class="st-line"><b>Import tax</b> {{ sp.tax_line or "not stated" }}</p>
+      <p class="st-line"><b>Paying</b> {% for m in sp.pay %}{{ m.method }} <span class="{{ 'good' if m.pct is not none and m.pct < 0 else 'muted' }}">{{ m.text }}</span>{{ " · " if not loop.last }}{% endfor %}</p>
+      <p class="st-foot muted small">{{ sp.phones|length }} phones in stock · lowest store price on {{ sp.n_cheapest }}
+        {%- if t.checked %} · Terms checked {{ t.checked }}{% endif %}</p>
+    </li>
+  {%- endfor %}
+  </ul>
+  <p class="muted small fine">"Lowest store price" compares the stores' own prices before shipping, payment fees and tax. The cheapest delivered total
+    depends on where you live and how you pay: each phone's page works it out for you. <a href="{{ root }}methodology">How prices are worked out</a>.</p>
 </div>
-<p class="muted small">"Lowest store price" compares the stores' own prices before shipping, payment fees and tax. The cheapest
-  delivered total depends on where you live and how you pay: each phone's page works it out for you.
-  <a href="methodology">How prices are worked out</a>.</p>
 {% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/store.js?v={{ asset_v['js/store.js'] }}"></script>{% endblock %}

@@ -1,64 +1,90 @@
 {% extends "base.html" %}
-{% from "_price.html" import price %}
+{#- Spec §5.7. Built by pages/stores.py: the store's full terms (shipping, import tax, paying, with every note), its EU-warehouse
+    section, the phones it is cheapest for at the default settings, what it advertises, and where its terms came from. -#}
 {% set t = sp.trust %}
 {% set crumbs = [("Stores", "stores"), (sp.label, "stores/" ~ sp.name)] %}
+{% set cur = stores|selectattr("name", "equalto", sp.name)|first %}
 {% block title %}{{ sp.label }} review: shipping, import tax, warranty and prices [{{ month }}] – DoorPrice{% endblock %}
 {% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, payment fees, warranty and returns, and its prices on {{ sp.phones|length }} flagship phones, checked hourly.{% endblock %}
+{% macro shiprows(cells, skip_unlisted=false) %}
+  {%- for c in cells if not (skip_unlisted and c.cost == "not listed") %}
+    <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>
+      <td class="{{ 'good' if c.duties else '' }}">{{ "–" if not c.ships else "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
+    {%- if c.note %}
+    <tr class="note-row"><td colspan="4" class="muted small">{{ c.note }}</td></tr>{% endif %}
+  {%- endfor %}
+{% endmacro %}
 {% block main %}
-<div class="page-nav"><a class="crumb" href="../stores">All stores</a></div>
-<h1>{{ sp.label }}</h1>
-<p class="lede">{% if t.reviews %}★ {{ "%.1f"|format(t.reviews.score) }} on <a href="{{ t.reviews.url }}" rel="nofollow noopener">{{ t.reviews.source }}</a>
-  ({{ "{:,}".format(t.reviews.count) }} reviews){% endif %}{% if t.warranty_months %} · {{ t.warranty_months }}-month store warranty{% endif %}{% if t.returns_days %} · {{ t.returns_days }}-day returns{% endif %}.
-  {% if sp.phones %}Lowest store price on {{ sp.n_cheapest }} of the {{ sp.phones|length }} phones it has in stock.{% else %}Prices appear here after the next hourly check.{% endif %}
-  {% if t.checked %}<span class="muted">Terms checked {{ t.checked }}.</span>{% endif %}</p>
-{% if sp.google_play %}<p>{{ sp.label }}: {{ sp.google_play[0]|lower }}{{ sp.google_play[1:] }} on China-version phones.</p>{% endif %}
+<div class="wrap spage" id="store">
+  <p class="kicker"><a href="{{ root }}stores">All stores</a></p>
+  <h1>{{ sp.label }}</h1>
+  <p class="lead">{% if t.reviews %}★ <b class="num">{{ "%.1f"|format(t.reviews.score) }}</b> on <a href="{{ t.reviews.url }}" rel="nofollow noopener">{{ t.reviews.source }}</a>
+    ({{ "{:,}".format(t.reviews.count) }} reviews){% endif %}{% if t.warranty_months %} · {{ t.warranty_months }}-month store warranty{% endif %}{% if t.returns_days %} · {{ t.returns_days }}-day returns{% endif %}.
+    {% if sp.phones %}Lowest store price on {{ sp.n_cheapest }} of the {{ sp.phones|length }} phones it has in stock.{% else %}Prices appear here after the next hourly check.{% endif %}
+    {% if t.checked %}<span class="muted">Terms checked {{ t.checked }}.</span>{% endif %}</p>
+  {%- if cur and not cur.terms_ok %}<p class="alert">The store's terms pages changed and are being reviewed; the terms below may be out of date.</p>{% endif %}
+  {%- if sp.google_play %}<p>{{ sp.label }}: {{ sp.google_play[0]|lower }}{{ sp.google_play[1:] }} on China-version phones.</p>{% endif %}
 
-<h2>Shipping and import tax</h2>
-<div class="table-wrap">
-<table class="tax-table">
-  <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
-  <tbody>{% for c in sp.ship %}
-    <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>
-      <td class="{{ 'good' if c.duties else '' }}">{{ "–" if not c.ships else "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
-    {% if c.note %}<tr class="note-row"><td colspan="4" class="muted small">{{ c.note }}</td></tr>{% endif %}
-  {% endfor %}</tbody>
-</table>
-</div>
-{% for x in sp.extra %}
-<h3>{{ x.label }}</h3>
-<p>Some listings ship from here instead, on these terms:</p>
-<div class="table-wrap">
-<table class="tax-table">
-  <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
-  <tbody>{% for c in x.ship if c.cost != "not listed" %}
-    <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>
-      <td class="{{ 'good' if c.duties else '' }}">{{ "–" if not c.ships else "included in the price" if c.duties else ("you pay on delivery" if c.duties == false else "not stated") }}</td></tr>
-    {% if c.note %}<tr class="note-row"><td colspan="4" class="muted small">{{ c.note }}</td></tr>{% endif %}
-  {% endfor %}</tbody>
-</table>
-</div>
-{% for n in x.ship|selectattr("cost", "equalto", "not listed")|map(attribute="note")|select|unique %}<p class="muted small">{{ n }}.</p>{% endfor %}
-{% endfor %}
-<p class="muted small">Import tax is estimated per country on each phone's page. <a href="../methodology">How it is worked out</a>.</p>
+  <h2>Shipping and import tax</h2>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
+    <tbody>{{ shiprows(sp.ship) }}</tbody>
+  </table></div>
+  {%- for x in sp.extra %}
+  <h3>{{ x.label }}</h3>
+  <p>Some listings ship from here instead, on these terms:</p>
+  <div class="tbl"><table>
+    <thead><tr><th scope="col">Ship to</th><th scope="col">Shipping</th><th scope="col">Delivery</th><th scope="col">Import tax</th></tr></thead>
+    <tbody>{{ shiprows(x.ship, true) }}</tbody>
+  </table></div>
+  {%- for n in x.ship|selectattr("cost", "equalto", "not listed")|map(attribute="note")|select|unique %}<p class="muted small">{{ n }}.</p>{% endfor %}
+  {%- endfor %}
+  <p class="muted small">Import tax is estimated per country on each phone's page. <a href="{{ root }}methodology">How it is worked out</a>.</p>
 
-<h2>Paying</h2>
-<ul class="plain-list">{% for m in sp.pay %}
-  <li><strong>{{ m.method }}:</strong> {% if m.pct is none %}fee not published{% elif m.pct < 0 %}{{ -m.pct }}% discount{% elif m.pct > 0 %}{{ m.pct }}% fee{% else %}no fee{% endif %}{% if m.note %} <span class="muted small">– {{ m.note }}</span>{% endif %}</li>
-{% endfor %}</ul>
+  <h2>Paying</h2>
+  <ul class="plain">{% for m in sp.pay %}
+    <li><strong>{{ m.method }}:</strong> {{ m.text }}{% if m.note %} <span class="muted small">– {{ m.note }}</span>{% endif %}</li>
+  {%- endfor %}</ul>
 
-{% if sp.phones %}
-<h2>Phones at {{ sp.label }}</h2>
-<p class="muted small">Its lowest in-stock price for each phone, before shipping and tax, against the cheapest store we check.</p>
-<div class="table-wrap">
-<table class="tax-table store-phones">
-  <thead><tr><th scope="col">Phone</th><th scope="col">Lowest price</th><th scope="col">vs cheapest store</th></tr></thead>
-  <tbody>{% for x in sp.phones %}
-    <tr><th scope="row"><a href="../phones/{{ x.slug }}">{{ x.name }}</a> <span class="muted small">{{ x.ed_label[x.edition] }} · {{ x.storage|spec }}</span></th>
-      <td>{{ price(x.money) }}</td>
-      <td class="{{ 'good' if x.cheapest }}">{{ "cheapest" if x.cheapest else ("under 1% more" if x.gap_pct < 1 else "+" ~ x.gap_pct ~ "%") }}</td></tr>
-  {% endfor %}</tbody>
-</table>
+  {%- if sp.cheapest_for %}
+  <h2>Cheapest for</h2>
+  <p class="muted small">Phone versions where {{ sp.label }} has the lowest delivered total to the EU by card, in euro. Other regions and payment methods are on each phone's page.</p>
+  <ul class="cf-list">{% for x in sp.cheapest_for %}
+    <li class="cf" data-slug="{{ x.slug }}" data-e="{{ x.edition }}"><a href="{{ root }}phones/{{ x.slug }}">{{ x.name }}</a>
+      <span class="muted small">{{ x.ed_label[x.edition] }}{% if x.storage != "base" %} · {{ x.storage|spec }}{% endif %}</span><b class="num">{{ money(x.total, "eur") }}</b></li>
+  {%- endfor %}</ul>
+  {%- endif %}
+
+  {%- if sp.phones %}
+  <h2>Phones at {{ sp.label }}</h2>
+  <p class="muted small">Its lowest in-stock price for each phone, before shipping and tax, against the cheapest store we check.</p>
+  <div class="tbl"><table class="store-phones">
+    <thead><tr><th scope="col">Phone</th><th scope="col">Lowest price</th><th scope="col">vs cheapest store</th></tr></thead>
+    <tbody>{% for x in sp.phones %}
+      <tr><th scope="row"><a href="{{ root }}phones/{{ x.slug }}">{{ x.name }}</a> <span class="muted small">{{ x.ed_label[x.edition] }}{% if x.storage != "base" %} · {{ x.storage|spec }}{% endif %}</span></th>
+        <td class="num">${{ "{:,.0f}".format(x.money.usd) }}</td>
+        <td class="{{ 'good' if x.cheapest }}">{{ "cheapest" if x.cheapest else ("under 1% more" if x.gap_pct < 1 else "+" ~ x.gap_pct ~ "%") }}</td></tr>
+    {%- endfor %}</tbody>
+  </table></div>
+  {%- endif %}
+
+  <h2>Current promotions</h2>
+  {%- if sp.promos %}
+  <ul class="plain">{% for line in sp.promos %}<li>{{ line }}</li>{% endfor %}</ul>
+  <p class="muted small">Read from the store's own pages once a day; conditions (minimum order, which phones) are on the store's site.
+    Only discounts DoorPrice has checked change a total.</p>
+  {%- else %}
+  <p class="muted">No promotion seen on the store's pages at the last daily check.</p>
+  {%- endif %}
+
+  <h2>Where these terms come from</h2>
+  <p>Terms last changed:
+    {%- if sp.sources.changed %} <b>{{ sp.sources.changed }}</b>{% else %} <span class="muted">no wording change recorded yet</span>{% endif %}.
+    {%- if sp.sources.read %} <span class="muted">The pages were last read {{ sp.sources.read }}.</span>{% endif %}</p>
+  {%- if sp.sources.pages %}
+  <ul class="plain">{% for u in sp.sources.pages %}<li><a href="{{ u.url }}" rel="nofollow noopener">{{ u.url|replace("https://", "") }}</a>
+    {%- if u.checked %} <span class="muted small">read {{ u.checked }}{% if u.changed %}, wording changed {{ u.changed }}{% endif %}</span>{% endif %}</li>{% endfor %}</ul>
+  {%- endif %}
+  <p class="muted small">DoorPrice may earn a commission from some stores; it never changes the order. <a href="{{ root }}about">About DoorPrice</a>.</p>
 </div>
-{% endif %}
-<p class="muted small">DoorPrice may earn a commission from some stores; it never changes the order. <a href="../about">About DoorPrice</a>.</p>
 {% endblock %}

@@ -97,6 +97,16 @@ def page_diff(old: list[str], new: list[str], limit: int = 40) -> list[str]:
     return out[:limit] + ([f"... {len(out) - limit} more changed lines"] if len(out) > limit else [])
 
 
+def snapshot(old: dict | None, lines: list[str], now: datetime) -> dict:
+    """A terms page's saved record after a read: its lines, when it was read, and (store pages show it as "Terms last
+    changed") when its wording last differed from the read before. First sight is not a change."""
+    out = {"lines": lines, "checked": now.isoformat(timespec="seconds")}
+    changed = now.isoformat(timespec="seconds") if old is not None and old["lines"] != lines else (old or {}).get("changed")
+    if changed:
+        out["changed"] = changed
+    return out
+
+
 def saved_status() -> dict:
     """The last daily terms check as saved, without reading any store page (offline builds)."""
     return json.loads(STATUS.read_text()) if STATUS.exists() else {}
@@ -136,7 +146,7 @@ def check_pages(stores_cfg: dict, force: bool = False) -> dict:
                 diff = page_diff(old["lines"], lines)
                 if diff:
                     report += [f"**{cfg.get('label', name)}**: {u} (last read {old['checked'][:10]})", "", "```diff", *diff, "```", ""]
-            snaps[u] = {"lines": lines, "checked": now.isoformat(timespec="seconds")}
+            snaps[u] = snapshot(old, lines, now)
         status[name] = {"ok": not problems, "problems": problems, "checked": now.isoformat(timespec="seconds")}
         print(f"  [terms] {name}: {'unchanged' if not problems else 'NEEDS REVIEW - ' + '; '.join(problems)}")
     status["_checked"] = now.isoformat(timespec="seconds")

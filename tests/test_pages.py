@@ -563,3 +563,131 @@ def test_quiet_phone_still_shows_stats_and_chart_and_unrecorded_phone_says_so():
 def test_built_history_pages_stay_small(site_build):
     sizes = {f: f.stat().st_size for f in [*(site_build / "history").glob("*.html"), *(site_build / "history").glob("*/*.html")]}
     assert sizes and max(sizes.values()) <= 120_000, max(sizes.items(), key=lambda kv: kv[1])
+
+
+# ---- Stores pages (spec §5.7) ----
+
+def _stores_cfg():
+    from pricechecker import run
+    return run.load_config()[0]
+
+
+def _store_html(site_build, name):
+    return (site_build / f"stores/{name}.html").read_text()
+
+
+def test_stores_list_chips_count_the_eu_terms(site_build):
+    from pricechecker.site.pages import stores
+    cfg = _stores_cfg()
+    h = (site_build / "stores.html").read_text()
+    names = stores.page_names(cfg)
+    want = stores.delivery_counts(cfg, names)
+    # counts are recomputed here from the raw stores.yaml terms, EU region, the store plus its EU-warehouse sections
+    def parts(n):
+        return [cfg[n]] + [c for c in cfg.values() if c.get("part_of") == n and c.get("enabled", True)]
+    ship = lambda c: ((c.get("terms") or {}).get("shipping") or {}).get("EU") or {}
+    tax = sum(any(ship(c).get("duties_included") is True for c in parts(n)) for n in names)
+    free = sum(any(ship(c).get("cost") == 0 for c in parts(n)) for n in names)
+    fast = sum(any((ship(c).get("days") or [None, 99])[1] <= 10 for c in parts(n)) for n in names)
+    # "takes PayPal" needs a published fee or discount: a store that says its methods aren't published doesn't count
+    pp = sum(any(((((c.get("terms") or {}).get("payment") or {}).get("paypal") or {}).get("fee_pct")) is not None for c in parts(n)) for n in names)
+    assert want == {"tax": tax, "free": free, "fast": fast, "paypal": pp} and tax and pp
+    for key, label in (("tax", "Import tax paid"), ("free", "Free shipping"), ("fast", "Within 10 days"), ("paypal", "Takes PayPal")):
+        assert re.search(rf'<button type="button" data-f="{key}"[^>]*>{label} <span class="n">{want[key]}</span></button>', h), label
+    assert "Counts are for delivery to the EU" in h
+    assert 'static/js/store.js?v=' in h
+    assert h.count('<li class="st" ') == len(names)
+
+
+def test_stores_list_row_shows_regions_shipping_tax_fees_trust_and_checked(site_build):
+    h = (site_build / "stores.html").read_text()
+    tsz = re.search(r'<li class="st" data-store="tradingshenzhen".*?</li>\s*(?=<li class="st"|</ul>)', h, re.DOTALL).group(0)
+    for t in ("Delivers to", "EU", "Australia", "Rest of world", "tax included", "PayPal", "4% fee", "Card", "no fee",
+              "4.7", "Trustpilot", "11,216 reviews", "Terms checked", "2026-10-19"):
+        assert t in tsz, t
+    assert 'data-f-tax="1"' in tsz and 'data-f-paypal="1"' in tsz
+    # a store that bills import tax on delivery is flagged out of the tax chip but still listed
+    assert "you pay tax on delivery" in h or "tax not stated" in h
+
+
+def test_stores_list_is_fully_visible_without_js(site_build):
+    h = (site_build / "stores.html").read_text()
+    assert '<div class="chips js-only"' in h and "hidden" not in re.search(r'<ul class="st-list".*?>', h).group(0)
+
+
+def test_store_page_has_full_terms_notes_and_sources(site_build):
+    h = _store_html(site_build, "tradingshenzhen")
+    cfg = _stores_cfg()["tradingshenzhen"]
+    for r in ("EU", "UK", "US", "Canada", "Australia", "Rest of world"):
+        assert f">{r}</th>" in h
+    t = cfg["terms"]
+    for m in ("bank_transfer", "paypal", "card"):
+        assert html.escape(t["payment"][m]["note"], quote=False) in h or html.escape(t["payment"][m]["note"]) in h
+    assert html.escape(t["shipping"]["EU"]["note"], quote=False) in h or html.escape(t["shipping"]["EU"]["note"]) in h
+    for w in t["watch"]:
+        assert f'href="{w["url"]}"' in h
+    assert "transportation-regulation" in h
+    # the headed EU-warehouse table
+    assert "<h3>Trading Shenzhen (EU warehouse)</h3>" in h and "Free from the EU warehouse" in h
+    assert "How it is worked out" in h or "methodology" in h
+
+
+def test_store_page_cheapest_for_matches_default_rows(site_build):
+    from pricechecker import fx, run, terms
+    from pricechecker.site import context, offers
+    from pricechecker.site.data_files import offer_inputs
+    from pricechecker.site.view import DEFAULT, best_of, rows
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    phones = offers.assemble(data)
+    for store in ("tradingshenzhen", "wonda"):
+        labels = {c.get("label", k) for k, c in stores.items() if k == store or c.get("part_of") == store}
+        want = set()
+        for p in phones:
+            rs = rows([offer_inputs(o) for o in p["offers"]], data.tax_cfg, DEFAULT)
+            for e in p["editions"]:
+                b = best_of(rs, e)
+                if b and b["store"] in labels:
+                    want.add((p["slug"], e))
+        h = _store_html(site_build, store)
+        got = set(re.findall(r'<li class="cf" data-slug="([^"]+)" data-e="([^"]+)"', h))
+        assert got == want, store
+        for slug, _ in want:
+            assert f'href="../phones/{slug}"' in h
+
+
+def test_store_page_promos_and_terms_changed(site_build):
+    import json
+    h = _store_html(site_build, "tradingshenzhen")
+    promos = json.loads(Path("data/promos.json").read_text())["tradingshenzhen"]["current"]
+    assert "Current promotions" in h
+    for line in promos:
+        assert html.escape(line, quote=False) in h or html.escape(line) in h, line
+    assert "Terms last changed" in h
+
+
+def test_terms_changed_date_is_recorded_only_on_a_wording_change():
+    from datetime import UTC, datetime
+
+    from pricechecker import terms
+    t0, t1, t2 = (datetime(2026, 10, d, tzinfo=UTC) for d in (1, 2, 3))
+    s = terms.snapshot(None, ["a b c d"], t0)
+    assert s["checked"].startswith("2026-10-01") and "changed" not in s
+    s = terms.snapshot(s, ["a b c d"], t1)
+    assert s["checked"].startswith("2026-10-02") and "changed" not in s
+    s = terms.snapshot(s, ["a b c e"], t2)
+    assert s["changed"].startswith("2026-10-03")
+    assert terms.snapshot(s, ["a b c e"], t1)["changed"].startswith("2026-10-03")
+
+
+def test_store_pages_escape_store_text():
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    from pricechecker.site.pages import stores
+    cfg, catalog = run.load_config()
+    cfg["wonda"] = {**cfg["wonda"], "label": "W<script>x</script>"}
+    data = context.load(catalog, cfg, fx.cached(), terms.saved_status())
+    phones = offers.assemble(data)
+    out = stores.render(_env(), data, context.page_context(data, phones), phones)
+    assert "<script>x</script>" not in out["stores.html"] + out["stores/wonda.html"]
+    assert "W&lt;script&gt;x&lt;/script&gt;" in out["stores/wonda.html"]

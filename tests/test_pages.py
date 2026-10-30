@@ -963,3 +963,45 @@ def test_watch_note_promises_only_the_mark_and_filter(site_build):
     h = next(site_build.glob("phones/*.html")).read_text()
     assert "Watched phones get a mark and a filter on the phone list (saved on this device)." in h
     assert "since your last visit" not in h
+
+
+# ---- security headers (build/_headers) ----
+
+def _inline_scripts(h):
+    """The bodies of the page's inline scripts that run (no src, not a JSON data block)."""
+    return [body for attrs, body in re.findall(r"<script\b([^>]*)>(.*?)</script>", h, re.DOTALL)
+            if "src=" not in attrs and not re.search(r'type="application/(ld\+)?json"', attrs)]
+
+
+def test_headers_send_the_security_headers_on_every_page(site_build):
+    h = (site_build / "_headers").read_text()
+    block = h[h.index("/*\n"):h.index("\n/static/")]
+    for line in ("Strict-Transport-Security: max-age=31536000; includeSubDomains", "X-Content-Type-Options: nosniff",
+                 "Referrer-Policy: strict-origin-when-cross-origin", "X-Frame-Options: DENY",
+                 "Permissions-Policy: camera=(), microphone=(), geolocation=()"):
+        assert f"\n  {line}" in block, line
+    csp = re.search(r"\n  Content-Security-Policy-Report-Only: ([^\n]+)", block).group(1)
+    for d in ("default-src 'self'", "style-src 'self'", "style-src-attr 'unsafe-inline'", "form-action 'self'",
+              "frame-ancestors 'none'", "object-src 'none'", "https://static.cloudflareinsights.com", "connect-src 'self' https://cloudflareinsights.com"):
+        assert d in csp, d
+    assert "unsafe-inline" not in csp.split("script-src", 1)[1].split(";", 1)[0]
+
+
+def test_csp_hashes_cover_every_inline_script(site_build):
+    import base64
+    import hashlib
+    csp = re.search(r"Content-Security-Policy-Report-Only: ([^\n]+)", (site_build / "_headers").read_text()).group(1)
+    allowed = set(re.findall(r"'(sha256-[A-Za-z0-9+/=]+)'", csp))
+    seen = set()
+    for f in site_build.rglob("*.html"):
+        for body in _inline_scripts(f.read_text()):
+            seen.add("sha256-" + base64.b64encode(hashlib.sha256(body.encode()).digest()).decode())
+    assert seen and seen <= allowed, seen - allowed   # the production build has the pages.dev redirect inline
+    assert any("pages\\.dev" in b for b in _inline_scripts((site_build / "index.html").read_text()))
+
+
+def test_headers_hash_follows_the_script_text():
+    from pricechecker.site import headers
+    a = headers.inline_script_hashes(['<script>x()</script><script type="application/ld+json">{}</script><script src="a.js"></script>'])
+    b = headers.inline_script_hashes(["<script>y()</script>"])
+    assert len(a) == 1 and a != b and a[0] in headers.csp(a)

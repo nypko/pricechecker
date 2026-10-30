@@ -12,7 +12,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from .. import terms
-from . import assets, blocks, cards, context, data_files, offers, seo
+from . import assets, blocks, cards, context, data_files, headers, offers, seo
 from .charts import _trend
 from .common import (
     CURRENCIES,
@@ -101,13 +101,6 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     for name, (text, _) in assets.versioned_modules(Path("static/js")).items():   # imports between modules get ?v=<hash>
         (OUT / "static/js" / name).write_text(text)
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root
-    # Cloudflare Pages caching: d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and
-    # icons keep their names when they change, so a month. Pages themselves keep the default (revalidate every visit).
-    (OUT / "_headers").write_text("/static/d.css\n  Cache-Control: public, max-age=31536000, immutable\n"
-                                  "/static/js/*\n  Cache-Control: public, max-age=31536000, immutable\n"
-                                  "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
-                                  "/static/icons/*\n  Cache-Control: public, max-age=2592000\n"
-                                  "/data/v1/*\n  Cache-Control: public, max-age=31536000, immutable\n")   # names carry a content hash
     if data.site_cfg.get("indexnow_key"):   # IndexNow ownership file (pricechecker/indexnow.py)
         (OUT / f'{data.site_cfg["indexnow_key"]}.txt').write_text(data.site_cfg["indexnow_key"])
     files = data_files.write(data, OUT, phones)   # build/data/v1/: the browser's phone, home and tax files
@@ -116,10 +109,16 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     _share_cards(phones, ctx)   # also sets the cards' ?v= in ctx and on each phone, so it comes before the pages
     (OUT / "stores").mkdir()
     rendered: list[str] = []
+    script_hashes: set[str] = set()
     for page in PAGES:
         files = page.render(env, data, ctx, phones)
         _write(files)
         rendered += files
+        script_hashes.update(headers.inline_script_hashes(t for k, t in files.items() if k.endswith(".html")))
+    # Cloudflare Pages: security headers on every response (the CSP allows the pages' inline scripts by hash), and
+    # caching: d.css and js/*.js are linked with ?v=<content hash>, so a year is safe; fonts and icons keep their names
+    # when they change, so a month. Pages themselves keep the default (revalidate every visit).
+    (OUT / "_headers").write_text(headers.security(sorted(script_hashes)) + headers.CACHE)
     # specs pages and monthly history pages are real pages too; the phones' own pages and the fixed ones are listed by seo itself
     extra = [f[:-5] for f in rendered if re.fullmatch(r"phones/[^/]+/specs\.html|history/[^/]+/[^/]+\.html", f)]
     _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg), extra))

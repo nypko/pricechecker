@@ -155,6 +155,17 @@ def _oppo_docs(doc):
     return {**doc, "offers": offers}, {**doc, "offers": sold}
 
 
+def _gone_docs(doc):
+    """Phones whose Global version has no current price anywhere, its rows at another memory only: {name: (offers,
+    settings)}. China sells 12/256 and 16/1024 in all of them."""
+    tpl = {o["store_label"]: o for o in doc["offers"]}
+    cn = [{**tpl["Settled Shop"], "edition": "china", "storage": st} for st in ("12/256", "16/1024")]
+    def gl(base, **kw):
+        return cn + [{**tpl[base], "edition": "global", "storage": "12/256", **kw}]
+    return {"gone-sold": (gl("EU Only", available=False), view.DEFAULT), "gone-nopay": (gl("Card Only"), UK_PAYPAL),
+            "gone-stale": (gl("Old Store"), view.DEFAULT)}
+
+
 def _fixture_cases(doc, tmp_path):
     """(phone file, offers, settings, edition, storage): the full fixture under both settings, the China-only variant,
     the variant whose China listings are all sold out, the Oppo-like phones (a memory only China has; sold-out Global)."""
@@ -169,13 +180,20 @@ def _fixture_cases(doc, tmp_path):
     oppo, oppo_sold = _oppo_docs(doc)
     for name, d in (("oppo", oppo), ("oppo-sold", oppo_sold)):
         (tmp_path / f"{name}.json").write_text(json.dumps(d))
+    base = {**doc, "offers": [{**o, "storage": "base"} for o in oppo["offers"] if o["storage"] == "12/256"]}
+    (tmp_path / "oppo-base.json").write_text(json.dumps(base))
+    gone = []
+    for name, (offs, st) in _gone_docs(doc).items():
+        (tmp_path / f"{name}.json").write_text(json.dumps({**doc, "offers": offs}))
+        gone.append((tmp_path / f"{name}.json", offs, st, "global", "16/1024"))
     return [(full, doc["offers"], view.DEFAULT, "china", "12/256"), (full, doc["offers"], UK_PAYPAL, "global", "12/256"),
             (full, doc["offers"], view.DEFAULT, "global", "12/512"), (china, china_offers, view.DEFAULT, "china", "12/256"),
             (sold, sold_offers, view.DEFAULT, "china", "12/256"),
             (tmp_path / "oppo.json", oppo["offers"], view.DEFAULT, "china", "12/256"),
             (tmp_path / "oppo.json", oppo["offers"], UK_PAYPAL, "global", "16/1024"),
             (tmp_path / "oppo.json", oppo["offers"], view.DEFAULT, "china", "16/1024"),
-            (tmp_path / "oppo-sold.json", oppo_sold["offers"], view.DEFAULT, "global", "16/1024")]
+            (tmp_path / "oppo-sold.json", oppo_sold["offers"], view.DEFAULT, "global", "16/1024"),
+            (tmp_path / "oppo-base.json", base["offers"], view.DEFAULT, "china", "base")] + gone
 
 
 @needs_node
@@ -459,7 +477,9 @@ def test_price_box_not_sold_with_the_memory_offers_the_nearest(oppo):
     box = macro("price_box", rows, "global", "16/1024", view.DEFAULT, labels, False)
     assert text(box) == "Global version – Not sold with 16 GB + 1 TB Nearest: 16 GB + 512 GB · €1,500 →"
     assert '<button type="button" class="near" data-m="16/512">' in box and "less" not in box and "€" in text(box)
-    assert 'role="tab"' in box and 'aria-selected="false"' in box and 'aria-controls="pick-panel"' in box and 'id="tab-global"' in box
+    # the select button is the tab; the root and the nearest button are not, and the nearest button is not inside the tab
+    assert '<button type="button" class="pickbtn" data-e="global" role="tab" aria-selected="false" aria-controls="pick-panel" id="tab-global">' in box
+    assert not re.match(r"<div[^>]*role=", box) and "aria-pressed" not in box and re.search(r"</button><button[^>]*class=\"near\"", box)
     # China does have it: priced, no "not sold" text
     ch = macro("price_box", rows, "china", "16/1024", view.DEFAULT, labels, True)
     assert "€1,700" in text(ch) and "Not sold" not in text(ch) and "near" not in ch
@@ -469,9 +489,30 @@ def test_price_box_not_sold_with_the_memory_offers_the_nearest(oppo):
     # sold out at that memory: the existing text, no nearest button (Global's 16/1024 is sold out in the second phone)
     so = macro("price_box", rows_sold, "global", "16/1024", view.DEFAULT, labels, True)
     assert "Sold out at every store we check" in text(so) and "Not sold" not in text(so) and "near" not in so
-    # no version sells anything current: nothing near to offer
-    none_ok = [r for r in rows if r["edition"] == "global"]
-    assert "near" not in macro("price_box", [{**r, "state": "soldout"} for r in none_ok], "global", "16/1024", view.DEFAULT, labels, True)
+    # a version with nothing current anywhere keeps its whole-version state text, not "Not sold with ..."
+    none_ok = [{**r, "state": "soldout"} for r in rows if r["edition"] == "global"]
+    b = macro("price_box", none_ok, "global", "16/1024", view.DEFAULT, labels, True)
+    assert text(b) == "Global version – Sold out at every store we check" and "near" not in b
+
+
+@needs_node
+def test_version_with_no_current_price_anywhere_keeps_its_state_text(fixture_doc, tax_file, tax, tmp_path):
+    """Global's only rows are sold out / not payable / stale, at another memory: at the picked memory its box says what
+    it said before (Jinja and JS alike), with no "Not sold with" and no nearest button (nothing to offer)."""
+    labels = {"global": "Global", "china": "China"}
+    want = {"gone-sold": "Sold out at every store we check", "gone-nopay": "No current price for your settings",
+            "gone-stale": "No current price for your settings"}
+    for name, (offs, s) in _gone_docs(fixture_doc).items():
+        f = tmp_path / f"{name}.json"
+        f.write_text(json.dumps({**fixture_doc, "offers": offs}))
+        rows = view.rows(offs, tax, s)
+        assert {r["state"] for r in rows if r["edition"] == "global"} <= {"soldout", "nopay", "stale"}, name
+        js = render_js(f, tax_file, s, labels, "global", "16/1024", fixture_doc["meta"], fixture_doc["now"])["price_box"]
+        for box in (macro("price_box", rows, "global", "16/1024", s, labels, True), js):
+            assert text(box) == f"Global version – {want[name]}", name
+            assert "near" not in box and 'role="tab"' in box
+        # the same version at the memory its rows are at: unchanged
+        assert want[name] in text(macro("price_box", rows, "global", "12/256", s, labels, True))
 
 
 def test_cheaper_settled_box_says_how_much_less(oppo, fixture_doc, tax):
@@ -485,6 +526,10 @@ def test_cheaper_settled_box_says_how_much_less(oppo, fixture_doc, tax):
     unsettled = [{**r, "settled": False} if r["edition"] == "china" and r["storage"] == "12/256" else r for r in rows]
     assert "less" not in macro("price_box", unsettled, "china", "12/256", view.DEFAULT, labels, True)
     assert "less" not in macro("price_box", [{**r, "settled": False} if r["edition"] == "global" else r for r in rows], "china", "12/256", view.DEFAULT, labels, True)
+    # "base" rows may be different memories: no number there, though both are settled and one is cheaper
+    base = [{**r, "storage": "base"} for r in rows if r["storage"] == "12/256"]
+    assert view.best_of(base, "china", "base")["settled"] and view.best_of(base, "global", "base")["settled"]
+    assert "less" not in macro("price_box", base, "china", "base", view.DEFAULT, labels, True)
     # equal totals: neither is cheaper
     eq = [{**r, "total": 1000} if r["edition"] == "global" and r["storage"] == "12/256" else r for r in rows]
     assert "less" not in macro("price_box", eq, "china", "12/256", view.DEFAULT, labels, True)

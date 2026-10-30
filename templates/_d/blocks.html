@@ -31,25 +31,33 @@
 {%- set o_ed = "global" if edition == "china" else "china" -%}
 {%- set other = best_of(rows, o_ed, storage) -%}
 {%- set cls = "cn" if edition == "china" else "gl" -%}
-{%- set tab = ' role="tab" aria-selected="' ~ ('true' if on else 'false') ~ '" aria-controls="pick-panel" id="tab-' ~ edition ~ '"' if switch else "" -%}
+{#- the select button is the tab (its links and the nearest button sit beside it, not inside it) -#}
+{%- set tab_open = '<button type="button" class="pickbtn" data-e="' ~ edition ~ '" role="tab" aria-selected="' ~ ('true' if on else 'false') ~ '" aria-controls="pick-panel" id="tab-' ~ edition ~ '">' if switch else "" -%}
+{%- set tab_close = "</button>" if switch else "" -%}
+{%- set root_cls = cls ~ (" on" if switch and on else "") -%}
 {%- if not b -%}
-{%- set ed_rows = rows|selectattr("edition", "equalto", edition)|selectattr("storage", "equalto", storage)|list -%}
-{%- if ed_rows -%}
-{#- every listing of this version at this memory sold out: other settings would not help, so say so -#}
-{%- set sold = not (ed_rows|rejectattr("state", "equalto", "soldout")|list) -%}
-<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">{{ "Sold out at every store we check" if sold else "No current price for your settings" }}</p></div>
+{%- set ed_all = rows|selectattr("edition", "equalto", edition)|list -%}
+{%- set pool = ed_all|selectattr("storage", "equalto", storage)|list -%}
+{#- no row at this memory and no current price anywhere: the whole version's state, as before the memory pick -#}
+{%- if not pool and not (ed_all|selectattr("state", "equalto", "ok")|list) %}{% set pool = ed_all %}{% endif -%}
+{%- if pool -%}
+{#- every listing sold out: other settings would not help, so say so -#}
+{%- set sold = not (pool|rejectattr("state", "equalto", "soldout")|list) -%}
+<div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">{{ "Sold out at every store we check" if sold else "No current price for your settings" }}</p>{{ tab_close|safe }}</div>
+{%- elif not ed_all -%}
+<div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">No current price for your settings</p>{{ tab_close|safe }}</div>
 {%- else -%}
 {%- set nm = nearest_memory(rows, edition, storage) -%}
-<div class="side {{ cls }} none" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}><div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">Not sold with {{ mem_short(storage) }}</p>
+<div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">Not sold with {{ mem_short(storage) }}</p>{{ tab_close|safe }}
 {%- if switch and nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }} →</button>{% endif -%}
 </div>
 {%- endif -%}
 {%- else -%}
-<div class="side {{ cls }}{{ ' on' if switch and on }}" data-block="price_box" data-e="{{ edition }}"{{ tab|safe }}>{% if switch %}<button type="button" class="pickbtn" data-e="{{ edition }}" aria-pressed="{{ 'true' if on else 'false' }}">{% endif %}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div>
-{%- if b.settled and other and other.settled and b.total < other.total %}<p class="less">{{ money(other.total - b.total, s.cur) }} less</p>{% endif -%}
+<div class="side {{ root_cls }}" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div>
+{%- if b.storage != "base" and b.settled and other and other.settled and b.total < other.total %}<p class="less">{{ money(other.total - b.total, s.cur) }} less</p>{% endif -%}
 <p class="st">at <b>{{ b.store }}</b></p>
 {%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}
-{% if switch %}</button>{% endif %}
+{{ tab_close|safe }}
 {%- if switch and edition == "china" %}<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>{% endif -%}
 {{ _go(b, "go") }}
 {%- if switch and other %}<button type="button" class="pick" data-e="{{ edition }}">{{ "Details below ↓" if on else "Show this version ↓" }}</button>{% endif -%}

@@ -111,27 +111,32 @@ const edCls = (e) => (e === "china" ? "cn" : "gl");
 /** One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what is
  *  left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the state
  *  text if the version has rows there, else "Not sold with <memory>" and a button to the nearest memory it is sold with.
- *  sw = false: the plain box for a page with no version switch (not a tab, no pick buttons, no "means" link). */
+ *  sw = false: the plain box for a page with no version switch (no tab button, no pick buttons, no "means" link). */
 export function priceBox(rows, edition, storage, s, labels, on = false, sw = true) {
   const b = bestOf(rows, edition, storage), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
-  const tab = sw ? ` role="tab" aria-selected="${on ? "true" : "false"}" aria-controls="pick-panel" id="tab-${edition}"` : "";
+  // the select button is the tab (its links and the nearest button sit beside it, not inside it)
+  const tabOpen = sw ? `<button type="button" class="pickbtn" data-e="${edition}" role="tab" aria-selected="${on ? "true" : "false"}" aria-controls="pick-panel" id="tab-${edition}">` : "";
+  const tabClose = sw ? "</button>" : "";
+  const root = `<div class="side ${cls}${sw && on ? " on" : ""}`;
   if (!b) {
-    const ed = rows.filter((r) => r.edition === edition && r.storage === storage);
-    if (ed.length) {
-      // every listing of this version at this memory sold out: other settings would not help, so say so
-      const sold = ed.every((r) => r.state === "soldout");
-      return `<div class="side ${cls} none" data-block="price_box" data-e="${edition}"${tab}>${lab}<div class="big num">–</div><p class="st">${sold ? "Sold out at every store we check" : "No current price for your settings"}</p></div>`;
-    }
+    const all = rows.filter((r) => r.edition === edition);
+    let pool = all.filter((r) => r.storage === storage);
+    // no row at this memory and no current price anywhere: the whole version's state, as before the memory pick
+    if (!pool.length && !all.some((r) => r.state === "ok")) pool = all;
+    const none = (txt) => `${root} none" data-block="price_box" data-e="${edition}">${tabOpen}${lab}<div class="big num">–</div><p class="st">${txt}</p>${tabClose}`;
+    // every listing sold out: other settings would not help, so say so
+    if (pool.length) return none(pool.every((r) => r.state === "soldout") ? "Sold out at every store we check" : "No current price for your settings") + "</div>";
+    if (!all.length) return none("No current price for your settings") + "</div>";
     const nm = nearestMemory(rows, edition, storage);
-    return `<div class="side ${cls} none" data-block="price_box" data-e="${edition}"${tab}>${lab}<div class="big num">–</div><p class="st">Not sold with ${memShort(storage)}</p>` +
+    return none(`Not sold with ${memShort(storage)}`) +
       (sw && nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)} →</button>` : "") + "</div>";
   }
-  return `<div class="side ${cls}${sw && on ? " on" : ""}" data-block="price_box" data-e="${edition}"${tab}>` + (sw ? `<button type="button" class="pickbtn" data-e="${edition}" aria-pressed="${on ? "true" : "false"}">` : "") +
+  return `${root}" data-block="price_box" data-e="${edition}">${tabOpen}` +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div>` +
-    (b.settled && other && other.settled && b.total < other.total ? `<p class="less">${money(other.total - b.total, s.cur)} less</p>` : "") +
+    (b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${money(other.total - b.total, s.cur)} less</p>` : "") +
     `<p class="st">at <b>${esc(b.store)}</b></p>` +
-    (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + (sw ? "</button>" : "") +
+    (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose +
     (sw && edition === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") + go(b, "go") +
     (sw && other ? `<button type="button" class="pick" data-e="${edition}">${on ? "Details below ↓" : "Show this version ↓"}</button>` : "") + "</div>";
 }

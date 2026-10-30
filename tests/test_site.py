@@ -259,3 +259,34 @@ def test_collect_days_must_be_a_whole_number():
     assert [buyer_reports.parse_days(x) for x in ("7", "62", "400")] == [7, 62, 400]
     for bad in ("7; rm -rf /", '7"; curl x|sh; "', "-1", "", "0", "401", "1e3", "٣"):
         assert buyer_reports.parse_days(bad) is None, bad
+
+
+def test_offer_links_must_be_https_on_the_stores_own_host(capsys):
+    from pricechecker.site import offers
+    cfg = {"shop": {"base_url": "https://www.shop.example", "affiliate_link": "{url}{sep}ref={id}", "affiliate_id": "me"},
+           "shop_eu": {"part_of": "shop"}, "feedy": {"sitemap_url": "https://feeds.feedy.example/s.xml", "hosts": ["feedy-cdn.example"]},
+           "bare": {}}
+    ok = offers.safe_link
+    assert ok("https://shop.example/p/1", "shop", cfg) == "https://shop.example/p/1?ref=me"
+    assert ok("https://www.shop.example/p/1", "shop", cfg) and ok("https://eu.shop.example/p", "shop_eu", cfg)
+    assert ok("https://feeds.feedy.example/p", "feedy", cfg) and ok("https://feedy-cdn.example/p", "feedy", cfg)
+    for bad, store in (("javascript:alert(1)", "shop"), ("https://phish.example/shop.example", "shop"), ("http://shop.example/p", "shop"),
+                       ("https://shop.example.evil.example/p", "shop"), ("https://evilshop.example/p", "shop"), ("", "shop"),
+                       ("https://x.example/p", "bare"), ("https://[::1/", "shop")):
+        assert ok(bad, store, cfg) is None, bad
+    assert "warning: shop: dropped a product link" in capsys.readouterr().out
+
+
+@pytest.mark.live
+def test_every_saved_offer_link_survives_the_host_check():
+    """The saved links (live: a store may move to a new host) pass: otherwise that store lost its buttons."""
+    import json
+
+    import yaml
+
+    from pricechecker.site import offers
+    cfg = yaml.safe_load(Path("config/stores.yaml").read_text())["stores"]
+    for store, st in json.loads(Path("data/latest.json").read_text())["stores"].items():
+        if store in cfg:
+            for o in st.get("offers", [])[:5]:
+                assert offers.safe_link(o["url"], store, cfg), (store, o["url"])

@@ -4,8 +4,11 @@
     Text helpers (money, mem_text, ...) are pricechecker/site/blocks.py, registered as globals. No settings UI and no
     event wiring here: page modules wire the buttons (data-e, data-m). -#}
 
+{#- the store button: only for an https link (offers.py already drops any other) -#}
 {%- macro _go(r, cls) -%}
+{%- if r.link and r.link.startswith("https://") -%}
 <a class="{{ cls }}" href="{{ r.link }}" rel="sponsored nofollow noopener" target="_blank">View at {{ r.store }}<span aria-hidden="true"> ↗</span></a>
+{%- endif -%}
 {%- endmacro -%}
 
 {%- macro _total(r, s) -%}
@@ -143,7 +146,7 @@ No memory has a settled delivered price for both versions yet, so we don't put a
 
 {#- Pinned at the bottom once the price boxes scroll away; the page shows and hides it. Only an ok row. -#}
 {%- macro buy_bar(row, s, labels) -%}
-{%- if row and row.state == "ok" -%}
+{%- if row and row.state == "ok" and row.link and row.link.startswith("https://") -%}
 <div class="buybar" data-block="buy_bar" hidden><div class="bb-t"><span class="bb-l1"><b class="num">{{ "≈" if row.approx }}{{ money(row.total, s.cur) }}</b><b class="bb-w">{{ labels[row.edition] }} · {{ mem_short(row.storage) }}</b></span><span>{{ (row.tail ~ " · ") if row.tail }}{{ row.store }}</span></div><a class="bb-go" href="{{ row.link }}" rel="sponsored nofollow noopener" target="_blank" aria-label="View deal at {{ row.store }}">View deal<span aria-hidden="true"> ↗</span></a></div>
 {%- endif -%}
 {%- endmacro -%}

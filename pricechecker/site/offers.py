@@ -1,6 +1,7 @@
 """Per phone: every store's offers with terms, payment, shipping and trust attached, plus what each page shows
 from them (charts, stats, title price, related phones). assemble() returns the phone dicts the pages use."""
 from datetime import datetime, timedelta
+from urllib.parse import urlsplit
 
 from .. import affiliate, fx, normalize, promos, terms
 from .common import EDITIONS, _money, _specs, ed_labels
@@ -19,6 +20,33 @@ def _too_old(checked: str | None, updated_at: datetime | None) -> bool:
         return updated_at - datetime.strptime(checked, "%Y-%m-%dT%H:%M:%SZ") > OLD_AFTER
     except ValueError:
         return False
+
+
+def store_hosts(store: str, stores_cfg: dict) -> set[str]:
+    """The hosts a store's product links may point at: its base_url and sitemap_url, its parent's for an EU-warehouse
+    section (part_of), and any extra `hosts:` listed in stores.yaml. Without "www."."""
+    cfgs = [stores_cfg.get(store) or {}]
+    if cfgs[0].get("part_of") in stores_cfg:
+        cfgs.append(stores_cfg[cfgs[0]["part_of"]])
+    out = {h for c in cfgs for h in (c.get("hosts") or [])}
+    out |= {urlsplit(c[k]).hostname or "" for c in cfgs for k in ("base_url", "sitemap_url") if c.get(k)}
+    return {h.lower().removeprefix("www.") for h in out if h}
+
+
+def safe_link(url: str | None, store: str, stores_cfg: dict) -> str | None:
+    """The affiliate link for a scraped product URL, or None (the offer then shows no store button) unless the URL is
+    https on the store's own host or a subdomain of it: a broken or hostile page or feed can't put javascript: or
+    another shop's address behind "View at <store>"."""
+    try:
+        u = urlsplit(url or "")
+        host = (u.hostname or "").lower().removeprefix("www.")
+    except ValueError:
+        u, host = None, ""
+    hosts = store_hosts(store, stores_cfg)
+    if not (u and u.scheme == "https" and host and any(host == h or host.endswith("." + h) for h in hosts)):
+        print(f"  warning: {store}: dropped a product link that is not https on {sorted(hosts) or 'a known host'}: {str(url)[:80]!r}")
+        return None
+    return affiliate.link(url, stores_cfg[store])
 
 
 def _trust(t: dict | None) -> dict | None:
@@ -63,7 +91,7 @@ def assemble(data: SiteData) -> list[dict]:
                     usd = (o.get("prices") or {}).get("USD") or fx.convert(o["price"], o["currency"], "USD", rates)
                     offers.append({**o, "store_label": stores_cfg[store].get("label", store), "stale": not st.get("ok", True), "old": old[store],
                                    "checked": st.get("checked"),   # when this store's prices were last read (ISO, UTC)
-                                   "link": affiliate.link(o["url"], stores_cfg[store]), "money": _money(o, rates), "usd": usd,
+                                   "link": safe_link(o.get("url"), store, stores_cfg), "money": _money(o, rates), "usd": usd,
                                    "pay": {k: terms.payment_pct(stores_cfg[store], k) for k in terms.METHODS},
                                    "pay_ok": {k: terms.payment_available(stores_cfg[store], k, usd) for k in terms.METHODS},
                                    "ship": {r: terms.shipping(stores_cfg[store], r, o, rates) for r in terms.REGIONS},

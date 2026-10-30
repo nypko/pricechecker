@@ -376,3 +376,20 @@ def test_js_store_links_are_sponsored_and_open_in_a_new_tab(fixture_doc, tax_fil
                         assert 'target="_blank"' in m[1], m[0]
                         seen.add(re.search(r'class="([^"]*)"', m[1])[1])
     assert {"go", "bb-go"} <= seen, seen
+
+
+@needs_node
+def test_store_button_only_for_an_https_link(fixture_doc, tax_file, tax, tmp_path):
+    """An offer whose link is not https (offers.py drops those; this is the second line of defence) gets no store
+    button and no buy bar, in Jinja and JS alike."""
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    for bad in ("javascript:alert(1)", "http://shop.example/p", None):
+        offers_ = [{**o, "link": bad} for o in fixture_doc["offers"]]
+        f = tmp_path / "bad-link.json"
+        f.write_text(json.dumps({**fixture_doc, "offers": offers_}))
+        rows = view.rows(offers_, tax, view.DEFAULT)
+        py = render_py(rows, view.DEFAULT, labels, "china", "12/256", fixture_doc["meta"], fixture_doc["now"])
+        js = render_js(f, tax_file, view.DEFAULT, labels, "china", "12/256", fixture_doc["meta"], fixture_doc["now"])
+        assert_same(py, js, f"link {bad}")
+        everything = "".join(x if isinstance(x, str) else "".join(x) for x in py.values())
+        assert "javascript:" not in everything and 'class="go"' not in everything and py["buy_bar"] == ""

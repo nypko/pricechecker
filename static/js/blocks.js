@@ -102,7 +102,8 @@ export function memOptions(rows, edition) {
   return sts.sort(memCmp).map((st) => [st, bestOf(rows, edition, st)]);
 }
 
-const go = (r, cls) => `<a class="${cls}" href="${esc(r.link)}" ${LINK}>View at ${esc(r.store)}<span aria-hidden="true"> ↗</span></a>`;
+const httpsLink = (r) => typeof r.link === "string" && /^https:\/\//.test(r.link);   // offers.py drops any other link
+const go = (r, cls) => !httpsLink(r) ? "" : `<a class="${cls}" href="${esc(r.link)}" ${LINK}>View at ${esc(r.store)}<span aria-hidden="true"> ↗</span></a>`;
 const total = (r, s) => (r.approx ? "≈" : "") + money(r.total, s.cur) + (r.tail ? `<small>${esc(r.tail)}</small>` : "");
 const memDiv = (st) => { const p = memParts(st); return `<div class="mem">${p ? `<b>${p[0]}</b> RAM · <b>${p[1]}</b> storage` : NOMEM}</div>`; };
 const edCls = (e) => (e === "china" ? "cn" : "gl");
@@ -198,7 +199,7 @@ export function storeList(rows, s, labels, now = null) {
 
 /** Pinned at the bottom once the price boxes scroll away; the page shows and hides it. "" without a row. */
 export function buyBar(row, s, labels) {
-  if (!row || row.state !== "ok") return "";   // never a stale, sold-out, undelivered or unpayable row
+  if (!row || row.state !== "ok" || !httpsLink(row)) return "";   // never a stale, sold-out, undelivered or unpayable row, or no link
   return `<div class="buybar" data-block="buy_bar" hidden><div class="bb-t"><span class="bb-l1"><b class="num">${row.approx ? "≈" : ""}${money(row.total, s.cur)}</b>` +
     `<b class="bb-w">${esc(labels[row.edition])} · ${memShort(row.storage)}</b></span><span>${row.tail ? esc(row.tail) + " · " : ""}${esc(row.store)}</span></div>` +
     `<a class="bb-go" href="${esc(row.link)}" ${LINK} aria-label="View deal at ${esc(row.store)}">View deal<span aria-hidden="true"> ↗</span></a></div>`;

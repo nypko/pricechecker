@@ -60,6 +60,23 @@ It does not try to get around bot protection – for stores that block it, use t
   together. `tests/fixtures/pricing_cases.json` must pass in both (`node tests/js/pricing_cases.mjs` for the JS side).
 - **Data files:** the build writes small hashed files to `build/data/v1/` (each at most 60,000 bytes) for the pages.
 
+## Front end
+
+Pages are static HTML from `templates/` (direction D: `templates/_d/shell.html`, `templates/_d/blocks.html`) with one stylesheet, `static/d.css`, and small ES modules in `static/js/`:
+
+- `settings.js` (ship-to / pay-with / currency, stored in the browser), `pricing.js` (the totals rule, mirror of `pricechecker/pricing.py`), `view.js` and `share.js` (shared helpers),
+- `blocks.js` (re-renders the settings-dependent blocks), and one module per page: `home.js`, `phone.js`, `specs.js`, `drops.js`, `compare.js`, `history.js`, `store.js`.
+
+**The blocks rule.** Every block whose content depends on the visitor's settings is written twice and the two must stay equal:
+one Jinja macro in `templates/_d/blocks.html` (what the build outputs for the default settings) and one function in `static/js/blocks.js`
+(what the browser re-renders after a settings change). `tests/test_blocks.py` renders both and fails if they differ. Change a block = change the macro, the function and the parity test together.
+
+Tests: `.venv/bin/python -m pytest -q` (set `DOORPRICE_CHECK_BUDGETS=1` to also check the page and data size budgets); the JS cases are plain scripts under node (pytest runs them; run one by hand with e.g. `node tests/js/pricing_cases.mjs`,
+`node tests/js/settings_cases.mjs`; `render_blocks.mjs` feeds the blocks parity test).
+
+Screenshots: after `python -m pricechecker.run --build-only --offline`, `tools/screenshots.sh [outdir] [store]` serves `build/` and captures home, phone,
+specs, drops, compare, history, a store page and 404 at 390 and 1280 px wide, light and dark (32 PNGs; needs chromium).
+
 ## Local use
 
 ```bash

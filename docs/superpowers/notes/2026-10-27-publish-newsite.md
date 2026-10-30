@@ -27,6 +27,12 @@ Do these in order. Production (`hourly.yml`) commits to `main` every hour, so ma
 13. **Watch the first run**: the log shows the normal "history: N price changes recorded"; the deploy step succeeds; Telegram stays quiet;
     IndexNow reports a normal number of changed pages; the commit diff touches only the current month's `data/history/YYYY-MM.csv` and `last.json` (plus the usual latest.json/caches).
 
+## newsite-preview/ is not published
+
+`newsite-preview/` (the design mockups) is copied to `build/mock/` only by the newsite workflow. The hourly and production workflows never copy it,
+so it must not exist in production's `build/`. Merging newsite into main does not publish it; check `build/mock/` is absent after the first production run.
+The old `static/app.js` and `static/style.css` are gone: pages load `static/d.css` and the modules in `static/js/` (hashed in `_headers`). Nothing in these steps needs them.
+
 ## Rollback
 
 1. **Disable the hourly workflow** and wait for running jobs.

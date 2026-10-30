@@ -29,7 +29,7 @@ def test_every_workflow_declares_its_token_permissions():
 def test_review_issues_are_only_the_bots_own():
     for name, text in FLOWS.items():
         for line in re.findall(r"gh issue list[^\n]*", text):
-            assert "--author app/github-actions" in line, (name, line)
+            assert re.search(r"--search 'in:title \"[^\"]+\" author:app/github-actions'", line) and "--author" not in line, (name, line)
 
 
 def test_hourly_production_skips_live_data_tests_and_previews_run_them_all():

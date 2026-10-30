@@ -49,7 +49,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |   # one open review issue at a time: later reports are added to it as comments
-          n=$(gh issue list --state open --author app/github-actions --search 'in:title "Buyer reports to review"' --json number -q '.[0].number')
+          n=$(gh issue list --state open --search 'in:title "Buyer reports to review" author:app/github-actions' --json number -q '.[0].number')
           if [ -n "$n" ]; then gh issue comment "$n" --body-file .buyer_report.md
           else gh issue create --title "Buyer reports to review ($(date -u +%Y-%m-%d))" --body-file .buyer_report.md; fi
       - name: Commit the review queue

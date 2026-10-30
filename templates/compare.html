@@ -1,23 +1,22 @@
 {% extends "base.html" %}
+{#- Spec §5.5. pages/compare.py puts the phone list and key specs in #cmp-phones; static/js/compare.js does the rest. -#}
 {% block title %}Compare phones: delivered price and specs side by side – DoorPrice{% endblock %}
 {% block description %}Compare up to three imported flagship phones side by side: lowest delivered price for your country, Global and China versions, RAM/storage options, chip, screen, battery and charging.{% endblock %}
 {% block main %}
-<div class="page-nav">
-  <a class="crumb" href="./">All phones</a>
+<div class="wrap cmp" id="cmp" data-tax="{{ tax_rel }}">
+  <p class="kicker"><a href="./">All phones</a></p>
+  <h1>Compare phones</h1>
+  {{ shell.settings_line() }}
+  <div id="cmp-app">
+    <p class="cm-prompt">Pick two or three phones to compare.</p>
+    <ul class="cm-links">
+      {%- for brand, group in phones|groupby("brand") %}
+      <li><b>{{ brand }}</b> {% for q in group %}<a href="phones/{{ q.id }}">{{ q.name }}</a>{{ " · " if not loop.last }}{% endfor %}</li>
+      {%- endfor %}
+    </ul>
+  </div>
+  <noscript><p class="cm-note">The comparison needs JavaScript. Each phone's own page works without it.</p></noscript>
 </div>
-<h1>Compare phones</h1>
-<p class="lede">Up to three phones side by side. Prices are the lowest we can work out delivered to <strong class="for-region">the EU</strong>,
-  paying by <span class="for-pay">card</span> <button type="button" class="link-btn" data-prefs>Change</button></p>
-
-{#- app.js builds the rows from #compare-data; the chosen phones live in the URL (#slug,slug,slug) so a comparison can be shared -#}
-<section class="cmp" id="compare" aria-label="Phones compared">
-  {#- the phone list once; app.js copies it into each column's "Change" / "Add a phone" menu -#}
-  <select id="cmp-src" hidden aria-hidden="true">{% for b, group in cmp_phones|groupby("b") %}<optgroup label="{{ b }}">
-    {%- for q in group %}<option value="{{ q.s }}">{{ q.n }}</option>{% endfor %}</optgroup>{% endfor %}</select>
-  <div class="cmp-rows" aria-live="polite"></div>
-  
-  <p class="cmp-note muted small" hidden>Tap a RAM + storage option to price every phone at it, or at its closest option (dashed). A green value with a check is the lowest delivered price, the biggest battery and the fastest wired charging.</p>
-</section>
-<p class="nojs-only muted small">The comparison needs JavaScript. Each phone's own page works without it.</p>
-<script type="application/json" id="compare-data">{{ cmp_json|safe }}</script>
+<script type="application/json" id="cmp-phones">{{ cmp_json|safe }}</script>
 {% endblock %}
+{% block module %}<script type="module" src="{{ root }}static/js/compare.js?v={{ asset_v['js/compare.js'] }}"></script>{% endblock %}

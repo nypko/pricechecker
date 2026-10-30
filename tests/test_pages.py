@@ -402,3 +402,42 @@ def test_drops_feed_has_one_entry_per_listed_drop():
     out = seo._feeds(ctx["site"], phones, data.rows_all, data.stores_cfg, data.updated_at, items)["feeds/drops.xml"]
     assert out.count("<entry>") == 2 and "down 5% to €950 (was €1,000)" in out and "&" not in out.replace("&amp;", "").replace("&lt;", "")
     assert f'<link href="https://doorprice.app/phones/{picks[0][0]["slug"]}"/>' in out
+
+
+# ---- compare page (spec §5.5) ----
+def test_compare_page_is_small_and_has_no_offer_data(site_build):
+    raw = (site_build / "compare.html").read_bytes()
+    h = raw.decode()
+    assert len(raw) <= 60_000, len(raw)
+    for banned in ('"money"', "offers_json", '"pay_ok"', "compare-data"):
+        assert banned not in h, banned
+    assert "Other countries and payment methods need JavaScript" in h   # the shell's line
+    assert "The comparison needs JavaScript. Each phone's own page works without it." in h
+    assert "Pick two or three phones" in h and 'data-for' in h
+    assert 'href="phones/oppo-find-x9-ultra"' in h   # without JS: links to the phone pages
+    assert re.search(r'data-tax="data/v1/tax\.[0-9a-f]{10}\.json"', h)
+    assert "js/compare.js?v=" in h
+
+
+def test_compare_page_phone_list(site_build):
+    import json
+    h = (site_build / "compare.html").read_text()
+    raw = re.search(r'<script type="application/json" id="cmp-phones">(.*?)</script>', h, re.DOTALL)[1]
+    doc = json.loads(raw.replace("<\\/", "</"))
+    by = {p["id"]: p for p in doc["phones"]}
+    x9 = by["oppo-find-x9-ultra"]
+    assert x9["name"] == "Oppo Find X9 Ultra" and x9["brand"] == "Oppo" and sorted(x9["editions"]) == ["china", "global"]
+    assert re.fullmatch(r"data/v1/phone/oppo-find-x9-ultra\.[0-9a-f]{10}\.json", x9["file"])
+    assert x9["k"] == {"battery": 7050, "charging": 100}
+    assert len(x9["c"]) == len(doc["rows"])
+    assert by["oneplus-16"]["editions"] == ["china"]
+    # the specs page's rule: a field the two brand pages give differently is split, as [china, global]
+    i = [r["id"] for r in doc["rows"]].index("wired")
+    assert x9["c"][i] == ["100 W SUPERVOOC, 100 W UFCS; also 55 W PPS, 18 W PD", "100 W SUPERVOOC; also 55 W PPS, 18 W PD"]
+    assert by["google-pixel-11-pro"]["c"][i] is None or isinstance(by["google-pixel-11-pro"]["c"][i], str)
+
+
+def test_offer_data_is_gone_from_the_phone_dicts():
+    from pricechecker.site import offers
+    src = Path(offers.__file__).read_text()
+    assert "offers_json" not in src and '"compare": compare' not in src

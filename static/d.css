@@ -487,3 +487,52 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .empty-week { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
 .empty-week h2 { margin: 0 0 6px; font: 700 1.2rem var(--serif); }
 .empty-week p { margin: 0; color: var(--ink-2); font-size: .92rem; }
+
+/* compare page (static/js/compare.js): columns share one grid; --n is how many are showing */
+.cmp .cm-prompt { margin: 6px 0 10px; font-size: .95rem; color: var(--ink-2); }
+.cmp .cm-links { list-style: none; padding: 0; margin: 12px 0 0; font-size: .92rem; line-height: 1.9; }
+.cmp .cm-links b { margin-right: 6px; }
+.cmp .cm-note { margin: 0 0 12px; font-size: .84rem; color: var(--ink-2); }
+.cmp .cm-grid { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 8px; }
+.cmp .cm-head { margin: 4px 0 14px; }
+.cmp .cm-h { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 10px 11px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cmp .cm-h.cm-empty { border-style: dashed; background: none; }
+.cmp .cm-name { font: 700 .98rem/1.2 var(--body); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+.cmp .cm-name:hover { text-decoration: underline; }
+.cmp .cm-sub { font-size: .76rem; color: var(--ink-2); }
+.cmp .cm-x { all: unset; margin-top: 6px; align-self: flex-start; font: 600 .78rem var(--body); color: var(--ink-2); cursor: pointer; min-height: 28px; line-height: 28px; text-decoration: underline; }
+.cmp .cm-x:focus-visible { outline: 2px solid var(--ink); border-radius: 6px; }
+.cmp .cm-add { display: flex; flex-direction: column; gap: 6px; font: 600 .78rem var(--body); color: var(--ink-2); }
+.cmp .cm-add select { width: 100%; min-height: 44px; border-radius: 10px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .9rem var(--body); padding: 0 6px; }
+.cmp .cm-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.cmp .cm-box { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.cmp .cm-box .side { flex: 1; padding: 12px 10px 10px; }
+.cmp .cm-box .side .big { font-size: clamp(1.1rem, 5.6vw, 2rem); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.cmp .cm-box .side .st { font-size: .78rem; }
+.cmp .cm-box .side .mem { font-size: .76rem; }
+.cmp .cm-box .pickbtn { cursor: default; }
+.cmp .cm-box .side .go { min-height: 44px; font-size: .82rem; }
+.cmp .cm-box.near .side { border-style: dashed; }
+.cmp .cm-near { margin: 6px 2px 0; font-size: .76rem; color: var(--warn); line-height: 1.35; }
+.cmp .cm-box.low .side { box-shadow: 0 0 0 1px var(--good); border-color: var(--good); }
+.cmp .cm-win { margin: 0; font: 700 .8rem var(--body); color: var(--good); }
+.cmp .tick { color: var(--good); font-weight: 800; margin-right: 2px; }
+.cmp .cm-t .tick { margin-left: 6px; }
+.cmp .cm-h2 { margin: 26px 0 8px; }
+.cmp .difbar { margin: 0 0 10px; }
+.cmp .cm-t { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; font-size: .88rem; }
+.cmp .cm-t th { text-align: left; padding: 9px 11px 0; font: 600 .74rem var(--body); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); }
+.cmp .cm-t td { vertical-align: top; padding: 3px 11px 10px; overflow-wrap: anywhere; line-height: 1.4; }
+.cmp .cm-t tbody + tbody th { border-top: 1px solid var(--rule); padding-top: 10px; }
+.cmp .cm-t td.na { color: var(--ink-2); font-style: italic; }
+.cmp .cm-t td.win { background: var(--good-soft); }
+.cmp .cm-t td.split-td { padding: 3px 6px 8px; }
+.cmp .cm-t .split { grid-template-columns: 1fr; gap: 4px; }
+.cmp .cm-t .half { font-size: .84rem; }
+.cmp .cm-err { margin: 16px 0; color: var(--warn); }
+.cmp .cm-err button { all: unset; cursor: pointer; text-decoration: underline; font-weight: 600; }
+@media (min-width: 720px) {
+  .cmp .cm-grid { gap: 12px; }
+  .cmp .cm-t td, .cmp .cm-t th { padding-left: 14px; padding-right: 14px; }
+  .cmp .cm-box .side .big { font-size: clamp(1.6rem, 3.6vw, 2.2rem); }
+}

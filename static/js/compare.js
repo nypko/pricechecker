@@ -1,0 +1,251 @@
+// The compare page (spec §5.5, templates/compare.html): up to three phones side by side, chosen in the page and kept in the
+// URL hash ("#a,b,c@16-512") so a comparison can be shared. Each chosen phone's v1 data file is fetched and priced with the
+// visitor's settings; every price is the shared price box (blocks.js). Key specs come with the page (pages/compare.py).
+// The pure helpers are exported for tests/js/compare_cases.mjs; everything touching the page is guarded.
+import { rows as viewRows, bestOf } from "./view.js";
+import * as B from "./blocks.js";
+import { load } from "./settings.js";
+
+const EDS = ["china", "global"];   // box order: the China version (red) first, Global (blue) second
+
+// ---- pure helpers ----
+
+const size = (s) => { const p = String(s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; };
+/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (static/app.js distance()). */
+function distance(a, b) {
+  const x = size(a), y = size(b);
+  if (!x || !y) return 99;
+  return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
+}
+
+/** The option in `storages` nearest to `want` (the first listed on a tie); "" when there are none. */
+export function closest(storages, want) {
+  let best = "", bd = Infinity;
+  for (const s of storages) {
+    const d = s === want ? 0 : distance(s, want);
+    if (d < bd) { best = s; bd = d; }
+  }
+  return best;
+}
+
+/** The memory one version is priced at when `want` is picked: {mem, near}. `near` marks a substitute; mem is null when
+ *  nothing is picked (the version's own best memory shows) or the version lists no memory. */
+export function shownMemory(storages, want) {
+  const list = storages.filter((s) => s !== "base");
+  if (!want || !list.length) return { mem: null, near: false };
+  const mem = closest(list, want);
+  return { mem, near: mem !== want };
+}
+
+/** Index of the single lowest (dir -1) or highest (dir 1) usable value, else -1 (a tie, or nothing to rank). */
+function single(vals, dir) {
+  const ok = vals.filter((v) => v !== null);
+  if (!ok.length) return -1;
+  const top = dir > 0 ? Math.max(...ok) : Math.min(...ok);
+  const at = vals.map((v, i) => (v === top ? i : -1)).filter((i) => i >= 0);
+  return at.length === 1 ? at[0] : -1;
+}
+
+/** The green-check winners among compared phones, as column indexes (-1: nobody). A column is {total, settled?, battery,
+ *  charging}: the lowest settled delivered total, the biggest battery and the fastest wired charging win. A tie, a missing
+ *  value or a single phone marks nobody. */
+export function winners(columns) {
+  const none = { price: -1, battery: -1, charging: -1 };
+  if (columns.length < 2) return none;
+  const num = (v) => (typeof v === "number" && v > 0 ? v : null);
+  return {
+    price: single(columns.map((c) => (typeof c.total === "number" && c.settled !== false ? c.total : null)), -1),
+    battery: single(columns.map((c) => num(c.battery)), 1),
+    charging: single(columns.map((c) => num(c.charging)), 1),
+  };
+}
+
+/** "#a,b,c@16-512" -> {ids, mem: "16/512"}. At most three ids, no repeats, only `known` ids when a list is given;
+ *  the memory only counts with a phone chosen. Anything unreadable gives no phones. */
+export function parseHash(hash, known = null) {
+  let h;
+  try { h = decodeURIComponent(String(hash || "").replace(/^#/, "")); } catch (e) { return { ids: [], mem: "" }; }
+  const m = /@(\d+)-(\d+)$/.exec(h);
+  const ids = h.replace(/@.*$/, "").split(",").filter((s, i, a) => s && a.indexOf(s) === i && (!known || known.includes(s))).slice(0, 3);
+  return { ids, mem: ids.length && m ? `${m[1]}/${m[2]}` : "" };
+}
+
+/** The shareable hash for the phones and memory shown; "" for no phones. */
+export function formatHash(ids, mem) {
+  return ids.length ? `#${ids.join(",")}${mem ? "@" + mem.replace("/", "-") : ""}` : "";
+}
+
+/** True when the compared phones' cells for one spec aren't all the same ("Show only the differences"). */
+export function differs(cells) {
+  return cells.length > 1 && new Set(cells.map((c) => JSON.stringify(c ?? null))).size > 1;
+}
+
+/** A shared price box for a page with no version switch: the two buttons and the in-page "means" link are dropped,
+ *  so nothing in it is a control that does nothing. The store link stays. */
+export function plain(html) {
+  return html
+    .replace(/<button type="button" class="pick"[^>]*>.*?<\/button>/g, "")
+    .replace(/<a class="means-link"[^>]*>.*?<\/a>/g, "")
+    .replace(/<button type="button" class="pickbtn"[^>]*>/g, '<div class="pickbtn">')
+    .replace(/<\/button>/g, "</div>");
+}
+
+// ---- the page ----
+
+const memOrder = (a, b) => { const x = size(a), y = size(b); return (x.rom - y.rom) || (x.ram - y.ram); };
+const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
+
+function wire(root) {
+  const app = document.getElementById("cmp-app"), src = document.getElementById("cmp-phones");
+  let data;
+  try { data = JSON.parse(src.textContent); } catch (e) { return; }
+  const by = new Map(data.phones.map((p) => [p.id, p]));
+  const known = data.phones.map((p) => p.id);
+  const S = { ids: [], mem: "", only: false };
+  const cache = new Map();   // phone id -> its data file's promise; a failed load is forgotten, so the next try asks again
+  const docOf = (p) => { if (!cache.has(p.id)) cache.set(p.id, getJson(p.file).catch((e) => { cache.delete(p.id); throw e; })); return cache.get(p.id); };
+  let taxDoc = null;
+  const taxOf = () => taxDoc || (taxDoc = getJson(root.dataset.tax).catch((e) => { taxDoc = null; throw e; }));
+  let token = 0;
+
+  const go = (ids, mem) => {
+    S.ids = ids; S.mem = ids.length ? mem : "";
+    if (history.replaceState) history.replaceState(null, "", location.pathname + location.search + formatHash(S.ids, S.mem));
+    paint();
+  };
+
+  // ---- pieces ----
+  const picker = () => {
+    const left = data.phones.filter((p) => !S.ids.includes(p.id)), brands = [...new Set(left.map((p) => p.brand))];
+    return '<label class="cm-add"><span>Add a phone</span><select data-add><option value="">Choose a phone</option>' +
+      brands.map((b) => `<optgroup label="${B.esc(b)}">` + left.filter((p) => p.brand === b).map((p) => `<option value="${B.esc(p.id)}">${B.esc(p.name)}</option>`).join("") + "</optgroup>").join("") +
+      "</select></label>";
+  };
+  const head = (chosen, n) => {
+    const cells = [];
+    for (let i = 0; i < n; i++) {
+      const p = chosen[i];
+      cells.push(p
+        ? `<div class="cm-h"><a class="cm-name" href="phones/${B.esc(p.id)}">${B.esc(p.name)}</a><span class="cm-sub">${B.esc(p.brand)}${p.announced ? " · " + B.month(p.announced) : ""}</span>` +
+          `<button type="button" class="cm-x" data-x="${B.esc(p.id)}" aria-label="Remove ${B.esc(p.name)}">Remove</button></div>`
+        : i === chosen.length ? `<div class="cm-h">${picker()}</div>` : '<div class="cm-h cm-empty"></div>');
+    }
+    return `<div class="cm-grid cm-head" style="--n:${n}">${cells.join("")}</div>`;
+  };
+
+  // one phone's boxes: each version at the picked memory, or at its closest (dashed, with a line saying so)
+  function column(p, rows, s) {
+    const L = { global: "Global", china: p.cl };
+    const total = [];
+    const boxes = EDS.filter((e) => p.editions.includes(e)).map((e) => {
+      const ok = rows.filter((r) => r.edition === e && r.state === "ok").map((r) => r.storage);
+      const { mem, near } = shownMemory(ok, S.mem);
+      const rs = S.mem ? (mem === null ? [] : rows.filter((r) => r.edition === e && r.storage === mem)) : rows.filter((r) => r.edition === e);
+      const best = bestOf(rs, e);
+      const t = best && best.settled ? best.total : null;
+      if (t !== null) total.push(t);
+      return (win) => `<div class="cm-box${near ? " near" : ""}${win && t !== null && t === Math.min(...total) ? " low" : ""}">${plain(B.priceBox(rs, e, s, L, false))}` +
+        (near ? `<p class="cm-near">No ${B.memShort(S.mem)} in stock: priced at ${B.memShort(mem)}</p>` : "") + "</div>";
+    });
+    return { html: (win) => boxes.map((b) => b(win)).join(""), total: total.length ? Math.min(...total) : null };
+  }
+
+  const half = (e, t, L) => `<div class="half ${e === "china" ? "cn" : "gl"}"><span class="htag">${B.esc(L[e])}</span>${t === null ? '<span class="na">Not listed</span>' : B.esc(t)}</div>`;
+  function cell(p, c, win) {
+    const td = (cls, inner) => { const k = [cls, win && "win"].filter(Boolean).join(" "); return `<td${k ? ` class="${k}"` : ""}>${inner}</td>`; };
+    if (!p.c) return td("na", "No spec sheet yet");
+    if (c === null) return td("na", `Not on ${B.esc(p.brand)}'s page`);
+    if (typeof c === "string") return td("", B.esc(c) + (win ? '<span class="tick">✓<span class="sr-only"> best of these</span></span>' : ""));
+    const L = { global: "Global", china: p.cl };
+    return td("split-td", `<div class="split">${half("china", c[0], L)}${half("global", c[1], L)}</div>`);
+  }
+
+  function specs(chosen, n, win) {
+    const n_diff = data.rows.filter((r, i) => differs(chosen.map((p) => (p.c ? p.c[i] : "-")))).length;
+    let h = `<h2 class="cm-h2">Key specs</h2>`;
+    if (chosen.length > 1) {
+      h += `<div class="difbar"><span>${n_diff ? `${n_diff} of ${data.rows.length} specs differ.` : "These phones list the same specs."}</span>` +
+        (n_diff ? `<button type="button" id="cm-only" aria-pressed="${S.only}">${S.only ? "Show all specs" : `Show only the ${n_diff} difference${n_diff === 1 ? "" : "s"}`}</button>` : "") + "</div>";
+    }
+    h += `<table class="cm-t" style="--n:${n}"><caption class="sr-only">Key specs of the chosen phones</caption>`;
+    data.rows.forEach((r, i) => {
+      const d = differs(chosen.map((p) => (p.c ? p.c[i] : "-")));
+      const mark = r.id === "battery" ? win.battery : r.id === "wired" ? win.charging : -1;
+      let tds = "";
+      for (let j = 0; j < n; j++) {
+        const p = chosen[j];
+        tds += p ? cell(p, p.c ? p.c[i] : null, j === mark) : "<td></td>";
+      }
+      h += `<tbody${S.only && chosen.length > 1 && !d ? " hidden" : ""} class="f${d ? " diff" : ""}"><tr><th colspan="${n}" scope="colgroup">${B.esc(r.label)}</th></tr><tr>${tds}</tr></tbody>`;
+    });
+    return h + "</table>";
+  }
+
+  // ---- paint ----
+  function frame(chosen, n, inner) {
+    return `<p class="cm-prompt"${chosen.length ? " hidden" : ""}>Pick two or three phones to compare.</p>` + head(chosen, n) + inner;
+  }
+  async function paint() {
+    const my = ++token, chosen = S.ids.map((id) => by.get(id)), n = Math.max(2, Math.min(3, chosen.length + 1));
+    const a = document.activeElement, back = a && app.contains(a) ? focusKey(a) : null;
+    const done = (html) => {
+      if (my !== token) return;
+      app.innerHTML = html;
+      if (back) { const el = app.querySelector(back) || app.querySelector("[data-add]"); if (el && !el.disabled) el.focus({ preventScroll: true }); }
+    };
+    if (!chosen.length) { done(frame(chosen, n, "")); return; }
+    const s = load();
+    let docs, tax;
+    try { [tax, ...docs] = await Promise.all([taxOf(), ...chosen.map(docOf)]); } catch (e) {
+      done(frame(chosen, n, '<p class="cm-err" role="alert">The prices could not be loaded. <button type="button" id="cm-retry">Try again</button></p>'));
+      return;
+    }
+    if (my !== token) return;
+    const all = docs.map((d) => viewRows(d.offers, tax, s));
+    const cols = chosen.map((p, i) => column(p, all[i], s));
+    const win = winners(chosen.map((p, i) => ({ total: cols[i].total, battery: p.k.battery, charging: p.k.charging })));
+    // the memory chips: every memory some chosen phone has a current price for
+    const mems = [...new Set(all.flatMap((rs) => rs.filter((r) => r.state === "ok" && r.storage !== "base").map((r) => r.storage)))].sort(memOrder);
+    let inner = "";
+    if (mems.length) {
+      inner += '<p class="lbl" id="cm-mem-h">Price all at one memory</p><div class="mems" role="group" aria-labelledby="cm-mem-h">' +
+        mems.map((m) => `<button type="button" data-m="${B.esc(m)}" aria-pressed="${m === S.mem}">${B.memLabel(m)}</button>`).join("") + "</div>";
+      inner += `<p class="cm-note">${S.mem ? "A phone that doesn't have it is priced at its closest memory (dashed)." : "Tap a memory to price every phone at it."}</p>`;
+    }
+    inner += `<div class="cm-grid cm-prices" style="--n:${n}">` + chosen.map((p, j) =>
+      `<div class="cm-col${win.price === j ? " win" : ""}">${cols[j].html(win.price === j)}` +
+      (win.price === j ? '<p class="cm-win"><span class="tick">✓</span> Lowest delivered<span class="sr-only"> of these</span></p>' : "") + "</div>").join("") + "</div>";
+    inner += specs(chosen, n, win);
+    done(frame(chosen, n, inner));
+  }
+
+  // a selector for the same control after a repaint
+  function focusKey(el) {
+    for (const a of ["data-m", "data-x"]) if (el.hasAttribute && el.hasAttribute(a)) return `button[${a}="${String(el.getAttribute(a)).replace(/["\\]/g, "\\$&")}"]`;
+    if (el.id === "cm-only" || el.id === "cm-retry") return "#" + el.id;
+    return el.hasAttribute && el.hasAttribute("data-add") ? "[data-add]" : null;
+  }
+
+  app.addEventListener("change", (ev) => {
+    const sel = ev.target.closest && ev.target.closest("select[data-add]");
+    if (sel && sel.value && by.has(sel.value) && S.ids.length < 3) go([...S.ids, sel.value], S.mem);
+  });
+  app.addEventListener("click", (ev) => {
+    const t = ev.target, m = t.closest("button[data-m]"), x = t.closest("button[data-x]");
+    if (m) go(S.ids, S.mem === m.dataset.m ? "" : m.dataset.m);
+    else if (x) go(S.ids.filter((id) => id !== x.dataset.x), S.mem);
+    else if (t.closest("#cm-only")) { S.only = !S.only; paint(); }
+    else if (t.closest("#cm-retry")) paint();
+  });
+  const again = () => paint();
+  window.addEventListener("dp:settings", again);
+  window.addEventListener("storage", (e) => { if (!e.key || (e.key.startsWith("pc-") && e.key !== "pc-watch")) again(); });
+  window.addEventListener("hashchange", () => { Object.assign(S, parseHash(location.hash, known)); paint(); });
+  Object.assign(S, parseHash(location.hash, known));
+  paint();
+}
+
+if (typeof document !== "undefined") {
+  const start = () => { const root = document.getElementById("cmp"); if (root) wire(root); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+}

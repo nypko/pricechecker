@@ -1,6 +1,5 @@
 """Per phone: every store's offers with terms, payment, shipping, trend and trust attached, plus what each page shows
-from them (charts, stats, compare cells, title price, related phones). assemble() returns the phone dicts the pages use."""
-import json
+from them (charts, stats, title price, related phones). assemble() returns the phone dicts the pages use."""
 from collections import defaultdict
 from datetime import datetime, timedelta
 
@@ -105,9 +104,6 @@ def assemble(data: SiteData) -> list[dict]:
         offers.sort(key=lambda o: o["old"])   # stable: current prices first, a store that hasn't answered for days last
         in_stock = [o for o in offers if o["available"] and not o["old"]]   # what the index, compare, title and search data rank
         js = lambda o: {k: o[k] for k in ("store_label", "edition", "storage", "link", "money", "pay", "pay_ok", "ship", "notes", "duties", "promo", "coupons", "days", "trend", "store", "trust", "buyers", "gplay", "old", "grom")}
-        # index rows: only what the ranking needs (store notes, links and coupons are for the phone page), so the page stays light
-        lean = lambda o: {**{k: o[k] for k in ("store_label", "edition", "storage", "money", "pay", "pay_ok", "ship", "duties", "trend", "grom")},
-                          "promo": {k: o["promo"][k] for k in ("pct", "stacks_with_bank") if k in o["promo"]} if o.get("promo") else None}
         by_storage = defaultdict(list)
         for o in offers:
             o["js"] = js(o)   # per storage tier: the browser shows each version's cheapest total in the tier header
@@ -116,14 +112,9 @@ def assemble(data: SiteData) -> list[dict]:
         eds = [{"edition": e, "label": ed_labels(m["brand"])[e],
                 "best": next((o for o in in_stock if o["edition"] == e), None),
                 "listed": any(o["edition"] == e for o in offers)} for e in m["editions"]]
-        # Global vs China at the same configuration: the browser picks the cheapest total in each cell
-        compare = [{"storage": s, "cells": [json.dumps([js(o) for o in in_stock if o["storage"] == s and o["edition"] == e],
-                                                       separators=(",", ":")) for e in m["editions"]]}
-                   for s in storages if len(m["editions"]) > 1]
         phones.append({**m, "slug": m["id"], "best": in_stock[0] if in_stock else None, "eds": eds,
-                       "offers_json": json.dumps([lean(o) for o in in_stock], separators=(",", ":")),  # re-ranked in the browser
                        "n_stores": len({o["store"] for o in in_stock}), "offers": offers,
-                       "by_storage": [(s, by_storage[s]) for s in storages], "compare": compare,
+                       "by_storage": [(s, by_storage[s]) for s in storages],
                        "made": {e: [str(x) for x in v["made"]] for e, v in (variants.get(m["id"]) or {}).items()},
                        "title_price": _title_price(offers, tax_cfg),
                        "title_offer": (_title_price(offers, tax_cfg, with_offer=True) or [None] * 4)[3],

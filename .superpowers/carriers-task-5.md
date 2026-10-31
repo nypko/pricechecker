@@ -31,7 +31,7 @@ Sources fetched: DEC consultation doc 2019 (Tables 1-4 give each holder's ranges
 - Cyta: 700, 800 (2x10), 900 (2x12.2), 1800 (2x24.8), 2100 (2x15), 2600 FDD 2x20, 2600 TDD 15 MHz (labelled TDD), 3500-3600. lte 1,3,7,8,20,28,38; nr +78. Epic: the same with 3700-3800.
 - PrimeTel: 700 (2x5), 900 (2x10), 1800, 2100, 3600-3700, no 800, no 2600. lte 1,3,8,28; nr 1,3,8,28,78. Expiry 21.06.2029 after the same renewal.
 - Cablenet (own 4G/5G spectrum, mobile launched 2021): 700 (2x5, 2041), 800 (2x10), 2600 FDD 2x20, 2600 TDD 15 (labelled TDD), 3400-3500. lte 7,20,28,38; nr +78, complete false because DEC contest D1/2024 (2100 MHz, 1965-1980/2155-2170) was offered to Cablenet on 28 Aug 2024 at EUR 1.2m, "granted only if requirements are met within 30 days"; I found no confirmation of the grant, so B1/n1 is left out. Cablenet's own site also mentions a RAN-sharing agreement (not resolved), so "own radio network" is claimed from the licences only.
-- 26 GHz: DEC homepage (through 29 May 2025) shows no 26 GHz award, and a 2026 consultation-results document exists (gov.cy, returned HTTP 403, unread). No n258 listed; complete true assumes none awarded yet.
+- 26 GHz: DEC homepage (through 29 May 2025) shows no 26 GHz award, and a 2026 consultation-results document exists (gov.cy, returned HTTP 403, unread). No n258 listed; 26 GHz status unknown, so complete is false.
 - MVNOs: none verified.
 
 ## Romania (all licensed, complete false) - ANCOM

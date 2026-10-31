@@ -2,8 +2,8 @@ country: LT
 networks:
   - id: lt-telia
     name: Telia Lietuva
-    lte: [1, 3, 8, 28]
-    nr: [1, 3, 8, 28, 78]
+    lte: [1, 3, 7, 8, 28]
+    nr: [1, 3, 7, 8, 28, 78]
     basis: licensed
     complete: false
     mvnos: []
@@ -12,10 +12,13 @@ networks:
       - {url: "https://rrt.lt/upload/files/2025/11/13/t20220908-tn-28-del-aukciono-laimetoju-patvirtinimo-700-mhz.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/t2016isakymas141.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/rrt-2022-08-18-nutarimas-nr-tn-26.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2026/02/21/t700mhz-1500mhz-2100mhz-aukciono-aprasas-2026-02-03.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2025/11/04/t20120829-leidimas-13r-0069-omnitel-lte.docx", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nasdaqbaltic.com/market/upload/reports/tel1/2016_ar_lt_eur_00.pdf", kind: carrier, checked: 2026-10-31}
   - id: lt-tele2
     name: Tele2 Lithuania
-    lte: [1, 3, 8, 28]
-    nr: [1, 3, 8, 28, 78]
+    lte: [1, 3, 7, 8, 28]
+    nr: [1, 3, 7, 8, 28, 78]
     basis: licensed
     complete: false
     mvnos: []
@@ -24,16 +27,21 @@ networks:
       - {url: "https://rrt.lt/upload/files/2025/11/13/t20220908-tn-28-del-aukciono-laimetoju-patvirtinimo-700-mhz.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/t2016isakymas141.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/rrt-2022-08-18-nutarimas-nr-tn-26.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2026/02/21/t700mhz-1500mhz-2100mhz-aukciono-aprasas-2026-02-03.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2025/11/04/t20120829-leidimas-13r-0070-tele2-lte.docx", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.tele2.com/media/news/2026/tele2-secures-new-spectrum-to-strengthen-connectivity-throughout-lithuania/", kind: carrier, checked: 2026-10-31}
   - id: lt-bite
     name: Bitė Lietuva
-    lte: [1, 3, 8, 28]
-    nr: [1, 3, 8, 28, 78]
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
     basis: licensed
-    complete: false
+    complete: true
     mvnos: []
     sources:
       - {url: "https://rrt.lt/veiklos-sritys/elektroniniai-rysiai/viesieji-konkursai-ir-aukcionai", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/t20220908-tn-28-del-aukciono-laimetoju-patvirtinimo-700-mhz.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/t2016isakymas141.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://rrt.lt/upload/files/2025/11/13/rrt-2022-08-18-nutarimas-nr-tn-26.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2026/02/21/t700mhz-1500mhz-2100mhz-aukciono-aprasas-2026-02-03.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/upload/files/2025/11/04/t20120829-leidimas-13r-0068-bite-lte.docx", kind: regulator, checked: 2026-10-31}
+      - {url: "https://rrt.lt/viesosios-konsultacijos/konsultacija-del-radijo-dazniu-kanalu-nuomos", kind: regulator, checked: 2026-10-31}

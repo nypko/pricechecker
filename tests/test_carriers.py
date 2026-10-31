@@ -130,8 +130,8 @@ def test_all_carrier_files_valid():
 
 
 def test_band_use_is_generic_frequency_and_purpose():
-    purposes = ("coverage indoors and outside towns|extra speed in busy areas|fast 5G|very fast 5G at short range"
-                "|extra upload capacity|extra download speed")
+    common = "coverage indoors and outside towns|extra speed in busy areas|extra upload capacity|extra download speed"
+    five_g = {"lte": "", "nr": "|fast 5G|very fast 5G at short range"}   # 5G wording only for NR bands
     for kind in ("lte", "nr"):
         for n, b in TABLE[kind].items():
-            assert re.fullmatch(rf"(\d+ MHz|[\d.]+ GHz): ({purposes})", b["use"]), (kind, n, b["use"])
+            assert re.fullmatch(rf"(\d+ MHz|[\d.]+ GHz): ({common}{five_g[kind]})", b["use"]), (kind, n, b["use"])

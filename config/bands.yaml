@@ -29,10 +29,10 @@ lte:
   39: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
   40: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
   41: {mhz: 2500, class: mid, use: "2500 MHz: extra speed in busy areas"}
-  42: {mhz: 3500, class: high, use: "3.5 GHz: fast 5G"}
-  43: {mhz: 3700, class: high, use: "3.7 GHz: fast 5G"}
-  46: {mhz: 5200, class: high, use: "5.2 GHz: fast 5G"}
-  48: {mhz: 3600, class: high, use: "3.6 GHz: fast 5G"}
+  42: {mhz: 3500, class: high, use: "3.5 GHz: extra speed in busy areas"}
+  43: {mhz: 3700, class: high, use: "3.7 GHz: extra speed in busy areas"}
+  46: {mhz: 5200, class: high, use: "5.2 GHz: extra speed in busy areas"}
+  48: {mhz: 3600, class: high, use: "3.6 GHz: extra speed in busy areas"}
   53: {mhz: 2400, class: mid, use: "2400 MHz: extra speed in busy areas"}
   66: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
   71: {mhz: 600, class: low, use: "600 MHz: coverage indoors and outside towns"}

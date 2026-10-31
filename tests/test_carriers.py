@@ -129,9 +129,49 @@ def test_all_carrier_files_valid():
     assert carriers.validate_all(docs, TABLE) == []
 
 
+UPLOAD_ONLY = {("nr", n) for n in (80, 81, 83, 84, 89, 95, 98)}
+DOWNLOAD_ONLY = {("lte", 29), ("lte", 32), ("lte", 75), ("nr", 29), ("nr", 75), ("nr", 76)}
+
+
+def _expected_use(kind, n, b):
+    mhz = b["mhz"]
+    freq = f"{mhz} MHz" if mhz < 3000 else f"{mhz / 1000:g} GHz"
+    if (kind, n) in UPLOAD_ONLY:
+        purpose = "extra upload capacity"
+    elif (kind, n) in DOWNLOAD_ONLY:
+        purpose = "extra download speed"
+    else:
+        purpose = {"low": "coverage indoors and outside towns", "mid": "extra speed in busy areas",
+                   "high": "fast 5G" if kind == "nr" else "extra speed in busy areas",
+                   "mmwave": "very fast 5G at short range"}[b["class"]]
+    return f"{freq}: {purpose}"
+
+
 def test_band_use_is_generic_frequency_and_purpose():
-    common = "coverage indoors and outside towns|extra speed in busy areas|extra upload capacity|extra download speed"
-    five_g = {"lte": "", "nr": "|fast 5G|very fast 5G at short range"}   # 5G wording only for NR bands
     for kind in ("lte", "nr"):
         for n, b in TABLE[kind].items():
-            assert re.fullmatch(rf"(\d+ MHz|[\d.]+ GHz): ({common}{five_g[kind]})", b["use"]), (kind, n, b["use"])
+            assert b["use"] == _expected_use(kind, n, b), (kind, n, b["use"])
+
+
+def test_build_stops_on_an_invalid_carrier_file(tmp_path, capsys):
+    from pricechecker.site import check_carriers
+    d = _doc()
+    _net(d)["lte"] = [999]
+    (tmp_path / "DE.yaml").write_text(yaml.safe_dump(d))
+    with pytest.raises(SystemExit) as e:
+        check_carriers(tmp_path)
+    assert "DE.yaml" in str(e.value) and "de-telekom" in str(e.value)
+    d = _doc()
+    _net(d)["sources"][0]["checked"] = date.today().isoformat()
+    (tmp_path / "DE.yaml").write_text(yaml.safe_dump(d))
+    check_carriers(tmp_path)
+    assert capsys.readouterr().out == ""   # checked today: not stale
+
+
+def test_build_logs_stale_networks(tmp_path, capsys):
+    from pricechecker.site import check_carriers
+    d = _doc()
+    _net(d)["sources"][0]["checked"] = "2020-01-01"
+    (tmp_path / "DE.yaml").write_text(yaml.safe_dump(d))
+    check_carriers(tmp_path)
+    assert "de-telekom (DE)" in capsys.readouterr().out

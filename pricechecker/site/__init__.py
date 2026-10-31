@@ -88,15 +88,20 @@ def _share_cards(phones: list[dict], ctx: dict) -> None:
 
 
 
-def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: dict | None = None) -> None:
-    data = context.load(catalog, stores_cfg, rates_info, terms_status)
-    docs = carriers.load()
+def check_carriers(dir: Path = carriers.CARRIERS_DIR) -> None:
+    """Stop the build on an invalid carrier file (naming file and network); log networks not checked for 12 months."""
+    docs = carriers.load(dir)
     problems = carriers.validate_all(docs, carriers.band_table())
     if problems:
         raise SystemExit("config/carriers is invalid:\n  " + "\n  ".join(problems))
     for cc, doc in docs.items():
         for nid in carriers.stale(doc, datetime.now().date()):
             print(f"  carriers: {nid} ({cc}) was last checked over 12 months ago")
+
+
+def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: dict | None = None) -> None:
+    data = context.load(catalog, stores_cfg, rates_info, terms_status)
+    check_carriers()
     phones = offers.assemble(data)
     env = _env()
     ctx = context.page_context(data, phones)

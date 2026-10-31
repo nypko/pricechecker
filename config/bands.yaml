@@ -1,86 +1,87 @@
 # Mobile bands, from the 3GPP band definitions: mhz = the band's nominal downlink frequency (uplink for the
 # upload-only bands n80 n81 n83 n84 n89 n95 n98), class = low <1 GHz, mid 1-2.7 GHz, high 3-7 GHz, mmwave >24 GHz.
-# `use` is plain words for a buyer. carriers.py and specs.validate check every band number against this table.
+# `use` is plain words for a buyer: the frequency and a generic purpose by class,
+# no carriers or countries. carriers.py and specs.validate check every band number against this table.
 lte:
-  1: {mhz: 2100, class: mid, use: "2100 MHz: everyday speed in cities"}
-  2: {mhz: 1900, class: mid, use: "1900 MHz: city and suburb speed, mainly Americas"}
-  3: {mhz: 1800, class: mid, use: "1800 MHz: the main city band in Europe and Asia"}
-  4: {mhz: 2100, class: mid, use: "2100 MHz: main city band in North America"}
-  5: {mhz: 850, class: low, use: "850 MHz: coverage outside towns, mainly Americas"}
+  1: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
+  2: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  3: {mhz: 1800, class: mid, use: "1800 MHz: extra speed in busy areas"}
+  4: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
+  5: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
   7: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
-  8: {mhz: 900, class: low, use: "900 MHz: wide coverage and indoors"}
-  12: {mhz: 700, class: low, use: "700 MHz: coverage indoors, mainly the US"}
-  13: {mhz: 700, class: low, use: "700 MHz: coverage indoors, Verizon in the US"}
-  14: {mhz: 700, class: low, use: "700 MHz: US public safety and AT&T"}
-  17: {mhz: 700, class: low, use: "700 MHz: coverage indoors, AT&T in the US"}
-  18: {mhz: 850, class: low, use: "850 MHz: coverage indoors, Japan"}
-  19: {mhz: 850, class: low, use: "850 MHz: coverage indoors, Japan"}
+  8: {mhz: 900, class: low, use: "900 MHz: coverage indoors and outside towns"}
+  12: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  13: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  14: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  17: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  18: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  19: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
   20: {mhz: 800, class: low, use: "800 MHz: coverage indoors and outside towns"}
-  21: {mhz: 1500, class: mid, use: "1500 MHz: extra capacity in Japan"}
-  25: {mhz: 1900, class: mid, use: "1900 MHz: city speed, US carriers"}
-  26: {mhz: 850, class: low, use: "850 MHz: coverage outside towns, US carriers"}
-  28: {mhz: 700, class: low, use: "700 MHz: wide coverage in Europe and Australia"}
-  29: {mhz: 700, class: low, use: "700 MHz: extra download speed, US and Canada"}
-  30: {mhz: 2300, class: mid, use: "2300 MHz: extra speed, US and Canada"}
-  32: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed in Europe"}
-  34: {mhz: 2000, class: mid, use: "2000 MHz: extra capacity in China and Asia"}
+  21: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  25: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  26: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  28: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  29: {mhz: 700, class: low, use: "700 MHz: extra download speed"}
+  30: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
+  32: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  34: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
   38: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
-  39: {mhz: 1900, class: mid, use: "1900 MHz: extra capacity in China"}
-  40: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in Asia and Australia"}
-  41: {mhz: 2500, class: mid, use: "2500 MHz: main speed band of T-Mobile US"}
-  42: {mhz: 3500, class: high, use: "3.5 GHz: extra speed in busy areas"}
-  43: {mhz: 3700, class: high, use: "3.7 GHz: extra speed in busy areas"}
-  46: {mhz: 5200, class: high, use: "5 GHz: extra speed, shared with Wi-Fi"}
-  48: {mhz: 3600, class: high, use: "3.6 GHz: shared band in the US (CBRS)"}
-  53: {mhz: 2400, class: mid, use: "2.4 GHz: niche band, rarely used"}
-  66: {mhz: 2100, class: mid, use: "2100 MHz: main city band in North America"}
-  71: {mhz: 600, class: low, use: "600 MHz: widest coverage of T-Mobile US"}
-  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed in Europe"}
-  106: {mhz: 900, class: low, use: "900 MHz: niche band, rarely used"}
+  39: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  40: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
+  41: {mhz: 2500, class: mid, use: "2500 MHz: extra speed in busy areas"}
+  42: {mhz: 3500, class: high, use: "3.5 GHz: fast 5G"}
+  43: {mhz: 3700, class: high, use: "3.7 GHz: fast 5G"}
+  46: {mhz: 5200, class: high, use: "5.2 GHz: fast 5G"}
+  48: {mhz: 3600, class: high, use: "3.6 GHz: fast 5G"}
+  53: {mhz: 2400, class: mid, use: "2400 MHz: extra speed in busy areas"}
+  66: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
+  71: {mhz: 600, class: low, use: "600 MHz: coverage indoors and outside towns"}
+  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  106: {mhz: 900, class: low, use: "900 MHz: coverage indoors and outside towns"}
 nr:
-  1: {mhz: 2100, class: mid, use: "2100 MHz: everyday 5G in cities"}
-  2: {mhz: 1900, class: mid, use: "1900 MHz: city and suburb 5G, mainly Americas"}
-  3: {mhz: 1800, class: mid, use: "1800 MHz: main city 5G band in Europe and Asia"}
-  5: {mhz: 850, class: low, use: "850 MHz: 5G coverage outside towns, Americas"}
-  7: {mhz: 2600, class: mid, use: "2600 MHz: extra 5G speed in busy areas"}
-  8: {mhz: 900, class: low, use: "900 MHz: wide 5G coverage and indoors"}
-  12: {mhz: 700, class: low, use: "700 MHz: 5G coverage indoors, mainly the US"}
-  13: {mhz: 700, class: low, use: "700 MHz: 5G coverage indoors, Verizon in the US"}
-  14: {mhz: 700, class: low, use: "700 MHz: US public safety and AT&T 5G"}
-  18: {mhz: 850, class: low, use: "850 MHz: 5G coverage indoors, Japan"}
-  20: {mhz: 800, class: low, use: "800 MHz: 5G coverage indoors and outside towns"}
-  25: {mhz: 1900, class: mid, use: "1900 MHz: city 5G, US carriers"}
-  26: {mhz: 850, class: low, use: "850 MHz: 5G coverage outside towns, US carriers"}
-  28: {mhz: 700, class: low, use: "700 MHz: wide 5G coverage in Europe and Australia"}
-  29: {mhz: 700, class: low, use: "700 MHz: extra 5G download speed, US and Canada"}
-  30: {mhz: 2300, class: mid, use: "2300 MHz: extra 5G speed, US and Canada"}
-  34: {mhz: 2000, class: mid, use: "2000 MHz: extra 5G capacity in China and Asia"}
-  38: {mhz: 2600, class: mid, use: "2600 MHz: extra 5G speed in busy areas"}
-  39: {mhz: 1900, class: mid, use: "1900 MHz: extra 5G capacity in China"}
-  40: {mhz: 2300, class: mid, use: "2300 MHz: extra 5G speed in Asia and Australia"}
-  41: {mhz: 2500, class: mid, use: "2500 MHz: main 5G band of T-Mobile US"}
-  48: {mhz: 3600, class: high, use: "3.6 GHz: shared 5G band in the US (CBRS)"}
-  53: {mhz: 2400, class: mid, use: "2.4 GHz: niche 5G band, rarely used"}
-  66: {mhz: 2100, class: mid, use: "2100 MHz: main city 5G band in North America"}
-  70: {mhz: 2000, class: mid, use: "2000 MHz: extra 5G speed, US carriers"}
-  71: {mhz: 600, class: low, use: "600 MHz: widest 5G coverage of T-Mobile US"}
-  75: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download speed in Europe"}
-  76: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download speed in Europe"}
-  77: {mhz: 3700, class: high, use: "3.7 GHz: main 5G band in US, Japan, Canada"}
-  78: {mhz: 3500, class: high, use: "3.5 GHz: the main 5G band"}
-  79: {mhz: 4700, class: high, use: "4.7 GHz: 5G in China and Japan"}
-  80: {mhz: 1800, class: mid, use: "1800 MHz: helps your phone's upload on 5G"}
-  81: {mhz: 900, class: low, use: "900 MHz: helps your phone's upload on 5G"}
-  83: {mhz: 700, class: low, use: "700 MHz: helps your phone's upload on 5G"}
-  84: {mhz: 2100, class: mid, use: "2100 MHz: helps your phone's upload on 5G"}
-  89: {mhz: 850, class: low, use: "850 MHz: helps your phone's upload on 5G"}
-  91: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download, paired with 800 MHz"}
-  92: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download, paired with 800 MHz"}
-  93: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download, paired with 900 MHz"}
-  94: {mhz: 1500, class: mid, use: "1500 MHz: extra 5G download, paired with 900 MHz"}
-  95: {mhz: 2100, class: mid, use: "2100 MHz: helps your phone's upload on 5G"}
-  98: {mhz: 1900, class: mid, use: "1900 MHz: helps your phone's upload on 5G"}
-  257: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G, only in some city spots"}
-  258: {mhz: 26000, class: mmwave, use: "26 GHz: very fast 5G, Europe and Australia"}
-  260: {mhz: 39000, class: mmwave, use: "39 GHz: very fast 5G, only in some US spots"}
-  261: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G, only in some US spots"}
+  1: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
+  2: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  3: {mhz: 1800, class: mid, use: "1800 MHz: extra speed in busy areas"}
+  5: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  7: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
+  8: {mhz: 900, class: low, use: "900 MHz: coverage indoors and outside towns"}
+  12: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  13: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  14: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  18: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  20: {mhz: 800, class: low, use: "800 MHz: coverage indoors and outside towns"}
+  25: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  26: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  28: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
+  29: {mhz: 700, class: low, use: "700 MHz: extra download speed"}
+  30: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
+  34: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
+  38: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
+  39: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
+  40: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
+  41: {mhz: 2500, class: mid, use: "2500 MHz: extra speed in busy areas"}
+  48: {mhz: 3600, class: high, use: "3.6 GHz: fast 5G"}
+  53: {mhz: 2400, class: mid, use: "2400 MHz: extra speed in busy areas"}
+  66: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
+  70: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
+  71: {mhz: 600, class: low, use: "600 MHz: coverage indoors and outside towns"}
+  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  76: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  77: {mhz: 3700, class: high, use: "3.7 GHz: fast 5G"}
+  78: {mhz: 3500, class: high, use: "3.5 GHz: fast 5G"}
+  79: {mhz: 4700, class: high, use: "4.7 GHz: fast 5G"}
+  80: {mhz: 1800, class: mid, use: "1800 MHz: extra upload capacity"}
+  81: {mhz: 900, class: low, use: "900 MHz: extra upload capacity"}
+  83: {mhz: 700, class: low, use: "700 MHz: extra upload capacity"}
+  84: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity"}
+  89: {mhz: 850, class: low, use: "850 MHz: extra upload capacity"}
+  91: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  92: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  93: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  94: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  95: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity"}
+  98: {mhz: 1900, class: mid, use: "1900 MHz: extra upload capacity"}
+  257: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}
+  258: {mhz: 26000, class: mmwave, use: "26 GHz: very fast 5G at short range"}
+  260: {mhz: 39000, class: mmwave, use: "39 GHz: very fast 5G at short range"}
+  261: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}

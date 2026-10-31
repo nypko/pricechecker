@@ -160,6 +160,17 @@ def test_iphone_china_version_copy_is_apples_not_androids(site_build):
     assert "Google" not in h[h.index('id="means-h"'):h.index("Price history by store")]
 
 
+def test_china_bullets_follow_the_brand_and_the_band_check(site_build):
+    """The short China-version bullets don't hedge against the same page: an iPhone's warranty line is Apple's, and a China
+    version whose band check passes says it has the main EU bands; other brands keep the general warranty line."""
+    means = lambda h: h[h.index('id="means-h"'):h.index("Price history by store")]
+    m = means(_phone(site_build, "apple-iphone-duo"))
+    assert "<b>Count on the store&#39;s warranty.</b> Apple may limit iPhone warranty service" in m
+    assert "<b>Has all the main EU 4G/5G bands.</b>" in m
+    assert "manufacturer's usually" not in m and "may be missing" not in m
+    assert "<b>Warranty usually comes from the store.</b>" in means(_phone(site_build, "oneplus-16"))
+
+
 @live
 @live_budgets
 def test_phone_pages_within_budget(site_build):

@@ -68,9 +68,11 @@
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 9-14 9z"/></svg>
       <span>{% if p.brand|lower == "huawei" %}<b>No Google services</b>, in either version: apps come from Huawei's AppGallery.{% else %}<b>The {{ L.china }} version has {{ p.google.short }}.</b>{% if p.google.caveat %} {{ p.google.caveat }}{% endif %}{% endif %}</span></li>
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/></svg>
-      <span><b>Warranty usually comes from the store.</b> The manufacturer's usually doesn't cover it outside {{ "China" if L.china == "China" else "China, Hong Kong and Taiwan" }}.</span></li>
+      <span>{% if p.google.warranty_short %}<b>{{ p.google.warranty_title }}</b> {{ p.google.warranty_short }}{% else %}<b>Warranty usually comes from the store.</b> The manufacturer's usually doesn't cover it outside {{ "China" if L.china == "China" else "China, Hong Kong and Taiwan" }}.{% endif %}</span></li>
+    {#- the China version's own band check (under Specs) when there is one, so the bullet never hedges against it -#}
+    {%- set cb = v.bands|selectattr("e", "equalto", "china")|selectattr("checked")|first %}
     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/></svg>
-      <span><b>Some 4G/5G bands may be missing.</b> {% if v.spec_count or v.bands|selectattr("checked")|list %}See the band check under Specs, and check{% else %}Check{% endif %} your carrier's bands before buying.</span></li>
+      <span>{% if cb and not cb.missing %}<b>Has all the main EU 4G/5G bands.</b> See the band check under Specs, and check your carrier's bands before buying.{% elif cb %}<b>Missing EU bands: {{ cb.missing|join(", ") }}.</b> See the band check under Specs, and check your carrier's bands before buying.{% else %}<b>Some 4G/5G bands may be missing.</b> {% if v.spec_count or v.bands|selectattr("checked")|list %}See the band check under Specs, and check{% else %}Check{% endif %} your carrier's bands before buying.{% endif %}</span></li>
     {%- if p.google.model_note %}
     <li><span></span><span>{{ L.china }} version: {{ p.google.model_note }}</span></li>
     {%- endif %}

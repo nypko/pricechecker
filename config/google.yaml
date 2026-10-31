@@ -20,6 +20,8 @@ brands:
     global_apps: "Apple Intelligence in most regions, in supported languages; some features vary by region."
     long: "Apple says Apple Intelligence doesn't currently work on iPhones bought in mainland China. When it launches there, Apple says iPhones already sold get a core set of features."
     warranty: "Apple may limit iPhone warranty service to the country where it was first sold. You rely on the store's own warranty and returns."
+    warranty_title: "Count on the store's warranty."   # the short China-version bullet on the phone page
+    warranty_short: "Apple may limit iPhone warranty service to the country where it was first sold."
     networks: "Apple's separate model for mainland China, with its own band list. Check it before you buy."
     language: "Can be set to English; Apple lists it among the supported languages."
     no_global: "No Global version listed: the stores we check sell only the China model so far"

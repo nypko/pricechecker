@@ -83,5 +83,6 @@ nr:
   98: {mhz: 1900, class: mid, use: "1900 MHz: extra upload capacity"}
   257: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}
   258: {mhz: 26000, class: mmwave, use: "26 GHz: very fast 5G at short range"}
+  259: {mhz: 41000, class: mmwave, use: "41 GHz: very fast 5G at short range"}
   260: {mhz: 39000, class: mmwave, use: "39 GHz: very fast 5G at short range"}
   261: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}

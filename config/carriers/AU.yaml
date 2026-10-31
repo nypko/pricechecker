@@ -1,0 +1,31 @@
+country: AU
+networks:
+  - id: au-telstra
+    name: Telstra
+    lte: [1, 3, 5, 7, 28, 40]
+    nr: [1, 3, 5, 7, 28, 40, 78, 258]
+    basis: licensed
+    complete: false
+    mvnos: [Boost Mobile, ALDI Mobile]
+    sources:
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.boost.com.au/", kind: brand, checked: 2026-10-31}
+      - {url: "https://www.aldimobile.com.au/", kind: brand, checked: 2026-10-31}
+  - id: au-optus
+    name: Optus
+    lte: [1, 3, 5, 7, 8, 28, 40]
+    nr: [1, 3, 5, 7, 8, 28, 40, 78, 258]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}
+  - id: au-tpg
+    name: TPG Telecom (Vodafone)
+    lte: [1, 3, 5, 28]
+    nr: [1, 3, 5, 28, 78, 258]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}

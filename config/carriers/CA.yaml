@@ -1,0 +1,78 @@
+country: CA
+networks:
+  - id: ca-rogers
+    name: Rogers (incl. Fido)
+    lte: [2, 4, 5, 7, 12, 25, 41, 66, 71]
+    nr: [2, 25, 41, 66, 71, 77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.rogers.com/support/mobility/bring-your-own-device", kind: carrier, checked: 2026-10-31}
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-bell
+    name: Bell
+    lte: [2, 4, 5, 7, 12, 13, 17, 25, 29, 41, 66, 71]
+    nr: [2, 5, 25, 66, 71, 77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.bell.ca/Mobility/Our_network/", kind: carrier, checked: 2026-10-31}
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-telus
+    name: TELUS
+    lte: [2, 4, 5, 7, 12, 13, 17, 25, 29, 30, 66, 71]
+    nr: [2, 25, 66, 71, 77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20260925043719/https://www.telus.com/en/about/news-and-events/media-releases/telus-secures-new-600-mhz-spectrum-licences", kind: carrier, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20261002010408/https://www.telus.com/en/about/news-and-events/media-releases/telus-deploys-3500-mhz-5g-spectrum-accelerating-canada%27s-digital-economy", kind: carrier, checked: 2026-10-31}
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-freedom
+    name: Freedom Mobile / Videotron
+    lte: [4, 7, 12, 13, 17, 66, 71]
+    nr: [66, 71, 77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.freedommobile.ca/en-CA/support/about-device-compatibility", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.freedommobile.ca/en-CA/support/about-5g-and-5g+", kind: carrier, checked: 2026-10-31}
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-sasktel
+    name: SaskTel
+    lte: [2, 4, 5, 7, 13, 25, 41, 66, 71]
+    nr: [66, 77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-eastlink
+    name: Eastlink
+    lte: [4, 7, 13, 66, 71]
+    nr: [77, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
+  - id: ca-tbaytel
+    name: TBayTel
+    lte: [4, 12, 17, 66]
+    nr: [66]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}

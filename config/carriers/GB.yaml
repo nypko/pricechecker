@@ -1,0 +1,35 @@
+country: GB
+networks:
+  - id: gb-ee
+    name: EE
+    lte: [1, 3, 7, 20, 28, 39]
+    nr: [1, 3, 7, 20, 28, 39, 78, 258, 259]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20260321123439/https://www.ofcom.org.uk/spectrum/frequencies/below-5ghz", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260215191451/https://www.ofcom.org.uk/spectrum/spectrum-awards/ofcom-spectrum-auction-final-results-announced", kind: regulator, checked: 2026-10-31}
+  - id: gb-o2
+    name: O2 (Virgin Media O2)
+    lte: [1, 3, 8, 20, 28, 38, 39, 40]
+    nr: [1, 3, 8, 20, 28, 38, 39, 40, 78, 258, 259]
+    basis: licensed
+    complete: false
+    mvnos: [giffgaff, Tesco Mobile]
+    sources:
+      - {url: "https://web.archive.org/web/20260321123439/https://www.ofcom.org.uk/spectrum/frequencies/below-5ghz", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260215191451/https://www.ofcom.org.uk/spectrum/spectrum-awards/ofcom-spectrum-auction-final-results-announced", kind: regulator, checked: 2026-10-31}
+      - {url: "https://help.giffgaff.com/en", kind: brand, checked: 2026-10-31}
+      - {url: "https://www.tescomobile.com/help-and-support/network-coverage", kind: brand, checked: 2026-10-31}
+  - id: gb-vodafonethree
+    name: VodafoneThree
+    lte: [1, 3, 8, 20, 28, 39]
+    nr: [1, 3, 8, 20, 28, 39, 78, 258, 259]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20260321123439/https://www.ofcom.org.uk/spectrum/frequencies/below-5ghz", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260215191451/https://www.ofcom.org.uk/spectrum/spectrum-awards/ofcom-spectrum-auction-final-results-announced", kind: regulator, checked: 2026-10-31}
+      - {url: "https://comparebroadbandpackages.co.uk/guides/news/vodafonethree-completes-core-radio-access-network-integration/", kind: other, checked: 2026-10-31}

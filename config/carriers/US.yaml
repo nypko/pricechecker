@@ -1,0 +1,34 @@
+country: US
+networks:
+  - id: us-tmobile
+    name: T-Mobile
+    lte: [4, 5, 12, 66, 71]
+    nr: [2, 25, 41, 71, 258, 260, 261]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/20260907235553/https://www.t-mobile.com/support/coverage/t-mobile-network", kind: carrier, checked: 2026-10-31}
+      - {url: "https://convergedigest.com/t-mobile-closes-4-3b-acquisition-of-uscellular-wireless-operations/?amp=1", kind: other, checked: 2026-10-31}
+  - id: us-att
+    name: AT&T
+    lte: null
+    nr: [5, 77, 260]
+    basis: used
+    complete: false
+    mvnos: [Cricket Wireless]
+    sources:
+      - {url: "https://web.archive.org/web/20260608143501/https://about.att.com/blogs/2023/standalone-5g-innovations.html", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.att.com/support/article/wireless/KM1475228/", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.cricketwireless.com/", kind: brand, checked: 2026-10-31}
+  - id: us-verizon
+    name: Verizon
+    lte: null
+    nr: [77, 260, 261]
+    basis: used
+    complete: false
+    mvnos: [Visible]
+    sources:
+      - {url: "https://www.verizon.com/coverage-map/", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.verizon.com/business/resources/articles/s/5g-spectrum-bands/", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.visible.com/", kind: brand, checked: 2026-10-31}

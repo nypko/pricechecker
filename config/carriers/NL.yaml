@@ -1,0 +1,24 @@
+country: NL
+networks:
+  - id: nl-kpn
+    name: KPN
+    lte: null
+    nr: [28, 78]
+    mvnos: [Simyo, Youfone]
+    sources:
+      - {url: "https://www.kpn.com/overons/nieuws/en/the-next-phase-of-5g-arrives-today/", kind: carrier, checked: 2026-10-31}
+  - id: nl-vodafoneziggo
+    name: Vodafone
+    lte: null
+    nr: null
+    mvnos: [hollandsnieuwe]
+    sources:
+      - {url: "https://www.vodafoneziggo.nl/en/nieuws/vodafone-first-offer-nationwide-5g/", kind: carrier, checked: 2026-10-31}
+  - id: nl-odido
+    name: Odido
+    lte: null
+    nr: [78]
+    mvnos: [Ben]
+    sources:
+      - {url: "https://odido.nl/blog/5g-boost", kind: carrier, checked: 2026-10-31}
+      - {url: "https://www.mobiel.nl/nieuws/odido-activeert-5g", kind: other, checked: 2026-10-31}

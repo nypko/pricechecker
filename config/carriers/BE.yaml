@@ -1,0 +1,22 @@
+country: BE
+networks:
+  - id: be-proximus
+    name: Proximus
+    lte: null
+    nr: [78]
+    mvnos: [Scarlet]
+    sources:
+      - {url: "https://www.proximus.com/news/2020/20201217-5g-spectrum.html", kind: carrier, checked: 2026-10-31}
+  - id: be-orange
+    name: Orange Belgium
+    lte: null
+    nr: null
+    mvnos: [edpnet]
+    sources:
+      - {url: "https://corporate.orange.be/en/news-medias/orange-belgium-opens-5g-all-its-postpaid-customers", kind: carrier, checked: 2026-10-31}
+  - id: be-telenet
+    name: Telenet
+    lte: null
+    nr: [78]
+    sources:
+      - {url: "https://press.telenet.be/telenet-to-launch-5g-in-first-regions-around-leuven-antwerp-and-the-coast", kind: carrier, checked: 2026-10-31}

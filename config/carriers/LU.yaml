@@ -1,0 +1,20 @@
+country: LU
+networks:
+  - id: lu-post
+    name: POST
+    lte: null
+    nr: null
+    sources:
+      - {url: "https://www.post.lu/en/particuliers/support/telephonie-mobile/5g/strategie-5g-de-post/est-ce-que-la-quantite-des-frequences-5g-est-suffisante-pour-post", kind: carrier, checked: 2026-10-31}
+  - id: lu-orange
+    name: Orange Luxembourg
+    lte: null
+    nr: null
+    sources:
+      - {url: "https://www.orange.lu/fr/actualites/orange-luxembourg-obtient-les-frequences-5g-indispensables-pour-repondre-aux-enjeux-des-r/", kind: carrier, checked: 2026-10-31}
+  - id: lu-proximus
+    name: Proximus Luxembourg
+    lte: null
+    nr: null
+    sources:
+      - {url: "https://www.proximus.lu/en/5g-premieres-connexions-reussies/", kind: carrier, checked: 2026-10-31}

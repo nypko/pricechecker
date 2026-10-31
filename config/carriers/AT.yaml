@@ -1,0 +1,23 @@
+country: AT
+networks:
+  - id: at-a1
+    name: A1
+    lte: [3, 7, 20]
+    nr: [1, 78]
+    mvnos: [yesss!, bob]
+    sources:
+      - {url: "https://www.rtr.at/TKP/was_wir_tun/telekommunikation/spectrum/framework/Channels.de.html", kind: regulator, checked: 2026-10-31}
+  - id: at-magenta
+    name: Magenta
+    lte: [1, 3, 7, 8, 20]
+    nr: [28, 78]
+    mvnos: [HoT]
+    sources:
+      - {url: "https://www.rtr.at/TKP/was_wir_tun/telekommunikation/spectrum/framework/Channels.de.html", kind: regulator, checked: 2026-10-31}
+  - id: at-drei
+    name: Drei
+    lte: [1, 3, 7, 8]
+    nr: [28, 78]
+    mvnos: [spusu]
+    sources:
+      - {url: "https://www.rtr.at/TKP/was_wir_tun/telekommunikation/spectrum/framework/Channels.de.html", kind: regulator, checked: 2026-10-31}

@@ -1,0 +1,43 @@
+country: SI
+networks:
+  - id: si-telekom
+    name: Telekom Slovenije
+    lte: [1, 3, 8, 20, 28]
+    nr: [28, 78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Raziskave__analize__porocila_in_statistika/RF_Spekter/Pokritost_s_storitvami_mobilnih_tehnologij_v_februarju_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Radijski_spekter/Novice_2024/Pokritost_s_storitvami_mobilnih_tehnologij_julija_2023_pop_cistopis.pdf", kind: regulator, checked: 2026-10-31}
+  - id: si-a1
+    name: A1 Slovenija
+    lte: [1, 3, 20, 32]
+    nr: [1, 28, 78]
+    basis: used
+    complete: false
+    mvnos: [bob]
+    sources:
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Raziskave__analize__porocila_in_statistika/RF_Spekter/Pokritost_s_storitvami_mobilnih_tehnologij_v_februarju_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Radijski_spekter/Novice_2024/Pokritost_s_storitvami_mobilnih_tehnologij_julija_2023_pop_cistopis.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.bob.si/", kind: brand, checked: 2026-10-31}
+  - id: si-telemach
+    name: Telemach Slovenija
+    lte: [1, 3, 20, 28, 40]
+    nr: [78]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Raziskave__analize__porocila_in_statistika/RF_Spekter/Pokritost_s_storitvami_mobilnih_tehnologij_v_februarju_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Radijski_spekter/Novice_2024/Pokritost_s_storitvami_mobilnih_tehnologij_julija_2023_pop_cistopis.pdf", kind: regulator, checked: 2026-10-31}
+  - id: si-t2
+    name: T-2
+    lte: [1, 40]
+    nr: [40]
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Raziskave__analize__porocila_in_statistika/RF_Spekter/Pokritost_s_storitvami_mobilnih_tehnologij_v_februarju_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Radijski_spekter/Novice_2024/Pokritost_s_storitvami_mobilnih_tehnologij_julija_2023_pop_cistopis.pdf", kind: regulator, checked: 2026-10-31}

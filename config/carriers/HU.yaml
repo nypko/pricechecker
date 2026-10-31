@@ -1,0 +1,41 @@
+country: HU
+networks:
+  - id: hu-telekom
+    name: Magyar Telekom
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://nmhh.hu/dokumentum/216756/NMHH_Radiospektrum_Strategia_2021_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/dokumentum/164404/uf_1579288_2014_hatarozat_frekvenciapalyazat.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/cikk/217525/1502_milliard_forintert_keltek_el_a_2022ben_lejaro_mobilfrekvenciak", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254938/2100_GHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254934/2600_MHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}
+  - id: hu-one
+    name: One Magyarország (formerly Vodafone)
+    lte: [1, 3, 7, 8, 20, 28, 38]
+    nr: [1, 3, 7, 8, 20, 28, 38, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://nmhh.hu/dokumentum/216756/NMHH_Radiospektrum_Strategia_2021_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/dokumentum/164404/uf_1579288_2014_hatarozat_frekvenciapalyazat.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/cikk/217525/1502_milliard_forintert_keltek_el_a_2022ben_lejaro_mobilfrekvenciak", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254938/2100_GHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254934/2600_MHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}
+  - id: hu-yettel
+    name: Yettel Magyarország (formerly Telenor)
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://nmhh.hu/dokumentum/216756/NMHH_Radiospektrum_Strategia_2021_2025.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/dokumentum/164404/uf_1579288_2014_hatarozat_frekvenciapalyazat.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://nmhh.hu/cikk/217525/1502_milliard_forintert_keltek_el_a_2022ben_lejaro_mobilfrekvenciak", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254938/2100_GHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://english.nmhh.hu/document/254934/2600_MHz_frequency_band.pdf", kind: regulator, checked: 2026-10-31}

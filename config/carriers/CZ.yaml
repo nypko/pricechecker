@@ -1,0 +1,32 @@
+country: CZ
+networks:
+  - id: cz-tmobile
+    name: T-Mobile Czech Republic
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_202606.csv", kind: regulator, checked: 2026-10-31}
+      - {url: "https://data.ctu.gov.cz/dataset/prehled-pridelu-radiovych-kmitoctu", kind: regulator, checked: 2026-10-31}
+  - id: cz-o2
+    name: O2 Czech Republic
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_202606.csv", kind: regulator, checked: 2026-10-31}
+      - {url: "https://data.ctu.gov.cz/dataset/prehled-pridelu-radiovych-kmitoctu", kind: regulator, checked: 2026-10-31}
+  - id: cz-vodafone
+    name: Vodafone Czech Republic
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_202606.csv", kind: regulator, checked: 2026-10-31}
+      - {url: "https://data.ctu.gov.cz/dataset/prehled-pridelu-radiovych-kmitoctu", kind: regulator, checked: 2026-10-31}

@@ -1,10 +1,12 @@
 # Key specs shown on the phone page. Copied from Apple's China spec page (see sources below), checked 2026-10-31, and
 # cross-checked with apple.com/iphone-duo/specs (US model A3447: same hardware, but MagSafe/Qi2 up to 25 W and mmWave 5G).
 # A field the page does not give is left out rather than guessed: Apple states no battery capacity, no RAM and no maximum
-# wired charging power. Model numbers: support.apple.com/zh-cn/108044 (A3721 = China mainland).
+# wired charging power. Model numbers: support.apple.com/zh-cn/108044 (A3721 = China mainland). Global = the UK/EU
+# model A3720 from apple.com/uk/iphone-duo/specs (the model Gomibo sells), checked 2026-10-31.
 id: apple-iphone-duo
 sources:
   china: {url: https://www.apple.com.cn/iphone-duo/specs/, checked: 2026-10-31, lang: Chinese}
+  global: {url: https://www.apple.com/uk/iphone-duo/specs/, checked: 2026-10-31}
 key:
   chip: "Apple A20 Pro"
   screen: "7.6 inside"
@@ -25,7 +27,7 @@ groups:
   battery:
     battery: "Two batteries, capacity not stated; up to 24 h typical use"
     wired: "50% in about 20 min with a 60 W or higher USB-C adapter (top power not stated)"
-    wireless: "MagSafe and Qi2, up to 15 W"
+    wireless: {china: "MagSafe and Qi2, up to 15 W", global: "MagSafe and Qi2, up to 25 W"}
   cameras:
     main: "48 MP, f/1.6, 26 mm, sensor-shift OIS"
     telephoto: "12 MP 2x optical-quality, from the main camera (52 mm, f/1.6)"
@@ -60,3 +62,6 @@ bands:
   china:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 106, 34, 38, 39, 40, 41, 42, 48]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 30, 66, 70, 75, 38, 40, 41, 48, 77, 78, 79]
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 106, 34, 38, 39, 40, 41, 42, 48, 53]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 30, 66, 70, 75, 38, 40, 41, 48, 53, 77, 78, 79]

@@ -3,6 +3,7 @@ tax config. Each is named <name>.<first 10 hex of its sha256>.json, so a changed
 for a year; every file stays under BUDGET bytes (before gzip). Store notes, coupons and other prose stay in the HTML."""
 import hashlib
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from .. import derive, specs, terms
@@ -51,6 +52,26 @@ def _put(out: Path, name: str, doc) -> str:
     return "/" + rel
 
 
+def trend_series(rows: list[dict], model_id: str, offers: list[dict], since: str, rates: dict | None = None) -> dict:
+    """{edition: {storage: {store_label: [[day, ratio]]}}}: each day's price of a listing from `since` over the current
+    price of the same store, edition and storage offer (both native). Listings with no current offer are left out.
+    A history row in another currency than the offer's is converted through EUR with `rates`; without rates it is skipped."""
+    cur = {(o["store"], o["edition"], o["storage"]): o for o in offers}
+    same = []
+    for r in rows:
+        o = cur.get((r["store"], r["edition"], r["storage"]))
+        if o and o["currency"] != r["currency"]:
+            if not rates:
+                continue
+            r = {**r, "price": derive._eur(r["price"], r["currency"], rates) * rates[o["currency"]], "currency": o["currency"]}
+        same.append(r)
+    out: dict = {}
+    for (store, e, storage), pts in derive.listing_days(same, model_id, since).items():
+        if o := cur.get((store, e, storage)):
+            out.setdefault(e, {}).setdefault(storage, {})[o["store_label"]] = [[d, round(p / o["price"], 4)] for d, p in pts]
+    return out
+
+
 def _phone_doc(data: SiteData, p: dict) -> dict:
     sheet = data.spec_sheets.get(p["id"]) or {}
     labels = {s: c.get("label", s) for s, c in data.stores_cfg.items()}
@@ -58,7 +79,10 @@ def _phone_doc(data: SiteData, p: dict) -> dict:
     for e in p["editions"]:
         per_store = derive.store_lines(data.rows, p["id"], e, data.rates)
         lines[e] = {labels.get(s, s): [list(pt) for pt in pts] for s, pts in per_store.items()}
+    day = data.updated_at.date() if data.updated_at else datetime.now(UTC).date()   # the build's updated day
+    since = (day - timedelta(days=90)).isoformat()
     return {"v": 1, "offers": [offer_inputs(o) for o in p["offers"]], "lines": lines,
+            "trend": trend_series(data.rows, p["id"], p["offers"], since, data.rates),
             "bands": {e: specs.band_check(sheet, e) if sheet else None for e in p["editions"]}}
 
 

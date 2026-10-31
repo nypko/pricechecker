@@ -138,3 +138,19 @@ def test_older_drops_are_real_drops_outside_this_week_latest_first():
     assert [d["slug"] for d in derive.older_drops(rows, RATES, NOW)] == ["b", "a"]   # not c; the later change first
     assert derive.older_drops(rows[:2], RATES, datetime(2026, 12, 20, tzinfo=UTC)) == []   # past the 30-day look-back
 
+
+
+def test_listing_days_carries_state_and_skips_sold_out():
+    rows = [row("2026-10-01T00:00:00Z", 1000), row("2026-10-02T00:00:00Z", 5, store="b"),
+            row("2026-10-03T00:00:00Z", 1, avail=False), row("2026-10-05T00:00:00Z", 950)]
+    days = derive.listing_days(rows, "m", "2026-10-01")
+    assert days[("s", "china", "12/256")] == [("2026-10-01", 1000), ("2026-10-02", 1000), ("2026-10-05", 950)]
+    assert days[("b", "china", "12/256")] == [("2026-10-02", 5), ("2026-10-03", 5), ("2026-10-05", 5)]
+
+
+def test_listing_days_since_keeps_earlier_state_and_substores_separate():
+    rows = [row("2026-09-01T00:00:00Z", 1000), row("2026-09-01T00:00:00Z", 900, store="s_eu"),
+            row("2026-10-02T00:00:00Z", 1, store="b")]
+    days = derive.listing_days(rows, "m", "2026-10-01")
+    assert days[("s", "china", "12/256")] == [("2026-10-02", 1000)]       # September's price carried into the window
+    assert days[("s_eu", "china", "12/256")] == [("2026-10-02", 900)]     # not folded into s

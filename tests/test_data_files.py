@@ -57,7 +57,7 @@ def test_phone_file_has_no_notes_text(built, phones):
     p = next(p for p in phones if p["offers"])
     raw = (out / names["phone/" + p["id"]].lstrip("/")).read_text()
     doc = json.loads(raw)
-    assert doc["v"] == 1 and set(doc) == {"v", "offers", "lines", "bands"}
+    assert doc["v"] == 1 and set(doc) == {"v", "offers", "lines", "trend", "bands"}
     for o in doc["offers"]:
         assert not {"notes", "coupons", "buyers", "gplay", "trend", "url", "title"} & set(o)
     assert "notes" not in raw
@@ -157,3 +157,26 @@ def test_splitter_keeps_synthetic_data_within_budget(data, tmp_path):
 def test_write_warns_about_an_oversized_file(capsys, tmp_path):
     data_files._put(tmp_path, "big", {"x": "y" * (BUDGET + 1)})
     assert "over the 60,000-byte budget" in capsys.readouterr().out
+
+
+def _trend_row(time, price, store="a", storage="12/256", cur="EUR", avail=True):
+    return {"time": time, "store": store, "model_id": "m", "edition": "china", "storage": storage, "price": price,
+            "currency": cur, "available": avail}
+
+
+def test_trend_series_ratios_by_label_and_drops_listings_without_current_offer():
+    rows = [_trend_row("2026-10-01T00:00:00Z", 1000), _trend_row("2026-10-02T00:00:00Z", 900),
+            _trend_row("2026-10-01T00:00:00Z", 500, store="gone"),
+            _trend_row("2026-10-01T00:00:00Z", 800, store="a_eu")]
+    offers = [{"store": "a", "store_label": "Shop A", "edition": "china", "storage": "12/256", "price": 900, "currency": "EUR"},
+              {"store": "a_eu", "store_label": "Shop A EU", "edition": "china", "storage": "12/256", "price": 800, "currency": "EUR"}]
+    t = data_files.trend_series(rows, "m", offers, "2026-10-01")
+    assert t == {"china": {"12/256": {"Shop A": [["2026-10-01", 1.1111], ["2026-10-02", 1.0]],
+                                      "Shop A EU": [["2026-10-01", 1.0], ["2026-10-02", 1.0]]}}}
+
+
+def test_trend_series_converts_a_changed_currency():
+    rows = [_trend_row("2026-10-01T00:00:00Z", 1100, cur="USD"), _trend_row("2026-10-02T00:00:00Z", 900)]
+    offers = [{"store": "a", "store_label": "Shop A", "edition": "china", "storage": "12/256", "price": 900, "currency": "EUR"}]
+    t = data_files.trend_series(rows, "m", offers, "2026-10-01", {"EUR": 1.0, "USD": 1.1})
+    assert t["china"]["12/256"]["Shop A"] == [["2026-10-01", 1.1111], ["2026-10-02", 1.0]]

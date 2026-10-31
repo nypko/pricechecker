@@ -1,0 +1,41 @@
+country: RO
+networks:
+  - id: ro-orange
+    name: Orange Romania
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ancom.ro/uploads/forms_files/Document_de_pozitie_20191559326182.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://ancom.ro/uploads/links_files/Caiet_de_sarcini_procedura_de_selectie_2022_2.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/this-year-s-spectrum-auction-wraps-up-2/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-issues-the-mobile-internet-and-telephony-licences-in-the-2100-mhz-band/", kind: regulator, checked: 2026-10-31}
+  - id: ro-vodafone
+    name: Vodafone Romania
+    lte: [1, 3, 8, 20, 28]
+    nr: [1, 3, 8, 20, 28, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ancom.ro/uploads/forms_files/Document_de_pozitie_20191559326182.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://ancom.ro/uploads/links_files/Caiet_de_sarcini_procedura_de_selectie_2022_2.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/this-year-s-spectrum-auction-wraps-up-2/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-issues-the-mobile-internet-and-telephony-licences-in-the-2100-mhz-band/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-issues-new-licenses-for-vodafone-digi-and-telekom-romania-mobile-communications/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://media.mobile.telekom.ro/images/docs/Legal_docs/LM/Notificare_Fuziune_Vodafone_Telekom_26.05.2026.pdf", kind: carrier, checked: 2026-10-31}
+  - id: ro-digi
+    name: Digi Romania (RCS & RDS)
+    lte: [1, 3, 7, 8, 38]
+    nr: [1, 3, 7, 8, 38, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ancom.ro/uploads/forms_files/Document_de_pozitie_20191559326182.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://ancom.ro/uploads/links_files/Caiet_de_sarcini_procedura_de_selectie_2022_2.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/this-year-s-spectrum-auction-wraps-up-2/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-issues-new-licenses-for-vodafone-digi-and-telekom-romania-mobile-communications/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-proposes-extending-the-validity-of-licences-in-the-2100-mhz-band/", kind: regulator, checked: 2026-10-31}

@@ -1,0 +1,32 @@
+country: BG
+networks:
+  - id: bg-a1
+    name: A1 Bulgaria
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://crc.bg/en/articles/2535/allocation-of-radio-frequency-spectrum-in-700-mhz-800-mhz-900-mhz-1800-mhz-2-ghz-2-6-ghz-3-6-ghz-and-26-ghz-bands", kind: regulator, checked: 2026-10-31}
+      - {url: "https://docdb.cept.org/download/4532", kind: other, checked: 2026-10-31}
+  - id: bg-yettel
+    name: Yettel Bulgaria
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://crc.bg/en/articles/2535/allocation-of-radio-frequency-spectrum-in-700-mhz-800-mhz-900-mhz-1800-mhz-2-ghz-2-6-ghz-3-6-ghz-and-26-ghz-bands", kind: regulator, checked: 2026-10-31}
+      - {url: "https://docdb.cept.org/download/4532", kind: other, checked: 2026-10-31}
+  - id: bg-vivacom
+    name: Vivacom Bulgaria
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://crc.bg/en/articles/2535/allocation-of-radio-frequency-spectrum-in-700-mhz-800-mhz-900-mhz-1800-mhz-2-ghz-2-6-ghz-3-6-ghz-and-26-ghz-bands", kind: regulator, checked: 2026-10-31}
+      - {url: "https://docdb.cept.org/download/4532", kind: other, checked: 2026-10-31}

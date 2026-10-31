@@ -1088,3 +1088,43 @@ def test_privacy_says_single_reports_are_public_and_watch_keeps_no_price(site_bu
     t = " ".join((site_build / "privacy.html").read_text().split())
     assert "reviewed in a public GitHub issue and saved in our public GitHub repository" in t
     assert "not single reports" not in t and "the price you last saw" not in t
+
+
+# ---- price trend on the phone page (synthetic phone: no saved prices behind the trend) ----
+def _trend_site(sold_out=False):
+    import copy
+    import dataclasses
+    import json
+
+    from pricechecker import fx, run, terms
+    from pricechecker.site import _env, context, offers
+    from pricechecker.site.pages import phone
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    p = copy.deepcopy(offers.assemble(data)[0])
+    fixture = json.loads((ROOT / "tests/fixtures/states_phone.json").read_text())
+    shop = next(o for o in fixture["offers"] if o["store_label"] == "Settled Shop")
+    p["editions"] = ["china"]
+    p["offers"] = [{**shop, "store": "settled", "currency": "EUR", "price": 1000.0, "available": not sold_out}]
+    rows = [{"time": f"{d}T08:00:00Z", "store": "settled", "model_id": p["id"], "edition": "china", "storage": "12/256", "price": v,
+             "currency": "EUR", "available": True} for d, v in [(f"2026-10-{n:02d}", 1050.0 if n < 20 else 1000.0) for n in range(1, 25)]]
+    data = dataclasses.replace(data, rows=rows)
+    ctx = context.page_context(data, [p])
+    ctx["updated"] = "2026-10-30T12:00:00Z"
+    return phone.render(_env(), data, ctx, [p])[f'phones/{p["slug"]}.html'], p
+
+
+def test_phone_page_trend_follows_the_verdict_for_the_default_pick():
+    h, p = _trend_site()
+    assert h.index('id="s-verdict"') < h.index('id="s-trend"') < h.index('id="s-receipt"')
+    block = h[h.index('id="s-trend"'):h.index('id="s-receipt"')]
+    assert 'data-block="price_trend"' in block
+    assert "Lowest price in 30 days" in block
+    assert f'href="../history/{p["slug"]}"' in block and "Full price history" in block
+    assert "Down 5% since first listed (1 Oct)" in block   # 1000 vs 1050 on the first day
+    assert len(h.encode()) <= 60_000
+
+
+def test_phone_page_trend_is_empty_without_a_current_price():
+    h, _ = _trend_site(sold_out=True)
+    assert '<div id="s-trend" data-ed="china"></div>' in h and 'data-block="price_trend"' not in h

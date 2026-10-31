@@ -2,6 +2,7 @@
 // Jinja macros: node render_blocks.mjs --phone <v1 file> --tax <tax file> --edition <e> --storage <st>
 //   [--settings region,area,pay,cur] [--labels '{"global":..,"china":..}'] [--meta '{"id","name","announced","brand"}']
 //   [--now <ISO>] [--root <prefix>]
+// --trend '<price_trend json>' [--settings ..] [--hist <href>] prints {"price_trend": "<html>"}.
 // prints {"<snake name>": "<html>", "store_row": ["<html>", ...one per row], "ledger": [by rank, by total, by store price]}. Or --money '[[v, cur, dec], ...]' prints
 // the money() text of each.
 import { readFileSync } from "node:fs";
@@ -10,7 +11,10 @@ import * as B from "../../static/js/blocks.js";
 
 const arg = (n, d = null) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : d; };
 
-if (arg("--money")) {
+if (arg("--trend")) {
+  const [region, area, pay, cur] = arg("--settings", "EU,,card,eur").split(",");
+  console.log(JSON.stringify({ price_trend: B.priceTrendBlock(JSON.parse(arg("--trend")), { region, area, pay, cur }, arg("--hist", "../history/x")) }));
+} else if (arg("--money")) {
   console.log(JSON.stringify(JSON.parse(arg("--money")).map(([v, c, d]) => B.money(v, c, d))));
 } else {
   const doc = JSON.parse(readFileSync(arg("--phone"), "utf8"));

@@ -256,6 +256,20 @@ body:has(.buybar) footer { padding-bottom: 90px; }
 .receipt .sum { font-weight: 700; color: var(--ink); border-top: 1px solid var(--rule); padding-top: 8px; }
 .receipt .note { margin: 10px 0 0; font-size: .82rem; color: var(--ink-2); }
 
+/* price trend under the details panel: the 30-day range as a bar, the marker in the picked version's colour */
+#s-trend { --tc: var(--ink); }
+#s-trend[data-ed="china"] { --tc: var(--cn); }
+#s-trend[data-ed="global"] { --tc: var(--gl); }
+.trend { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 14px 16px; margin: 0 0 8px; }
+.trend p { margin: 0 0 4px; font-size: .92rem; color: var(--ink-2); }
+.trend .trange { font: 700 .98rem var(--body); color: var(--ink); font-variant-numeric: tabular-nums; }
+.trend .tpos { color: var(--ink); }
+.trend .tshort, .trend .tlink { margin-bottom: 0; }
+.trend .tlink { margin-top: 8px; }
+.trend .tlink a { color: var(--ink); font-weight: 600; }
+.tbar { position: relative; height: 8px; border-radius: 999px; background: var(--rule); margin: 8px 7px 12px; }
+.tbar i { position: absolute; top: 50%; left: var(--at); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--tc); border: 2px solid var(--paper); box-sizing: border-box; box-shadow: 0 0 0 1px var(--tc); }
+
 /* Pazaruvaj-style delivery filters over the store list */
 .dfilt { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px; }
 .dfilt button { flex: none; min-height: 38px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .84rem var(--body); cursor: pointer; }

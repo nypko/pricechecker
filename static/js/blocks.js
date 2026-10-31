@@ -163,6 +163,36 @@ export function verdict(row, pick, s, labels, now = null) {
     `<p class="fine">${row.checked ? `Price checked ${stamp(row.checked)}. ` : ""}Affiliate link: we may earn a commission; it never changes the order.</p></section>`;
 }
 
+/** '2026-11-12' -> '12 Nov' (blocks.py short_day, pages/phone.py _day). */
+export const shortDay = (iso) => (iso ? `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}` : "");
+
+/** The price trend under the details panel (view.js priceTrend numbers; null: ""): the 30-day range with a marker, where
+ *  today's price sits, how it moved, the link to the full history. Short history: only the "too short" sentence. */
+export function priceTrendBlock(t, s, histHref) {
+  if (!t) return "";
+  const open = '<section class="trend" data-block="price_trend" aria-label="Price over the last 30 days">';
+  const link = `<p class="tlink"><a href="${esc(histHref)}">Full price history →</a></p></section>`;
+  if (t.short) return open + `<p class="tshort">Price history for this version and memory starts on ${shortDay(t.first_day)}, too short to judge yet.</p>` + link;
+  const ap = t.approx ? "≈" : "", m = (v) => ap + money(v, s.cur);
+  const same = t.high === t.low, from = shortDay(t.first_day);
+  let out = open;
+  if (same) out += `<p class="trange">Same price since ${from}</p>`;
+  else {
+    const at = Math.floor(Math.min(Math.max(((t.now - t.low) / (t.high - t.low)) * 100, 0), 100) + 0.5);
+    out += `<p class="trange">${m(t.now)} · low ${m(t.low)} – high ${m(t.high)}</p><div class="tbar" aria-hidden="true"><i style="--at:${at}%"></i></div>`;
+  }
+  out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
+    : `<p class="tpos">${m(t.now - t.low)} above its ${t.full_window ? "30-day low" : "low since " + from} (${m(t.low)} on ${shortDay(t.low_day)} at ${esc(t.low_store)})</p>`;
+  if (t.change_pct !== null && t.change_pct !== undefined) {
+    const c = t.change_pct, span = t.since_first ? `since first listed (${from})` : null;
+    out += Math.abs(c) < 1 ? `<p class="tmove">About the same ${span || "over the last 30 days"}</p>`
+      : `<p class="tmove">${c > 0 ? "Up" : "Down"} ${fixed(Math.abs(c), 0)}% ${span || "in the last 30 days"}</p>`;
+  }
+  const w = t.change_7d;
+  if (w !== null && w !== undefined && Math.abs(w) >= 2) out += `<p class="tweek">${w > 0 ? "Up" : "Down"} ${fixed(Math.abs(w), 0)}% in the last 7 days</p>`;
+  return out + link;
+}
+
 const seg = (v, c) => (v > 0 ? `<span style="flex:${fixed(v, 1)};background:var(${c})"></span>` : "");
 const dt = (c, label) => `<dt><i style="background:var(${c})"></i>${label}</dt>`;
 

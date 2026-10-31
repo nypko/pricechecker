@@ -630,3 +630,78 @@ def test_price_box_means_link_follows_the_brand(fixture_doc, tax_file, tax, tmp_
         js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         assert_same(py, js, brand)
         assert want in text(py["price_box"]) and want in text(js["price_box"])
+
+
+# --- the price trend block (spec 2026-10-31 §3): Jinja macro and JS twin, with the exact copy ---
+
+def _trend(**kw):
+    t = {"short": False, "first_day": "2026-09-01", "window_start": "2026-10-02", "full_window": True, "now": 2736, "low": 2652,
+         "low_day": "2026-11-12", "low_store": "Trading Shenzhen", "high": 2901, "is_low": False, "change_pct": -3.0,
+         "since_first": False, "change_7d": 4.0, "approx": False}
+    return {**t, **kw}
+
+
+def _trend_js(t, s=view.DEFAULT, hist="../history/x"):
+    r = subprocess.run(["node", str(HARNESS), "--trend", json.dumps(t), "--settings", ",".join(s), "--hist", hist],
+                       check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    return json.loads(r.stdout)["price_trend"]
+
+
+TREND_CASES = {
+    "full": (_trend(), "€2,736 · low €2,652 – high €2,901 €84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen) "
+                       "Down 3% in the last 30 days Up 4% in the last 7 days Full price history →"),
+    "at the low": (_trend(now=2652, is_low=True, change_7d=1.9, change_pct=-8.2), "€2,652 · low €2,652 – high €2,901 Lowest price in 30 days "
+                   "Down 8% in the last 30 days Full price history →"),
+    "since first": (_trend(full_window=False, first_day="2026-10-15", since_first=True, change_pct=-9.0, change_7d=None),
+                    "€2,736 · low €2,652 – high €2,901 €84 above its low since 15 Oct (€2,652 on 12 Nov at Trading Shenzhen) "
+                    "Down 9% since first listed (15 Oct) Full price history →"),
+    "not full, at the low": (_trend(full_window=False, first_day="2026-10-15", now=2652, is_low=True, since_first=True, change_pct=0.4, change_7d=-2.5),
+                             "€2,652 · low €2,652 – high €2,901 Lowest price since 15 Oct About the same since first listed (15 Oct) "
+                             "Down 3% in the last 7 days Full price history →"),
+    "about the same": (_trend(change_pct=-0.9, change_7d=None), "€2,736 · low €2,652 – high €2,901 €84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen) "
+                       "About the same over the last 30 days Full price history →"),
+    "too short": (_trend(short=True, first_day="2026-10-28"), "Price history for this version and memory starts on 28 Oct, too short to judge yet. "
+                                                              "Full price history →"),
+    "same price": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", full_window=False),
+                   "Same price since 15 Oct Lowest price since 15 Oct About the same over the last 30 days Full price history →"),
+    "approx": (_trend(approx=True, change_pct=None, change_7d=None), "≈€2,736 · low ≈€2,652 – high ≈€2,901 ≈€84 above its 30-day low (≈€2,652 on 12 Nov at Trading Shenzhen) Full price history →"),
+}
+
+
+@needs_node
+@pytest.mark.parametrize("name", sorted(TREND_CASES))
+def test_price_trend_parity_and_copy(name):
+    t, want = TREND_CASES[name]
+    py, js = macro("price_trend", t, view.DEFAULT, "../history/x"), _trend_js(t)
+    assert text(py) == want
+    assert text(js) == want
+    assert root_of(py) == root_of(js) == "section|trend|price_trend"
+    assert structure(py) == structure(js)
+    assert 'href="../history/x"' in py
+
+
+@needs_node
+def test_price_trend_bar_marker_and_currency():
+    t = _trend(now=2736, low=2652, high=2901)   # (2736-2652)/(2901-2652) = 33.7% -> 34
+    for h in (macro("price_trend", t, view.DEFAULT, "../history/x"), _trend_js(t)):
+        assert '<div class="tbar" aria-hidden="true"><i style="--at:34%"></i></div>' in h
+    for tt, at in ((_trend(now=2652, low=2652), 0), (_trend(now=2901, low=2652), 100), (_trend(now=3000), 100), (_trend(now=2000), 0)):
+        for h in (macro("price_trend", tt, view.DEFAULT, "../history/x"), _trend_js(tt)):
+            assert f'--at:{at}%"' in h
+    same = _trend(low=2652, high=2652, now=2652, is_low=True)
+    for h in (macro("price_trend", same, view.DEFAULT, "../history/x"), _trend_js(same)):
+        assert "tbar" not in h
+    assert text(macro("price_trend", t, UK_PAYPAL, "../history/x")).startswith("£2,736 · low £2,652")
+    assert text(_trend_js(t, UK_PAYPAL)).startswith("£2,736 · low £2,652")
+
+
+@needs_node
+def test_price_trend_none_is_empty_and_strings_are_escaped():
+    assert macro("price_trend", None, view.DEFAULT, "../history/x").strip() == ""
+    out = subprocess.run(["node", str(HARNESS), "--trend", "null"], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert json.loads(out.stdout)["price_trend"] == ""
+    t = _trend(low_store='A<b>&"')
+    py, js = macro("price_trend", t, view.DEFAULT, "../history/x"), _trend_js(t)
+    assert "<b>" not in py and "<b>" not in js
+    assert structure(py) == structure(js) and text(py) == text(js)

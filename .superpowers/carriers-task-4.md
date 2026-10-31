@@ -7,7 +7,7 @@ bands.yaml: nothing missing, no change. Tests: 36 passed. No SDL listed except S
 Graphics/OCR: HU 2600 attribution (logo table, read by eye from rendered page 9), PL 2600 TDD column (text labels from the UKE occupancy PDF), HR 700/3600/26 GHz tables (PNG images, read by eye). No OCR run.
 
 ## Summary
-PL 4/4 complete, CZ 3/3 complete, HU 3/3 complete, HR 3/3 complete, SK 2/4 complete (O2, SWAN not), SI 0/4 (basis used).
+PL 4/4 complete, CZ 3/3 complete (T-Mobile, O2 now with B38/n38), HU 3/3 complete, HR 3/3 complete, SK 2/4 complete (O2, SWAN not), SI 0/4 (basis used).
 
 ## Poland (all licensed, complete true) - UKE BIP "Rezerwacje ogólnopolskie"
 Per-band tables at https://bip.uke.gov.pl/rezerwacje-czestotliwosci/rezerwacje-ogolnopolskie-tresci/{700-mhz,10 | 800-mhz,6 | 900-mhz,5 | 1800-mhz,4 | 2100-mhz,3 | 2600-mhz,2 | 3600-mhz,9}.html (band pages modified 2025-08 to 2026-10; 3600 page lists 2026-10-28 files). Each table row = holder + paired range (up/down) = FDD.
@@ -16,7 +16,7 @@ Per-band tables at https://bip.uke.gov.pl/rezerwacje-czestotliwosci/rezerwacje-o
 - 900: P4 880.1-885.1; Polkomtel 885.1-890.1 and 890.1-899.1; T-Mobile 899.1-908.1; Orange 908.1-914.9.
 - 1800: Polkomtel 1710-1740 (six rows); T-Mobile 1740-1760 (five rows); Orange 1760-1770; P4 1770-1785.
 - 2100: Orange 1920-1934.9; T-Mobile 1935-1949.9; Polkomtel 1950-1964.9; P4 1965-1979.9 (each two rows).
-- 2600: Polkomtel 2500-2520/2620-2640; Orange 2520-2535; T-Mobile 2535-2550; P4 2550-2570/2670-2690 (paired -> B7/n7 all four). Polkomtel also "2570-2620 MHz" unpaired. Duplex for that block: UKE occupancy chart PDF (https://bip.uke.gov.pl/download/gfx/bip/pl/defaultaktualnosci/135/13/7/2023-01-04_zajetosc_2600_mhz.pdf, 2023-01-04) has columns "FDD (DL) | TDD | FDD (UL)" and "Polkomtel sp. z o.o." under TDD, 2570-2620. -> Plus gets B38/n38. Source is a 2023 chart; the 2026 table gives the same single range.
+- 2600: Polkomtel 2500-2520/2620-2640; Orange 2520-2535; T-Mobile 2535-2550; P4 2550-2570/2670-2690 (paired -> B7/n7 all four). Polkomtel also "2570-2620 MHz" unpaired (graphic note below). Duplex for that block: UKE occupancy chart PDF (https://bip.uke.gov.pl/download/gfx/bip/pl/defaultaktualnosci/135/13/7/2023-01-04_zajetosc_2600_mhz.pdf, 2023-01-04) has columns "FDD (DL) | TDD | FDD (UL)" and "Polkomtel sp. z o.o." under TDD, 2570-2620. -> Plus gets B38/n38. Source is a 2023 chart (a graphic whose labels were extracted as text); the 2026 table gives the same single range but does not label the duplex. Plus B38/n38 therefore rests on that 2023 UKE chart only.
 - 3600 (3400-3800): Polkomtel 3400-3500 (not 33 gminas per footnote); P4 3500-3600; Orange 3600-3700; T-Mobile 3700-3800. -> n78 all.
 - 26 GHz: no UKE nationwide row (list stops at 3600) -> no n258. 
 - Orange lte 1,3,7,8,20,28 nr +78; Plus lte 1,3,7,8,28,38 nr 1,3,7,8,28,38,78; T-Mobile and Play as Orange.
@@ -24,7 +24,7 @@ Per-band tables at https://bip.uke.gov.pl/rezerwacje-czestotliwosci/rezerwacje-o
 - MVNOs: none verified (Premium Mobile on Plus appears in third-party reviews only; premiummobile.pl fetched, names no network; virginmobile.pl and plush site unreachable).
 
 ## Czechia (all licensed, complete true) - ČTÚ open data "Přehled přídělů rádiových kmitočtů"
-CSV https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_202606.csv (June 2026; dataset page https://data.ctu.gov.cz/dataset/prehled-pridelu-radiovych-kmitoctu). 73 rows, columns "Párový kmitočet", downlink/uplink ranges, "Aplikace", "Subjekt". Rows with Aplikace "Mobilní síť" (all paired = "Ano" below 3.4 GHz):
+CSV https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_202606.csv (June 2026, now also the 2016 press release above; dataset page https://data.ctu.gov.cz/dataset/prehled-pridelu-radiovych-kmitoctu). 73 rows, columns "Párový kmitočet", downlink/uplink ranges, "Aplikace", "Subjekt". Rows with Aplikace "Mobilní síť" (all paired = "Ano" below 3.4 GHz):
 - 700 (DL 758-788): O2 758-768 (id 35), T-Mobile 768-778 (36), Vodafone 778-788 (37).
 - 800: T-Mobile 791-801 (38), O2 801-811 (39), Vodafone 811-821 (40).
 - 900: Vodafone 925.1-935.1 (41), T-Mobile 935.1-947.5 (42), O2 947.5-959.9 (43).
@@ -32,8 +32,9 @@ CSV https://data.ctu.gov.cz/sites/default/files/pridely-radiovych-kmitoctu_20260
 - 2100: O2 2110-2130 (55), Vodafone 2130-2150 (56), T-Mobile 2150-2170 (57).
 - 2600 (paired): O2 2620-2640 (61), T-Mobile 2640-2660 and 2680-2690 (62, 64), Vodafone 2660-2680 (63).
 - 3400-3800 (unpaired "Ne"): T-Mobile 3400-3540, Vodafone 3540-3620 and 3620-3640, O2 3640-3800.
-- No 26 GHz and no 2600 TDD row -> no n258, no B38. Rows 59-60 not mobile.
-- All three: lte 1,3,7,8,20,28; nr 1,3,7,8,20,28,78. Succession: none needed (names in table are the current operators).
+- No 26 GHz row -> no n258.
+- Rows 59-60 (fix round 1, correcting my earlier "not mobile"): ID 59 T-Mobile 2570-2595, ID 60 O2 2595-2620, unpaired ("Ne"), valid to 2029-06-30, Aplikace blank. ČTÚ press release 14 Jun 2016 (https://ctu.gov.cz/sites/default/files/obsah/ctu/tiskova-zprava-ctu-vydrazil-zbyvajici-kmitocty-v-pasmech-1800-mhz-2600-mhz/obrazky/tz20160614aukce-18002600-vydrazeno.pdf): "v nepárové části pásma 2600 MHz potom získaly společnosti O2 a T-Mobile po jednom aukčním bloku o velikost 25 MHz" (in the unpaired part of 2600 MHz, O2 and T-Mobile each got one 25 MHz block), and the operators use the spectrum for mobile internet. Matches both rows (25 MHz each). Unpaired = stated duplex -> B38/n38 for T-Mobile and O2 (complete stays true). Vodafone has no unpaired row.
+- T-Mobile and O2: lte 1,3,7,8,20,28,38; nr 1,3,7,8,20,28,38,78. Vodafone lte 1,3,7,8,20,28; nr +78. Succession: none needed (names in table are the current operators).
 - MVNOs: none verified (kaktus.cz and lidl-connect.cz unreachable).
 
 ## Slovakia (licensed; Orange, Telekom complete; O2, SWAN not)
@@ -41,6 +42,7 @@ Sources: RÚ public discussion 2024-09-17 (https://www.teleoff.gov.sk/files/urad
 Table 3.1 "Rozdelenie frekvenčného spektra" (MHz): 700: Orange 20, Telekom 20, O2 20; 800: 20/20/20; 900: 20.4/20.4/28.8; 1800: Orange 40, Telekom 36.4, O2 37.6, SWAN 36; 2100: 40/40/40 (SWAN none); 2600: Orange 60, Telekom 80, O2 none; 2600 TDD: Telekom 50; 3600 (footnote "Platí od 1.9.2025"): 100 each incl. SWAN. Text: 800 "O2 811-821/852-862; Slovak Telekom 791-801/832-842; Orange 801-811/842-852"; 2600 "Slovak Telekom 2530-2570/2650-2690 s módom prevádzky FDD a 2570-2620 s módom prevádzky TDD"; "Orange Slovensko 2500-2530/2620-2650".
 - Orange lte 1,3,7,8,20,28 nr +78. Telekom the same + B38/n38 (stated TDD). O2: 700, 800, 900, 1800, 2100, 3600 -> lte 1,3,8,20,28 nr +78 (no 2600 in force). SWAN: 1800 and 3600 only -> lte 3, nr 78.
 - Auction of 9 Jul 2025 (800, 900, 1500, 2100, 2600 FDD/TDD): O2 won 2600 FDD 2500-2520/2620-2640; SWAN won 900 (900-905/945-950), 2100 (1970-1980/2160-2170), 2600 FDD (2520-2530/2640-2650) and 1500. RÚ document says 800/900/2600 usable "od 1.1.2029", 2100 "od 8.9.2026, resp. 1.1.2029" (decision pending), 1500 immediately. These rights are not in force in the 2024 table, so I did NOT list them: O2 B7/n7 and SWAN B8/B1/B7 (+n-bands) are left out and O2, SWAN set complete false. Orange and Telekom: auction awards equal their existing bands, so complete true. Reviewer decision: if you want awarded-but-future rights listed, add O2 7/n7 and SWAN 1,7,8 / n1,7,8.
+- Fix round 1, 900 MHz renewal: found. RÚ decisions (fetched, FDD, whole territory): Orange 2410531004_h_orange_900-mhz-do_2028, Slovak Telekom 2410531005_h_st_900mhz_do_2028 (both "Od 1.1.2026 Do 31.12.2028"), O2 2410531006_h_o2_do-2028 (two blocks "Od 1.1.2026" and "Od 8.9.2026", both "Do 31.12.2028"), all under https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-spravy-frekvencneho-spektra/zoznam-rozhodnuti-oblasti-spravy-frekvencneho-spektra/vyberove-konania/frekvencne-pasmo-900-mhz/. B8/n8 stays, now cited. 2100: decisions 2510571002/3/4 (O2, Orange, Telekom) "Od 8.9.2026 Do 31.12.2048"; SWAN 2510571001 (5 Aug 2025): 2100 FDD 1970-1980/2160-2170, "Od 8.9.2026 Do 31.12.2048" -> in force today, so SWAN now lists B1/n1 (lte 1,3; nr 1,78). SWAN 900 and 2600 FDD start 2029, still left out, SWAN complete false.
 - 1500 MHz (SDL) not listed. Succession: none.
 - MVNOs: none verified.
 
@@ -54,9 +56,10 @@ Sources fetched: strategy https://nmhh.hu/dokumentum/216756/NMHH_Radiospektrum_S
 - 3600: strategy: Telekom 120 MHz, Telenor 140, Vodafone 50 -> n78 all.
 - 26 GHz: NMHH 26 GHz briefing (https://nmhh.hu/dokumentum/254233/26_ghz_savismerteto.pdf, fetched) lists fixed-service rights expiring 2027, not mobile -> no n258.
 - Succession: band intro 2100: "As of 1 January 2025, Vodafone Hungary Zrt. was renamed to One Magyarország Zrt."; "Telenor Magyarország Zrt. (hereinafter referred to as 'Yettel')".
-- DIGI: held 1800 2x5 MHz (1725-1730/1820-1825, exp. 2029 per 2019 briefing); search results say Digi's own network was retired and users moved to Vodafone in June 2023 (unfetched). Not included as a network. Flag.
+- 2600 textual proof (fix round 1): the 2025 band-introduction Table 1 is logo-only (graphic); the textual proof of who holds which 2600 block is the 2014 NMHH decision (Telekom A: 2500-2530/2620-2650 paired; Telenor B: 2550-2570/2670-2690 paired; Vodafone G: 2530-2550/2650-2670 paired and C: 2575-2600 unpaired). Risk: the logo table is 2025 and could reflect secondary trades since 2014 that the 2014 text does not; the logos agree with the 2014 text.
+- DIGI: held 1800 2x5 MHz (1725-1730/1820-1825, exp. 2029 per the 2019 briefing). Telex 13 Apr 2023 (fetched, https://telex.hu/tech/2023/04/13/a-vodafone-magyarorszagi-halozatara-koltozik-a-digimobil): "Június 1-től a Vodafone Magyarország mobilhálózatán működik tovább a DIGIMobil szolgáltatás" -> DIGI Mobil runs on the Vodafone (now One) network, so it is not a separate network and is listed as an MVNO of hu-one (source kind other, press).
 - Completeness caveat: every band is from a regulator document but a mix of 2014-2025 dates; 800 MHz and 2100 holders are as of those docs.
-- MVNOs: none verified.
+- MVNOs: hu-one: DIGI Mobil (quote above). Telekom, Yettel: none verified.
 
 ## Slovenia (all four: basis used, complete false) - AKOS deployment report
 AKOS "Pokritost s storitvami mobilnih tehnologij" 24.6.2025 (Feb 2025 data) https://www.akos-rs.si/fileadmin/user_upload/dokumenti/Raziskave__analize__porocila_in_statistika/RF_Spekter/Pokritost_s_storitvami_mobilnih_tehnologij_v_februarju_2025.pdf, and the July 2023 edition (…/Radijski_spekter/Novice_2024/Pokritost_s_storitvami_mobilnih_tehnologij_julija_2023_pop_cistopis.pdf). The AKOS 2021 auction pages (arhiv.akos-rs.si) were unreachable, so no per-operator licence table: basis used (regulator deployment report), complete false.
@@ -75,7 +78,8 @@ https://hakom.hr/en/hakom-dodijelio-spektar-za-mreze-pokretnih-komunikacija/1050
 - 3600: Telemach 3600-3700, HT 3480-3600, A1 3700-3800 (n78).
 - 26 GHz: EOLO 27.3-27.5, Telemach 26.5-26.7, HT 26.9-27.3, A1 26.7-26.9 -> n258 (all three; EOLO is not a mobile operator). Regional 3600 holders (Digicom, Markoja) are ISPs, not included.
 - All three: lte 1,3,7,8,20,28; nr 1,3,7,8,20,28,78,258.
-- Succession (search results only, not fetched, so not in YAML): Tele2 Hrvatska renamed Telemach Hrvatska Nov 2020; VIPnet is now A1 Hrvatska.
+- 2600 duplex: the HAKOM table gives "2x25", "2x25", "2x20" MHz, i.e. paired = FDD by definition; accepted as a stated duplex -> B7/n7. No unpaired 2600 row.
+- Succession: the HAKOM page already uses the current names (A1 Hrvatska, Hrvatski Telekom, Telemach Hrvatska); no succession claimed.
 - MVNOs: none verified (bonbon.hr/simpa.hr are HT brands, no network sentence; tomato.hr empty).
 
 ## Nulls / unreachable

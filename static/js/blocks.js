@@ -163,7 +163,7 @@ export function verdict(row, pick, s, labels, now = null) {
     `<p class="fine">${row.checked ? `Price checked ${stamp(row.checked)}. ` : ""}Affiliate link: we may earn a commission; it never changes the order.</p></section>`;
 }
 
-/** '2026-11-12' -> '12 Nov' (blocks.py short_day, pages/phone.py _day). */
+/** '2026-11-12' -> '12 Nov' (blocks.py short_day). */
 export const shortDay = (iso) => (iso ? `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}` : "");
 
 /** The price trend under the details panel (view.js priceTrend numbers; null: ""): the 30-day range with a marker, where
@@ -175,7 +175,7 @@ export function priceTrendBlock(t, s, histHref) {
   if (t.short) return open + (t.recent_gap ? '<p class="tshort">Not enough recent price history for this version and memory to judge yet.</p>'
     : `<p class="tshort">Price history for this version and memory starts on ${shortDay(t.first_day)}, too short to judge yet.</p>`) + link;
   const ap = t.approx ? "≈" : "", m = (v) => ap + money(v, s.cur);
-  const same = t.high === t.low, from = shortDay(t.first_day);
+  const same = t.high === t.low, from = shortDay(t.since_day);
   let out = open;
   if (same) out += `<p class="trange">Same price ${t.full_window ? "for 30 days" : "since " + from}</p>`;
   else {
@@ -184,7 +184,7 @@ export function priceTrendBlock(t, s, histHref) {
     out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
       : `<p class="tpos">${m(t.now - t.low)} above its ${t.full_window ? "30-day low" : "low since " + from} (${m(t.low)} on ${shortDay(t.low_day)} at ${esc(t.low_store)})</p>`;
     if (t.change_pct !== null && t.change_pct !== undefined) {
-      const c = t.change_pct, span = t.since_first ? `since first listed (${from})` : null;
+      const c = t.change_pct, span = t.since_first ? `since first listed (${shortDay(t.first_day)})` : t.full_window ? null : `since ${from}`;
       out += Math.abs(c) < 1 ? `<p class="tmove">About the same ${span || "over the last 30 days"}</p>`
         : `<p class="tmove">${c > 0 ? "Up" : "Down"} ${fixed(Math.abs(c), 0)}% ${span || "in the last 30 days"}</p>`;
     }

@@ -102,6 +102,7 @@ export function dailyBest(inputs, trend, edition, storage, tax, s, today) {
 // is today-29..today, the low (and the high) is the most recent day at the window minimum (maximum). Every total is
 // first rounded to whole units, as it is shown, so what the block compares is what it displays.
 // short: fewer than 7 days with data in the window; recent_gap: ... and the history starts before the window.
+// since_day: the first day with data inside the window; full_window: that is the window's first day.
 // The 7-day change compares with the latest day 7 to 14 days back. Whole days, UTC.
 export function priceTrend(days, nowRow, today) {
   if (!nowRow) return null;
@@ -119,7 +120,7 @@ export function priceTrend(days, nowRow, today) {
   const back = pts.filter((d) => shift(today, 14) <= d.day && d.day <= shift(today, 7));
   const short = new Set(win.map((d) => d.day)).size < 7;
   return {
-    short, recent_gap: short && firstDay < start, first_day: firstDay, window_start: start, full_window: firstDay <= start,
+    short, recent_gap: short && firstDay < start, first_day: firstDay, window_start: start, since_day: base.day, full_window: base.day === start,
     now, low, low_day: lowPt.day, low_store: lowPt.store, high, high_approx: Boolean(highPt.approx),
     is_low: now <= low, change_pct: base.day !== today ? pct(now, base.total) : null,
     since_first: base.day === firstDay, change_7d: back.length ? pct(now, back.at(-1).total) : null,

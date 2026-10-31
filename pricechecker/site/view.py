@@ -128,6 +128,7 @@ def price_trend(days: list[dict], now_row: dict | None, today: str) -> dict | No
     the window is today-29..today, the low (and the high) is the most recent day at the window minimum (maximum).
     Every total is first rounded to whole units, as it is shown, so what the block compares is what it displays.
     short: fewer than 7 days with data in the window; recent_gap: ... and the history starts before the window.
+    since_day: the first day with data inside the window; full_window: that is the window's first day.
     The 7-day change compares with the latest day 7 to 14 days back. Whole days, UTC."""
     if now_row is None:
         return None
@@ -145,7 +146,7 @@ def price_trend(days: list[dict], now_row: dict | None, today: str) -> dict | No
     back = [d for d in pts if _shift(today, 14) <= d["day"] <= _shift(today, 7)]
     short = len({d["day"] for d in win}) < 7
     return {"short": short, "recent_gap": short and first_day < start, "first_day": first_day, "window_start": start,
-            "full_window": first_day <= start, "now": now, "low": low, "low_day": low_pt["day"], "low_store": low_pt["store"],
+            "since_day": base["day"], "full_window": base["day"] == start, "now": now, "low": low, "low_day": low_pt["day"], "low_store": low_pt["store"],
             "high": high, "high_approx": bool(high_pt["approx"]), "is_low": now <= low,
             "change_pct": _pct(now, base["total"]) if base["day"] != today else None,
             "since_first": base["day"] == first_day,

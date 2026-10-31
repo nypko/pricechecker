@@ -25,13 +25,14 @@ A block `price_trend` directly under the details panel (`#pick-panel`), for the 
   window's low to its high with a marker at today's price, labelled "€2,736 · low €2,652 – high €2,901".
   The high gets "≈" when the high day's total is approximate. Totals are compared as displayed (whole units, half up),
   so two prices that show the same are the same. When low = high there is no bar, no position line and no trend line:
-  only "Same price for 30 days" (history reaches back to the window's start) or "Same price since <date>".
+  only "Same price for 30 days" (data on the window's first day) or "Same price since <since_day>" (since_day = the first day
+  with data inside the window).
 - **Position line**:
-  - today is the window's low → "Lowest price in 30 days" (or "Lowest price since <date>" when the window is shorter);
-  - else → "€84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen)" ("…above its low since <date>…" when
-    shorter).
+  - today is the window's low → "Lowest price in 30 days" (or "Lowest price since <since_day>" when there is no data on the window's first day);
+  - else → "€84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen)" ("…above its low since <since_day>…" when
+    there is no data on the window's first day).
 - **Trend line** (only with at least 7 days of history): "Down 9% since first listed (15 Oct)" when the first day is
-  inside the window, else "Down 3% in the last 30 days"; plus "Up 4% in the last 7 days" when the 7-day move (against the
+  inside the window, else "Down 3% since <since_day>" when the window's first day has no data, else "Down 3% in the last 30 days"; plus "Up 4% in the last 7 days" when the 7-day move (against the
   latest day 7 to 14 days back) is at least 2% in either direction. Moves under 1% are "about the same".
 - **Too little history**: under 7 days with a price inside the window (today included) →
   - history starts inside the window: only "Price history for this version and memory starts on 25 Oct, too short to
@@ -62,7 +63,7 @@ A block `price_trend` directly under the details panel (`#pick-panel`), for the 
 
 - `daily_best(inputs, trend, edition, storage, tax_cfg, s, today)` and `price_trend(days, now_row, today)` in
   pricechecker/site/view.py, `dailyBest` / `priceTrend` in static/js/view.js: pure, line-for-line mirrors. `price_trend`
-  returns `{short, recent_gap, first_day, window_start, full_window, now, low, low_day, low_store, high, high_approx,
+  returns `{short, recent_gap, first_day, window_start, since_day, full_window, now, low, low_day, low_store, high, high_approx,
   is_low, change_pct, since_first, change_7d, approx}` or None (no current price). Parity-tested (synthetic cases, not
   live).
 - Block `price_trend` = Jinja macro in templates/_d/blocks.html + function in static/js/blocks.js, text+structure

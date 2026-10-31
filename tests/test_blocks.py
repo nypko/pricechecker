@@ -635,7 +635,7 @@ def test_price_box_means_link_follows_the_brand(fixture_doc, tax_file, tax, tmp_
 # --- the price trend block (spec 2026-10-31 §3): Jinja macro and JS twin, with the exact copy ---
 
 def _trend(**kw):
-    t = {"short": False, "first_day": "2026-09-01", "window_start": "2026-10-02", "full_window": True, "now": 2736, "low": 2652,
+    t = {"short": False, "first_day": "2026-09-01", "window_start": "2026-10-02", "since_day": "2026-10-02", "full_window": True, "now": 2736, "low": 2652,
          "low_day": "2026-11-12", "low_store": "Trading Shenzhen", "high": 2901, "high_approx": False, "recent_gap": False, "is_low": False, "change_pct": -3.0,
          "since_first": False, "change_7d": 4.0, "approx": False}
     return {**t, **kw}
@@ -653,17 +653,24 @@ TREND_CASES = {
                        "Down 3% in the last 30 days Up 4% in the last 7 days Full price history →"),
     "at the low": (_trend(now=2652, is_low=True, change_7d=1.9, change_pct=-8.2), "€2,652 · low €2,652 – high €2,901 Lowest price in 30 days "
                    "Down 8% in the last 30 days Full price history →"),
-    "since first": (_trend(full_window=False, first_day="2026-10-15", since_first=True, change_pct=-9.0, change_7d=None),
+    "since first": (_trend(full_window=False, first_day="2026-10-15", since_day="2026-10-15", since_first=True, change_pct=-9.0, change_7d=None),
                     "€2,736 · low €2,652 – high €2,901 €84 above its low since 15 Oct (€2,652 on 12 Nov at Trading Shenzhen) "
                     "Down 9% since first listed (15 Oct) Full price history →"),
-    "not full, at the low": (_trend(full_window=False, first_day="2026-10-15", now=2652, is_low=True, since_first=True, change_pct=0.4, change_7d=-2.5),
+    "not full, at the low": (_trend(full_window=False, first_day="2026-10-15", since_day="2026-10-15", now=2652, is_low=True, since_first=True, change_pct=0.4, change_7d=-2.5),
                              "€2,652 · low €2,652 – high €2,901 Lowest price since 15 Oct About the same since first listed (15 Oct) "
                              "Down 3% in the last 7 days Full price history →"),
     "about the same": (_trend(change_pct=-0.9, change_7d=None), "€2,736 · low €2,652 – high €2,901 €84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen) "
                        "About the same over the last 30 days Full price history →"),
+    "gap, flat since": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-08-12", since_day="2026-10-20", full_window=False),
+                        "Same price since 20 Oct Full price history →"),
+    "gap, at the low": (_trend(full_window=False, first_day="2026-08-12", since_day="2026-10-20", now=2652, is_low=True, change_pct=-5.0, change_7d=None),
+                        "€2,652 · low €2,652 – high €2,901 Lowest price since 20 Oct Down 5% since 20 Oct Full price history →"),
+    "gap, above the low": (_trend(full_window=False, first_day="2026-08-12", since_day="2026-10-20", change_pct=0.4, change_7d=None),
+                           "€2,736 · low €2,652 – high €2,901 €84 above its low since 20 Oct (€2,652 on 12 Nov at Trading Shenzhen) "
+                           "About the same since 20 Oct Full price history →"),
     "too short": (_trend(short=True, first_day="2026-10-28"), "Price history for this version and memory starts on 28 Oct, too short to judge yet. "
                                                               "Full price history →"),
-    "same price since": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", full_window=False),
+    "same price since": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", since_day="2026-10-15", full_window=False),
                          "Same price since 15 Oct Full price history →"),
     "same price 30 days": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=None, first_day="2026-09-01"),
                            "Same price for 30 days Full price history →"),

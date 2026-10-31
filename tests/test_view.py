@@ -332,6 +332,8 @@ _TREND_CASES = {
     "no_day_7_back": (_span(26, [1000, 990, 980, 970, 960, 950]), _NOW, "2026-10-31"),
     "today_replaced": (_span(20, [1000] * 12), _NOW, "2026-10-31"),
     "empty_list": ([], _NOW, "2026-10-31"),
+    "gap_flat": (_days(("2026-08-12", 1000)) + _span(20, [900] * 11), _NOW, "2026-10-31"),
+    "gap_lower": (_days(("2026-08-12", 1000)) + _span(20, [950, 940, 930, 920, 960, 940, 930, 950, 960, 970, 980]), _NOW, "2026-10-31"),
     "no_now": (_span(1, [1000] * 5), None, "2026-10-31"),
 }
 
@@ -367,6 +369,12 @@ def test_price_trend_numbers():
     assert t("week_within_14")["change_7d"] == -5.3             # 950 on 10-23, the latest day at least 7 days back
     assert (t("high_approx")["high"], t("high_approx")["high_approx"], t("high_approx")["approx"]) == (1100, True, False)
     assert t("flat")["high_approx"] is False
+    for k in ("gap_flat", "gap_lower"):              # one day in August, away, back from 20 Oct: 12 days in the window, not short
+        x = t(k)
+        assert (x["short"], x["full_window"], x["since_day"], x["first_day"], x["since_first"]) == (False, False, "2026-10-20", "2026-08-12", False)
+    assert (t("gap_flat")["low"], t("gap_flat")["high"]) == (900, 900)
+    assert (t("gap_lower")["is_low"], t("gap_lower")["change_pct"]) == (True, -5.3)
+    assert (a["since_day"], t("new_low_12_days")["since_day"], g["since_day"]) == ("2026-10-02", "2026-10-20", "2026-10-02")
     r = view.price_trend(_TREND_CASES["today_replaced"][0] + _days(("2026-10-31", 5)), _NOW, "2026-10-31")
     assert r["low"] == 900 and r["low_day"] == "2026-10-31"          # now replaces the list's entry for today
 

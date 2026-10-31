@@ -26,10 +26,10 @@ networks:
       - {url: "https://www.elisa.ee/et/uudised/elisa-5g-vork-levib-ule-eesti-ja-katab-juba-tanaseks-pool-rahvastikust", kind: carrier, checked: 2026-10-31}
   - id: ee-tele2
     name: Tele2 Eesti
-    lte: [1, 3, 8, 20, 28, 40]
-    nr: [1, 3, 8, 20, 28, 40, 78, 258]
+    lte: [1, 3, 8, 20, 28]
+    nr: [1, 28, 40, 78, 258]
     basis: licensed
-    complete: true
+    complete: false
     mvnos: []
     sources:
       - {url: "https://tele2.ee/abi/tele2-levi-ja-seadmetugi/tele2-levi-ja-tehniline-vorguinfo/tehniline-vorguinfo", kind: carrier, checked: 2026-10-31}

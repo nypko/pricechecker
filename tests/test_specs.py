@@ -63,3 +63,11 @@ def test_every_catalog_brand_has_hosts_and_fields_are_snake_case():
     assert specs.FIELDS["performance"]["top_cpu_speed"] == "Top CPU speed"
     assert specs.FIELDS["connectivity"]["china_model_number"] == "China model number"
     assert tuple(specs.FIELDS) == specs.GROUPS
+
+
+def test_phone_band_missing_from_the_band_table_is_rejected():
+    s = deepcopy(_sheets()["oppo-find-x9-ultra"])
+    s["bands"]["china"]["lte"].append(999)
+    s["bands"]["china"]["nr"].append(998)
+    errs = specs.validate(s)
+    assert any("lte" in e and "999" in e for e in errs) and any("nr" in e and "998" in e for e in errs)

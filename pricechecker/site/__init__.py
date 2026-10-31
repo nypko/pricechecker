@@ -11,7 +11,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from .. import terms
+from .. import carriers, terms
 from . import assets, blocks, cards, context, data_files, headers, offers, seo
 from .charts import _trend
 from .common import (
@@ -90,6 +90,9 @@ def _share_cards(phones: list[dict], ctx: dict) -> None:
 
 def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status: dict | None = None) -> None:
     data = context.load(catalog, stores_cfg, rates_info, terms_status)
+    for cc, doc in carriers.load().items():
+        for nid in carriers.stale(doc, datetime.now().date()):
+            print(f"  carriers: {nid} ({cc}) was last checked over 12 months ago")
     phones = offers.assemble(data)
     env = _env()
     ctx = context.page_context(data, phones)

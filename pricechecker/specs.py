@@ -13,6 +13,8 @@ from urllib.parse import urlparse
 
 import yaml
 
+from .carriers import band_table
+
 SPECS_DIR = Path("config/specs")
 BANDS_FILE = Path("config/region_bands.yaml")
 CATALOG_FILE = Path("config/catalog.yaml")
@@ -133,6 +135,9 @@ def validate(sheet: dict, brand: str | None = None) -> list[str]:
             xs = (b or {}).get(kind)
             if not isinstance(xs, list) or not all(isinstance(x, int) for x in xs):
                 out.append(f"bands.{ver}.{kind}: list of band numbers")
+            else:
+                known = band_table()[kind]
+                out += [f"bands.{ver}.{kind}: band {x} is not in config/bands.yaml" for x in xs if x not in known]
     return out
 
 

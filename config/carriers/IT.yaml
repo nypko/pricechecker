@@ -1,0 +1,42 @@
+country: IT
+networks:
+  - id: it-tim
+    name: TIM
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.agcom.it/sites/default/files/media/allegato/2025/Allegato_A_Delibera_154-25-CONS.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.agcom.it/sites/default/files/migration/attachment/Allegato%2021-10-2021.pdf", kind: regulator, checked: 2026-10-31}
+  - id: it-vodafone
+    name: Vodafone
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.agcom.it/sites/default/files/media/allegato/2025/Allegato_A_Delibera_154-25-CONS.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.agcom.it/sites/default/files/migration/attachment/Allegato%2021-10-2021.pdf", kind: regulator, checked: 2026-10-31}
+  - id: it-windtre
+    name: WindTre
+    lte: [1, 3, 7, 8, 20, 38]
+    nr: [1, 3, 7, 8, 20, 38, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.agcom.it/sites/default/files/media/allegato/2025/Allegato_A_Delibera_154-25-CONS.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.agcom.it/sites/default/files/migration/attachment/Allegato%2021-10-2021.pdf", kind: regulator, checked: 2026-10-31}
+  - id: it-iliad
+    name: Iliad
+    lte: [1, 3, 7, 8, 28]
+    nr: [1, 3, 7, 8, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.agcom.it/sites/default/files/media/allegato/2025/Allegato_A_Delibera_154-25-CONS.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.agcom.it/sites/default/files/migration/attachment/Allegato%2021-10-2021.pdf", kind: regulator, checked: 2026-10-31}

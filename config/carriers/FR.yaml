@@ -1,0 +1,45 @@
+country: FR
+networks:
+  - id: fr-orange
+    name: Orange
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-mobiles/la-couverture-mobile-en-metropole/le-patrimoine-de-frequences-des-operateurs-mobiles.html", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.arcep.fr/fileadmin/reprise/dossiers/frequences/attributions-frequences-operateurs-mobiles-metropole-novembre2020.pdf", kind: regulator, checked: 2026-10-31}
+  - id: fr-sfr
+    name: SFR
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: [RED by SFR]
+    sources:
+      - {url: "https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-mobiles/la-couverture-mobile-en-metropole/le-patrimoine-de-frequences-des-operateurs-mobiles.html", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.arcep.fr/fileadmin/reprise/dossiers/frequences/attributions-frequences-operateurs-mobiles-metropole-novembre2020.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.red-by-sfr.fr/", kind: brand, checked: 2026-10-31}
+  - id: fr-bouygues
+    name: Bouygues Telecom
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: [NRJ Mobile, Lycamobile]
+    sources:
+      - {url: "https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-mobiles/la-couverture-mobile-en-metropole/le-patrimoine-de-frequences-des-operateurs-mobiles.html", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.arcep.fr/fileadmin/reprise/dossiers/frequences/attributions-frequences-operateurs-mobiles-metropole-novembre2020.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.nrjmobile.fr/", kind: brand, checked: 2026-10-31}
+      - {url: "https://www.lycamobile.fr/fr/", kind: brand, checked: 2026-10-31}
+  - id: fr-free
+    name: Free Mobile
+    lte: [1, 3, 7, 8, 28]
+    nr: [1, 3, 7, 8, 28, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-mobiles/la-couverture-mobile-en-metropole/le-patrimoine-de-frequences-des-operateurs-mobiles.html", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.arcep.fr/fileadmin/reprise/dossiers/frequences/attributions-frequences-operateurs-mobiles-metropole-novembre2020.pdf", kind: regulator, checked: 2026-10-31}

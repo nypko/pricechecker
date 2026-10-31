@@ -26,6 +26,7 @@ pages or a regulator deployment report say it **uses** it. A licence held but st
 - `complete: true` only when a source gives the full list (a regulator licence table does); a list built from
   scattered mentions (a 5G launch page naming 3.5 GHz) is `complete: false`. `licensed` needs a `regulator` source;
   `complete: true` needs both lists filled.
+- Supplementary downlink bands (1400/1500 MHz: B32, n75, n76) are listed only when a source says they are used; leaving them out does not make a list incomplete.
 Prefer a regulator, then the carrier's own page, then the phone brand's page. Wikipedia may point you to a source but
 a network with only `other` sources fails validation. Every source needs an https url and the date you read it.
 Networks not checked for 12 months are logged in the build.

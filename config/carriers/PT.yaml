@@ -1,0 +1,38 @@
+country: PT
+networks:
+  - id: pt-meo
+    name: MEO
+    lte: null
+    nr: null
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.meo.pt/", kind: carrier, checked: 2026-10-31}
+  - id: pt-nos
+    name: NOS
+    lte: [3, 20]
+    nr: null
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.nos.pt/en/institucional/wholesale/network", kind: carrier, checked: 2026-10-31}
+  - id: pt-vodafone
+    name: Vodafone
+    lte: null
+    nr: null
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.vodafone.pt/en/press-releases/2021/10/vodafone-portugal-acquires-spectrum-to-ensure-launch-of-5g-services.html", kind: carrier, checked: 2026-10-31}
+  - id: pt-digi
+    name: DIGI
+    lte: null
+    nr: null
+    basis: used
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.digi.pt/", kind: carrier, checked: 2026-10-31}

@@ -1,0 +1,31 @@
+country: MT
+networks:
+  - id: mt-go
+    name: GO
+    lte: [1, 3, 7, 8, 20]
+    nr: [1, 3, 7, 8, 20, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.mca.org.mt/regulatory/authorizations_licensing/spectrum-licensing", kind: regulator, checked: 2026-10-31}
+      - {url: "https://mca.org.mt/sites/default/files/pageattachments/04052018GO_licence_2500MHz_rev.pdf", kind: regulator, checked: 2026-10-31}
+  - id: mt-epic
+    name: Epic
+    lte: [1, 3, 7, 8, 20, 38]
+    nr: [1, 3, 7, 8, 20, 38, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.mca.org.mt/regulatory/authorizations_licensing/spectrum-licensing", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.mca.org.mt/sites/default/files/pageattachments/2500MHz_Licence_Epic_2020-11-17.pdf", kind: regulator, checked: 2026-10-31}
+  - id: mt-melita
+    name: Melita
+    lte: [1, 8, 20]
+    nr: [1, 8, 20, 78]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.mca.org.mt/regulatory/authorizations_licensing/spectrum-licensing", kind: regulator, checked: 2026-10-31}

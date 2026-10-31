@@ -71,8 +71,8 @@ assert.equal(focusSelector(null), null);
   const tax = { EU: { rate_pct: 0 } };
   const offer = (label, ed, st, eur) => ({ store_label: label, edition: ed, storage: st, available: true, money: { eur, gbp: eur * 0.8 },
     pay: { card: 0 }, ship: { EU: { eur: 0, gbp: 0 } }, duties: { EU: true }, checked: "2026-10-30T11:00:00Z" });
-  const days = Array.from({ length: 30 }, (_, i) => `2026-10-${String(i + 1).padStart(2, "0")}`);
-  const flat = (ratio) => days.map((d) => [d, ratio]), fall = days.map((d) => [d, d === "2026-10-30" ? 1 : 1.2]);
+  // change points: one point for a flat listing, a fall on the last day
+  const ser = (...pts) => ({ cur: "eur", pts }), flat = (ratio) => ser(["2026-10-01", ratio]), fall = ser(["2026-10-01", 1.2], ["2026-10-30", 1]);
   const doc = {
     offers: [offer("Shop", "china", "12/256", 1000), offer("Shop", "global", "12/256", 1200), offer("Shop", "china", "16/512", 1500)],
     trend: { china: { "12/256": { Shop: fall }, "16/512": { Shop: flat(1) } }, global: { "12/256": { Shop: flat(1) } } },
@@ -82,9 +82,9 @@ assert.equal(focusSelector(null), null);
   const text = (h) => h.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   const a = html(eur, "china", "12/256");
   assert.match(text(a), /€1,000 · low €1,000 – high €1,200 Lowest price in 30 days Down 17% since first listed \(1 Oct\)/);
-  assert.match(text(html(eur, "global", "12/256")), /Same price since 1 Oct/);                      // the other version's series
-  assert.match(text(html(eur, "china", "16/512")), /Same price since 1 Oct/);                      // the other memory's series
-  assert.match(text(html(gbp, "china", "12/256")), /£800 · low £800 – high £960/);                 // the visitor's currency
+  assert.match(text(html(eur, "global", "12/256")), /Same price for 30 days/);                      // the other version's series
+  assert.match(text(html(eur, "china", "16/512")), /Same price for 30 days/);                      // the other memory's series
+  assert.match(text(html(gbp, "china", "12/256")), /£800 · low £800 – high ≈£960/);                 // the visitor's currency; a past day in GBP is an estimate (the offer is in EUR)
   assert.equal(html(eur, "global", "16/512"), "");                                                 // no current price at the pick: empty
   assert.equal(trendHtml(doc, tax, viewRows(doc.offers, tax, eur), eur, { ed: "china", mem: "12/256" }, null, "../history/x").includes("price_trend"), true);
 }

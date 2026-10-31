@@ -67,19 +67,41 @@ def best_of(rows: list[dict], edition: str, storage: str | None = None) -> dict 
                  and (storage is None or r["storage"] == storage)), None)
 
 
-def daily_best(inputs: list[dict], trend: dict, edition: str, storage: str, tax_cfg: dict, s: Settings) -> list[dict]:
-    """The best delivered price of the edition/storage on each day with a point: a point's store re-priced as its current
-    offer with the point's ratio applied, ranked by rows/best_of so delivery, payment and staleness rules are today's."""
+def _expand(points: list, today: str) -> dict[str, float]:
+    """A listing's change points [[day, ratio | None]] as {day: ratio} for every day from its first point to `today`:
+    each day carries the last point's ratio forward, None (out of stock) gives no entry."""
+    out: dict[str, float] = {}
+    if not points:
+        return out
+    day, last, i = points[0][0], None, 0
+    while day <= today:
+        while i < len(points) and points[i][0] <= day:
+            last = points[i][1]
+            i += 1
+        if last is not None:
+            out[day] = last
+        day = _shift(day, -1)
+    return out
+
+
+def daily_best(inputs: list[dict], trend: dict, edition: str, storage: str, tax_cfg: dict, s: Settings, today: str) -> list[dict]:
+    """The best delivered price of the edition/storage on each day up to `today` that some listing had a price: each
+    listing's change points carried forward day by day, its store re-priced as its current offer with the day's ratio
+    applied, ranked by rows/best_of so delivery, payment and staleness rules are today's."""
     series = ((trend.get(edition) or {}).get(storage)) or {}
     days: dict[str, list[dict]] = {}
-    for label, points in series.items():
+    for label, ser in series.items():
         cur = next((o for o in inputs if o.get("store_label") == label and o.get("edition") == edition
                     and o.get("storage") == storage), None)
         if cur is None:
             continue
-        for day, ratio in points:
-            # approximation: history has only the native price, so every currency is scaled by the same ratio
+        for day, ratio in _expand(ser["pts"], today).items():
+            # approximation: history has only the native price, so every currency is scaled by the same ratio and
+            # the amounts in the other currencies are estimates for a past day
             money = {k: (v * ratio if k in _CUR else v) for k, v in (cur.get("money") or {}).items()}
+            for k in _CUR:
+                if k != ser.get("cur") and k in money:
+                    money[k + "_approx"] = 1
             days.setdefault(day, []).append({**cur, "money": money, "available": True})
     out = []
     for day in sorted(days):
@@ -97,26 +119,37 @@ def _pct(now: float, base: float) -> float:
     return math.floor((now - base) / base * 1000 + 0.5) / 10      # half up, as the JS mirror does
 
 
+def _whole(v: float) -> int:
+    return math.floor(v + 0.5)       # whole currency units, half up: what money() displays
+
+
 def price_trend(days: list[dict], now_row: dict | None, today: str) -> dict | None:
     """The numbers behind the 30-day trend block: today's point is now_row (it replaces any list entry for today),
-    the window is today-29..today, the low is the most recent day at the window minimum. Whole days, UTC."""
+    the window is today-29..today, the low (and the high) is the most recent day at the window minimum (maximum).
+    Every total is first rounded to whole units, as it is shown, so what the block compares is what it displays.
+    short: fewer than 7 days with data in the window; recent_gap: ... and the history starts before the window.
+    The 7-day change compares with the latest day 7 to 14 days back. Whole days, UTC."""
     if now_row is None:
         return None
-    pts = [d for d in days if d["day"] < today] + [{"day": today, "total": now_row["total"], "store": now_row["store"],
-                                                    "approx": now_row["approx"]}]
+    pts = [{**d, "total": _whole(d["total"])} for d in days if d["day"] < today] + [
+        {"day": today, "total": _whole(now_row["total"]), "store": now_row["store"], "approx": now_row["approx"]}]
     start = _shift(today, 29)
     win = [d for d in pts if d["day"] >= start]
     first_day = pts[0]["day"]
+    now = pts[-1]["total"]
     low = min(d["total"] for d in win)
     low_pt = [d for d in win if d["total"] == low][-1]
+    high = max(d["total"] for d in win)
+    high_pt = [d for d in win if d["total"] == high][-1]
     base = win[0]
-    back = [d for d in pts if d["day"] <= _shift(today, 7)]
-    return {"short": len(pts) < 7, "first_day": first_day, "window_start": start, "full_window": first_day <= start,
-            "now": now_row["total"], "low": low, "low_day": low_pt["day"], "low_store": low_pt["store"],
-            "high": max(d["total"] for d in win), "is_low": now_row["total"] <= low,
-            "change_pct": _pct(now_row["total"], base["total"]) if base["day"] != today else None,
+    back = [d for d in pts if _shift(today, 14) <= d["day"] <= _shift(today, 7)]
+    short = len({d["day"] for d in win}) < 7
+    return {"short": short, "recent_gap": short and first_day < start, "first_day": first_day, "window_start": start,
+            "full_window": first_day <= start, "now": now, "low": low, "low_day": low_pt["day"], "low_store": low_pt["store"],
+            "high": high, "high_approx": bool(high_pt["approx"]), "is_low": now <= low,
+            "change_pct": _pct(now, base["total"]) if base["day"] != today else None,
             "since_first": base["day"] == first_day,
-            "change_7d": _pct(now_row["total"], back[-1]["total"]) if back else None,
+            "change_7d": _pct(now, back[-1]["total"]) if back else None,
             "approx": bool(now_row["approx"] or low_pt["approx"])}
 
 

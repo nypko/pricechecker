@@ -60,8 +60,9 @@ export function focusSelector(el) {
  *  settings, and the same best row the details panel shows; "" when the pick has no current price. */
 export function trendHtml(doc, tax, rows, s, pick, now, histHref) {
   const best = bestOf(rows, pick.ed, pick.mem), row = best && best.state === "ok" ? best : null;
-  const days = row ? dailyBest(doc.offers, doc.trend, pick.ed, pick.mem, tax, s) : [];
-  return B.priceTrendBlock(row ? priceTrend(days, row, (now || new Date().toISOString()).slice(0, 10)) : null, s, histHref);
+  const today = (now || new Date().toISOString()).slice(0, 10);
+  const days = row ? dailyBest(doc.offers, doc.trend, pick.ed, pick.mem, tax, s, today) : [];
+  return B.priceTrendBlock(row ? priceTrend(days, row, today) : null, s, histHref);
 }
 
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });

@@ -6,9 +6,9 @@ from datetime import UTC, datetime
 from jinja2 import Environment
 
 from ... import derive, specs
-from ..blocks import PLACE, ledger_rows
+from ..blocks import PLACE, ledger_rows, short_day
 from ..context import SiteData
-from ..data_files import offer_inputs, trend_series, trend_since
+from ..data_files import offer_inputs, trend_series
 from ..view import DEFAULT, best_of, daily_best, default_pick, price_trend
 from ..view import rows as view_rows
 
@@ -30,10 +30,6 @@ def _missing(p: dict, e: str, labels: dict) -> str:
     return p["google"].get("no_global") or f"No {labels['global']} version so far: {p['brand']} sells this phone in {'China' if labels['china'] == 'China' else 'Asia'} only"
 
 
-def _day(d: str) -> str:
-    return datetime.strptime(d, "%Y-%m-%d").strftime("%-d %b")
-
-
 def store_lines_svg(lines: dict[str, list]) -> dict | None:
     """{store label: [(day, EUR)]} -> what templates/_d/history_svg.html draws: one polyline per store (cheapest last
     price first, colours --s1..--s6), a dot at each line's last price, and the first day. None without any point."""
@@ -53,7 +49,7 @@ def store_lines_svg(lines: dict[str, list]) -> dict | None:
         pts = lines[k]
         out.append({"name": k, "n": i % 6 + 1, "points": " ".join(f"{x(d):.1f},{y(v):.1f}" for d, v in pts),
                     "cx": f"{x(pts[-1][0]):.1f}", "cy": f"{y(pts[-1][1]):.1f}", "last": pts[-1][1]})
-    return {"w": W, "h": H, "stores": out, "since": _day(days[0]), "days": len(days)}
+    return {"w": W, "h": H, "stores": out, "since": short_day(days[0]), "days": len(days)}
 
 
 def buyers_text(b: dict | None, region: str) -> str:
@@ -90,8 +86,8 @@ def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None
     if not best or best["state"] != "ok":
         return None
     today = (ctx.get("updated") or datetime.now(UTC).strftime("%Y-%m-%d"))[:10]
-    series = trend_series(data.rows, p["id"], p["offers"], trend_since(today), data.rates)
-    days = daily_best([offer_inputs(o) for o in p["offers"]], series, ed, mem, data.tax_cfg, DEFAULT)
+    series = trend_series(data.rows_all, p["id"], p["offers"], data.rates)
+    days = daily_best([offer_inputs(o) for o in p["offers"]], series, ed, mem, data.tax_cfg, DEFAULT, today)
     return price_trend(days, best, today)
 
 

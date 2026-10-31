@@ -172,21 +172,22 @@ export function priceTrendBlock(t, s, histHref) {
   if (!t) return "";
   const open = '<section class="trend" data-block="price_trend" aria-label="Recent price">';
   const link = `<p class="tlink"><a href="${esc(histHref)}">Full price history →</a></p></section>`;
-  if (t.short) return open + `<p class="tshort">Price history for this version and memory starts on ${shortDay(t.first_day)}, too short to judge yet.</p>` + link;
+  if (t.short) return open + (t.recent_gap ? '<p class="tshort">Not enough recent price history for this version and memory to judge yet.</p>'
+    : `<p class="tshort">Price history for this version and memory starts on ${shortDay(t.first_day)}, too short to judge yet.</p>`) + link;
   const ap = t.approx ? "≈" : "", m = (v) => ap + money(v, s.cur);
   const same = t.high === t.low, from = shortDay(t.first_day);
   let out = open;
-  if (same) out += `<p class="trange">Same price since ${from}</p>`;
+  if (same) out += `<p class="trange">Same price ${t.full_window ? "for 30 days" : "since " + from}</p>`;
   else {
     const at = Math.floor(Math.min(Math.max(((t.now - t.low) / (t.high - t.low)) * 100, 0), 100) + 0.5);
-    out += `<p class="trange">${m(t.now)} · low ${m(t.low)} – high ${m(t.high)}</p><div class="tbar" aria-hidden="true"><i style="--at:${at}%"></i></div>`;
-  }
-  if (!same) out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
-    : `<p class="tpos">${m(t.now - t.low)} above its ${t.full_window ? "30-day low" : "low since " + from} (${m(t.low)} on ${shortDay(t.low_day)} at ${esc(t.low_store)})</p>`;
-  if (t.change_pct !== null && t.change_pct !== undefined) {
-    const c = t.change_pct, span = t.since_first ? `since first listed (${from})` : null;
-    out += Math.abs(c) < 1 ? `<p class="tmove">About the same ${span || "over the last 30 days"}</p>`
-      : `<p class="tmove">${c > 0 ? "Up" : "Down"} ${fixed(Math.abs(c), 0)}% ${span || "in the last 30 days"}</p>`;
+    out += `<p class="trange">${m(t.now)} · low ${m(t.low)} – high ${(t.high_approx ? "≈" : "") + money(t.high, s.cur)}</p><div class="tbar" aria-hidden="true"><i style="--at:${at}%"></i></div>`;
+    out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
+      : `<p class="tpos">${m(t.now - t.low)} above its ${t.full_window ? "30-day low" : "low since " + from} (${m(t.low)} on ${shortDay(t.low_day)} at ${esc(t.low_store)})</p>`;
+    if (t.change_pct !== null && t.change_pct !== undefined) {
+      const c = t.change_pct, span = t.since_first ? `since first listed (${from})` : null;
+      out += Math.abs(c) < 1 ? `<p class="tmove">About the same ${span || "over the last 30 days"}</p>`
+        : `<p class="tmove">${c > 0 ? "Up" : "Down"} ${fixed(Math.abs(c), 0)}% ${span || "in the last 30 days"}</p>`;
+    }
   }
   const w = t.change_7d;
   if (w !== null && w !== undefined && Math.abs(w) >= 2) out += `<p class="tweek">${w > 0 ? "Up" : "Down"} ${fixed(Math.abs(w), 0)}% in the last 7 days</p>`;

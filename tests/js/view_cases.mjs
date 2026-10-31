@@ -13,7 +13,7 @@ const tax = JSON.parse(readFileSync(arg("--tax"), "utf8"));
 const [region, area, pay, cur] = (arg("--settings") ?? "EU,,card,eur").split(",");
 if (process.argv.includes("--daily")) {   // --daily edition,storage: the doc's trend re-priced per day
   const [ed, mem] = arg("--daily").split(",");
-  console.log(JSON.stringify(dailyBest(doc.offers, doc.trend, ed, mem, tax, { region, area, pay, cur })));
+  console.log(JSON.stringify(dailyBest(doc.offers, doc.trend, ed, mem, tax, { region, area, pay, cur }, arg("--today"))));
   process.exit(0);
 }
 const rs = rows(doc.offers, tax, { region, area, pay, cur });

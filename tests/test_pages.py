@@ -1108,7 +1108,7 @@ def _trend_site(sold_out=False):
     p["offers"] = [{**shop, "store": "settled", "currency": "EUR", "price": 1000.0, "available": not sold_out}]
     rows = [{"time": f"{d}T08:00:00Z", "store": "settled", "model_id": p["id"], "edition": "china", "storage": "12/256", "price": v,
              "currency": "EUR", "available": True} for d, v in [(f"2026-10-{n:02d}", 1050.0 if n < 20 else 1000.0) for n in range(1, 25)]]
-    data = dataclasses.replace(data, rows=rows)
+    data = dataclasses.replace(data, rows=rows, rows_all=rows)
     ctx = context.page_context(data, [p])
     ctx["updated"] = "2026-10-30T12:00:00Z"
     return phone.render(_env(), data, ctx, [p])[f'phones/{p["slug"]}.html'], p

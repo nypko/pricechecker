@@ -140,17 +140,21 @@ def test_older_drops_are_real_drops_outside_this_week_latest_first():
 
 
 
-def test_listing_days_carries_state_and_skips_sold_out():
-    rows = [row("2026-10-01T00:00:00Z", 1000), row("2026-10-02T00:00:00Z", 5, store="b"),
-            row("2026-10-03T00:00:00Z", 1, avail=False), row("2026-10-05T00:00:00Z", 950)]
-    days = derive.listing_days(rows, "m", "2026-10-01")
-    assert days[("s", "china", "12/256")] == [("2026-10-01", 1000), ("2026-10-02", 1000), ("2026-10-05", 950)]
-    assert days[("b", "china", "12/256")] == [("2026-10-02", 5), ("2026-10-03", 5), ("2026-10-05", 5)]
+def test_listing_days_are_change_points_of_the_end_of_day_state():
+    rows = [row("2026-10-01T09:00:00Z", 1000), row("2026-10-01T18:00:00Z", 990),   # the last row of the day wins
+            row("2026-10-02T00:00:00Z", 5, store="b"),
+            row("2026-10-03T00:00:00Z", 990),                                      # unchanged: no point
+            row("2026-10-04T00:00:00Z", 1, avail=False), row("2026-10-06T00:00:00Z", 990),
+            row("2026-10-07T00:00:00Z", 950)]
+    days = derive.listing_days(rows, "m")
+    assert days[("s", "china", "12/256")] == [("2026-10-01", 990), ("2026-10-04", None), ("2026-10-06", 990), ("2026-10-07", 950)]
+    assert days[("b", "china", "12/256")] == [("2026-10-02", 5)]
 
 
-def test_listing_days_since_keeps_earlier_state_and_substores_separate():
-    rows = [row("2026-09-01T00:00:00Z", 1000), row("2026-09-01T00:00:00Z", 900, store="s_eu"),
-            row("2026-10-02T00:00:00Z", 1, store="b")]
-    days = derive.listing_days(rows, "m", "2026-10-01")
-    assert days[("s", "china", "12/256")] == [("2026-10-02", 1000)]       # September's price carried into the window
-    assert days[("s_eu", "china", "12/256")] == [("2026-10-02", 900)]     # not folded into s
+def test_listing_days_cover_all_rows_and_substores_stay_separate():
+    rows = [row("2025-01-01T00:00:00Z", 1000), row("2025-01-01T00:00:00Z", 900, store="s_eu"),
+            row("2026-10-02T00:00:00Z", 1, store="b"), row("2026-10-03T00:00:00Z", 7, avail=False, store="never")]
+    days = derive.listing_days(rows, "m")
+    assert days[("s", "china", "12/256")] == [("2025-01-01", 1000)]       # a stable listing from last year is there
+    assert days[("s_eu", "china", "12/256")] == [("2025-01-01", 900)]     # not folded into s
+    assert ("never", "china", "12/256") not in days                       # sold out from the start: nothing yet

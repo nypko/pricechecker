@@ -99,7 +99,7 @@ def stamp(iso: str | None) -> str:
 
 
 def short_day(iso: str | None) -> str:
-    """'2026-11-12' -> '12 Nov' (the site's short day, pages/phone.py _day)."""
+    """'2026-11-12' -> '12 Nov' (the site's one short-day format)."""
     return f"{int(iso[8:10])} {MON[int(iso[5:7]) - 1]}" if iso else ""
 
 

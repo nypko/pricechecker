@@ -636,7 +636,7 @@ def test_price_box_means_link_follows_the_brand(fixture_doc, tax_file, tax, tmp_
 
 def _trend(**kw):
     t = {"short": False, "first_day": "2026-09-01", "window_start": "2026-10-02", "full_window": True, "now": 2736, "low": 2652,
-         "low_day": "2026-11-12", "low_store": "Trading Shenzhen", "high": 2901, "is_low": False, "change_pct": -3.0,
+         "low_day": "2026-11-12", "low_store": "Trading Shenzhen", "high": 2901, "high_approx": False, "recent_gap": False, "is_low": False, "change_pct": -3.0,
          "since_first": False, "change_7d": 4.0, "approx": False}
     return {**t, **kw}
 
@@ -663,9 +663,17 @@ TREND_CASES = {
                        "About the same over the last 30 days Full price history →"),
     "too short": (_trend(short=True, first_day="2026-10-28"), "Price history for this version and memory starts on 28 Oct, too short to judge yet. "
                                                               "Full price history →"),
-    "same price": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", full_window=False),
-                   "Same price since 15 Oct About the same over the last 30 days Full price history →"),
-    "approx": (_trend(approx=True, change_pct=None, change_7d=None), "≈€2,736 · low ≈€2,652 – high ≈€2,901 ≈€84 above its 30-day low (≈€2,652 on 12 Nov at Trading Shenzhen) Full price history →"),
+    "same price since": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", full_window=False),
+                         "Same price since 15 Oct Full price history →"),
+    "same price 30 days": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=None, first_day="2026-09-01"),
+                           "Same price for 30 days Full price history →"),
+    "same price with a 7-day move": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=-3.0, change_7d=-2.5),
+                                     "Same price for 30 days Down 3% in the last 7 days Full price history →"),
+    "recent gap": (_trend(short=True, recent_gap=True, first_day="2026-08-01"),
+                   "Not enough recent price history for this version and memory to judge yet. Full price history →"),
+    "approx high only": (_trend(high_approx=True, change_pct=None, change_7d=None),
+                         "€2,736 · low €2,652 – high ≈€2,901 €84 above its 30-day low (€2,652 on 12 Nov at Trading Shenzhen) Full price history →"),
+    "approx": (_trend(approx=True, high_approx=True, change_pct=None, change_7d=None), "≈€2,736 · low ≈€2,652 – high ≈€2,901 ≈€84 above its 30-day low (≈€2,652 on 12 Nov at Trading Shenzhen) Full price history →"),
 }
 
 
@@ -679,6 +687,22 @@ def test_price_trend_parity_and_copy(name):
     assert root_of(py) == root_of(js) == "section|trend|price_trend"
     assert structure(py) == structure(js)
     assert 'href="../history/x"' in py
+
+
+@needs_node
+def test_price_trend_copy_from_real_numbers():
+    """view.price_trend -> both renderers: flat after an earlier higher price, a pick back after 35 days, a 7-cent difference."""
+    day = lambda n, t, **k: {"day": f"2026-10-{n:02d}", "total": t, "store": "s", "approx": False, **k}
+    now = {"total": 900.0, "approx": False, "store": "now"}
+    flat = [{"day": "2026-09-15", "total": 1000, "store": "s", "approx": False}] + [day(n, 900) for n in range(2, 31)]
+    away = [{"day": "2026-09-20", "total": 1000, "store": "s", "approx": False}]
+    cents = [day(n, 1000.04 if n % 2 else 999.97) for n in range(2, 31)]
+    for days, row, want in ((flat, now, "Same price for 30 days Full price history →"),
+                            (away, now, "Not enough recent price history for this version and memory to judge yet. Full price history →"),
+                            (cents, {**now, "total": 1000.0}, "Same price for 30 days Full price history →")):
+        t = view.price_trend(days, row, "2026-10-31")
+        assert text(macro("price_trend", t, view.DEFAULT, "../history/x")) == want
+        assert text(_trend_js(t)) == want
 
 
 @needs_node

@@ -1,0 +1,29 @@
+country: EE
+networks:
+  - id: ee-telia
+    name: Telia Eesti
+    lte: [28]
+    nr: [28, 258]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ttja.ee/sites/default/files/documents/2024-04/Side%20aastaraamat%202023.pdf", kind: regulator, checked: 2026-10-31}
+  - id: ee-elisa
+    name: Elisa Eesti
+    lte: [28]
+    nr: [28, 258]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ttja.ee/sites/default/files/documents/2024-04/Side%20aastaraamat%202023.pdf", kind: regulator, checked: 2026-10-31}
+  - id: ee-tele2
+    name: Tele2 Eesti
+    lte: [28]
+    nr: [28, 258]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://www.ttja.ee/sites/default/files/documents/2024-04/Side%20aastaraamat%202023.pdf", kind: regulator, checked: 2026-10-31}

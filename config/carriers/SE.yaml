@@ -1,0 +1,45 @@
+country: SE
+networks:
+  - id: se-telia
+    name: Telia Sweden
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/2025/https://pts.se/radio/auktioner/genomforda-auktioner/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://pts.se/contentassets/54ddcfdbdb4b46ba80ff1e48c9e3901d/konsultation-gallande-1.5--26--och-42-ghz-banden-2025_t.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.mynewsdesk.com/se/telia/pressreleases/telia-sverige-saekrar-fortsatt-tillgaang-till-1800-mhz-bandet-och-tryggar-taeckning-och-kapacitet-foer-framtiden-3417079", kind: carrier, checked: 2026-10-31}
+  - id: se-tele2
+    name: Tele2 Sweden (Net4Mobility)
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/2025/https://pts.se/radio/auktioner/genomforda-auktioner/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://pts.se/contentassets/54ddcfdbdb4b46ba80ff1e48c9e3901d/konsultation-gallande-1.5--26--och-42-ghz-banden-2025_t.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.tele2.com/media/news/2024/tele2-and-telenor-now-cover-over-90-of-swedens-population-with-5g-and-70-with-high-performance-5g/", kind: carrier, checked: 2026-10-31}
+  - id: se-telenor
+    name: Telenor Sweden (Net4Mobility)
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/2025/https://pts.se/radio/auktioner/genomforda-auktioner/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://pts.se/contentassets/54ddcfdbdb4b46ba80ff1e48c9e3901d/konsultation-gallande-1.5--26--och-42-ghz-banden-2025_t.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.tele2.com/media/news/2024/tele2-and-telenor-now-cover-over-90-of-swedens-population-with-5g-and-70-with-high-performance-5g/", kind: carrier, checked: 2026-10-31}
+  - id: se-tre
+    name: Tre Sweden (Hi3G)
+    lte: [1, 3, 7, 8, 20, 38]
+    nr: [1, 3, 7, 8, 20, 38, 78]
+    basis: licensed
+    complete: false
+    mvnos: []
+    sources:
+      - {url: "https://web.archive.org/web/2025/https://pts.se/radio/auktioner/genomforda-auktioner/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://pts.se/contentassets/54ddcfdbdb4b46ba80ff1e48c9e3901d/konsultation-gallande-1.5--26--och-42-ghz-banden-2025_t.pdf", kind: regulator, checked: 2026-10-31}

@@ -1,0 +1,35 @@
+country: IE
+networks:
+  - id: ie-vodafone
+    name: Vodafone Ireland
+    lte: [1, 3, 7, 8, 20, 28, 38]
+    nr: [1, 3, 7, 8, 20, 28, 38, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/mobile-licences-3/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/26-ghz-licences/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/media/2024/12/ComReg-2499.pdf", kind: regulator, checked: 2026-10-31}
+  - id: ie-three
+    name: Three Ireland
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/mobile-licences-3/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/26-ghz-licences/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/media/2024/12/ComReg-2499.pdf", kind: regulator, checked: 2026-10-31}
+  - id: ie-eir
+    name: Eir
+    lte: [1, 3, 8, 20, 28, 40]
+    nr: [1, 3, 8, 20, 28, 40, 78, 258]
+    basis: licensed
+    complete: true
+    mvnos: []
+    sources:
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/mobile-licences-3/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/industry/radio-spectrum/licensing/search-licence-type/26-ghz-licences/", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.comreg.ie/media/2024/12/ComReg-2499.pdf", kind: regulator, checked: 2026-10-31}

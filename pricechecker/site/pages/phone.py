@@ -1,15 +1,15 @@
 """One page per phone: phones/<slug>.html (spec §5.2). Every price on it is a shared block (templates/_d/blocks.html)
 rendered for the default settings from the same offer inputs the browser loads (data_files.offer_inputs over the
 phone's v1 file), so static/js/phone.js re-renders the same blocks from the same data for other settings."""
-from datetime import datetime
+from datetime import UTC, datetime
 
 from jinja2 import Environment
 
 from ... import derive, specs
-from ..blocks import PLACE, ledger_rows
+from ..blocks import PLACE, ledger_rows, short_day
 from ..context import SiteData
-from ..data_files import offer_inputs
-from ..view import DEFAULT, best_of, default_pick
+from ..data_files import offer_inputs, trend_series
+from ..view import DEFAULT, best_of, daily_best, default_pick, price_trend
 from ..view import rows as view_rows
 
 EDS = ("china", "global")   # box order: the China version (red) left, Global (blue) right
@@ -28,10 +28,6 @@ def _missing(p: dict, e: str, labels: dict) -> str:
     if e == "china":
         return f"{p['brand']} doesn't make a {labels['china']} version"
     return p["google"].get("no_global") or f"No {labels['global']} version so far: {p['brand']} sells this phone in {'China' if labels['china'] == 'China' else 'Asia'} only"
-
-
-def _day(d: str) -> str:
-    return datetime.strptime(d, "%Y-%m-%d").strftime("%-d %b")
 
 
 def store_lines_svg(lines: dict[str, list]) -> dict | None:
@@ -53,7 +49,7 @@ def store_lines_svg(lines: dict[str, list]) -> dict | None:
         pts = lines[k]
         out.append({"name": k, "n": i % 6 + 1, "points": " ".join(f"{x(d):.1f},{y(v):.1f}" for d, v in pts),
                     "cx": f"{x(pts[-1][0]):.1f}", "cy": f"{y(pts[-1][1]):.1f}", "last": pts[-1][1]})
-    return {"w": W, "h": H, "stores": out, "since": _day(days[0]), "days": len(days)}
+    return {"w": W, "h": H, "stores": out, "since": short_day(days[0]), "days": len(days)}
 
 
 def buyers_text(b: dict | None, region: str) -> str:
@@ -82,6 +78,17 @@ def _bands(sheet: dict, e: str) -> dict:
     missing = [f"LTE {b}" for b in c["lte"]] + [f"5G n{b}" for b in c["nr"]]
     why = [f"band {b} is {t}" for b, t in c["why"].items()]
     return {"e": e, "checked": True, "missing": missing, "why": "; ".join(why)}
+
+
+def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None, mem: str | None) -> dict | None:
+    """The price trend of the default pick, from the same series the phone's data file carries (data_files._phone_doc);
+    today is the build's updated day. None without a current price."""
+    if not best or best["state"] != "ok":
+        return None
+    today = (ctx.get("updated") or datetime.now(UTC).strftime("%Y-%m-%d"))[:10]
+    series = trend_series(data.rows_all, p["id"], p["offers"], data.rates)
+    days = daily_best([offer_inputs(o) for o in p["offers"]], series, ed, mem, data.tax_cfg, DEFAULT, today)
+    return price_trend(days, best, today)
 
 
 def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
@@ -123,6 +130,7 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "buyers_line": buyers_text(next((o.get("buyers") for o in p["offers"] if best and o["store_label"] == best["store"]), None),
                                    DEFAULT.region),
         "now": ctx.get("updated") or None,
+        "trend": _trend(p, data, ctx, best, ed, mem),
     }
 
 

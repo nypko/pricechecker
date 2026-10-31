@@ -106,6 +106,52 @@
 </section>
 {%- endmacro -%}
 
+{#- The price trend under the details panel: where today's best delivered price sits in its 30-day range, how it moved,
+    and the link to the full history. t = view.price_trend(...) (None: nothing is written); hist_href = the history page.
+    Short history (t.short): only the "too short" sentence. "≈" in front of every amount when t.approx. -#}
+{%- macro price_trend(t, s, hist_href) -%}
+{%- if t -%}
+{%- set ap = "≈" if t.approx else "" -%}
+<section class="trend" data-block="price_trend" aria-label="Recent price">
+{%- if t.short -%}
+{%- if t.recent_gap -%}
+<p class="tshort">Not enough recent price history for this version and memory to judge yet.</p>
+{%- else -%}
+<p class="tshort">Price history for this version and memory starts on {{ short_day(t.first_day) }}, too short to judge yet.</p>
+{%- endif -%}
+{%- else -%}
+{%- set same = t.high == t.low -%}
+{%- if same -%}
+<p class="trange">Same price {{ "for 30 days" if t.full_window else "since " ~ short_day(t.since_day) }}</p>
+{%- else -%}
+{%- set at = [[(t.now - t.low) / (t.high - t.low) * 100, 0]|max, 100]|min -%}
+<p class="trange">{{ ap }}{{ money(t.now, s.cur) }} · low {{ ap }}{{ money(t.low, s.cur) }} – high {{ "≈" if t.high_approx else "" }}{{ money(t.high, s.cur) }}</p>
+<div class="tbar" aria-hidden="true"><i style="--at:{{ (at + 0.5)|int }}%"></i></div>
+{%- set since = "since " ~ short_day(t.since_day) if not t.full_window else "in 30 days" -%}
+{%- if t.is_low -%}
+<p class="tpos">Lowest price {{ since }}</p>
+{%- else -%}
+<p class="tpos">{{ ap }}{{ money(t.now - t.low, s.cur) }} above its {{ "30-day low" if t.full_window else "low since " ~ short_day(t.since_day) }} ({{ ap }}{{ money(t.low, s.cur) }} on {{ short_day(t.low_day) }} at {{ t.low_store }})</p>
+{%- endif -%}
+{%- if t.change_pct is not none -%}
+{%- set about = t.change_pct|abs < 1 -%}
+{%- set span = "since first listed (" ~ short_day(t.first_day) ~ ")" if t.since_first else ("since " ~ short_day(t.since_day) if not t.full_window else ("over the last 30 days" if about else "in the last 30 days")) -%}
+{%- if about -%}
+<p class="tmove">About the same {{ span }}</p>
+{%- else -%}
+<p class="tmove">{{ "Up" if t.change_pct > 0 else "Down" }} {{ fixed(t.change_pct|abs, 0) }}% {{ span }}</p>
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- if t.change_7d is not none and t.change_7d|abs >= 2 -%}
+<p class="tweek">{{ "Up" if t.change_7d > 0 else "Down" }} {{ fixed(t.change_7d|abs, 0) }}% in the last 7 days</p>
+{%- endif -%}
+{%- endif -%}
+<p class="tlink"><a href="{{ hist_href }}">Full price history →</a></p>
+</section>
+{%- endif -%}
+{%- endmacro -%}
+
 {%- macro _seg(v, c) -%}{% if v > 0 %}<span style="flex:{{ fixed(v, 1) }};background:var({{ c }})"></span>{% endif %}{%- endmacro -%}
 
 {#- How the total adds up: cost bar, store price, sale, payment, shipping, import tax, "You pay at the door". -#}

@@ -34,6 +34,7 @@
     {%- for e in v.eds %}{{ b.price_box(v.rows, e, v.mem, s, L, e == v.ed) }}{% endfor -%}
   </div>
   <div id="s-verdict" aria-live="polite">{{ b.verdict(v.best, v.pick, s, L, v.now) }}</div>
+  <div id="s-trend" data-ed="{{ v.ed or '' }}">{{ b.price_trend(v.trend, s, "../history/" ~ p.slug) }}</div>
   {%- for m in v.missing %}<p class="only">{{ m }}.</p>{% endfor %}
   <div id="s-receipt">{{ b.receipt(v.best, s, L) }}</div>
   <p class="buyers" id="buyers"{% if not v.buyers_line %} hidden{% endif %}>{{ v.buyers_line }}</p>

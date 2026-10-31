@@ -45,6 +45,31 @@ def store_lines(rows: list[dict], model_id: str, edition: str, rates: dict) -> d
     return out
 
 
+def listing_days(rows: list[dict], model_id: str) -> dict[tuple[str, str, str], list[tuple[str, float | None]]]:
+    """{(store, edition, storage): [(day, native price or None)]}: a listing's end-of-day state (the last row of the UTC
+    day wins), as change points over all of `rows`: the first day it has a price, then each day the end-of-day price
+    differs from the last point's, None when it goes out of stock. A listing that starts sold out has no point until
+    it is in stock. Sub-stores are not folded: each listing is its own offer."""
+    days = sorted({r["time"][:10] for r in rows})
+    by_day: dict[str, list[dict]] = {}
+    for r in rows:
+        by_day.setdefault(r["time"][:10], []).append(r)
+    state: dict[tuple, float | None] = {}
+    out: dict[tuple[str, str, str], list[tuple[str, float | None]]] = {}
+    for day in days:
+        touched = set()
+        for r in by_day[day]:
+            if r["model_id"] == model_id:
+                k = (r["store"], r["edition"], r["storage"])
+                state[k] = r["price"] if r["available"] else None
+                touched.add(k)
+        for k in touched:
+            pts = out.setdefault(k, [])
+            if state[k] != (pts[-1][1] if pts else None):
+                pts.append((day, state[k]))
+    return {k: v for k, v in out.items() if v}
+
+
 def listing_drops(rows: list[dict], rates: dict, now: datetime, window_days: int = 7) -> list[dict]:
     """The same store listing, its price `window_days` ago vs now. A listing with no price from then (a store
     joining the site) is not a drop. real: at least 3% and EUR 20 below."""

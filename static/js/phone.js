@@ -3,7 +3,7 @@
 // version), from the phone's v1 data file and the tax file, and wires the page: memory chips, version boxes, delivery
 // filters with counts, the ledger sort, the buy bar, Watch and Share. No markup of its own beyond blocks.js output.
 // The pure helpers are exported for tests/js/phone_cases.mjs; everything touching the page is guarded.
-import { rows as viewRows, bestOf, defaultPick, pickForMemory } from "./view.js";
+import { rows as viewRows, bestOf, defaultPick, pickForMemory, dailyBest, priceTrend } from "./view.js";
 import * as B from "./blocks.js";
 import { wireShare } from "./share.js";
 import { load, isDefault, watched, toggleWatch, PLACE } from "./settings.js";
@@ -56,6 +56,15 @@ export function focusSelector(el) {
   return `#${box.id} button${cls ? "." + cls : ""}[${attr}="${q(el.getAttribute(attr))}"]`;
 }
 
+/** The price trend block for the pick on screen: the pick's series from the phone file (doc.trend), the visitor's
+ *  settings, and the same best row the details panel shows; "" when the pick has no current price. */
+export function trendHtml(doc, tax, rows, s, pick, now, histHref) {
+  const best = bestOf(rows, pick.ed, pick.mem), row = best && best.state === "ok" ? best : null;
+  const today = (now || new Date().toISOString()).slice(0, 10);
+  const days = row ? dailyBest(doc.offers, doc.trend, pick.ed, pick.mem, tax, s, today) : [];
+  return B.priceTrendBlock(row ? priceTrend(days, row, today) : null, s, histHref);
+}
+
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
 const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 
@@ -87,13 +96,15 @@ function wire(root) {
   }
 
   // ---- paint every settings-dependent block from rows ----
-  function paint(rows, s) {
+  function paint(rows, s, doc, tax) {
     if (!$("duel")) return;
     const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;   // keyboard focus survives the repaint
     set($("s-mems"), B.memChips(rows, S.mem, s));
     set($("duel"), eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed)).join(""));   // each box's select button repaints with aria-pressed
     const best = bestOf(rows, S.ed, S.mem), pick = rows.filter((r) => r.edition === S.ed && r.storage === S.mem);
     set($("s-verdict"), B.verdict(best, pick, s, L, now));
+    if ($("s-trend")) $("s-trend").dataset.ed = S.ed || "";
+    set($("s-trend"), trendHtml(doc, tax, rows, s, S, now, `../history/${id}`));
     set($("s-receipt"), B.receipt(best, s, L));
     const bl = $("buyers"), bt = best ? buyersText(buyers[best.store], s.region) : "";
     if (bl) { bl.textContent = bt; bl.hidden = !bt; }
@@ -144,7 +155,7 @@ function wire(root) {
       if (pickOf) Object.assign(S, pickOf(rows));
       else if (fresh && !S.touched) Object.assign(S, defaultPick(rows));
       else if (fresh && S.mem) Object.assign(S, pickForMemory(rows, S.mem, S.ed));   // the memory may have no current price now
-      paint(rows, s);
+      paint(rows, s, doc, tax);
       if (remember && history.replaceState) history.replaceState(null, "", location.pathname + location.search + pickHash(S.ed, S.mem));
       if (!isDefault(s) || moreFor) paintMore(s, tax);
     }, () => {})   // offline or a missing file: the server's default-settings prices stay

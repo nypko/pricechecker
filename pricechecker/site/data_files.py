@@ -51,6 +51,37 @@ def _put(out: Path, name: str, doc) -> str:
     return "/" + rel
 
 
+def trend_series(rows: list[dict], model_id: str, offers: list[dict], rates: dict | None = None) -> dict:
+    """{edition: {storage: {store_label: {"cur": native currency, "pts": [[day, ratio | null]]}}}}: a listing's end-of-day
+    price over the current price of the same store, edition and storage offer (both native), as change points over all
+    of `rows`: [day, ratio] on its first day and whenever the ratio changes, [day, null] when it goes out of stock.
+    Listings with no current offer are left out. A history row in another currency than the offer's is converted
+    through EUR with `rates`; without rates it is skipped."""
+    cur: dict = {}
+    for o in offers:   # offers come in-stock and cheapest first: keep the first of a listing
+        cur.setdefault((o["store"], o["edition"], o["storage"]), o)
+    same = []
+    for r in rows:
+        if r["model_id"] != model_id:
+            continue
+        o = cur.get((r["store"], r["edition"], r["storage"]))
+        if o and o["currency"] != r["currency"]:
+            if not rates:
+                continue
+            r = {**r, "price": derive._eur(r["price"], r["currency"], rates) * rates[o["currency"]], "currency": o["currency"]}
+        same.append(r)
+    out: dict = {}
+    for (store, e, storage), pts in derive.listing_days(same, model_id).items():
+        if o := cur.get((store, e, storage)):
+            series: list = []
+            for d, p in pts:
+                v = None if p is None else round(p / o["price"], 4)
+                if not series or series[-1][1] != v:   # two prices can round to one ratio
+                    series.append([d, v])
+            out.setdefault(e, {}).setdefault(storage, {})[o["store_label"]] = {"cur": o["currency"].lower(), "pts": series}
+    return out
+
+
 def _phone_doc(data: SiteData, p: dict) -> dict:
     sheet = data.spec_sheets.get(p["id"]) or {}
     labels = {s: c.get("label", s) for s, c in data.stores_cfg.items()}
@@ -59,6 +90,7 @@ def _phone_doc(data: SiteData, p: dict) -> dict:
         per_store = derive.store_lines(data.rows, p["id"], e, data.rates)
         lines[e] = {labels.get(s, s): [list(pt) for pt in pts] for s, pts in per_store.items()}
     return {"v": 1, "offers": [offer_inputs(o) for o in p["offers"]], "lines": lines,
+            "trend": trend_series(data.rows_all, p["id"], p["offers"], data.rates),
             "bands": {e: specs.band_check(sheet, e) if sheet else None for e in p["editions"]}}
 
 

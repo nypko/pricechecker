@@ -98,6 +98,11 @@ def stamp(iso: str | None) -> str:
     return f"{d.day} {MON[d.month - 1]}, {d.hour:02d}:{d.minute:02d} UTC"
 
 
+def short_day(iso: str | None) -> str:
+    """'2026-11-12' -> '12 Nov' (the site's one short-day format)."""
+    return f"{int(iso[8:10])} {MON[int(iso[5:7]) - 1]}" if iso else ""
+
+
 def days_ago(iso: str | None, now: str | None) -> int | None:
     """Whole days between the store's last check and now (both ISO, UTC)."""
     if not iso or not now:
@@ -179,6 +184,6 @@ def stores_n(rows: list[dict]) -> int:
 def register(env) -> None:
     """Make the helpers and the view functions the blocks call available to every template."""
     env.globals.update(money=money, fixed=fixed, pct=pct, group=group, mem_parts=mem_parts, mem_label=mem_label, mem_text=mem_text, mem_short=mem_short,
-                       mem_tiny=mem_tiny, stamp=stamp, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
+                       mem_tiny=mem_tiny, stamp=stamp, short_day=short_day, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
                        caveat=caveat, why=why, mem_union=mem_union, nearest_memory=view.nearest_memory, stores_n=stores_n, ledger_rows=ledger_rows,
                        best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY)

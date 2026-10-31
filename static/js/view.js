@@ -52,6 +52,82 @@ export function bestOf(rows, edition, storage = null) {
   return rows.find((r) => r.state === "ok" && r.edition === edition && (storage === null || r.storage === storage)) ?? null;
 }
 
+const CUR = ["eur", "usd", "gbp", "cad", "aud"];
+
+const shift = (day, n) => new Date(Date.parse(day) - n * 86400000).toISOString().slice(0, 10);
+const pct = (now, base) => Math.floor(((now - base) / base) * 1000 + 0.5) / 10;   // half up
+const whole = (v) => Math.floor(v + 0.5);   // whole currency units, half up: what money() displays
+
+// A listing's change points [[day, ratio | null]] as a Map day -> ratio for every day from its first point to `today`:
+// each day carries the last point's ratio forward, null (out of stock) gives no entry.
+function expand(points, today) {
+  const out = new Map();
+  if (!points.length) return out;
+  let day = points[0][0], last = null, i = 0;
+  while (day <= today) {
+    while (i < points.length && points[i][0] <= day) last = points[i++][1];
+    if (last !== null) out.set(day, last);
+    day = shift(day, -1);
+  }
+  return out;
+}
+
+// The best delivered price of the edition/storage on each day up to `today` that some listing had a price: each
+// listing's change points carried forward day by day, its store re-priced as its current offer with the day's ratio
+// applied, ranked by rows/bestOf so delivery, payment and staleness rules are today's.
+export function dailyBest(inputs, trend, edition, storage, tax, s, today) {
+  const series = ((trend || {})[edition] || {})[storage] || {};
+  const days = new Map();
+  for (const [label, ser] of Object.entries(series)) {
+    const cur = inputs.find((o) => o.store_label === label && o.edition === edition && o.storage === storage);
+    if (!cur) continue;
+    for (const [day, ratio] of expand(ser.pts, today)) {
+      // approximation: history has only the native price, so every currency is scaled by the same ratio and
+      // the amounts in the other currencies are estimates for a past day
+      const money = Object.fromEntries(Object.entries(cur.money || {}).map(([k, v]) => [k, CUR.includes(k) ? v * ratio : v]));
+      for (const k of CUR) if (k !== ser.cur && k in money) money[k + "_approx"] = 1;
+      if (!days.has(day)) days.set(day, []);
+      days.get(day).push({ ...cur, money, available: true });
+    }
+  }
+  const out = [];
+  for (const day of [...days.keys()].sort()) {
+    const best = bestOf(rows(days.get(day), tax, s), edition, storage);
+    if (best) out.push({ day, total: best.total, store: best.store, approx: best.approx });
+  }
+  return out;
+}
+
+// The numbers behind the 30-day trend block: today's point is nowRow (it replaces any list entry for today), the window
+// is today-29..today, the low (and the high) is the most recent day at the window minimum (maximum). Every total is
+// first rounded to whole units, as it is shown, so what the block compares is what it displays.
+// short: fewer than 7 days with data in the window; recent_gap: ... and the history starts before the window.
+// since_day: the first day with data inside the window; full_window: that is the window's first day.
+// The 7-day change compares with the latest day 7 to 14 days back. Whole days, UTC.
+export function priceTrend(days, nowRow, today) {
+  if (!nowRow) return null;
+  const pts = [...days.filter((d) => d.day < today).map((d) => ({ ...d, total: whole(d.total) })),
+    { day: today, total: whole(nowRow.total), store: nowRow.store, approx: nowRow.approx }];
+  const start = shift(today, 29);
+  const win = pts.filter((d) => d.day >= start);
+  const firstDay = pts[0].day;
+  const now = pts.at(-1).total;
+  const low = Math.min(...win.map((d) => d.total));
+  const lowPt = win.filter((d) => d.total === low).at(-1);
+  const high = Math.max(...win.map((d) => d.total));
+  const highPt = win.filter((d) => d.total === high).at(-1);
+  const base = win[0];
+  const back = pts.filter((d) => shift(today, 14) <= d.day && d.day <= shift(today, 7));
+  const short = new Set(win.map((d) => d.day)).size < 7;
+  return {
+    short, recent_gap: short && firstDay < start, first_day: firstDay, window_start: start, since_day: base.day, full_window: base.day === start,
+    now, low, low_day: lowPt.day, low_store: lowPt.store, high, high_approx: Boolean(highPt.approx),
+    is_low: now <= low, change_pct: base.day !== today ? pct(now, base.total) : null,
+    since_first: base.day === firstDay, change_7d: back.length ? pct(now, back.at(-1).total) : null,
+    approx: Boolean(nowRow.approx || lowPt.approx),
+  };
+}
+
 // China vs Global at the same RAM/storage: settled totals of ok rows only; the storage where China is cheapest.
 export function gap(rows) {
   const best = new Map();

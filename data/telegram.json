@@ -1,5 +1,9 @@
 {
  "phones": {
+  "apple-iphone-duo": {
+   "left": "",
+   "ref": 2735.51
+  },
   "google-pixel-10-pro": {
    "left": "",
    "ref": 687.95
@@ -26,7 +30,7 @@
   },
   "honor-magic-8-pro": {
    "left": "",
-   "ref": 868.95
+   "ref": 869.95
   },
   "honor-magic-8-pro-air": {
    "left": "",
@@ -305,5 +309,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-10-31T02:45:45Z"
+ "updated": "2026-10-31T09:56:53Z"
 }

@@ -40,14 +40,20 @@ networks:
     name: Telekom
     lte: [1, 3, 7, 8, 20, 28, 32]
     nr: [1, 3, 28, 78]
+    basis: licensed      # licensed = from the regulator's licence list; used = sources say the bands are in use
+    complete: true       # the sources give the network's full list (licence lists are full lists)
     sources:
       - {url: https://…, kind: regulator, checked: 2026-11-03}
       - {url: https://…, kind: carrier, checked: 2026-11-03}
     mvnos: [congstar, fraenk]
 ```
-- A band is listed only when a source says the network **uses** it (deployed), not merely holds a licence. Preferred
-  sources: the national regulator's spectrum/licence data and the network's own network or coverage pages; secondary
-  lists (Wikipedia, band databases) only to cross-check, never as the sole source.
+- A band is listed when the national regulator's licence data says the network **holds** it (`basis: licensed`), or when
+  the network's own pages or a regulator deployment report say it **uses** it (`basis: used`). Amended 2026-10-31 (user
+  decision): most regulators publish holdings, not deployment, and with 3G switched off licensed 4G/5G spectrum is
+  nearly always in use; the page words licensed data as "holds". A network whose list mixes both is `licensed`.
+  Secondary lists (Wikipedia, band databases) only to cross-check, never as the sole source.
+- `complete: true` only when a source gives the network's full list (a regulator licence table does); a list built
+  from scattered mentions (e.g. a 5G launch page naming 3.5 GHz) is `complete: false`.
 - Unknown is left out, not guessed. A network whose bands cannot be sourced is listed with `lte: null` and shows as
   "unknown".
 
@@ -71,9 +77,12 @@ checked date; network ids unique; mvnos are strings; a `checked` older than 12 m
 | Coverage risk | misses any of the network's `low` bands | "Coverage risk: no band 20 (800 MHz: coverage indoors and outside towns)" |
 | 4G only | has every network LTE band but none of its NR bands | "4G works; no 5G on this network" |
 | Minor gaps | misses only `mid`/`high`/`mmwave` bands | "Works; no band 7 (2600 MHz: extra speed in busy areas)" |
-| Works fully | has every LTE and NR band the network uses | "Works fully on 4G and 5G" |
+| No gaps found | list not `complete` and the phone has every listed band | "No gaps on the bands we could confirm" |
+| Works fully | `complete` list and the phone has every LTE and NR band on it | "Works fully on 4G and 5G" |
 
-First matching row wins (top to bottom). "4G only" applies only to a network that runs at least one NR band. "Minor
+First matching row wins (top to bottom). For `basis: licensed` networks the missing-band texts say "which <network>
+holds" (e.g. "Coverage risk: no band 20, which O2 holds (800 MHz: coverage indoors and outside towns)"); for `used`,
+"which <network> uses". "4G only" applies only to a network that runs at least one NR band. "Minor
 gaps" lists every missing band, 5G ones included (e.g. a phone missing band 7 and all of the network's NR bands: "Works;
 no band 7 (…); no 5G on this network"). Every result carries the line: "Bands only: calls over 4G (VoLTE) and Wi-Fi
 calling depend on the network supporting the phone, which we can't check."

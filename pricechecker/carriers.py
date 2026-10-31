@@ -76,6 +76,8 @@ def _network_problems(n, table: dict) -> list[str]:
         out.append(f"{who}: basis must be one of {'|'.join(BASES)} ({n.get('basis')})")
     if not isinstance(n.get("complete"), bool):
         out.append(f"{who}: complete must be true or false ({n.get('complete')})")
+    if n.get("complete") is True and (n.get("lte") is None or n.get("nr") is None):
+        out.append(f"{who}: complete cannot be true while lte or nr is null")
     mv = n.get("mvnos", [])
     if not isinstance(mv, list) or not all(isinstance(x, str) and x for x in mv):
         out.append(f"{who}: mvnos must be a list of names")
@@ -92,6 +94,8 @@ def _network_problems(n, table: dict) -> list[str]:
             out.append(f"{who}: source kind must be one of {'|'.join(KINDS)} ({s.get('kind')})")
         if _date(s.get("checked")) is None:
             out.append(f"{who}: source checked must be YYYY-MM-DD ({s.get('checked')})")
+    if n.get("basis") == "licensed" and not any(isinstance(s, dict) and s.get("kind") == "regulator" for s in srcs):
+        out.append(f"{who}: basis licensed needs a regulator source")
     if all(isinstance(s, dict) and s.get("kind") == "other" for s in srcs):
         out.append(f"{who}: needs a regulator, carrier or brand source, not only 'other'")
     return out

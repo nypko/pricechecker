@@ -24,7 +24,8 @@ pages or a regulator deployment report say it **uses** it. A licence held but st
 - `basis: used`: every listed band is confirmed in use. `basis: licensed`: the list comes, wholly or partly, from
   licence data.
 - `complete: true` only when a source gives the full list (a regulator licence table does); a list built from
-  scattered mentions (a 5G launch page naming 3.5 GHz) is `complete: false`.
+  scattered mentions (a 5G launch page naming 3.5 GHz) is `complete: false`. `licensed` needs a `regulator` source;
+  `complete: true` needs both lists filled.
 Prefer a regulator, then the carrier's own page, then the phone brand's page. Wikipedia may point you to a source but
 a network with only `other` sources fails validation. Every source needs an https url and the date you read it.
 Networks not checked for 12 months are logged in the build.

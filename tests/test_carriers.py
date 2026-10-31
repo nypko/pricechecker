@@ -13,7 +13,8 @@ TABLE = carriers.band_table()
 
 def _doc():
     return {"country": "DE", "networks": [{
-        "id": "de-telekom", "name": "Telekom", "lte": [1, 3, 7, 20], "nr": [1, 3, 78], "basis": "used", "complete": False, "mvnos": ["Congstar"],
+        "id": "de-telekom", "name": "Telekom", "lte": [1, 3, 7, 20], "nr": [1, 3, 78],
+        "basis": "used", "complete": False, "mvnos": ["Congstar"],
         "sources": [{"url": "https://www.telekom.de/netz", "kind": "carrier", "checked": "2026-10-01"}]}]}
 
 
@@ -23,6 +24,28 @@ def _net(doc):
 
 def test_valid_sample_passes():
     assert carriers.validate(_doc(), TABLE) == []
+
+
+def test_licensed_and_complete_with_a_regulator_source_passes():
+    d = _doc()
+    _net(d).update(basis="licensed", complete=True)
+    _net(d)["sources"].append({"url": "https://www.bundesnetzagentur.de/x", "kind": "regulator", "checked": "2026-10-01"})
+    assert carriers.validate(d, TABLE) == []
+
+
+def test_licensed_needs_a_regulator_source():
+    d = _doc()
+    _net(d).update(basis="licensed")
+    errs = carriers.validate(d, TABLE)
+    assert errs and all("de-telekom" in e for e in errs) and any("regulator" in e for e in errs)
+
+
+@pytest.mark.parametrize("nulled", ["lte", "nr"])
+def test_complete_true_needs_both_band_lists(nulled):
+    d = _doc()
+    _net(d).update(complete=True, **{nulled: None})
+    errs = carriers.validate(d, TABLE)
+    assert errs and all("de-telekom" in e for e in errs) and any("complete" in e for e in errs)
 
 
 def test_null_band_lists_and_no_mvnos_are_valid():

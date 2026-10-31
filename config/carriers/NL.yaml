@@ -2,34 +2,37 @@ country: NL
 networks:
   - id: nl-kpn
     name: KPN
-    lte: [1, 28]
-    nr: [1, 28, 78]
+    lte: [1, 3, 7, 8, 20, 28, 38]
+    nr: [1, 3, 7, 8, 20, 28, 38, 78]
     basis: licensed
-    complete: false
+    complete: true
     mvnos: [Simyo, Youfone]
     sources:
+      - {url: "https://zoek.officielebekendmakingen.nl/blg-969229.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://zoek.officielebekendmakingen.nl/kst-24095-525.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.rijksoverheid.nl/actueel/nieuws/2024/07/01/kpn-odido-en-vodafoneziggo-winnaars-veiling-nederlandse-5g-netwerken", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.kpn.com/overons/nieuws/en/the-next-phase-of-5g-arrives-today/", kind: carrier, checked: 2026-10-31}
   - id: nl-vodafoneziggo
     name: Vodafone
-    lte: [1, 28]
-    nr: [1, 28, 78]
+    lte: [1, 3, 7, 8, 20, 28]
+    nr: [1, 3, 7, 8, 20, 28, 78]
     basis: licensed
-    complete: false
+    complete: true
     mvnos: [hollandsnieuwe]
     sources:
+      - {url: "https://zoek.officielebekendmakingen.nl/blg-969229.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://zoek.officielebekendmakingen.nl/kst-24095-525.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.rijksoverheid.nl/actueel/nieuws/2024/07/01/kpn-odido-en-vodafoneziggo-winnaars-veiling-nederlandse-5g-netwerken", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.vodafoneziggo.nl/en/nieuws/vodafone-first-offer-nationwide-5g/", kind: carrier, checked: 2026-10-31}
   - id: nl-odido
     name: Odido
-    lte: [1, 28]
-    nr: [1, 28, 78]
+    lte: [1, 3, 7, 8, 20, 28, 38]
+    nr: [1, 3, 7, 8, 20, 28, 38, 78]
     basis: licensed
-    complete: false
+    complete: true
     mvnos: [Ben]
     sources:
+      - {url: "https://zoek.officielebekendmakingen.nl/blg-969229.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://zoek.officielebekendmakingen.nl/kst-24095-525.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.rijksoverheid.nl/actueel/nieuws/2024/07/01/kpn-odido-en-vodafoneziggo-winnaars-veiling-nederlandse-5g-netwerken", kind: regulator, checked: 2026-10-31}
       - {url: "https://odido.nl/blog/5g-boost", kind: carrier, checked: 2026-10-31}

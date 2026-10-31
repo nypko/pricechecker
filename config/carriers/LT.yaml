@@ -35,7 +35,7 @@ networks:
     lte: [1, 3, 7, 8, 20, 28]
     nr: [1, 3, 7, 8, 20, 28, 78]
     basis: licensed
-    complete: true
+    complete: false
     mvnos: []
     sources:
       - {url: "https://rrt.lt/veiklos-sritys/elektroniniai-rysiai/viesieji-konkursai-ir-aukcionai", kind: regulator, checked: 2026-10-31}

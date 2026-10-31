@@ -277,3 +277,63 @@ def test_js_daily_best_matches_python_synthetic(tmp_path):
         assert r.returncode == 0, r.stdout + r.stderr
         want = view.daily_best(inputs, trend, "global", "12/256", {"EU": {"rate_pct": 20}}, pricing.Settings(*st.split(",")))
         assert json.loads(r.stdout) == json.loads(json.dumps(want)), st
+
+
+def _days(*pairs, store="s", approx=False):
+    return [{"day": d, "total": t, "store": store, "approx": approx} for d, t in pairs]
+
+
+def _span(start_day, totals, **kw):
+    """One point per day from 2026-10-<start_day>, one total each."""
+    return _days(*[(f"2026-10-{start_day + i:02d}", t) for i, t in enumerate(totals)], **kw)
+
+
+_NOW = {"total": 900.0, "approx": False, "store": "now"}
+_TREND_CASES = {
+    "new_low_full_window": (_span(1, [1000, 980, 960, 950, 940, 1000, 990, 980, 970, 960, 950, 940, 930, 920, 910, 905, 1000, 990,
+                                      980, 970, 960, 950, 940, 930, 920, 950, 960, 970, 980, 990]), _NOW, "2026-10-31"),
+    "new_low_12_days": (_span(20, [1000, 990, 980, 970, 960, 950, 940, 930, 920, 960, 950, 940]), _NOW, "2026-10-31"),
+    "above_low_9_days_ago": (_span(1, [1000] * 21 + [900] + [950] * 9, store="old")[:21] + _days(("2026-10-22", 800)) + _span(23, [950] * 8, store="x"),
+                             {"total": 840.0, "approx": True, "store": "now"}, "2026-10-31"),
+    "gone_store_cheaper": (_span(20, [700, 1000, 990, 980, 970, 960, 950, 940]), _NOW, "2026-10-31"),
+    "short_six_days": (_span(25, [1000, 990, 980, 970, 960]), _NOW, "2026-10-31"),
+    "flat": (_span(1, [900] * 30), {"total": 900.0, "approx": False, "store": "now"}, "2026-10-31"),
+    "no_day_7_back": (_span(26, [1000, 990, 980, 970, 960, 950]), _NOW, "2026-10-31"),
+    "today_replaced": (_span(20, [1000] * 12), _NOW, "2026-10-31"),
+    "empty_list": ([], _NOW, "2026-10-31"),
+    "no_now": (_span(1, [1000] * 5), None, "2026-10-31"),
+}
+
+
+def test_price_trend_numbers():
+    t = lambda k: view.price_trend(*_TREND_CASES[k])
+    assert t("no_now") is None
+    a = t("new_low_full_window")
+    assert (a["full_window"], a["short"], a["is_low"], a["low"], a["low_day"], a["low_store"], a["now"]) == (True, False, True, 900, "2026-10-31", "now", 900)
+    assert a["first_day"] == "2026-10-01" and a["window_start"] == "2026-10-02" and a["high"] == 1000
+    assert a["since_first"] is False and a["change_pct"] == round((900 - 980) / 980 * 100, 1) and a["change_7d"] == -3.2   # 10-24 was 930
+    b = t("new_low_12_days")
+    assert (b["full_window"], b["is_low"], b["first_day"], b["since_first"], b["short"]) == (False, True, "2026-10-20", True, False)
+    assert b["change_pct"] == -10.0
+    c = t("above_low_9_days_ago")
+    assert (c["is_low"], c["low"], c["low_day"], c["low_store"], c["approx"]) == (False, 800, "2026-10-22", "s", True)
+    assert c["change_pct"] == -16.0
+    d = t("gone_store_cheaper")
+    assert (d["is_low"], d["low"], d["low_day"]) == (False, 700, "2026-10-20")
+    assert t("short_six_days")["short"] is True and t("empty_list")["short"] is True
+    assert t("empty_list")["first_day"] == "2026-10-31" and t("empty_list")["change_pct"] is None
+    f = t("flat")
+    assert (f["low"], f["high"], f["is_low"], f["change_pct"], f["change_7d"]) == (900, 900, True, 0.0, 0.0)
+    assert t("no_day_7_back")["change_7d"] is None
+    r = view.price_trend(_TREND_CASES["today_replaced"][0] + _days(("2026-10-31", 5)), _NOW, "2026-10-31")
+    assert r["low"] == 900 and r["low_day"] == "2026-10-31"          # now replaces the list's entry for today
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_price_trend_matches_python_synthetic(tmp_path):
+    for name, (days, now, today) in _TREND_CASES.items():
+        f = tmp_path / f"{name}.json"
+        f.write_text(json.dumps({"days": days, "now": now, "today": today}))
+        r = subprocess.run(["node", "tests/js/view_cases.mjs", "--trend", str(f)], check=False, capture_output=True, text=True)
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert json.loads(r.stdout) == json.loads(json.dumps(view.price_trend(days, now, today))), name

@@ -77,6 +77,30 @@ export function dailyBest(inputs, trend, edition, storage, tax, s) {
   return out;
 }
 
+const shift = (day, n) => new Date(Date.parse(day) - n * 86400000).toISOString().slice(0, 10);
+const pct = (now, base) => Math.floor(((now - base) / base) * 1000 + 0.5) / 10;   // half up
+
+// The numbers behind the 30-day trend block: today's point is nowRow (it replaces any list entry for today), the window
+// is today-29..today, the low is the most recent day at the window minimum. Whole days, UTC.
+export function priceTrend(days, nowRow, today) {
+  if (!nowRow) return null;
+  const pts = [...days.filter((d) => d.day < today), { day: today, total: nowRow.total, store: nowRow.store, approx: nowRow.approx }];
+  const start = shift(today, 29);
+  const win = pts.filter((d) => d.day >= start);
+  const firstDay = pts[0].day;
+  const low = Math.min(...win.map((d) => d.total));
+  const lowPt = win.filter((d) => d.total === low).at(-1);
+  const base = win[0];
+  const back = pts.filter((d) => d.day <= shift(today, 7));
+  return {
+    short: pts.length < 7, first_day: firstDay, window_start: start, full_window: firstDay <= start,
+    now: nowRow.total, low, low_day: lowPt.day, low_store: lowPt.store, high: Math.max(...win.map((d) => d.total)),
+    is_low: nowRow.total <= low, change_pct: base.day !== today ? pct(nowRow.total, base.total) : null,
+    since_first: base.day === firstDay, change_7d: back.length ? pct(nowRow.total, back.at(-1).total) : null,
+    approx: Boolean(nowRow.approx || lowPt.approx),
+  };
+}
+
 // China vs Global at the same RAM/storage: settled totals of ok rows only; the storage where China is cheapest.
 export function gap(rows) {
   const best = new Map();

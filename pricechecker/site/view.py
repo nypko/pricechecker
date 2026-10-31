@@ -2,6 +2,7 @@
 static/js/view.js is its line-for-line mirror; rows are plain dicts with the same camelCase keys on both sides so the
 server templates and the browser blocks show identical numbers. No I/O."""
 import math
+from datetime import date, timedelta
 
 from .. import pricing
 from ..pricing import Settings
@@ -86,6 +87,37 @@ def daily_best(inputs: list[dict], trend: dict, edition: str, storage: str, tax_
         if best is not None:
             out.append({"day": day, "total": best["total"], "store": best["store"], "approx": best["approx"]})
     return out
+
+
+def _shift(day: str, n: int) -> str:
+    return (date.fromisoformat(day) - timedelta(days=n)).isoformat()
+
+
+def _pct(now: float, base: float) -> float:
+    return math.floor((now - base) / base * 1000 + 0.5) / 10      # half up, as the JS mirror does
+
+
+def price_trend(days: list[dict], now_row: dict | None, today: str) -> dict | None:
+    """The numbers behind the 30-day trend block: today's point is now_row (it replaces any list entry for today),
+    the window is today-29..today, the low is the most recent day at the window minimum. Whole days, UTC."""
+    if now_row is None:
+        return None
+    pts = [d for d in days if d["day"] < today] + [{"day": today, "total": now_row["total"], "store": now_row["store"],
+                                                    "approx": now_row["approx"]}]
+    start = _shift(today, 29)
+    win = [d for d in pts if d["day"] >= start]
+    first_day = pts[0]["day"]
+    low = min(d["total"] for d in win)
+    low_pt = [d for d in win if d["total"] == low][-1]
+    base = win[0]
+    back = [d for d in pts if d["day"] <= _shift(today, 7)]
+    return {"short": len(pts) < 7, "first_day": first_day, "window_start": start, "full_window": first_day <= start,
+            "now": now_row["total"], "low": low, "low_day": low_pt["day"], "low_store": low_pt["store"],
+            "high": max(d["total"] for d in win), "is_low": now_row["total"] <= low,
+            "change_pct": _pct(now_row["total"], base["total"]) if base["day"] != today else None,
+            "since_first": base["day"] == first_day,
+            "change_7d": _pct(now_row["total"], back[-1]["total"]) if back else None,
+            "approx": bool(now_row["approx"] or low_pt["approx"])}
 
 
 def gap(rows: list[dict]) -> dict | None:

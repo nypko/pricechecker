@@ -236,3 +236,44 @@ def test_js_picks_match_python(site_build, phones, data):
         for st in SETTINGS:
             s = ",".join(st)
             assert _run_picks(f, tax_file, s) == json.loads(json.dumps(_py_picks(inputs, tax, s))), (pid, st)
+
+
+def _trend_case():
+    inputs = [_o(money={"eur": 1000}, ship={"EU": {"eur": 20}}, store_label="a"),
+              _o(money={"eur": 900}, ship={"EU": {"eur": 0}}, pay_ok={"paypal": False}, store_label="b"),
+              _o(money={"eur": 500}, ship={"EU": False}, store_label="far"),
+              _o(money={"eur": 800, "usd": 900, "usd_approx": True}, available=False, store_label="c")]
+    trend = {"global": {"12/256": {"a": [["2026-10-01", 1.1], ["2026-10-02", 1.0], ["2026-10-07", 0.9]],
+                                    "b": [["2026-10-01", 1.0], ["2026-10-02", 1.2]],
+                                    "far": [["2026-10-01", 0.5]], "c": [["2026-10-02", 1.0]]}}}
+    return inputs, trend
+
+
+def test_daily_best_reprices_each_day():
+    inputs, trend = _trend_case()
+    tax = {"EU": {"rate_pct": 20}}
+    out = view.daily_best(inputs, trend, "global", "12/256", tax, view.DEFAULT)
+    assert [(d["day"], d["store"]) for d in out] == [("2026-10-01", "b"), ("2026-10-02", "c"), ("2026-10-07", "a")]   # 3-day gap: no entries
+    scaled = [_o(money={"eur": 1100}, ship={"EU": {"eur": 20}}, store_label="a")]
+    assert out[2]["total"] == view.daily_best(inputs, {"global": {"12/256": {"a": [["d", 0.9]]}}}, "global", "12/256", tax, view.DEFAULT)[0]["total"]
+    assert view.daily_best(inputs, {"global": {"12/256": {"a": [["d", 1.1]]}}}, "global", "12/256", tax, view.DEFAULT)[0]["total"] \
+        == view.best_of(view.rows(scaled, tax, view.DEFAULT), "global", "12/256")["total"]   # list x1.1, shipping unchanged, tax recomputed
+    assert all(d["store"] != "far" for d in view.daily_best(inputs, trend, "global", "12/256", tax, view.DEFAULT))   # never delivers here
+    pp = view.daily_best(inputs, trend, "global", "12/256", tax, pricing.Settings("EU", "", "paypal", "eur"))
+    assert pp[0]["store"] == "a"                                  # b refuses paypal: excluded
+    assert view.daily_best(inputs, trend, "global", "16/512", tax, view.DEFAULT) == []
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_daily_best_matches_python_synthetic(tmp_path):
+    inputs, trend = _trend_case()
+    f = tmp_path / "phone.json"
+    f.write_text(json.dumps({"offers": inputs, "trend": trend}))
+    tax = tmp_path / "tax.json"
+    tax.write_text(json.dumps({"EU": {"rate_pct": 20}}))
+    for st in ("EU,,card,eur", "EU,,paypal,eur"):
+        r = subprocess.run(["node", "tests/js/view_cases.mjs", "--daily", "global,12/256", "--phone", str(f), "--tax", str(tax), "--settings", st],
+                           check=False, capture_output=True, text=True)
+        assert r.returncode == 0, r.stdout + r.stderr
+        want = view.daily_best(inputs, trend, "global", "12/256", {"EU": {"rate_pct": 20}}, pricing.Settings(*st.split(",")))
+        assert json.loads(r.stdout) == json.loads(json.dumps(want)), st

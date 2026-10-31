@@ -9,6 +9,9 @@ from ..pricing import Settings
 DEFAULT = Settings("EU", "", "card", "eur")
 
 
+_CUR = ("eur", "usd", "gbp", "cad", "aud")
+
+
 def _tail(c: pricing.Cost, unknown: int) -> str:
     if c.ship is None:
         return "+ shipping, tax?" if c.duties is None else "+ shipping"
@@ -61,6 +64,28 @@ def best_of(rows: list[dict], edition: str, storage: str | None = None) -> dict 
     """The first (best) current, payable row of the edition; with storage, only that storage (exact match)."""
     return next((r for r in rows if r["state"] == "ok" and r["edition"] == edition
                  and (storage is None or r["storage"] == storage)), None)
+
+
+def daily_best(inputs: list[dict], trend: dict, edition: str, storage: str, tax_cfg: dict, s: Settings) -> list[dict]:
+    """The best delivered price of the edition/storage on each day with a point: a point's store re-priced as its current
+    offer with the point's ratio applied, ranked by rows/best_of so delivery, payment and staleness rules are today's."""
+    series = ((trend.get(edition) or {}).get(storage)) or {}
+    days: dict[str, list[dict]] = {}
+    for label, points in series.items():
+        cur = next((o for o in inputs if o.get("store_label") == label and o.get("edition") == edition
+                    and o.get("storage") == storage), None)
+        if cur is None:
+            continue
+        for day, ratio in points:
+            # approximation: history has only the native price, so every currency is scaled by the same ratio
+            money = {k: (v * ratio if k in _CUR else v) for k, v in (cur.get("money") or {}).items()}
+            days.setdefault(day, []).append({**cur, "money": money, "available": True})
+    out = []
+    for day in sorted(days):
+        best = best_of(rows(days[day], tax_cfg, s), edition, storage)
+        if best is not None:
+            out.append({"day": day, "total": best["total"], "store": best["store"], "approx": best["approx"]})
+    return out
 
 
 def gap(rows: list[dict]) -> dict | None:

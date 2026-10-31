@@ -52,6 +52,31 @@ export function bestOf(rows, edition, storage = null) {
   return rows.find((r) => r.state === "ok" && r.edition === edition && (storage === null || r.storage === storage)) ?? null;
 }
 
+const CUR = ["eur", "usd", "gbp", "cad", "aud"];
+
+// The best delivered price of the edition/storage on each day with a point: a point's store re-priced as its current
+// offer with the point's ratio applied, ranked by rows/bestOf so delivery, payment and staleness rules are today's.
+export function dailyBest(inputs, trend, edition, storage, tax, s) {
+  const series = ((trend || {})[edition] || {})[storage] || {};
+  const days = new Map();
+  for (const [label, points] of Object.entries(series)) {
+    const cur = inputs.find((o) => o.store_label === label && o.edition === edition && o.storage === storage);
+    if (!cur) continue;
+    for (const [day, ratio] of points) {
+      // approximation: history has only the native price, so every currency is scaled by the same ratio
+      const money = Object.fromEntries(Object.entries(cur.money || {}).map(([k, v]) => [k, CUR.includes(k) ? v * ratio : v]));
+      if (!days.has(day)) days.set(day, []);
+      days.get(day).push({ ...cur, money, available: true });
+    }
+  }
+  const out = [];
+  for (const day of [...days.keys()].sort()) {
+    const best = bestOf(rows(days.get(day), tax, s), edition, storage);
+    if (best) out.push({ day, total: best.total, store: best.store, approx: best.approx });
+  }
+  return out;
+}
+
 // China vs Global at the same RAM/storage: settled totals of ok rows only; the storage where China is cheapest.
 export function gap(rows) {
   const best = new Map();

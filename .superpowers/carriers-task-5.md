@@ -5,14 +5,14 @@ Graphics/OCR: none needed. Every table was text (PDF text extracted with pdftote
 Succession: only Greece (WIND now NOVA, EETT table "WIND νυν NOVA") and Romania (Telekom merged into Vodafone, below).
 
 ## Summary
-BG 3/3 complete, GR 3/3 complete, CY 3/4 complete (Cyta, Epic, PrimeTel; Cablenet not), RO 0/3 complete (no single current regulator table; all bands individually sourced). MVNOs: none verified anywhere, all empty. No nulls in lte/nr.
+BG 3/3 complete, GR 3/3 complete, CY 0/4 complete (fix round 1: Cyta, Epic, PrimeTel set complete false), RO 0/3 complete (no single current regulator table; all bands individually sourced). MVNOs: none verified anywhere, all empty. No nulls in lte/nr.
 
 ## Bulgaria (all licensed, complete true) - CRC register page
 https://crc.bg/en/articles/2535/... (single table of all permits, 700/800/900/1800/2 GHz/2.6/3.6/26 GHz; holders A1 Bulgaria EAD, Vivacom Bulgaria EAD, Yettel Bulgaria EAD only). Cross-check: CEPT ECO Report 03 (18 Sep 2024), Bulgaria section, same blocks (kind other).
 - 700: A1 703-713/758-768, Vivacom 713-723/768-778, Yettel 723-733/778-788, all 2x10, expiry 28.11.2038. 800: A1 791-801/832-842, Vivacom 801-811/842-852, Yettel 811-821/852-862, 2x10, 2038.
 - 900: 2x11.6 each (A1 to 2034, Vivacom 2034, Yettel 23.01.2031). 1800: 2x25 each (same expiries). 2 GHz: 2x20 each, expiry 25.04.2035. ECO (2024) still showed 25.04.2025 for 2 GHz; the CRC page now says 2035, so the renewal is on the regulator page (rule 6 met by the CRC page itself).
 - 2.6: 2x20 each, 2510-2530/2630-2650 (A1), 2530-2550/2650-2670 (Vivacom), 2550-2570/2670-2690 (Yettel), expiry 2041. All paired, so B7/n7. No unpaired 2570-2620 block held by anyone (nothing unexplained).
-- 3.6: 120 MHz each in 3440-3800, expiry 11.05.2041 -> n78. 26 GHz: all three -> n258. The CRC table has one 26 GHz row with no holder name (26.7-26.9 GHz); ECO names it Vivacom. Irrelevant to the lists (all three already have n258).
+- 3.6: 120 MHz each in 3440-3800, expiry 11.05.2041 -> n78. 26 GHz: all three -> n258. Every 26 GHz row names a holder; Vivacom has a second entry, 26.7-26.9 GHz, to 24.11.2042 (ECO agrees). All three have n258.
 - All three: lte 1,3,7,8,20,28; nr 1,3,7,8,20,28,78,258. Duplex labels: the CRC page has no paired/unpaired column; pairing is read from the UL/DL pair of ranges.
 - MVNOs: none verified.
 
@@ -25,7 +25,7 @@ https://www.eett.gr/wp-content/uploads/2026/02/...φάσμα_02.02.2026.pdf, Tab
 - Cosmote, Vodafone: lte 1,3,7,8,20,28,38; nr 1,3,7,8,20,28,38,78,258. Nova: lte 1,3,7,8,20,28; nr 1,3,7,8,20,28,78,258.
 - MVNOs: none verified.
 
-## Cyprus (Cyta, Epic, PrimeTel complete; Cablenet not) - DEC (regulator)
+## Cyprus (all four complete false after fix round 1) - DEC (regulator)
 Sources fetched: DEC consultation doc 2019 (Tables 1-4 give each holder's ranges, duplex labelled "(FDD)/(TDD)"); DEC consultation doc 3 Feb 2023 on renewing 800/900/1800/2100/2600 rights (Tables 1-2 with expiry dates, and: 4 operators received 700 and 3600 authorisations in 2021, 20 years); results page 4 Apr 2023; DEC announcement of contest D1/2024; ECO Report 03 Cyprus section (kind other).
 - Validity: Cyta 900/1800/2100 expired 27.02.2024 and Epic 1.12.2023 in the 2023 DEC table; DEC proposed renewal to 21.06.2029 and said it would proceed at once (results doc). The renewal itself is evidenced by ECO Report 03: "License was renewed on 2023-10-13. Expire date extended from 2023-12-01 to 2029-06-21" for each block. That is a secondary (CEPT, from the administration) source for the renewal; I did not find the DEC renewal decision itself. This is the one place where a renewal rests on a kind-other source.
 - Cyta: 700, 800 (2x10), 900 (2x12.2), 1800 (2x24.8), 2100 (2x15), 2600 FDD 2x20, 2600 TDD 15 MHz (labelled TDD), 3500-3600. lte 1,3,7,8,20,28,38; nr +78. Epic: the same with 3700-3800.
@@ -45,3 +45,8 @@ No single current ANCOM holdings table was found (the ANCOM licence register is 
 - Orange: lte 1,3,7,8,20,28; nr +78. Vodafone: lte 1,3,8,20,28; nr +78. Digi: 900, 1800, 2100, 2600 FDD (B7), 2600 TDD (B38), 3.4-3.8: lte 1,3,7,8,38; nr 1,3,7,8,38,78. Digi has no 700 or 800.
 - Not found: 26 GHz in Romania (no ANCOM award seen), Telekom's exact holdings after temporary sharing with Vodafone, Digi 2100 own-licence extension.
 - MVNOs: none verified.
+
+## Fix round 1 (controller rulings)
+- CY Cyta, Epic, PrimeTel: complete false (bands kept). Reason 1: the 900/1800/2100 renewal to 2029 rests only on CEPT ECO Report 03 (kind other); no DEC decision found. Reason 2: no source shows whether 26 GHz was awarded (DEC consultation Feb-Mar 2026, results unread, HTTP 403).
+- CY: the 800 and 2600 expiry dates after the 2023 renewal consultation (21.06.2029) are unverified by any DEC decision.
+- RO Digi: the 2100 assignment (1940-1950/2130-2140) is in force per the Oct 2025 ANCOM release; its end date (5 Apr 2029 vs 31 Dec 2031) is unconfirmed.

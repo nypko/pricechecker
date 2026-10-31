@@ -13,7 +13,7 @@ TABLE = carriers.band_table()
 
 def _doc():
     return {"country": "DE", "networks": [{
-        "id": "de-telekom", "name": "Telekom", "lte": [1, 3, 7, 20], "nr": [1, 3, 78], "mvnos": ["Congstar"],
+        "id": "de-telekom", "name": "Telekom", "lte": [1, 3, 7, 20], "nr": [1, 3, 78], "basis": "used", "complete": False, "mvnos": ["Congstar"],
         "sources": [{"url": "https://www.telekom.de/netz", "kind": "carrier", "checked": "2026-10-01"}]}]}
 
 
@@ -44,6 +44,11 @@ def test_thirty_one_countries():
     lambda n: n.update(nr=[4]),            # an LTE-only number is not an NR band
     lambda n: n.update(lte="1,3"),
     lambda n: n.update(mvnos="Congstar"),
+    lambda n: n.pop("basis"),
+    lambda n: n.update(basis="guessed"),
+    lambda n: n.pop("complete"),
+    lambda n: n.update(complete="yes"),
+    lambda n: n.update(complete=None),
     lambda n: n.update(mvnos=[1]),
     lambda n: n.update(sources=[]),
     lambda n: n["sources"][0].update(url="http://www.telekom.de"),

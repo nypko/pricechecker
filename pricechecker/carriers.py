@@ -1,8 +1,9 @@
 """Mobile networks: config/carriers/<CC>.yaml, one file per country, and the band table (config/bands.yaml).
 
-File: country (ISO code, the file name); networks [{id, name, lte: [int]|null, nr: [int]|null, mvnos: [str],
-sources [{url (https), kind: regulator|carrier|brand|other, checked: YYYY-MM-DD}]}].
-lte/nr list the bands the network uses (deployed, not just licensed); null = not researched. Band numbers must be in
+File: country (ISO code, the file name); networks [{id, name, lte: [int]|null, nr: [int]|null, basis: used|licensed,
+complete: bool, mvnos: [str], sources [{url (https), kind: regulator|carrier|brand|other, checked: YYYY-MM-DD}]}].
+lte/nr list the bands the network uses (basis used) or the regulator says it holds (basis licensed); complete = a
+source gives the full list; null = not researched. Band numbers must be in
 the band table, whose `class` (low <1 GHz, mid 1-2.7 GHz, high 3-7 GHz, mmwave >24 GHz) is the only place classes live."""
 import calendar
 import datetime
@@ -20,6 +21,7 @@ BANDS_FILE = Path("config/bands.yaml")
 COUNTRIES: tuple[str, ...] = (
     "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU",
     "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB", "US", "CA", "AU")
+BASES = ("used", "licensed")
 KINDS = ("regulator", "carrier", "brand", "other")
 CLASSES = ("low", "mid", "high", "mmwave")
 
@@ -70,6 +72,10 @@ def _network_problems(n, table: dict) -> list[str]:
             out.append(f"{who}: {kind} must be a list of band numbers or null")
             continue
         out += [f"{who}: {kind} band {x} is not in config/bands.yaml" for x in xs if x not in table[kind]]
+    if n.get("basis") not in BASES:
+        out.append(f"{who}: basis must be one of {'|'.join(BASES)} ({n.get('basis')})")
+    if not isinstance(n.get("complete"), bool):
+        out.append(f"{who}: complete must be true or false ({n.get('complete')})")
     mv = n.get("mvnos", [])
     if not isinstance(mv, list) or not all(isinstance(x, str) and x for x in mv):
         out.append(f"{who}: mvnos must be a list of names")

@@ -51,10 +51,12 @@ assert.doesNotMatch(chips, /data-m="12\/256"[^>]*disabled/);
 assert.equal(memChips([r("china", "base")], "base", s), "");
 
 // keyboard focus: the same control is found again after a repaint
-const el = (tag, attrs, cls, boxId, own) => ({ tagName: tag, classList: cls ? [cls] : [], hasAttribute: (a) => a in attrs, getAttribute: (a) => attrs[a],
-  parentElement: { closest: () => (boxId ? { id: boxId } : null) }, id: own || "" });
-assert.equal(focusSelector(el("BUTTON", { "data-e": "global" }, "pickbtn", "duel", "tab-global")), '#duel button.pickbtn[data-e="global"]');   // the tab has an id of its own
-assert.equal(focusSelector(el("BUTTON", { "data-m": "12/512" }, "near", "duel")), '#duel button.near[data-m="12/512"]');
+const el = (tag, attrs, cls, boxId, own, side) => ({ tagName: tag, classList: cls ? [cls] : [], hasAttribute: (a) => a in attrs, getAttribute: (a) => attrs[a],
+  parentElement: { closest: () => (boxId ? { id: boxId } : null) }, id: own || "",
+  closest: () => (side ? { getAttribute: () => side } : null) });
+assert.equal(focusSelector(el("BUTTON", { "data-e": "global" }, "pickbtn", "duel", "tab-global")), '#duel button.pickbtn[data-e="global"]');   // the select button has an id of its own
+// a nearest button is gone after the repaint: the chip for its memory, else its box's select button
+assert.equal(focusSelector(el("BUTTON", { "data-m": "12/512" }, "near", "duel", "", "global")), '#s-mems button[data-m="12/512"], #duel .side[data-e="global"] button.pickbtn');
 assert.equal(focusSelector(el("BUTTON", { "data-m": "12/256" }, null, "s-mems")), '#s-mems button[data-m="12/256"]');
 assert.equal(focusSelector(el("BUTTON", { "data-s": "total" }, null, "s-ledger")), '#s-ledger button[data-s="total"]');
 assert.equal(focusSelector(el("A", { "data-e": "china" }, "go", "duel")), null);

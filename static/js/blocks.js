@@ -96,12 +96,6 @@ function why(best, pick, s) {
   return ["Only one store", "we check sells this version and memory."];
 }
 
-/** The edition's memories (no "base"), smallest first, each with its best current payable row (or null). */
-export function memOptions(rows, edition) {
-  const sts = [...new Set(rows.filter((r) => r.edition === edition && r.storage !== "base" && ["ok", "nopay", "stale"].includes(r.state)).map((r) => r.storage))];
-  return sts.sort(memCmp).map((st) => [st, bestOf(rows, edition, st)]);
-}
-
 const httpsLink = (r) => typeof r.link === "string" && /^https:\/\//.test(r.link);   // offers.py drops any other link
 const go = (r, cls) => !httpsLink(r) ? "" : `<a class="${cls}" href="${esc(r.link)}" ${LINK}>View at ${esc(r.store)}<span aria-hidden="true"> ↗</span></a>`;
 const total = (r, s) => (r.approx ? "≈" : "") + money(r.total, s.cur) + (r.tail ? `<small>${esc(r.tail)}</small>` : "");
@@ -111,12 +105,13 @@ const edCls = (e) => (e === "china" ? "cn" : "gl");
 /** One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what is
  *  left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the state
  *  text if the version has rows there, else "Not sold with <memory>" and a button to the nearest memory it is sold with.
- *  sw = false: the plain box for a page with no version switch (no tab button, no "means" link; the nearest button stays). */
+ *  sw = false: the plain box for a page with no version switch (no toggle button, no "means" link; the nearest button stays). */
 export function priceBox(rows, edition, storage, s, labels, on = false, sw = true) {
-  const b = bestOf(rows, edition, storage), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
+  // storage "base" (an offer with no listed memory) names no memory the other version could lack: its box shows its own best current offer
+  const b = bestOf(rows, edition, storage) || (storage === "base" ? bestOf(rows, edition) : null), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
-  // the select button is the tab (its links and the nearest button sit beside it, not inside it)
-  const tabOpen = sw ? `<button type="button" class="pickbtn" data-e="${edition}" role="tab" aria-selected="${on ? "true" : "false"}" aria-controls="pick-panel" id="tab-${edition}">` : "";
+  // the select button is a toggle (its links and the nearest button sit beside it, not inside it)
+  const tabOpen = sw ? `<button type="button" class="pickbtn" data-e="${edition}" aria-pressed="${on ? "true" : "false"}" aria-controls="pick-panel" id="tab-${edition}">` : "";
   const tabClose = sw ? "</button>" : "";
   const root = `<div class="side ${cls}${sw && on ? " on" : ""}`;
   if (!b) {
@@ -129,12 +124,13 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     if (pool.length) return none(pool.every((r) => r.state === "soldout") ? "Sold out at every store we check" : "No current price for your settings") + "</div>";
     if (!all.length) return none("No current price for your settings") + "</div>";
     const nm = nearestMemory(rows, edition, storage);
+    const nb = nm && bestOf(rows, edition, nm);
     return none(`Not sold with ${memShort(storage)}`, false) +
-      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${money(bestOf(rows, edition, nm).total, s.cur)}&nbsp;→</button>` : "") + "</div>";
+      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${nb.approx ? "≈" : ""}${money(nb.total, s.cur)}<span aria-hidden="true">&nbsp;→</span></button>` : "") + "</div>";
   }
   return `${root}" data-block="price_box" data-e="${edition}">${tabOpen}` +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div>` +
-    (b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${money(other.total - b.total, s.cur)} less</p>` : "") +
+    (storage !== "base" && b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${b.approx || other.approx ? "≈" : ""}${money(other.total - b.total, s.cur)} less</p>` : "") +
     `<p class="st">at <b>${esc(b.store)}</b></p>` +
     (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose +
     (sw && edition === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") + go(b, "go") + "</div>";
@@ -152,7 +148,7 @@ export function memChips(rows, storage, s) {
 /** The details panel under the picked version's box: row = bestOf(rows, edition, storage); pick = every row of that version and memory. */
 export function verdict(row, pick, s, labels, now = null) {
   const ed = row ? row.edition : pick.length ? pick[0].edition : null;
-  const open = `<section class="verdict panel" id="pick-panel" role="tabpanel"${ed ? ` aria-labelledby="tab-${esc(ed)}"` : ""} data-block="verdict">`;
+  const open = `<section class="verdict panel" id="pick-panel" role="region"${ed ? ` aria-labelledby="tab-${esc(ed)}"` : ""} data-block="verdict">`;
   if (!row || row.state !== "ok") return open + '<p class="q">No store we check has a current price for this version and memory.</p></section>';
   const t = row.trust || {}, rv = t.reviews, w = why(row, pick, s);
   return open + `<div class="what"><span class="vpill ${edCls(row.edition)}">${esc(labels[row.edition])} version</span><span class="mpill">${memText(row.storage)}</span></div>` +

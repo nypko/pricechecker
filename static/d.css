@@ -102,12 +102,6 @@ h1 em { font-style: normal; font-weight: 500; color: var(--ink-2); }
 .side.cn .go { background: var(--cn); } .side.gl .go { background: var(--gl); }
 :root[data-theme="dark"] .side .go { color: #0e1117; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .side .go { color: #0e1117; } }
-.gapline { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; font-size: .98rem; }
-.gapline b { font-weight: 700; }
-.gapline .bar { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; margin-top: 10px; font: 600 .82rem var(--body); }
-.gapline .track { height: 8px; border-radius: 999px; background: var(--rule); position: relative; }
-.gapline .track span { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 999px; background: var(--cn); }
-.gapline .fine { margin: 8px 0 0; font-size: .84rem; color: var(--ink-2); }
 
 .means { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 8px; }
 .means li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; font-size: .94rem; }
@@ -215,8 +209,6 @@ footer p { margin: 0 0 8px; }
 .side { display: flex; flex-direction: column; }
 .side .pickbtn { all: unset; display: block; cursor: pointer; border-radius: 8px; }
 .side .pickbtn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.side.on.cn { box-shadow: 0 0 0 2px var(--cn); border-color: var(--cn); }
-.side.on.gl { box-shadow: 0 0 0 2px var(--gl); border-color: var(--gl); }
 .side .go { margin-top: auto; padding: 0 10px; text-align: center; line-height: 1.2; }
 /* switch boxes: the panel has the one big button, so the box's store link is a small text link like the ones in the store list */
 #duel .side .go { display: block; margin-top: auto; padding: 10px 0 0; min-height: 0; border-radius: 0; background: none; color: inherit; font: 600 .86rem/1.3 var(--body); text-align: left; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
@@ -236,7 +228,6 @@ footer p { margin: 0 0 8px; }
 body:has(.buybar) footer { padding-bottom: 90px; }
 .duel.one { grid-template-columns: 1fr; }
 .only { margin: -2px 0 12px; font-size: .9rem; color: var(--ink-2); }
-.gapline.slim { padding: 10px 14px; font-size: .92rem; }
 
 .lbl { font: 700 .76rem var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); margin: 18px 0 8px; }
 
@@ -616,12 +607,15 @@ html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* unt
 .nf-search input:focus { outline: none; border-color: var(--ink); }
 .nf-search button { min-height: 48px; padding: 0 20px; border: 0; border-radius: 14px; background: var(--ink); color: var(--paper); font: 600 1rem var(--body); cursor: pointer; }
 
-/* memory first: the chips sit above the two boxes; the chosen box joins the details panel under it (a tab and its tabpanel) */
+/* memory first: the chips sit above the two boxes; the chosen box joins the details panel under it (a toggle and its panel) */
 .mems { margin-bottom: 10px; }
 .side .less { margin: 2px 0 6px; font: 700 .84rem var(--body); color: var(--good); }
 .side .near { display: block; width: 100%; margin-top: 10px; min-height: 44px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--ink); background: var(--paper); color: var(--ink); font: 600 .84rem/1.25 var(--body); text-align: left; cursor: pointer; }
 .side .near:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .side.on.cn, .side.on.gl { box-shadow: none; border-color: var(--ink-card); border-width: 2px; border-bottom-width: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: -1px; padding-bottom: 14px; }
+/* dark: --ink-card is close to --rule, so the picked box keeps its version colour on the border */
+:root[data-theme="dark"] .side.on.cn { border-color: var(--cn); } :root[data-theme="dark"] .side.on.gl { border-color: var(--gl); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .side.on.cn { border-color: var(--cn); } :root:not([data-theme="light"]) .side.on.gl { border-color: var(--gl); } }
 .duel:has(.side.on) { margin-bottom: 0; }
 .verdict.panel { margin-top: 0; }
 .duel:has(.side.on:first-child) ~ .verdict.panel, .duel:has(.side.on:first-child) ~ * .verdict.panel { border-top-left-radius: 0; }

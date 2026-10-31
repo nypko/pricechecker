@@ -936,8 +936,8 @@ def test_phone_page_is_memory_first_on_made_up_prices():
                                        ("wonda", pid, "global", "12/256", 1300.0, True), ("giztop", pid, "global", "16/512", 1500.0, True)])
     h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
     _memory_first(h)
-    assert 'id="duel" role="tablist"' in h and 'class="pick"' not in h
-    assert h.count('data-block="mem_chips"') == 1 and h.count('role="tab"') == 2
+    assert 'id="duel" role="group" aria-label="Versions"' in h and 'class="pick"' not in h
+    assert h.count('data-block="mem_chips"') == 1 and h.count('class="pickbtn"') == 2 and 'role="tab' not in h
     assert 'data-mem="12/256"' in h and 'data-ed="china"' in h
     assert len(h.encode()) <= 60_000
 

@@ -41,14 +41,19 @@ export function parseHash(hash) {
 }
 
 /** A selector for the same control after a repaint: its container's id, its first class and its data-e / data-m /
- *  data-s / data-f value ("#duel button.near[data-m=\"12/256\"]"); null for anything else. */
+ *  data-s / data-f value ("#s-mems button[data-m=\"12/256\"]"); null for anything else. A nearest button is gone after the
+ *  repaint: the chip for its memory (now pressed) takes the focus, else its box's select button. */
 export function focusSelector(el) {
   if (!el || !el.getAttribute || el.tagName !== "BUTTON") return null;
   const attr = ["data-e", "data-m", "data-s", "data-f"].find((a) => el.hasAttribute(a));
-  const box = attr && el.parentElement && el.parentElement.closest("[id]");   // not the button itself: a tab has an id of its own
+  const box = attr && el.parentElement && el.parentElement.closest("[id]");   // not the button itself: a select button has an id of its own
   if (!box) return null;
-  const cls = el.classList && el.classList[0];
-  return `#${box.id} button${cls ? "." + cls : ""}[${attr}="${String(el.getAttribute(attr)).replace(/["\\]/g, "\\$&")}"]`;
+  const cls = el.classList && el.classList[0], q = (v) => String(v).replace(/["\\]/g, "\\$&");
+  if (cls === "near") {
+    const side = el.closest && el.closest(".side"), ed = side && side.getAttribute("data-e");
+    return `#s-mems button[data-m="${q(el.getAttribute("data-m"))}"]` + (ed ? `, #duel .side[data-e="${q(ed)}"] button.pickbtn` : "");
+  }
+  return `#${box.id} button${cls ? "." + cls : ""}[${attr}="${q(el.getAttribute(attr))}"]`;
 }
 
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
@@ -86,7 +91,7 @@ function wire(root) {
     if (!$("duel")) return;
     const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;   // keyboard focus survives the repaint
     set($("s-mems"), B.memChips(rows, S.mem, s));
-    set($("duel"), eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed)).join(""));   // each box's tab button repaints with aria-selected
+    set($("duel"), eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed)).join(""));   // each box's select button repaints with aria-pressed
     const best = bestOf(rows, S.ed, S.mem), pick = rows.filter((r) => r.edition === S.ed && r.storage === S.mem);
     set($("s-verdict"), B.verdict(best, pick, s, L, now));
     set($("s-receipt"), B.receipt(best, s, L));
@@ -149,10 +154,10 @@ function wire(root) {
   root.addEventListener("pointerdown", () => { if (root.dataset.file) loadDocs().catch(() => {}); }, { once: true });   // warm up before the tap lands
   root.addEventListener("click", (ev) => {
     const t = ev.target;
-    const tab = t.closest("#duel button.pickbtn"), near = t.closest("#duel button.near"), mem = t.closest("#s-mems button[data-m]");
+    const pick = t.closest("#duel button.pickbtn"), near = t.closest("#duel button.near"), mem = t.closest("#s-mems button[data-m]");
     const f = t.closest("#dfilt button[data-f]"), sort = t.closest("#s-ledger button[data-s]");
     const pickMem = (m, ed) => { S.touched = true; S.f = {}; update(false, true, (rows) => pickForMemory(rows, m, ed)); };
-    if (tab) { S.touched = true; S.f = {}; const ed = tab.dataset.e; update(false, true, () => ({ ed, mem: S.mem })); }
+    if (pick) { S.touched = true; S.f = {}; const ed = pick.dataset.e; update(false, true, () => ({ ed, mem: S.mem })); }
     else if (near) pickMem(near.dataset.m, near.closest(".side").dataset.e);
     else if (mem && !mem.disabled) pickMem(mem.dataset.m, S.ed);
     else if (f && !f.disabled) { S.f[f.dataset.f] = !S.f[f.dataset.f]; update(); }

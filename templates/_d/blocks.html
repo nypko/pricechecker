@@ -24,15 +24,16 @@
     is left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the
     state text if the version has rows there (sold out, not delivered, stale), else "Not sold with <memory>" and a
     button to the nearest memory it is sold with. on: this version is the one the page shows in the details panel.
-    switch=False: a plain box for a page with no version switch (the compare page): not a tab, no "means" link; the
+    switch=False: a plain box for a page with no version switch (the compare page): no toggle, no "means" link; the
     nearest button stays, so a column can reprice the page. -#}
 {%- macro price_box(rows, edition, storage, s, labels, on=False, switch=True) -%}
-{%- set b = best_of(rows, edition, storage) -%}
+{#- storage "base" (an offer with no listed memory) names no memory the other version could lack: its box shows its own best current offer at any memory -#}
+{%- set b = best_of(rows, edition, storage) or (best_of(rows, edition) if storage == "base" else none) -%}
 {%- set o_ed = "global" if edition == "china" else "china" -%}
 {%- set other = best_of(rows, o_ed, storage) -%}
 {%- set cls = "cn" if edition == "china" else "gl" -%}
-{#- the select button is the tab (its links and the nearest button sit beside it, not inside it) -#}
-{%- set tab_open = '<button type="button" class="pickbtn" data-e="' ~ edition ~ '" role="tab" aria-selected="' ~ ('true' if on else 'false') ~ '" aria-controls="pick-panel" id="tab-' ~ edition ~ '">' if switch else "" -%}
+{#- the select button is a toggle (its links and the nearest button sit beside it, not inside it) -#}
+{%- set tab_open = '<button type="button" class="pickbtn" data-e="' ~ edition ~ '" aria-pressed="' ~ ('true' if on else 'false') ~ '" aria-controls="pick-panel" id="tab-' ~ edition ~ '">' if switch else "" -%}
 {%- set tab_close = "</button>" if switch else "" -%}
 {%- set root_cls = cls ~ (" on" if switch and on else "") -%}
 {%- if not b -%}
@@ -48,13 +49,14 @@
 <div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><div class="big num">–</div><p class="st">No current price for your settings</p>{{ tab_close|safe }}</div>
 {%- else -%}
 {%- set nm = nearest_memory(rows, edition, storage) -%}
+{%- set nb = best_of(rows, edition, nm) if nm else none -%}
 <div class="side {{ root_cls }} none" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div><p class="st">Not sold with {{ mem_short(storage) }}</p>{{ tab_close|safe }}
-{%- if nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ money(best_of(rows, edition, nm).total, s.cur) }}&nbsp;→</button>{% endif -%}
+{%- if nm %}<button type="button" class="near" data-m="{{ nm }}">Nearest: {{ mem_short(nm) }} · {{ "≈" if nb.approx }}{{ money(nb.total, s.cur) }}<span aria-hidden="true">&nbsp;→</span></button>{% endif -%}
 </div>
 {%- endif -%}
 {%- else -%}
 <div class="side {{ root_cls }}" data-block="price_box" data-e="{{ edition }}">{{ tab_open|safe }}<div class="lab">{{ labels[edition] }} version</div>{{ _mem(b.storage) }}<div class="big num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}</div>
-{%- if b.storage != "base" and b.settled and other and other.settled and b.total < other.total %}<p class="less">{{ money(other.total - b.total, s.cur) }} less</p>{% endif -%}
+{%- if storage != "base" and b.storage != "base" and b.settled and other and other.settled and b.total < other.total %}<p class="less">{{ "≈" if b.approx or other.approx }}{{ money(other.total - b.total, s.cur) }} less</p>{% endif -%}
 <p class="st">at <b>{{ b.store }}</b></p>
 {%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}
 {{ tab_close|safe }}
@@ -81,7 +83,7 @@
     or not-payable row); pick = every row of that version and memory, for "why this one". -#}
 {%- macro verdict(row, pick, s, labels, now=None) -%}
 {%- set ed = row.edition if row else (pick[0].edition if pick else none) -%}
-<section class="verdict panel" id="pick-panel" role="tabpanel"{% if ed %} aria-labelledby="tab-{{ ed }}"{% endif %} data-block="verdict">
+<section class="verdict panel" id="pick-panel" role="region"{% if ed %} aria-labelledby="tab-{{ ed }}"{% endif %} data-block="verdict">
 {%- if not row or row.state != "ok" -%}
 <p class="q">No store we check has a current price for this version and memory.</p>
 {%- else -%}

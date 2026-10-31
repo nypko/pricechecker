@@ -393,7 +393,7 @@ def test_price_box_without_the_version_switch(fixture_doc, tax):
         plain = macro("price_box", rows, e, "12/256", view.DEFAULT, labels, False, False)
         full = macro("price_box", rows, e, "12/256", view.DEFAULT, labels, True)
         assert "<button" not in plain and "means-link" not in plain and "aria-pressed" not in plain and " on" not in root_of(plain)
-        assert "role=" not in plain and "aria-selected" not in plain and "id=" not in plain
+        assert "role=" not in plain and "aria-pressed" not in plain and "id=" not in plain
         assert 'rel="sponsored nofollow noopener"' in plain and "View at" in plain and "delivered" in plain
         assert "<button" in full
     assert "means-link" in macro("price_box", rows, "china", "12/256", view.DEFAULT, labels, True)
@@ -471,16 +471,65 @@ def test_chips_empty_for_a_base_only_phone_and_the_box_shows_the_base_row(fixtur
     assert "RAM/storage not listed" in text(box) and "€1,180" in text(box) and "Not sold" not in text(box)
 
 
+@needs_node
+def test_price_box_for_a_base_pick_shows_the_other_versions_own_best_offer(fixture_doc, tax_file, tax, tmp_path):
+    """The pick is "base" (an offer with no listed memory): the other version isn't "not sold" with it. Its box shows its
+    own best current offer at any memory, with no nearest button and no "less" line (Jinja and JS alike)."""
+    labels = {"global": "Global", "china": "China"}
+    doc, _ = _oppo_docs(fixture_doc)
+    base = {**next(o for o in doc["offers"] if o["edition"] == "china"), "storage": "base"}
+    doc = {**doc, "offers": doc["offers"] + [base]}
+    f = tmp_path / "base-pick.json"
+    f.write_text(json.dumps(doc))
+    rows = view.rows(doc["offers"], tax, view.DEFAULT)
+    for e in ("china", "global"):
+        py = render_py(rows, view.DEFAULT, labels, e, "base", doc["meta"], doc["now"])
+        js = render_js(f, tax_file, view.DEFAULT, labels, e, "base", doc["meta"], doc["now"])
+        assert_same(py, js, f"base pick {e}")
+        box = py["price_box"]
+        assert "Not sold" not in text(box) and "not listed" not in text(box).replace("RAM/storage not listed", "") and "near" not in box and "less" not in box
+    gl = macro("price_box", rows, "global", "base", view.DEFAULT, labels, True)
+    assert "12 GB" in text(gl) and "€1,200" in text(gl) and "big num" in gl     # its cheapest offer, whichever memory
+    assert "RAM/storage not listed" in text(macro("price_box", rows, "china", "base", view.DEFAULT, labels, True))
+
+
+@needs_node
+def test_approximate_prices_keep_their_mark_on_the_nearest_button_and_the_less_line(oppo, fixture_doc, tax_file, tmp_path):
+    """The nearest button's price and the "less" amount carry the "≈" the box's own price has when the row is approximate
+    (Jinja and JS alike)."""
+    rows, _ = oppo
+    labels = {"global": "Global", "china": "China"}
+    approx = [{**r, "approx": True} if r["edition"] == "global" and r["storage"] == "16/512" else r for r in rows]
+    box = macro("price_box", approx, "global", "16/1024", view.DEFAULT, labels, True)
+    assert "· ≈€1,500" in text(box) and ">Nearest: 16 GB + 512 GB · ≈€1,500<span" in box
+    assert "· €1,500" in text(macro("price_box", rows, "global", "16/1024", view.DEFAULT, labels, True))
+    # the "less" line: approximate when either side is
+    for edition in ("china", "global"):
+        mark = [{**r, "approx": True} if r["edition"] == edition and r["storage"] == "12/256" else r for r in rows]
+        assert '<p class="less">≈€200 less</p>' in macro("price_box", mark, "china", "12/256", view.DEFAULT, labels, True)
+    assert '<p class="less">€200 less</p>' in macro("price_box", rows, "china", "12/256", view.DEFAULT, labels, True)
+    # JS: the same markup
+    src = (ROOT / "static" / "js" / "blocks.js").as_uri()
+    js = (f'import {{ priceBox }} from "{src}";\n'
+          f'const rows = {json.dumps(approx)}, mark = {json.dumps(mark)}, s = {json.dumps(dict(view.DEFAULT._asdict()))}, l = {json.dumps(labels)};\n'
+          'console.log(JSON.stringify([priceBox(rows, "global", "16/1024", s, l, true, true), priceBox(mark, "china", "12/256", s, l, true, true)]));')
+    r = subprocess.run(["node", "--input-type=module", "-e", js], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    near_js, less_js = json.loads(r.stdout)
+    assert text(near_js) == text(box) and "≈€1,500" in near_js
+    assert text(less_js) == text(macro("price_box", mark, "china", "12/256", view.DEFAULT, labels, True)) and "≈€200 less" in text(less_js)
+
+
 def test_price_box_not_sold_with_the_memory_offers_the_nearest(oppo):
     rows, rows_sold = oppo
     labels = {"global": "Global", "china": "China"}
     box = macro("price_box", rows, "global", "16/1024", view.DEFAULT, labels, False)
     assert text(box) == "Global version Not sold with 16 GB + 1 TB Nearest: 16 GB + 512 GB · €1,500 →"
-    assert "big" not in box and "€1,500&nbsp;→</button>" in box   # no lone placeholder; the arrow stays with the price
+    assert "big" not in box and '€1,500<span aria-hidden="true">&nbsp;→</span></button>' in box   # no lone placeholder; the arrow stays with the price, unread
     assert '<button type="button" class="near" data-m="16/512">' in box and "less" not in box and "€" in text(box)
-    # the select button is the tab; the root and the nearest button are not, and the nearest button is not inside the tab
-    assert '<button type="button" class="pickbtn" data-e="global" role="tab" aria-selected="false" aria-controls="pick-panel" id="tab-global">' in box
-    assert not re.match(r"<div[^>]*role=", box) and "aria-pressed" not in box and re.search(r"</button><button[^>]*class=\"near\"", box)
+    # the select button is the toggle; the root and the nearest button are not, and the nearest button is not inside it
+    assert '<button type="button" class="pickbtn" data-e="global" aria-pressed="false" aria-controls="pick-panel" id="tab-global">' in box
+    assert not re.match(r"<div[^>]*role=", box) and "role=" not in box and box.count("aria-pressed") == 1 and re.search(r"</button><button[^>]*class=\"near\"", box)
     # China does have it: priced, no "not sold" text
     ch = macro("price_box", rows, "china", "16/1024", view.DEFAULT, labels, True)
     assert "€1,700" in text(ch) and "Not sold" not in text(ch) and "near" not in ch
@@ -512,7 +561,7 @@ def test_version_with_no_current_price_anywhere_keeps_its_state_text(fixture_doc
         js = render_js(f, tax_file, s, labels, "global", "16/1024", fixture_doc["meta"], fixture_doc["now"])["price_box"]
         for box in (macro("price_box", rows, "global", "16/1024", s, labels, True), js):
             assert text(box) == f"Global version – {want[name]}", name
-            assert "near" not in box and 'role="tab"' in box
+            assert "near" not in box and 'aria-pressed="true"' in box
         # the same version at the memory its rows are at: unchanged
         assert want[name] in text(macro("price_box", rows, "global", "12/256", s, labels, True))
 
@@ -537,21 +586,22 @@ def test_cheaper_settled_box_says_how_much_less(oppo, fixture_doc, tax):
     assert "less" not in macro("price_box", eq, "china", "12/256", view.DEFAULT, labels, True)
 
 
-def test_boxes_are_tabs_and_the_verdict_is_their_panel(oppo):
+def test_boxes_are_toggles_and_the_verdict_is_their_region(oppo):
     rows, _ = oppo
     labels = {"global": "Global", "china": "China"}
     for e in ("china", "global"):
         for on in (True, False):
             box = macro("price_box", rows, e, "12/256", view.DEFAULT, labels, on)
-            assert f'role="tab" aria-selected="{"true" if on else "false"}" aria-controls="pick-panel" id="tab-{e}"' in box
+            assert f'aria-pressed="{"true" if on else "false"}" aria-controls="pick-panel" id="tab-{e}"' in box
+            assert "role=" not in box and "aria-selected" not in box
             assert (" on" in root_of(box)) == on
     best = view.best_of(rows, "china", "12/256")
     pick = [r for r in rows if r["edition"] == "china" and r["storage"] == "12/256"]
     panel = macro("verdict", best, pick, view.DEFAULT, labels)
-    assert re.match(r'<section class="verdict panel" id="pick-panel" role="tabpanel" aria-labelledby="tab-china"', panel)
+    assert re.match(r'<section class="verdict panel" id="pick-panel" role="region" aria-labelledby="tab-china"', panel)
     assert "Cheapest delivered" in text(panel) and "View at" in text(panel)
     empty = macro("verdict", None, [], view.DEFAULT, labels)
-    assert 'role="tabpanel"' in empty and "aria-labelledby" not in empty and "No store we check" in text(empty)
+    assert 'role="region"' in empty and "aria-labelledby" not in empty and "No store we check" in text(empty)
 
 
 @needs_node

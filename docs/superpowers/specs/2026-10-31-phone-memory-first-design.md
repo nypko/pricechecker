@@ -1,6 +1,6 @@
 # Phone page: memory first
 
-Status: DRAFT, 2026-10-31, awaiting approval. Follow-up to the D redesign (live since 31 Oct, main 1a98a4b).
+Status: APPROVED 2026-10-31. Follow-up to the D redesign (live since 31 Oct, main 1a98a4b).
 Design agreed in conversation on 2026-10-31; the user picked "both boxes at the chosen memory".
 
 ## 1. Problem
@@ -42,7 +42,7 @@ The same-memory gap line is removed: with both boxes at one memory the gap is vi
 - **Phone with one version**: one box (as today) plus the existing reason line; chips list that version's memories.
 - **Details panel**: today's verdict content (version + memory pills, total, store, delivery days, why this one,
   badges, one "View at <store>" button, checked time, affiliate line), laid out as a panel visually attached to the
-  selected box: tab pattern, boxes are `role="tab"` with `aria-selected`/`aria-controls`, panel `role="tabpanel"`.
+  selected box: toggle buttons (`aria-pressed`, `aria-controls`) in a labelled group, panel `role="region"` labelled by the picked button.
 - **Store links**: each box keeps a small "View at <store>" link (both stores reachable from the first screen); the
   panel has the one big button. The buy bar follows the panel's button (pinned when the boxes scroll away, hidden while
   the panel button is visible) — unchanged rule, new anchor.
@@ -62,7 +62,7 @@ Blocks (each = Jinja macro in templates/_d/blocks.html + function in static/js/b
 - `mem_chips(rows, storage, s)`: union of both versions' memories (no edition argument), sizes only, `aria-pressed`.
 - `price_box(rows, edition, storage, s, labels, on, switch)`: priced at `storage`; new "not sold" state with the
   nearest button (`data-m` of the nearest memory); "€X less" line when it is the cheaper settled box.
-- `verdict` → details panel markup (tabpanel), same content; `gap_line` removed.
+- `verdict` → details panel markup (region), same content; `gap_line` removed.
 - `buy_bar` unchanged.
 
 Page wiring: templates/phone.html order; static/js/phone.js pick state (memory first), `pickAfterSwitch` replaced by

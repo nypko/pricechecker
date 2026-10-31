@@ -29,8 +29,8 @@
 {% if v.eds %}
   <div id="s-mems">{{ b.mem_chips(v.rows, v.mem, s) }}</div>
   {#- #s-verdict is the live region: it stays put while paint() replaces the panel inside it (a region inserted with its content is not announced) -#}
-  {#- the boxes are the tabs and the details panel (#pick-panel) follows right after them, so the CSS can join the picked box to it -#}
-  <div class="duel{{ ' one' if v.eds|length < 2 }}" id="duel" role="tablist" aria-label="Version">
+  {#- the boxes' buttons are toggles and the details panel (#pick-panel) follows right after them, so the CSS can join the picked box to it -#}
+  <div class="duel{{ ' one' if v.eds|length < 2 }}" id="duel" role="group" aria-label="Versions">
     {%- for e in v.eds %}{{ b.price_box(v.rows, e, v.mem, s, L, e == v.ed) }}{% endfor -%}
   </div>
   <div id="s-verdict" aria-live="polite">{{ b.verdict(v.best, v.pick, s, L, v.now) }}</div>

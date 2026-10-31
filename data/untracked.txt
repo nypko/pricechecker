@@ -26,7 +26,6 @@ mobilemarvel	huawei-matebook-fold-2026/china
 mobilemarvel	huawei-matebook-fold-ultimate-design-2025/china
 mobilemarvel	huawei-pura-80-pro-plus/china
 mobilemarvel	huawei-pura-x/china
-mobilemarvel	iphone-duo/china
 mobilemarvel	leica-leitzphone-xiaomi-17-ultra-leica-edition/global
 mobilemarvel	oneplus-15-with/china
 mobilemarvel	oppo-bubble/china
@@ -65,7 +64,6 @@ mobilemarvel	xiaomi-15-ultra/china
 mobilemarvel	xiaomi-15-ultra/global
 averagedad	ad-prize-tickets/china
 averagedad	ad-wireless-charging-puck-15w/china
-averagedad	apple-iphone-duo/china
 averagedad	bow-folding-bluetooth-keyboard-for-huawei-mate-xt-ultimate/china
 averagedad	honor-magic-8-pro-rsr-porsche-design/china
 averagedad	honor-magic-v2-pen/china

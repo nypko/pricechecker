@@ -56,7 +56,9 @@ def trend_series(rows: list[dict], model_id: str, offers: list[dict], since: str
     """{edition: {storage: {store_label: [[day, ratio]]}}}: each day's price of a listing from `since` over the current
     price of the same store, edition and storage offer (both native). Listings with no current offer are left out.
     A history row in another currency than the offer's is converted through EUR with `rates`; without rates it is skipped."""
-    cur = {(o["store"], o["edition"], o["storage"]): o for o in offers}
+    cur: dict = {}
+    for o in offers:   # offers come in-stock and cheapest first: keep the first of a listing
+        cur.setdefault((o["store"], o["edition"], o["storage"]), o)
     same = []
     for r in rows:
         o = cur.get((r["store"], r["edition"], r["storage"]))

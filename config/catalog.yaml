@@ -1,12 +1,17 @@
 # Phones shown on the site. id + edition must match how the code normalizes store titles
 # (run `python -m pricechecker.run` and check data/untracked.txt for models seen but not listed).
 # also: other names stores use for the same phone (normalized ids), e.g. "Mate 90 RS Ultimate Design" for the Mate 90 RS.
+# ram: the RAM every unit has (GB), for Shopify listings that give storage only ("256GB" -> 12/256).
 # offers: product page URLs for 'webpage' stores (Giztop, Banggood, Geekbuying). Optional storage: "16/512".
 # Shopify and feed stores are matched automatically by id + edition.
 
 # announced: first official launch (usually China) - checked 2026-10-19 against GSMArena, PhoneArena, Huawei Central,
 # Gizmochina, Wikipedia and brand announcements. The site lists phones newest first by this date.
 phones:
+  # Apple: added 2026-10-31. Announced 9 Sep 2026 (Apple Newsroom "Apple unveils iPhone Duo"), on sale in China 23 Oct.
+  # Our stores list only the China model (A3721). ram: Apple doesn't publish RAM; Average Dad lists every unit as 12GB and
+  # The Mobile Marvel lists storage only, so its "256GB" is read as 12/256 to compare like for like.
+  - {id: apple-iphone-duo, edition: china, name: "Apple iPhone Duo", announced: 2026-09-09, ram: 12}
   # Google Pixel: added 2026-10-22 with Gomibo, the first tracked store that sells them (EU units; Pixels have no China version)
   - {id: google-pixel-10-pro, edition: global, name: "Google Pixel 10 Pro", announced: 2025-08-20}
   - {id: google-pixel-10-pro-xl, edition: global, name: "Google Pixel 10 Pro XL", announced: 2025-08-20}

@@ -133,7 +133,7 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     (storage !== "base" && b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${b.approx || other.approx ? "≈" : ""}${money(other.total - b.total, s.cur)} less</p>` : "") +
     `<p class="st">at <b>${esc(b.store)}</b></p>` +
     (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose +
-    (sw && edition === "china" ? '<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>' : "") + go(b, "go") + "</div>";
+    (sw && edition === "china" ? `<a class="means-link" href="#means-h">${esc(labels.means)}</a>` : "") + go(b, "go") + "</div>";
 }
 
 /** Above the boxes: one chip per memory either version has a row for (no "base"), smallest first, sizes only; a memory

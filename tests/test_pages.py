@@ -150,6 +150,16 @@ def test_china_only_phone_has_one_box_and_reason(site_build):
     assert "OnePlus 16 price: <em>China version</em>" in h
 
 
+def test_iphone_china_version_copy_is_apples_not_androids(site_build):
+    """An iPhone's "What the China version means" and explainer use Apple's entry in config/google.yaml: no Google Play
+    wording, no Google Wallet caveat."""
+    h = _phone(site_build, "apple-iphone-duo")
+    assert "What the China version means" in h
+    assert "The China version has no Apple Intelligence for now" in h
+    assert "<dt>Apple Intelligence</dt>" in h and "Apple may limit iPhone warranty service" in h
+    assert "Google" not in h[h.index('id="means-h"'):h.index("Price history by store")]
+
+
 @live
 @live_budgets
 def test_phone_pages_within_budget(site_build):

@@ -42,6 +42,7 @@ GROUPS: tuple[str, ...] = tuple(FIELDS)
 
 # brand (lowercase, as in the catalog) -> the brand's own domains; a source URL must be on one of them
 BRAND_HOSTS: dict[str, tuple[str, ...]] = {
+    "apple": ("apple.com", "apple.com.cn"),
     "google": ("google.com",),
     "honor": ("honor.com",),
     "huawei": ("huawei.com",),

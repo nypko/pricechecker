@@ -1,7 +1,8 @@
 {#- Plain-language explainers for shoppers new to importing. Native <details>, so they work by tap, keyboard and without JS. -#}
 
 {#- editions: list of "global"/"china" the phone is sold in (index: both); brand: phone brand, lower case ("" on the index);
-    google: the brand's entry from config/google.yaml plus the caveat (phone pages only);
+    google: the brand's entry from config/google.yaml plus the caveat (phone pages only); its optional apps_label,
+    global_apps, warranty, networks and language replace the Android wording (Apple);
     cl: what the non-Global version is called for this brand ("China", or "Asia" for Samsung and Sony) -#}
 {%- macro editions(eds, brand="", id="editions", google=none, cl="China") -%}
 {%- set both = "global" in eds and "china" in eds -%}
@@ -11,11 +12,11 @@
     <p>Usually the same phone and cameras. What changes is the software, the warranty and which mobile networks it's built for.{% if both %} The {{ cl }} version is often cheaper.{% endif %}</p>
     <dl class="ed-diff">
       <div>
-        <dt>Google apps</dt>
+        <dt>{{ google.apps_label if google and google.apps_label else "Google apps" }}</dt>
         {%- if brand == "huawei" %}
         <dd>No Google services on Huawei phones in either version. Apps come from Huawei's AppGallery.</dd>
         {%- else %}
-        <dd><span class="badge global">Global</span> Google Play and Google apps installed.</dd>
+        <dd><span class="badge global">Global</span> {{ google.global_apps if google and google.global_apps else "Google Play and Google apps installed." }}</dd>
         {%- if google %}
         <dd><span class="badge china">{{ cl }}</span> {{ google.long }}{% if google.caveat %} {{ google.caveat }}{% endif %}</dd>
         {%- else %}
@@ -26,12 +27,16 @@
       <div>
         <dt>Warranty</dt>
         <dd><span class="badge global">Global</span> International warranty from many sellers. Check the store.</dd>
+        {%- if google and google.warranty %}
+        <dd><span class="badge china">{{ cl }}</span> {{ google.warranty }}</dd>
+        {%- else %}
         <dd><span class="badge china">{{ cl }}</span> Usually no manufacturer warranty outside {{ "China" if cl == "China" else "China, Hong Kong and Taiwan" }}. You rely on the store's own warranty and returns.</dd>
+        {%- endif %}
       </div>
       <div>
         <dt>Networks &amp; SIM</dt>
         <dd><span class="badge global">Global</span> Built for networks worldwide; eSIM where the model has it.</dd>
-        <dd><span class="badge china">{{ cl }}</span> May miss some 4G/5G bands your carrier uses, and often has no eSIM. Check the band list before you buy.</dd>
+        <dd><span class="badge china">{{ cl }}</span> {{ google.networks if google and google.networks else "May miss some 4G/5G bands your carrier uses, and often has no eSIM. Check the band list before you buy." }}</dd>
       </div>
       <div>
         <dt>EU band check</dt>
@@ -39,7 +44,7 @@
       </div>
       <div>
         <dt>Language</dt>
-        <dd><span class="badge china">{{ cl }}</span> Can be set to English; {{ "some Chinese apps come preinstalled" if cl == "China" else "China software comes with some Chinese apps" }}.</dd>
+        <dd><span class="badge china">{{ cl }}</span> {% if google and google.language %}{{ google.language }}{% else %}Can be set to English; {{ "some Chinese apps come preinstalled" if cl == "China" else "China software comes with some Chinese apps" }}.{% endif %}</dd>
       </div>
     </dl>
   </div>

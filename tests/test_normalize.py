@@ -121,3 +121,43 @@ def test_gomibo_urls():
     assert variant_storage("https://www.gomibo.de/google-pixel-11-pro-xl-eu/1tb-schwarz", 16384) == "16/1024"
     assert variant_storage("https://www.gomibo.de/google-pixel-11-pro-xl-eu/1tb-schwarz", None) == "base"
     assert re.search(cfg["ram_pattern"], r'{\"icon_type\":\"processor\",\"title\":\"12288 MB RAM\"}').group(1) == "12288"
+
+
+def test_iphone_titles_get_the_apple_brand():
+    # The Mobile Marvel: "iPhone Duo", variants "White / 256GB"; Average Dad: "Apple iPhone Duo", "Black / 12GB/256GB"
+    assert model_id("iPhone Duo") == model_id("Apple iPhone Duo") == "apple-iphone-duo"
+    assert edition_of("iPhone Duo") == edition_of("Apple iPhone Duo") == "china"
+    assert model_id("Apple iPhone 16 Pro Dual Physical SIM") == "apple-iphone-16-pro-dual-physical-sim"   # unchanged
+    assert storage_of("12GB/256GB") == "12/256" and storage_of("12GB/1TB") == "12/1024"
+
+
+def test_storage_only_listing_takes_the_catalog_ram():
+    assert storage_of("256GB") == "base"                       # no RAM and no catalog RAM: not comparable
+    assert storage_of("256GB", 12) == "12/256" and storage_of("2TB", 12) == "12/2048"
+    assert storage_of("12GB/512GB", 16) == "12/512"            # the listing's own RAM wins
+    assert storage_of("Black", 12) == "base"
+
+
+def test_catalog_ids_are_unchanged_by_their_own_names():
+    from pathlib import Path
+
+    import yaml
+    for p in yaml.safe_load((Path(__file__).parent.parent / "config/catalog.yaml").read_text())["phones"]:
+        if p["id"] not in ("xiaomi-17-ultra-leica-edition", "huawei-mate-xt-2-ultimate-design"):   # names differ from ids on purpose
+            assert model_id(p["name"]) == p["id"], p["name"]
+
+
+def test_shopify_storage_only_variants_use_the_catalog_ram(monkeypatch):
+    """The Mobile Marvel's iPhone Duo: options Color / Storage, "White / 256GB" (no RAM). With the catalog's `ram` each
+    storage keeps its own offer; without it they would all collapse into one "base" offer."""
+    from pricechecker.stores import shopify
+    prod = {"title": "iPhone Duo", "handle": "iphone-duo", "options": [{"name": "Color"}, {"name": "Storage"}],
+            "variants": [{"id": i, "title": f"White / {st}", "option1": "White", "option2": st, "price": str(p), "available": True}
+                         for i, (st, p) in enumerate([("256GB", 23500), ("512GB", 26500), ("1TB", 29500), ("2TB", 33500)])]}
+    monkeypatch.setattr(shopify, "market_rates", lambda base: ("HKD", {"HKD": 1.0}))
+    monkeypatch.setattr(shopify, "_feed", lambda base, cur: [prod])
+    cfg = {"base_url": "https://shop.example"}
+    got = shopify.fetch("mobilemarvel", cfg, [{"id": "apple-iphone-duo", "ram": 12}])
+    assert sorted((o.model_id, o.edition, o.storage) for o in got) == [
+        ("apple-iphone-duo", "china", s) for s in ("12/1024", "12/2048", "12/256", "12/512")]
+    assert [o.storage for o in shopify.fetch("mobilemarvel", cfg)] == ["base"]

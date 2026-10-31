@@ -5,8 +5,24 @@
 #   china_label: what we call the non-Global version (default "China"); "Asia" where one model number covers China,
 #                Hong Kong and Taiwan and the store doesn't say which software it has
 #   model_note: shown under the version badges on the phone page
+#   For a brand whose China version isn't about Google Play (Apple), all optional, each replacing the Android wording:
+#   means: the price box's link to "What the China version means"; caveat: replaces the caveat below ("" = none);
+#   apps_label, global_apps: the explainer's apps row title and its Global line; warranty, networks, language: the
+#   explainer's China lines; no_global: why there is no Global price box when the brand does sell one elsewhere
 # A brand not listed falls back to "default".
 brands:
+  apple:    # checked 2026-10-31: support.apple.com/en-us/121115 (Apple Intelligence), apple.com/legal/warranty (iPhone),
+            # support.apple.com/en-us/108044 (China mainland has its own model number), apple.com.cn spec pages
+    means: "No Apple Intelligence for now"
+    caveat: ""
+    short: "no Apple Intelligence for now: Apple says it doesn't currently work on iPhones bought in mainland China"
+    apps_label: "Apple Intelligence"
+    global_apps: "Apple Intelligence in most regions, in supported languages; some features vary by region."
+    long: "Apple says Apple Intelligence doesn't currently work on iPhones bought in mainland China. When it launches there, Apple says iPhones already sold get a core set of features."
+    warranty: "Apple may limit iPhone warranty service to the country where it was first sold. You rely on the store's own warranty and returns."
+    networks: "Apple's separate model for mainland China, with its own band list. Check it before you buy."
+    language: "Can be set to English; Apple lists it among the supported languages."
+    no_global: "No Global version listed: the stores we check sell only the China model so far"
   huawei:
     short: "no Google services (true of every Huawei)"
     long: "No Google services on Huawei phones in either version, and no switch to add them. Apps come from Huawei's AppGallery."

@@ -41,6 +41,8 @@ def model_id(title: str) -> str:
         words[0] = BRAND_ALIASES[words[0]]
     if words[:2] == ["motorola", "moto"]:          # "Motorola Moto Razr 70 Ultra"
         del words[1]
+    if words[:1] == ["iphone"]:                    # "iPhone Duo" (Mobile Marvel) = "Apple iPhone Duo"
+        words.insert(0, "apple")
     if words[:2] in (["vivo", "iqoo"], ["xiaomi", "redmi"]):   # sub-brands: "vivo iQOO 15" = "iQOO 15", "Xiaomi Redmi K90" = "Redmi K90"
         del words[0]
     if words[:1] == ["realme"]:                    # "Realme GT8 Pro" (Trading Shenzhen) = "Realme GT 8 Pro" (Giztop)
@@ -50,11 +52,16 @@ def model_id(title: str) -> str:
     return "-".join(words)
 
 
-def storage_of(text: str) -> str:
-    """'12GB+256GB' -> '12/256', '16GB 1TB' -> '16/1024'; 'base' if not found."""
-    m = _STORAGE.search(text or "")
+_ROM_ONLY = re.compile(r"\b(\d{2,4}\s*gb|[12]\s*tb)\b", re.IGNORECASE)
+
+
+def storage_of(text: str, ram: int | None = None) -> str:
+    """'12GB+256GB' -> '12/256', '16GB 1TB' -> '16/1024'; 'base' if not found.
+    ram: the model's one RAM size (catalog `ram`), for a listing that gives storage only: '256GB' -> '12/256'."""
+    m = _STORAGE.search(text or "") or (_ROM_ONLY.search(text or "") if ram else None)
     if not m:
         return "base"
-    ram, rom = m.group(1), m.group(2).lower().replace(" ", "")
+    ram, rom = (m.group(1), m.group(2)) if m.re is _STORAGE else (ram, m.group(1))
+    rom = rom.lower().replace(" ", "")
     rom_gb = int(rom[:-2]) * 1024 if rom.endswith("tb") else int(rom[:-2])
     return f"{int(ram)}/{rom_gb}"

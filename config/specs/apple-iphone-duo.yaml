@@ -1,0 +1,62 @@
+# Key specs shown on the phone page. Copied from Apple's China spec page (see sources below), checked 2026-10-31, and
+# cross-checked with apple.com/iphone-duo/specs (US model A3447: same hardware, but MagSafe/Qi2 up to 25 W and mmWave 5G).
+# A field the page does not give is left out rather than guessed: Apple states no battery capacity, no RAM and no maximum
+# wired charging power. Model numbers: support.apple.com/zh-cn/108044 (A3721 = China mainland).
+id: apple-iphone-duo
+sources:
+  china: {url: https://www.apple.com.cn/iphone-duo/specs/, checked: 2026-10-31, lang: Chinese}
+key:
+  chip: "Apple A20 Pro"
+  screen: "7.6 inside"
+groups:
+  display:
+    size: "7.6 in foldable inside, 5.4 in outside"
+    panel: "OLED (Super Retina XDR), both screens; nano-texture finish inside"
+    resolution: "Inside 2670 × 1878, 430 ppi; outside 2034 × 1398, 460 ppi"
+    refresh_rate: "ProMotion, adaptive up to 120 Hz (both screens)"
+    brightness: "1,000 nits typical, 1,600 nits HDR peak, 3,000 nits outdoor peak, 1 nit minimum"
+    colour: "P3 wide colour, True Tone, HDR"
+  performance:
+    chip: "Apple A20 Pro"
+    cpu: "6 cores (2 performance, 4 efficiency)"
+    gpu: "7-core, hardware ray tracing"
+    ram: null
+    versions: "256 GB, 512 GB, 1 TB, 2 TB"
+  battery:
+    battery: "Two batteries, capacity not stated; up to 24 h typical use"
+    wired: "50% in about 20 min with a 60 W or higher USB-C adapter (top power not stated)"
+    wireless: "MagSafe and Qi2, up to 15 W"
+  cameras:
+    main: "48 MP, f/1.6, 26 mm, sensor-shift OIS"
+    telephoto: "12 MP 2x optical-quality, from the main camera (52 mm, f/1.6)"
+    ultra_wide: "48 MP, f/2.2, 13 mm, 120°"
+    front: "Outside 12 MP f/2.2 Center Stage; inside under-display, f/1.8"
+    video: "4K Dolby Vision up to 120 fps (main)"
+  build:
+    size: "Open 164.6 × 117.8 × 5.2 mm; closed 84.1 × 117.8 × 11.3 mm"
+    weight: "254 g"
+    colours: "Night Sky, Star White"
+    water_and_dust: "IP68 (6 m, 30 min)"
+    frame: "Titanium"
+  connectivity:
+    wi_fi: "Wi-Fi 7"
+    bluetooth: "6"
+    nfc: "Yes, with reader mode"
+    sim: "Dual eSIM, no SIM tray (in mainland China activated at a carrier's store)"
+    usb: "USB-C, USB 3 (10 Gb/s), DisplayPort"
+    satellite_positioning: "GPS (dual-frequency), GLONASS, Galileo, QZSS, BeiDou, NavIC"
+    also: "Ultra Wideband (2nd gen), Thread"
+    china_model_number: {value: "A3721", from: china}
+  software:
+    system: "iOS 27"
+    updates: null
+  other:
+    speakers: "Stereo"
+    fingerprint: "Touch ID in the side button"
+    face_unlock: null
+    sensors: "Barometer, gyro, high-g accelerometer, proximity, four ambient light sensors"
+    in_the_box: "USB-C cable (1 m)"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 106, 34, 38, 39, 40, 41, 42, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 30, 66, 70, 75, 38, 40, 41, 48, 77, 78, 79]

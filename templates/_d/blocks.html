@@ -60,7 +60,7 @@
 <p class="st">at <b>{{ b.store }}</b></p>
 {%- if b.settled %}<span class="ok">✓ delivered, tax settled</span>{% else %}<span class="unk">{{ cap(b.left) }} not included</span>{% endif -%}
 {{ tab_close|safe }}
-{%- if switch and edition == "china" %}<a class="means-link" href="#means-h">Chinese software, Google Play off at first</a>{% endif -%}
+{%- if switch and edition == "china" %}<a class="means-link" href="#means-h">{{ labels.means }}</a>{% endif -%}
 {{ _go(b, "go") }}
 </div>
 {%- endif -%}

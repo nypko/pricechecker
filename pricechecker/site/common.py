@@ -23,9 +23,11 @@ def _google() -> dict:
 
 
 def ed_labels(brand: str) -> dict:
-    """{"global": "Global", "china": "China"} - or "Asia" for brands whose model numbers cover China, Hong Kong and Taiwan."""
+    """{"global": "Global", "china": "China", "means": ...} - "Asia" for brands whose model numbers cover China, Hong Kong
+    and Taiwan; means: the price box's link to what the China version means."""
     b = _google()["brands"].get(brand.lower(), {})
-    return {**EDITION_LABEL, "china": b.get("china_label", EDITION_LABEL["china"])}
+    return {**EDITION_LABEL, "china": b.get("china_label", EDITION_LABEL["china"]),
+            "means": b.get("means", "Chinese software, Google Play off at first")}
 
 
 def _money(offer: dict, rates: dict) -> dict:

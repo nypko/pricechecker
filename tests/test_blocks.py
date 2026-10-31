@@ -616,3 +616,17 @@ def test_js_blocks_escape_the_memory_pick(oppo, tax_file):
     assert r.returncode == 0, r.stdout + r.stderr
     for h in json.loads(r.stdout):
         assert "<i>" not in h and "<b>/1" not in h
+
+
+@needs_node
+def test_price_box_means_link_follows_the_brand(fixture_doc, tax_file, tax, tmp_path):
+    """The China box's link to "What the China version means" is the brand's (config/google.yaml `means`): Android
+    wording by default, Apple's own for an iPhone, the same in Jinja and JS."""
+    f, inputs, s, e, st = _fixture_cases(fixture_doc, tmp_path)[0]
+    rows = view.rows(inputs, tax, s)
+    for brand, want in (("Xiaomi", "Chinese software, Google Play off at first"), ("Apple", "No Apple Intelligence for now")):
+        labels = ed_labels(brand)
+        py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
+        js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
+        assert_same(py, js, brand)
+        assert want in text(py["price_box"]) and want in text(js["price_box"])

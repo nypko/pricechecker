@@ -92,7 +92,7 @@ def test_buyer_summary_groups_by_store_and_region(tmp_path, monkeypatch):
 def test_ed_labels_asia_for_samsung_and_sony():
     from pricechecker.site import ed_labels
     assert ed_labels("Samsung")["china"] == "Asia" and ed_labels("Sony")["china"] == "Asia"
-    assert ed_labels("Xiaomi") == {"global": "Global", "china": "China"}
+    assert ed_labels("Xiaomi") == {"global": "Global", "china": "China", "means": "Chinese software, Google Play off at first"}
 
 
 def test_spec_parts_splits_editions():
@@ -328,3 +328,15 @@ def test_downloads_stop_past_the_size_cap(monkeypatch):
     monkeypatch.setattr(http._session, "get", lambda url, **kw: big)
     with pytest.raises(http.TooLarge):
         http.capped_get("https://s.example/c", max_bytes=10_000)
+
+
+def test_missing_global_box_reason_follows_the_brand():
+    import yaml
+
+    from pricechecker.site.common import ed_labels
+    from pricechecker.site.pages.phone import _missing
+    google = yaml.safe_load(Path("config/google.yaml").read_text())["brands"]
+    one = {"brand": "OnePlus", "editions": ["china"], "google": google["oneplus"]}
+    duo = {"brand": "Apple", "editions": ["china"], "google": google["apple"]}
+    assert _missing(one, "global", ed_labels("OnePlus")) == "No Global version so far: OnePlus sells this phone in China only"
+    assert _missing(duo, "global", ed_labels("Apple")) == "No Global version listed: the stores we check sell only the China model so far"

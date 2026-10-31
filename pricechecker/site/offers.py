@@ -119,8 +119,8 @@ def assemble(data: SiteData) -> list[dict]:
                        "ld": _product_ld(m, in_stock, site_cfg),
                        "specs": _specs(specs.get(m["id"])),
                        "ed_label": ed_labels(m["brand"]),
-                       "google": {**google["brands"].get(m["brand"].lower(), google["brands"]["default"]),
-                                  "caveat": google["caveat"] if m["brand"].lower() != "huawei" else ""}})
+                       "google": {"caveat": google["caveat"] if m["brand"].lower() != "huawei" else "",   # a brand's own caveat wins
+                                  **google["brands"].get(m["brand"].lower(), google["brands"]["default"])}})
     phones.sort(key=lambda p: p["name"])
     phones.sort(key=lambda p: p["announced"], reverse=True)   # newest first; the index can re-sort by price or saving
     # end of each phone page: the same brand's other phones (newest first) and the nearest in price from other brands

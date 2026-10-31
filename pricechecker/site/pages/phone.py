@@ -27,7 +27,7 @@ def _missing(p: dict, e: str, labels: dict) -> str:
         return f"No store we check lists the {labels[e]} version"
     if e == "china":
         return f"{p['brand']} doesn't make a {labels['china']} version"
-    return f"No {labels['global']} version so far: {p['brand']} sells this phone in {'China' if labels['china'] == 'China' else 'Asia'} only"
+    return p["google"].get("no_global") or f"No {labels['global']} version so far: {p['brand']} sells this phone in {'China' if labels['china'] == 'China' else 'Asia'} only"
 
 
 def _day(d: str) -> str:

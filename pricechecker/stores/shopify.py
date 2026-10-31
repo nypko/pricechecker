@@ -59,8 +59,9 @@ def _feed(base: str, currency: str) -> list[dict]:
     return products
 
 
-def fetch(store: str, cfg: dict) -> list[Offer]:
+def fetch(store: str, cfg: dict, catalog: list[dict] = ()) -> list[Offer]:
     base = cfg["base_url"].rstrip("/")
+    ram = {p["id"]: p["ram"] for p in catalog if p.get("ram")}   # catalog `ram`: for variants that give storage only ("256GB")
     _space_requests(base)
     shop_cur, rates = market_rates(base)
     if cfg.get("currency") and cfg["currency"] != shop_cur:
@@ -90,7 +91,7 @@ def fetch(store: str, cfg: dict) -> list[Offer]:
             v_ed = edition_of(f'{p["title"]} - {v.get("title", "")}') if ed == "global" else ed
             offers.append(Offer(
                 store=store, model_id=mid, edition=v_ed,
-                storage=storage_of(v.get(f"option{opt}") or v.get("title", "")),
+                storage=storage_of(v.get(f"option{opt}") or v.get("title", ""), ram.get(mid)),
                 title=f'{p["title"]} - {v.get("title", "")}',
                 price=price, currency=main_cur,
                 available=bool(v.get("available")),

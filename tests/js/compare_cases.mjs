@@ -1,6 +1,6 @@
 // static/js/compare.js's pure helpers: node compare_cases.mjs exits non-zero on the first failed case.
 import assert from "node:assert/strict";
-import { boxHtml, closest, winners, parseHash, formatHash, differs, starters, shownMemory } from "../../static/js/compare.js";
+import { boxHtml, closest, column, memAfterClick, winners, parseHash, formatHash, differs, starters } from "../../static/js/compare.js";
 
 // closest(): the distance rule the old front end used (storage steps count double, RAM steps by 4 GB)
 assert.equal(closest(["12/256", "16/512"], "16/1024"), "16/512");
@@ -13,12 +13,6 @@ assert.equal(closest(["8/128", "12/256"], "16/1024"), "12/256");
 assert.equal(closest(["base", "12/256"], "16/512"), "12/256");
 assert.equal(closest(["base"], "16/512"), "base");
 assert.equal(closest([], "16/512"), "");
-
-// shownMemory(): which memory a version is priced at for the picked one, and whether that is a substitute
-assert.deepEqual(shownMemory(["12/256", "16/512"], "16/512"), { mem: "16/512", near: false });
-assert.deepEqual(shownMemory(["12/256", "16/512"], "16/1024"), { mem: "16/512", near: true });
-assert.deepEqual(shownMemory(["12/256", "base"], ""), { mem: null, near: false });   // none picked: its own best
-assert.deepEqual(shownMemory([], "16/512"), { mem: null, near: false });
 
 // winners(): lowest settled total, biggest battery, fastest wired charging; a tie or no value marks nobody
 const col = (total, battery, charging) => ({ total, battery, charging });
@@ -77,8 +71,39 @@ assert.deepEqual(starters(list, ["a1"]), { heading: "Or compare A1 with:", items
 assert.deepEqual(starters(list, ["c1"]).items.map((x) => x.t), ["B1"]);   // no other C phone: only the newest of another brand
 assert.deepEqual(starters(list, ["zzz"]), { heading: "", items: [] });
 // boxHtml(): the "Lowest delivered" label is inside the winning box, and only there
-const w = boxHtml("<i>x</i>", false, true);
+const w = boxHtml("<i>x</i>", true);
 assert.match(w, /^<div class="cm-box low"><i>x<\/i><p class="cm-win">.*Lowest delivered.*<\/p><\/div>$/s);
-assert.ok(!boxHtml("<i>x</i>", false, false).includes("Lowest delivered"));
-assert.ok(boxHtml("x", true, false).startsWith('<div class="cm-box near">'));
+assert.ok(!boxHtml("<i>x</i>", false).includes("Lowest delivered"));
+assert.equal(boxHtml("x", false), '<div class="cm-box">x</div>');   // no dashed "near" variant any more
+
+// column(): each version priced at the shared memory; no row there says "Not sold" and offers the nearest, never a substitute price
+const row = (edition, storage, total, state = "ok") => ({ edition, storage, state, total, settled: true, store: "Shop", link: "https://shop.example/x", days: 3 });
+const S0 = { cur: "eur" }, L = { global: "Global", china: "China" };
+const txt = (h) => h.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
+const phone = (rows, editions = ["china", "global"]) => column({ editions, cl: "China" }, rows, "16/512", S0);
+const two = phone([row("china", "16/512", 900), row("global", "12/256", 800)]);
+const both = two.html(true);
+assert.ok(txt(both).includes("Not sold with 16 GB + 512 GB"), "global lacks 16/512");
+assert.match(both, /<button type="button" class="near" data-m="12\/256">Nearest: 12 GB \+ 256 GB · €800<span aria-hidden="true">&nbsp;→<\/span><\/button>/);
+assert.ok(!both.includes("cm-near") && !both.includes("cm-box near") && !both.includes("No 16"), "no dashed substitute");
+assert.equal(both.split('class="big num"').length - 1, 1);   // China's price only; the not-sold box has no placeholder
+assert.ok(!both.includes('class="big num">€800'), "the nearest price is only on the button, not shown as the global price");
+assert.ok(!both.includes("pickbtn") && !both.includes('role="tab"'), "plain boxes, no version switch");
+// the winner ignores a column showing Not sold: €800 at 12/256 is not 16/512's price
+assert.equal(two.total, 900);
+assert.equal(phone([row("global", "12/256", 800)]).total, null);   // nothing at the shared memory: no price to rank
+assert.equal(phone([row("global", "12/256", 800)]).html(false).includes("Nearest: 12 GB + 256 GB"), true);
+assert.equal(phone([row("global", "16/512", 700, "soldout")]).total, null);   // sold out: a state, not a price
+assert.ok(txt(phone([row("global", "16/512", 700, "soldout")]).html(false)).includes("Sold out at every store we check"));
+const nsold = phone([row("global", "12/256", 800)]);   // global only, and not at 16/512: "Not sold" has no price to rank
+assert.deepEqual(winners([{ total: nsold.total, battery: 0, charging: 0 }, { total: two.total, battery: 0, charging: 0 }]), { price: 1, battery: -1, charging: -1 });
+// nothing picked: each version shows its own best, no "Not sold" anywhere
+const free = column({ editions: ["china", "global"], cl: "China" }, [row("china", "16/512", 900), row("global", "12/256", 800)], "", S0);
+assert.ok(!free.html(false).includes("Not sold") && free.total === 800);
+// a nearest button sets the shared memory like a chip (hash @ram-rom); a chip toggles its own memory off
+assert.equal(memAfterClick("16/512", "12/256", true), "12/256");
+assert.equal(memAfterClick("12/256", "12/256", true), "12/256");
+assert.equal(memAfterClick("12/256", "12/256", false), "");
+assert.equal(memAfterClick("", "12/256", false), "12/256");
+assert.equal(formatHash(["a", "b"], memAfterClick("16/512", "12/256", true)), "#a,b@12-256");
 console.log("compare cases ok");

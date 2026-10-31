@@ -159,11 +159,11 @@ def why(best: dict, pick: list[dict], s) -> tuple[str, str]:
     return "Only one store", "we check sells this version and memory."
 
 
-def mem_options(rows: list[dict], edition: str) -> list[tuple[str, dict | None]]:
-    """The edition's memories (no "base"), smallest first, each with its best current payable row (or None)."""
-    sts = sorted({r["storage"] for r in rows if r["edition"] == edition and r["storage"] != "base"
-                  and r["state"] in ("ok", "nopay", "stale")}, key=mem_key)
-    return [(st, view.best_of(rows, edition, st)) for st in sts]
+def mem_union(rows: list[dict]) -> list[tuple[str, bool]]:
+    """Every memory either version has a row for (no "base"), smallest first, each with whether any store has a current,
+    payable price for it."""
+    sts = sorted({r["storage"] for r in rows if r["storage"] != "base"}, key=mem_key)
+    return [(st, any(r["state"] == "ok" and r["storage"] == st for r in rows)) for st in sts]
 
 
 def ledger_rows(rows: list[dict], sort: str = "rank") -> list[tuple[int, dict]]:
@@ -180,5 +180,5 @@ def register(env) -> None:
     """Make the helpers and the view functions the blocks call available to every template."""
     env.globals.update(money=money, fixed=fixed, pct=pct, group=group, mem_parts=mem_parts, mem_label=mem_label, mem_text=mem_text, mem_short=mem_short,
                        mem_tiny=mem_tiny, stamp=stamp, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
-                       caveat=caveat, why=why, mem_options=mem_options, stores_n=stores_n, ledger_rows=ledger_rows,
+                       caveat=caveat, why=why, mem_union=mem_union, nearest_memory=view.nearest_memory, stores_n=stores_n, ledger_rows=ledger_rows,
                        best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY)

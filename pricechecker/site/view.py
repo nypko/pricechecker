@@ -1,6 +1,8 @@
 """The one view model every page renders from: offer inputs + the visitor's settings -> display rows.
 static/js/view.js is its line-for-line mirror; rows are plain dicts with the same camelCase keys on both sides so the
 server templates and the browser blocks show identical numbers. No I/O."""
+import math
+
 from .. import pricing
 from ..pricing import Settings
 
@@ -76,3 +78,48 @@ def gap(rows: list[dict]) -> dict | None:
     st = min(tiers, key=lambda t: best[(t, "china")])
     return {"storage": st, "china": best[(st, "china")], "global": best[(st, "global")],
             "diff": round(best[(st, "global")] - best[(st, "china")], 2)}
+
+
+def _size(s: str | None) -> tuple[int, int] | None:
+    p = (s or "").split("/")
+    return (int(p[0]), int(p[1])) if len(p) == 2 and p[0].isdigit() and p[1].isdigit() else None
+
+
+def distance(a: str, b: str) -> float:
+    """How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB."""
+    x, y = _size(a), _size(b)
+    if not x or not y:
+        return 99
+    return abs(math.log2(x[1] / y[1])) * 2 + abs(x[0] - y[0]) / 4
+
+
+def closest(storages: list[str], want: str) -> str:
+    """The option in `storages` nearest to `want` (the first listed on a tie); "" when there are none."""
+    best, bd = "", math.inf
+    for s in storages:
+        d = 0 if s == want else distance(s, want)
+        if d < bd:
+            best, bd = s, d
+    return best
+
+
+def nearest_memory(rows: list[dict], edition: str, storage: str) -> str | None:
+    """The memory nearest `storage` among those the edition has a current, payable row for (never "base")."""
+    have = [r["storage"] for r in rows if r["state"] == "ok" and r["edition"] == edition and r["storage"] != "base"]
+    return closest(have, storage) or None
+
+
+def default_pick(rows: list[dict]) -> dict | None:
+    """The first (best) current, payable row's edition and storage."""
+    r = next((r for r in rows if r["state"] == "ok"), None)
+    return {"ed": r["edition"], "mem": r["storage"]} if r else None
+
+
+def pick_for_memory(rows: list[dict], storage: str, preferred: str) -> dict:
+    """The version to show once a memory is picked: the preferred one if it has a current price there, else the other
+    version, else the default pick; with nothing current at all, the preferred version at that memory."""
+    other = "global" if preferred == "china" else "china"
+    for ed in (preferred, other):
+        if best_of(rows, ed, storage):
+            return {"ed": ed, "mem": storage}
+    return default_pick(rows) or {"ed": preferred, "mem": storage}

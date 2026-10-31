@@ -2,7 +2,8 @@
 // URL hash ("#a,b,c@16-512") so a comparison can be shared. Each chosen phone's v1 data file is fetched and priced with the
 // visitor's settings; every price is the shared price box (blocks.js). Key specs come with the page (pages/compare.py).
 // The pure helpers are exported for tests/js/compare_cases.mjs; everything touching the page is guarded.
-import { rows as viewRows, bestOf } from "./view.js";
+import { rows as viewRows, bestOf, closest, size } from "./view.js";
+export { closest };   // the rule lives in view.js now; compare_cases.mjs still imports it from here
 import * as B from "./blocks.js";
 import { load } from "./settings.js";
 
@@ -10,36 +11,28 @@ const EDS = ["china", "global"];   // box order: the China version (red) first, 
 
 // ---- pure helpers ----
 
-const size = (s) => { const p = String(s || "").split("/"); return p.length === 2 ? { ram: +p[0], rom: +p[1] } : null; };
-/** How far two RAM/storage options are apart: a storage step counts double, RAM counts per 4 GB (the old front end's distance()). */
-function distance(a, b) {
-  const x = size(a), y = size(b);
-  if (!x || !y) return 99;
-  return Math.abs(Math.log(x.rom / y.rom) / Math.LN2) * 2 + Math.abs(x.ram - y.ram) / 4;
-}
-
-/** The option in `storages` nearest to `want` (the first listed on a tie); "" when there are none. */
-export function closest(storages, want) {
-  let best = "", bd = Infinity;
-  for (const s of storages) {
-    const d = s === want ? 0 : distance(s, want);
-    if (d < bd) { best = s; bd = d; }
-  }
-  return best;
-}
-
-/** The memory one version is priced at when `want` is picked: {mem, near}. `near` marks a substitute; mem is null when
- *  nothing is picked (the version's own best memory shows) or the version lists no memory. */
-export function shownMemory(storages, want) {
-  const list = storages.filter((s) => s !== "base");
-  if (!want || !list.length) return { mem: null, near: false };
-  const mem = closest(list, want);
-  return { mem, near: mem !== want };
-}
-
 /** One price box; the winning one carries its own "Lowest delivered" label, inside the box it describes. */
-export const boxHtml = (inner, near, low) => `<div class="cm-box${near ? " near" : ""}${low ? " low" : ""}">${inner}` +
+export const boxHtml = (inner, low) => `<div class="cm-box${low ? " low" : ""}">${inner}` +
   (low ? '<p class="cm-win"><span class="tick">✓</span> Lowest delivered<span class="sr-only"> of these</span></p>' : "") + "</div>";
+
+/** One phone's boxes, each version priced at the shared memory `mem` ("" = its own best): the shared price box, so a version
+ *  without that memory says "Not sold with ..." and offers its nearest. `total` is the lowest settled delivered price among
+ *  the versions that have one at that memory, else null (a "Not sold" or other no-price box never wins). */
+export function column(p, rows, mem, s) {
+  const L = { global: "Global", china: p.cl };
+  const total = [];
+  const boxes = EDS.filter((e) => p.editions.includes(e)).map((e) => {
+    const rs = rows.filter((r) => r.edition === e);
+    const best = bestOf(rs, e, mem || null);
+    const t = best && best.settled ? best.total : null;
+    if (t !== null) total.push(t);
+    return (win) => boxHtml(B.priceBox(rs, e, mem || null, s, L, false, false), win && t !== null && t === Math.min(...total));
+  });
+  return { html: (win) => boxes.map((b) => b(win)).join(""), total: total.length ? Math.min(...total) : null };
+}
+
+/** The shared memory after a click on memory `m`: a nearest button sets it, a chip toggles its own off again. */
+export const memAfterClick = (cur, m, near) => (!near && cur === m ? "" : m);
 
 /** Index of the single lowest (dir -1) or highest (dir 1) usable value, else -1 (a tie, or nothing to rank). */
 function single(vals, dir) {
@@ -146,23 +139,6 @@ function wire(root) {
     return `<div class="cm-grid cm-head" style="--n:${n}">${cells.join("")}</div>`;
   };
 
-  // one phone's boxes: each version at the picked memory, or at its closest (dashed, with a line saying so)
-  function column(p, rows, s) {
-    const L = { global: "Global", china: p.cl };
-    const total = [];
-    const boxes = EDS.filter((e) => p.editions.includes(e)).map((e) => {
-      const ok = rows.filter((r) => r.edition === e && r.state === "ok").map((r) => r.storage);
-      const { mem, near } = shownMemory(ok, S.mem);
-      const rs = S.mem ? (mem === null ? [] : rows.filter((r) => r.edition === e && r.storage === mem)) : rows.filter((r) => r.edition === e);
-      const best = bestOf(rs, e);
-      const t = best && best.settled ? best.total : null;
-      if (t !== null) total.push(t);
-      return (win) => boxHtml(B.priceBox(rs, e, s, L, false, false) +
-        (near ? `<p class="cm-near">No ${B.memShort(S.mem)} in stock: priced at ${B.memShort(mem)}</p>` : ""), near, win && t !== null && t === Math.min(...total));
-    });
-    return { html: (win) => boxes.map((b) => b(win)).join(""), total: total.length ? Math.min(...total) : null };
-  }
-
   const half = (e, t, L) => `<div class="half ${e === "china" ? "cn" : "gl"}"><span class="htag">${B.esc(L[e])}</span>${t === null ? '<span class="na">Not listed</span>' : B.esc(t)}</div>`;
   function cell(p, c, win) {
     const td = (cls, inner) => { const k = [cls, win && "win"].filter(Boolean).join(" "); return `<td${k ? ` class="${k}"` : ""}>${inner}</td>`; };
@@ -221,7 +197,7 @@ function wire(root) {
     }
     if (my !== token) return;
     const all = docs.map((d) => viewRows(d.offers, tax, s));
-    const cols = chosen.map((p, i) => column(p, all[i], s));
+    const cols = chosen.map((p, i) => column(p, all[i], S.mem, s));
     const win = winners(chosen.map((p, i) => ({ total: cols[i].total, battery: p.k.battery, charging: p.k.charging })));
     // the memory chips: every memory some chosen phone has a current price for
     const mems = [...new Set(all.flatMap((rs) => rs.filter((r) => r.state === "ok" && r.storage !== "base").map((r) => r.storage)))].sort(memOrder);
@@ -229,7 +205,7 @@ function wire(root) {
     if (mems.length) {
       inner += '<p class="lbl" id="cm-mem-h">Price all at one memory</p><div class="mems" role="group" aria-labelledby="cm-mem-h">' +
         mems.map((m) => `<button type="button" data-m="${B.esc(m)}" aria-pressed="${m === S.mem}">${B.memLabel(m)}</button>`).join("") + "</div>";
-      inner += `<p class="cm-note">${S.mem ? "A phone that doesn't have it is priced at its closest memory (dashed)." : "Tap a memory to price every phone at it."}</p>`;
+      inner += `<p class="cm-note">${S.mem ? "A phone that doesn't have it says so and offers its nearest memory." : "Tap a memory to price every phone at it."}</p>`;
     }
     inner += `<div class="cm-grid cm-prices" style="--n:${n}">` + chosen.map((p, j) =>
       `<div class="cm-col${win.price === j ? " win" : ""}">${cols[j].html(win.price === j)}` +
@@ -240,7 +216,8 @@ function wire(root) {
 
   // a selector for the same control after a repaint
   function focusKey(el) {
-    for (const a of ["data-m", "data-x", "data-s"]) if (el.hasAttribute && el.hasAttribute(a)) return `button[${a}="${String(el.getAttribute(a)).replace(/["\\]/g, "\\$&")}"]`;
+    // a nearest button is gone after the repaint: the chip for its memory (now pressed) takes the focus
+    for (const a of ["data-m", "data-x", "data-s"]) if (el.hasAttribute && el.hasAttribute(a)) return `button[${a}="${String(el.getAttribute(a)).replace(/["\\]/g, "\\$&")}"]:not(.near)`;
     if (el.id === "cm-only" || el.id === "cm-retry") return "#" + el.id;
     return el.hasAttribute && el.hasAttribute("data-add") ? "[data-add]" : null;
   }
@@ -252,7 +229,7 @@ function wire(root) {
   app.addEventListener("click", (ev) => {
     const t = ev.target, m = t.closest("button[data-m]"), x = t.closest("button[data-x]"), st = t.closest("button[data-s]");
     if (st) go(st.dataset.s.split(","), "");
-    else if (m) go(S.ids, S.mem === m.dataset.m ? "" : m.dataset.m);
+    else if (m) go(S.ids, memAfterClick(S.mem, m.dataset.m, m.classList.contains("near")));
     else if (x) go(S.ids.filter((id) => id !== x.dataset.x), S.mem);
     else if (t.closest("#cm-only")) { S.only = !S.only; paint(); }
     else if (t.closest("#cm-retry")) paint();

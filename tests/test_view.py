@@ -159,3 +159,80 @@ def test_js_rows_order_stale_last(tmp_path):
                        check=False, capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
     assert [(x["store"], x["state"]) for x in json.loads(r.stdout)] == STALE_ORDER
+
+
+def _picks_case():
+    """China 12/256 + 16/512 current; Global 12/512 + 16/512 current, 16/1024 sold out; Global also lists 'base'."""
+    return [_o(edition="china", storage="12/256"), _o(edition="china", storage="16/512", money={"eur": 1200}),
+            _o(edition="global", storage="12/512"), _o(edition="global", storage="16/512", money={"eur": 1300}),
+            _o(edition="global", storage="16/1024", available=False), _o(edition="global", storage="base", money={"eur": 900})]
+
+
+def _picks_rows(offers=None):
+    return view.rows(offers if offers is not None else _picks_case(), {}, view.DEFAULT)
+
+
+def test_nearest_memory():
+    rs = _picks_rows()
+    assert view.nearest_memory(rs, "global", "16/1024") == "16/512"   # the sold-out 16/1024 doesn't count
+    assert view.nearest_memory(rs, "global", "12/512") == "12/512"
+    assert view.nearest_memory(rs, "china", "12/512") == "16/512"
+    assert view.nearest_memory(rs, "global", "base") in ("12/512", "16/512")   # "base" is never offered back
+    only_sold = _picks_rows([_o(edition="china", available=False), _o(edition="global")])
+    assert view.nearest_memory(only_sold, "china", "12/256") is None
+
+
+def test_default_pick_is_first_ok_row():
+    rs = _picks_rows()
+    first = next(r for r in rs if r["state"] == "ok")
+    assert view.default_pick(rs) == {"ed": first["edition"], "mem": first["storage"]}
+    assert view.default_pick(_picks_rows([_o(available=False)])) is None
+
+
+def test_pick_for_memory():
+    rs = _picks_rows()
+    assert view.pick_for_memory(rs, "16/512", "china") == {"ed": "china", "mem": "16/512"}   # preferred has it: kept
+    assert view.pick_for_memory(rs, "12/512", "china") == {"ed": "global", "mem": "12/512"}   # only the other version has it
+    assert view.pick_for_memory(rs, "12/256", "global") == {"ed": "china", "mem": "12/256"}
+    assert view.pick_for_memory(rs, "16/1024", "global") == view.default_pick(rs)   # neither has it current: the default
+    assert view.pick_for_memory(_picks_rows([_o(available=False)]), "12/256", "china") == {"ed": "china", "mem": "12/256"}
+
+
+def _run_picks(phone_file, tax_file, st):
+    r = subprocess.run(["node", "tests/js/view_cases.mjs", "--picks", "--phone", str(phone_file), "--tax", str(tax_file), "--settings", st],
+                       check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    return json.loads(r.stdout)
+
+
+def _py_picks(inputs, tax, st):
+    rs = view.rows(inputs, tax, pricing.Settings(*st.split(",")))
+    out = {"default": view.default_pick(rs), "nearest": {}, "pick": {}}
+    for mem in {r["storage"] for r in rs}:
+        for ed in ("china", "global"):
+            out["nearest"][f"{ed} {mem}"] = view.nearest_memory(rs, ed, mem)
+            out["pick"][f"{ed} {mem}"] = view.pick_for_memory(rs, mem, ed)
+    return out
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_picks_match_python_synthetic(tmp_path):
+    f = tmp_path / "phone.json"
+    f.write_text(json.dumps({"offers": _picks_case()}))
+    tax = tmp_path / "tax.json"
+    tax.write_text("{}")
+    assert _run_picks(f, tax, "EU,,card,eur") == json.loads(json.dumps(_py_picks(_picks_case(), {}, "EU,,card,eur")))
+
+
+@live
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_js_picks_match_python(site_build, phones, data):
+    v1 = site_build / "data" / "v1"
+    tax_file = next(v1.glob("tax.*.json"))
+    tax = json.loads(tax_file.read_text())
+    for pid in _samples(phones):
+        f = next((v1 / "phone").glob(f"{pid}.*.json"))
+        inputs = json.loads(f.read_text())["offers"]
+        for st in SETTINGS:
+            s = ",".join(st)
+            assert _run_picks(f, tax_file, s) == json.loads(json.dumps(_py_picks(inputs, tax, s))), (pid, st)

@@ -5,7 +5,7 @@
 // prints {"<snake name>": "<html>", "store_row": ["<html>", ...one per row], "ledger": [by rank, by total, by store price]}. Or --money '[[v, cur, dec], ...]' prints
 // the money() text of each.
 import { readFileSync } from "node:fs";
-import { rows as viewRows, bestOf, gap } from "../../static/js/view.js";
+import { rows as viewRows, bestOf } from "../../static/js/view.js";
 import * as B from "../../static/js/blocks.js";
 
 const arg = (n, d = null) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : d; };
@@ -24,12 +24,10 @@ if (arg("--money")) {
   const rows = viewRows(doc.offers, tax, s);
   const pick = rows.filter((r) => r.edition === e && r.storage === st);
   const best = bestOf(rows, e, st);
-  const both = ["china", "global"].every((x) => bestOf(rows, x));
   console.log(JSON.stringify({
-    price_box: B.priceBox(rows, e, s, labels, true),
-    price_box_plain: B.priceBox(rows, e, s, labels, false, false),
-    gap_line: B.gapLine(gap(rows), both, s, labels),
-    mem_chips: B.memChips(rows, e, st, s),
+    price_box: B.priceBox(rows, e, st, s, labels, true),
+    price_box_plain: B.priceBox(rows, e, st, s, labels, false, false),
+    mem_chips: B.memChips(rows, st, s),
     verdict: B.verdict(best, pick, s, labels, now),
     receipt: B.receipt(best, s, labels),
     store_row: rows.map((r) => B.storeRow(r, s, labels, now)),

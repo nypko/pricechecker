@@ -112,7 +112,7 @@
 {%- macro price_trend(t, s, hist_href) -%}
 {%- if t -%}
 {%- set ap = "≈" if t.approx else "" -%}
-<section class="trend" data-block="price_trend" aria-label="Price over the last 30 days">
+<section class="trend" data-block="price_trend" aria-label="Recent price">
 {%- if t.short -%}
 <p class="tshort">Price history for this version and memory starts on {{ short_day(t.first_day) }}, too short to judge yet.</p>
 {%- else -%}
@@ -124,11 +124,13 @@
 <p class="trange">{{ ap }}{{ money(t.now, s.cur) }} · low {{ ap }}{{ money(t.low, s.cur) }} – high {{ ap }}{{ money(t.high, s.cur) }}</p>
 <div class="tbar" aria-hidden="true"><i style="--at:{{ (at + 0.5)|int }}%"></i></div>
 {%- endif -%}
+{%- if not same -%}
 {%- set since = "since " ~ short_day(t.first_day) if not t.full_window else "in 30 days" -%}
 {%- if t.is_low -%}
 <p class="tpos">Lowest price {{ since }}</p>
 {%- else -%}
 <p class="tpos">{{ ap }}{{ money(t.now - t.low, s.cur) }} above its {{ "30-day low" if t.full_window else "low since " ~ short_day(t.first_day) }} ({{ ap }}{{ money(t.low, s.cur) }} on {{ short_day(t.low_day) }} at {{ t.low_store }})</p>
+{%- endif -%}
 {%- endif -%}
 {%- if t.change_pct is not none -%}
 {%- if t.change_pct|abs < 1 -%}

@@ -62,7 +62,6 @@ assert.equal(focusSelector(el("BUTTON", { "data-s": "total" }, null, "s-ledger")
 assert.equal(focusSelector(el("A", { "data-e": "china" }, "go", "duel")), null);
 assert.equal(focusSelector(el("BUTTON", {}, "watch", "phone")), null);
 assert.equal(focusSelector(null), null);
-console.log("phone cases: ok");
 
 // the price trend block follows the pick and the settings: after a memory, version or currency change it is built from
 // that pick's series and currency (the paint step calls trendHtml with the pick and settings it just painted)
@@ -89,3 +88,5 @@ console.log("phone cases: ok");
   assert.equal(html(eur, "global", "16/512"), "");                                                 // no current price at the pick: empty
   assert.equal(trendHtml(doc, tax, viewRows(doc.offers, tax, eur), eur, { ed: "china", mem: "12/256" }, null, "../history/x").includes("price_trend"), true);
 }
+
+console.log("phone cases: ok");

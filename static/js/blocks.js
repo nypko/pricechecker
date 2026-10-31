@@ -170,7 +170,7 @@ export const shortDay = (iso) => (iso ? `${+iso.slice(8, 10)} ${MON[+iso.slice(5
  *  today's price sits, how it moved, the link to the full history. Short history: only the "too short" sentence. */
 export function priceTrendBlock(t, s, histHref) {
   if (!t) return "";
-  const open = '<section class="trend" data-block="price_trend" aria-label="Price over the last 30 days">';
+  const open = '<section class="trend" data-block="price_trend" aria-label="Recent price">';
   const link = `<p class="tlink"><a href="${esc(histHref)}">Full price history →</a></p></section>`;
   if (t.short) return open + `<p class="tshort">Price history for this version and memory starts on ${shortDay(t.first_day)}, too short to judge yet.</p>` + link;
   const ap = t.approx ? "≈" : "", m = (v) => ap + money(v, s.cur);
@@ -181,7 +181,7 @@ export function priceTrendBlock(t, s, histHref) {
     const at = Math.floor(Math.min(Math.max(((t.now - t.low) / (t.high - t.low)) * 100, 0), 100) + 0.5);
     out += `<p class="trange">${m(t.now)} · low ${m(t.low)} – high ${m(t.high)}</p><div class="tbar" aria-hidden="true"><i style="--at:${at}%"></i></div>`;
   }
-  out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
+  if (!same) out += t.is_low ? `<p class="tpos">Lowest price ${t.full_window ? "in 30 days" : "since " + from}</p>`
     : `<p class="tpos">${m(t.now - t.low)} above its ${t.full_window ? "30-day low" : "low since " + from} (${m(t.low)} on ${shortDay(t.low_day)} at ${esc(t.low_store)})</p>`;
   if (t.change_pct !== null && t.change_pct !== undefined) {
     const c = t.change_pct, span = t.since_first ? `since first listed (${from})` : null;

@@ -3,7 +3,7 @@ tax config. Each is named <name>.<first 10 hex of its sha256>.json, so a changed
 for a year; every file stays under BUDGET bytes (before gzip). Store notes, coupons and other prose stay in the HTML."""
 import hashlib
 import json
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from .. import derive, specs, terms
@@ -52,6 +52,11 @@ def _put(out: Path, name: str, doc) -> str:
     return "/" + rel
 
 
+def trend_since(today: str) -> str:
+    """The first day of the trend series the phone file carries and the page block reads: 90 days before `today` (ISO date)."""
+    return (date.fromisoformat(today) - timedelta(days=90)).isoformat()
+
+
 def trend_series(rows: list[dict], model_id: str, offers: list[dict], since: str, rates: dict | None = None) -> dict:
     """{edition: {storage: {store_label: [[day, ratio]]}}}: each day's price of a listing from `since` over the current
     price of the same store, edition and storage offer (both native). Listings with no current offer are left out.
@@ -82,7 +87,7 @@ def _phone_doc(data: SiteData, p: dict) -> dict:
         per_store = derive.store_lines(data.rows, p["id"], e, data.rates)
         lines[e] = {labels.get(s, s): [list(pt) for pt in pts] for s, pts in per_store.items()}
     day = data.updated_at.date() if data.updated_at else datetime.now(UTC).date()   # the build's updated day
-    since = (day - timedelta(days=90)).isoformat()
+    since = trend_since(day.isoformat())
     return {"v": 1, "offers": [offer_inputs(o) for o in p["offers"]], "lines": lines,
             "trend": trend_series(data.rows, p["id"], p["offers"], since, data.rates),
             "bands": {e: specs.band_check(sheet, e) if sheet else None for e in p["editions"]}}

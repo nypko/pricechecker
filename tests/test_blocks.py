@@ -664,7 +664,7 @@ TREND_CASES = {
     "too short": (_trend(short=True, first_day="2026-10-28"), "Price history for this version and memory starts on 28 Oct, too short to judge yet. "
                                                               "Full price history →"),
     "same price": (_trend(now=2652, low=2652, high=2652, is_low=True, change_pct=0.0, change_7d=0.0, first_day="2026-10-15", full_window=False),
-                   "Same price since 15 Oct Lowest price since 15 Oct About the same over the last 30 days Full price history →"),
+                   "Same price since 15 Oct About the same over the last 30 days Full price history →"),
     "approx": (_trend(approx=True, change_pct=None, change_7d=None), "≈€2,736 · low ≈€2,652 – high ≈€2,901 ≈€84 above its 30-day low (≈€2,652 on 12 Nov at Trading Shenzhen) Full price history →"),
 }
 

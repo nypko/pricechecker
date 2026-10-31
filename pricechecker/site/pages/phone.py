@@ -1,14 +1,14 @@
 """One page per phone: phones/<slug>.html (spec §5.2). Every price on it is a shared block (templates/_d/blocks.html)
 rendered for the default settings from the same offer inputs the browser loads (data_files.offer_inputs over the
 phone's v1 file), so static/js/phone.js re-renders the same blocks from the same data for other settings."""
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime
 
 from jinja2 import Environment
 
 from ... import derive, specs
 from ..blocks import PLACE, ledger_rows
 from ..context import SiteData
-from ..data_files import offer_inputs, trend_series
+from ..data_files import offer_inputs, trend_series, trend_since
 from ..view import DEFAULT, best_of, daily_best, default_pick, price_trend
 from ..view import rows as view_rows
 
@@ -90,8 +90,7 @@ def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None
     if not best or best["state"] != "ok":
         return None
     today = (ctx.get("updated") or datetime.now(UTC).strftime("%Y-%m-%d"))[:10]
-    since = (date.fromisoformat(today) - timedelta(days=90)).isoformat()
-    series = trend_series(data.rows, p["id"], p["offers"], since, data.rates)
+    series = trend_series(data.rows, p["id"], p["offers"], trend_since(today), data.rates)
     days = daily_best([offer_inputs(o) for o in p["offers"]], series, ed, mem, data.tax_cfg, DEFAULT)
     return price_trend(days, best, today)
 

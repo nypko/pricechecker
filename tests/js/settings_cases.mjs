@@ -86,10 +86,21 @@ assert.deepEqual(applyChange(base, { ...base, area: "BG" }, "area", false), { s:
 assert.deepEqual(applyChange(base, { ...base, pay: "bank" }, "p", true), { s: { ...base, pay: "bank" }, own: true });
 // "Match currency to region" resets: the region's currency, no longer the visitor's own
 assert.deepEqual(applyChange({ ...base, region: "CA", cur: "eur" }, { ...base, region: "CA", cur: "eur" }, "match", true), { s: { ...base, region: "CA", cur: "cad" }, own: false });
-// curOwn: the stored flag wins; an older visitor with a saved currency but no flag keeps it (no jump)
+// curOwn: the stored flag wins. No flag (saved before it existed): the old site saved the currency on every change, so
+// a saved currency counts as picked only when it differs from the saved region's own currency
 assert.equal(curOwn(mem()), false);
-assert.equal(curOwn(mem({ "pc-cur": "gbp" })), true);
-assert.equal(curOwn(mem({ "pc-cur": "gbp", "pc-cur-own": "0" })), false);
-assert.equal(curOwn(mem({ "pc-cur-own": "1" })), true);
-const so = mem(); saveCurOwn(false, so); assert.equal(so.d["pc-cur-own"], "0"); saveCurOwn(true, so); assert.equal(so.d["pc-cur-own"], "1");
+assert.equal(curOwn(mem({ "pc-cur": "gbp" }), "Europe/Sofia"), true);
+assert.equal(curOwn(mem({ "pc-region": "EU", "pc-country": "BG", "pc-cur": "eur" }), "Europe/Sofia"), false);
+assert.equal(curOwn(mem({ "pc-region": "UK", "pc-cur": "eur" }), "Europe/Sofia"), true);
+assert.equal(curOwn(mem({ "pc-region": "Global", "pc-cur": "usd" }), "Europe/Sofia"), false);
+assert.equal(curOwn(mem({ "pc-region": "EU", "pc-cur": "eur", "pc-cur-pick": "1" }), "Europe/Sofia"), true);
+// a stale pc-cur-own from the first version is ignored
+assert.equal(curOwn(mem({ "pc-region": "UK", "pc-cur": "gbp", "pc-cur-own": "1" }), "Europe/Sofia"), false);
+// the reported case: an older EU visitor switches to the UK and the currency follows
+{ const st = mem({ "pc-region": "EU", "pc-country": "BG", "pc-pay": "card", "pc-cur": "eur" });
+  const was = load(st, "Europe/Sofia"), r = applyChange(was, { ...was, region: "UK", area: "" }, "r", curOwn(st, "Europe/Sofia"));
+  assert.equal(r.s.cur, "gbp"); assert.equal(r.own, false); }
+assert.equal(curOwn(mem({ "pc-cur": "gbp", "pc-cur-pick": "0" })), false);
+assert.equal(curOwn(mem({ "pc-cur-pick": "1" })), true);
+const so = mem(); saveCurOwn(false, so); assert.equal(so.d["pc-cur-pick"], "0"); saveCurOwn(true, so); assert.equal(so.d["pc-cur-pick"], "1");
 console.log("settings ok");

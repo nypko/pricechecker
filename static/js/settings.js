@@ -7,7 +7,7 @@ import { DEFAULT } from "./view.js";
 
 const REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"];
 const SYMBOL = { eur: "€", gbp: "£", usd: "$", cad: "C$", aud: "A$" };
-// Each region's own currency: the currency follows the region until the visitor picks one (pc-cur-own = "1")
+// Each region's own currency: the currency follows the region until the visitor picks one (pc-cur-pick = "1")
 export const REGION_CUR = { EU: "eur", UK: "gbp", US: "usd", CA: "cad", AU: "aud", Global: "usd" };
 const PAY_LABEL = { card: "Card", paypal: "PayPal", bank: "Bank" };
 export const PAY_BY = { card: "card", paypal: "PayPal", bank: "bank transfer" };
@@ -75,13 +75,17 @@ export function save(s, storage = store()) {
   if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("dp:settings", { detail: s }));
 }
 
-/** Whether the shown currency is the visitor's own pick. No flag yet (saved before it existed): a saved currency counts
- *  as picked, so nobody's currency jumps. */
-export function curOwn(storage = store()) {
-  const f = get(storage, "pc-cur-own");
-  return f === null ? !!get(storage, "pc-cur") : f === "1";
+/** Whether the shown currency is the visitor's own pick. No flag yet (saved before it existed): the old site saved the
+ *  currency on every settings change, so a saved currency counts as picked only when it is not the region's own one. */
+// (pc-cur-pick replaces pc-cur-own, which the first version set to "1" for every older visitor; that key is ignored)
+export function curOwn(storage = store(), tz = zone(), lang = language()) {
+  const f = get(storage, "pc-cur-pick");
+  if (f !== null) return f === "1";
+  if (!get(storage, "pc-cur")) return false;
+  const s = load(storage, tz, lang);
+  return s.cur !== REGION_CUR[s.region];
 }
-export const saveCurOwn = (own, storage = store()) => put(storage, "pc-cur-own", own ? "1" : "0");
+export const saveCurOwn = (own, storage = store()) => put(storage, "pc-cur-pick", own ? "1" : "0");
 
 /** One change in the settings sheet: {s, own}. name = the changed control: "r" (region), "c" (currency), "match"
  *  ("Match currency to region"), anything else (country, province, payment) leaves the currency alone. */

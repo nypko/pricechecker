@@ -44,7 +44,8 @@ def _bands(sheet: dict, e: str) -> dict | None:
     if not have or chk is None:
         return None
     why = chk["why"]
-    return {"lte": sorted(have.get("lte", [])), "nr": sorted(have.get("nr", [])),
+    return {"lte": sorted(have.get("lte") or []), "nr": sorted(have.get("nr") or []),
+            "unk_lte": have.get("lte") is None, "unk_nr": have.get("nr") is None,
             "miss_lte": chk["lte"], "miss_nr": chk["nr"],
             "missing": [f"LTE {b}" for b in chk["lte"]] + [f"5G n{b}" for b in chk["nr"]],
             "why": [(b, why[b]) for b in dict.fromkeys(chk["lte"] + chk["nr"]) if b in why]}

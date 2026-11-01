@@ -1,7 +1,7 @@
 """Spec sheets: config/specs/<id>.yaml, one file per phone, and the EU band check (config/region_bands.yaml).
 
 File: id; sources {china|global: {url, checked, lang?}}; key {chip, screen, battery, charging} (what every page shows);
-groups {<group>: {<field>: value}}; bands {china|global: {lte: [int]|null, nr: [int]|null}} (null = the page lists none: unknown; not both null).
+groups {<group>: {<field>: value}}; bands {china|global: {lte: [int]|null, nr: [int]|null}} (null = the page publishes no list for that generation: unknown; not both null).
 A value is a string, null (not on the brand's page), {china: str|null, global: str|null} (the two pages disagree)
 or {value: str, from: china|global} (only that page lists the same hardware fact).
 A version with no `sources` entry or no `bands` entry has not been read yet."""
@@ -151,8 +151,8 @@ def _regions() -> dict:
 
 
 def band_check(sheet: dict, edition: str, region: str = "EU") -> dict | None:
-    """Main bands of the region that this version lacks: {"lte": [...], "nr": [...], "why": {band: text}}.
-    None when we have not read that version's bands."""
+    """Main bands of the region that this version lacks: {"lte": [...], "nr": [...], "why": {band: text}, "unknown": ["lte"|"nr" lists the page does not publish]}.
+    A null list is unknown: it adds no missing bands. None when we have not read that version's bands."""
     have = (sheet.get("bands") or {}).get(edition)
     if not have:
         return None
@@ -160,7 +160,8 @@ def band_check(sheet: dict, edition: str, region: str = "EU") -> dict | None:
     lte = [b for b in r["lte"] if b not in have["lte"]] if have.get("lte") is not None else []
     nr = [b for b in r["nr"] if b not in have["nr"]] if have.get("nr") is not None else []
     why = {b: r["why"][b] for b in dict.fromkeys(lte + nr) if b in r.get("why", {})}
-    return {"lte": lte, "nr": nr, "why": why}
+    unknown = [k for k in ("lte", "nr") if have.get(k) is None]
+    return {"lte": lte, "nr": nr, "why": why, "unknown": unknown}
 
 
 def differences(sheet: dict) -> int:

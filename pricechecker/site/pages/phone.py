@@ -77,7 +77,10 @@ def _bands(sheet: dict, e: str) -> dict:
         return {"e": e, "checked": False}
     missing = [f"LTE {b}" for b in c["lte"]] + [f"5G n{b}" for b in c["nr"]]
     why = [f"band {b} is {t}" for b, t in c["why"].items()]
-    return {"e": e, "checked": True, "missing": missing, "why": "; ".join(why)}
+    unk = c["unknown"]
+    return {"e": e, "checked": True, "missing": missing, "why": "; ".join(why),
+            "known": "5G" if "lte" in unk else "4G" if unk else "",
+            "unknown": " and ".join("4G" if k == "lte" else "5G" for k in unk) + " bands not published" if unk else ""}
 
 
 def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None, mem: str | None) -> dict | None:

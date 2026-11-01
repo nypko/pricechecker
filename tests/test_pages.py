@@ -1128,3 +1128,42 @@ def test_phone_page_trend_follows_the_verdict_for_the_default_pick():
 def test_phone_page_trend_is_empty_without_a_current_price():
     h, _ = _trend_site(sold_out=True)
     assert '<div id="s-trend" data-ed="china"></div>' in h and 'data-block="price_trend"' not in h
+
+
+# --- unknown (null) band lists ---
+
+def test_unknown_nr_is_said_not_counted_on_the_phone_and_specs_pages(tmp_path, monkeypatch):
+    """A synthetic Mate X7 sheet with fields and nr null, built into a temp site."""
+    from copy import deepcopy
+    from pricechecker import fx, run, site, terms
+    from pricechecker import specs as specs_cfg
+    from pricechecker.site.pages import phone as ph
+    sheets = deepcopy(specs_cfg.load())
+    s = sheets["huawei-mate-x7"]
+    assert s["bands"]["global"]["nr"] is None
+    s["groups"] = {"display": {"size": "8.0 in"}}
+    s["sources"]["global"] = {"url": "https://consumer.huawei.com/en/phones/mate-x7/specs/", "checked": "2026-11-01"}
+    b = ph._bands(s, "global")
+    assert b["unknown"] == "5G bands not published" and b["known"] == "4G"
+    monkeypatch.setattr(specs_cfg, "load", lambda *a, **k: sheets)
+    out = tmp_path / "build"
+    stores, catalog = run.load_config()
+    monkeypatch.setattr(site, "OUT", out)
+    site.build(catalog, stores, fx.cached(), terms.saved_status())
+    sp = (out / "phones/huawei-mate-x7/specs.html").read_text()
+    assert "not published" in sp
+    pg = (out / "phones/huawei-mate-x7.html").read_text()
+    assert "5G bands not published" in pg
+
+
+def test_phone_bands_helpers_with_a_null_list():
+    import yaml
+    from pricechecker.site.pages import phone as ph, specs as sp
+    s = yaml.safe_load(open("config/specs/oppo-find-x9-ultra.yaml"))
+    s["bands"]["china"]["nr"] = None
+    b = ph._bands(s, "china")
+    assert b["unknown"] == "5G bands not published" and not b["missing"]
+    s["bands"]["china"]["lte"] = [x for x in s["bands"]["china"]["lte"] if x != 20]
+    assert ph._bands(s, "china")["missing"] == ["LTE 20"]
+    sb = sp._bands(s, "china")
+    assert sb["nr"] == [] and sb["unk_nr"] and not sb["unk_lte"]

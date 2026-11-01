@@ -103,3 +103,12 @@ def test_band_check_skips_a_null_list():
     assert r["nr"] == [] and r["lte"] == [20]
     s["bands"]["china"]["lte"], s["bands"]["china"]["nr"] = None, [1]
     assert specs.band_check(s, "china")["lte"] == []
+
+
+def test_band_check_reports_which_lists_are_unknown():
+    s = deepcopy(_sheets()["oneplus-16"])
+    assert specs.band_check(s, "china")["unknown"] == []
+    s["bands"]["china"]["nr"] = None
+    assert specs.band_check(s, "china")["unknown"] == ["nr"]
+    s["bands"]["china"].update(nr=[1], lte=None)
+    assert specs.band_check(s, "china")["unknown"] == ["lte"]

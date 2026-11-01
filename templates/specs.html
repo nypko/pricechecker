@@ -54,8 +54,8 @@
         {%- if b.missing %}<span style="color:var(--warn);font-weight:600">Missing {{ b.missing|join(", ") }}</span>
           {%- for band, why in b.why %}<br>Band {{ band }} = {{ why }}{% endfor %}
         {%- else %}<span style="color:var(--good);font-weight:600">Has all the main EU bands</span>{% endif %}</td></tr>
-      <tr><th scope="row">4G LTE</th><td class="bandlist">{{ b.lte|join(" · ") }}{% if b.miss_lte %} · <b>missing {{ b.miss_lte|join(", ") }}</b>{% endif %}</td></tr>
-      <tr><th scope="row">5G</th><td class="bandlist">{% for n in b.nr %}n{{ n }}{{ " · " if not loop.last }}{% endfor %}{% if b.miss_nr %} · <b>missing {% for n in b.miss_nr %}n{{ n }}{{ ", " if not loop.last }}{% endfor %}</b>{% endif %}</td></tr>
+      <tr><th scope="row">4G LTE</th><td class="bandlist">{% if b.unk_lte %}not published{% endif %}{{ b.lte|join(" · ") }}{% if b.miss_lte %} · <b>missing {{ b.miss_lte|join(", ") }}</b>{% endif %}</td></tr>
+      <tr><th scope="row">5G</th><td class="bandlist">{% if b.unk_nr %}not published{% endif %}{% for n in b.nr %}n{{ n }}{{ " · " if not loop.last }}{% endfor %}{% if b.miss_nr %} · <b>missing {% for n in b.miss_nr %}n{{ n }}{{ ", " if not loop.last }}{% endfor %}</b>{% endif %}</td></tr>
     </tbody></table>
     {%- endif %}
   {%- endfor %}

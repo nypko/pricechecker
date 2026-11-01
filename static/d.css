@@ -32,6 +32,8 @@
 .sheet-sel select { min-height: 44px; font: inherit; color: var(--sh-fg); background: var(--sh-bg); border: 1px solid var(--sh-rule); border-radius: 10px; padding: 0 10px; }
 .sheet-done { min-height: 48px; border: 0; border-radius: 12px; background: var(--sh-accent); color: var(--sh-on-accent); font: 600 1rem var(--sh-font); cursor: pointer; }
 .sheet-done:focus-visible { outline: 2px solid var(--sh-fg); outline-offset: 2px; }
+.sheet-link { all: unset; cursor: pointer; color: var(--sh-fg); text-decoration: underline; text-underline-offset: 3px; padding: 6px 0; }
+.sheet-link:focus-visible { outline: 2px solid var(--sh-accent); outline-offset: 2px; }
 
 /* ---- c.css ---- */
 /* C · Two Prices: built for the search people actually make ("<phone> price in China"). Every phone is shown as

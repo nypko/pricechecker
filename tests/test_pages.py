@@ -1224,3 +1224,102 @@ def test_phone_page_carrier_summary_is_none_without_a_country_and_per_version_wi
     r = phone._carrier(sheet, ["china", "global"])
     assert set(r) == {"china", "global"} and r["china"]["text"].startswith("In United Kingdom: bands not published")
     assert r["global"]["counts"]["nogaps"] == 1
+
+
+# --- carrier check on the phone page (synthetic site: no saved prices) ---
+
+def _carrier_page(monkeypatch, region="EU", area="", bands="both", doc=True):
+    """The phone page for a synthetic two-version phone whose sheet has bands, with `region`/`area` as the default settings
+    and a synthetic Germany/Great Britain carrier file. Returns the html."""
+    import copy
+    import dataclasses
+
+    from pricechecker import carriers, fx, run, terms
+    from pricechecker.pricing import Settings
+    from pricechecker.site import _env, context, offers
+    from pricechecker.site.pages import phone
+    stores, catalog = run.load_config()
+    data = context.load(catalog, stores, fx.cached(), terms.saved_status())
+    p = copy.deepcopy(offers.assemble(data)[0])
+    shop = next(o for o in json.loads((ROOT / "tests/fixtures/states_phone.json").read_text())["offers"] if o["store_label"] == "Settled Shop")
+    p["editions"] = ["china", "global"]
+    p["offers"] = [{**shop, "store": "settled", "currency": "EUR", "price": 1000.0 + 50 * i, "edition": e} for i, e in enumerate(p["editions"])]
+    rows = [{"time": "2026-10-24T08:00:00Z", "store": "settled", "model_id": p["id"], "edition": e, "storage": "12/256", "price": 1000.0 + 50 * i,
+             "currency": "EUR", "available": True} for i, e in enumerate(p["editions"])]
+    sheet = {"bands": {"china": {"lte": [1, 3, 7], "nr": [78]}, "global": {"lte": [1, 3, 7, 20], "nr": [78]}}}
+    if bands == "none":
+        sheet = {}
+    elif bands == "china":
+        sheet["bands"].pop("global")
+    data = dataclasses.replace(data, rows=rows, rows_all=rows, spec_sheets={**data.spec_sheets, p["id"]: sheet})
+    net = {"id": "de-a", "name": "Anet", "lte": [1, 3, 7, 20], "nr": [78], "basis": "licensed", "complete": True, "sources": [], "mvnos": ["Cheapo"]}
+    cc = phone.country_for(Settings(region, area, "card", "eur"))
+    monkeypatch.setattr(phone, "DEFAULT", Settings(region, area, "card", "eur"))
+    monkeypatch.setattr(carriers, "load", lambda *a, **k: {cc: {"country": cc, "networks": [net]}} if cc and doc else {})
+    ctx = context.page_context(data, [p])
+    ctx["updated"] = "2026-10-30T12:00:00Z"
+    return phone.render(_env(), data, ctx, [p])[f'phones/{p["slug"]}.html']
+
+
+def _means(h):
+    return h[h.index('id="means-h"'):h.index("Price history by store")]
+
+
+def _section(h, a, b):
+    return h[h.index(a):h.index(b, h.index(a))]
+
+
+def test_phone_page_with_a_country_shows_the_summary_not_the_eu_lines(monkeypatch):
+    h = _carrier_page(monkeypatch, "EU", "DE")
+    bullet = _section(h, 'id="s-csum"', 'id="s-eu"')
+    assert "In Germany: " in bullet and "EU networks" not in bullet and "Pick your country" not in bullet
+    assert 'id="s-eu" hidden' in h and 'id="s-clink"' in h and 'id="s-clink" href="#carrier" hidden' not in h
+    lines = _section(h, 'id="s-csums"', 'id="s-eulines"')
+    assert "EU networks" not in lines and "China version:</b>" in lines and "Global version:</b>" in lines
+    assert lines.count("In Germany: ") == 2 and "coverage risk on Anet (no band 20)" in lines     # China lacks band 20
+    assert 'id="s-eulines" hidden' in h and 'id="s-csums" hidden' not in h
+    c = _section(h, 'id="carrier"', "</section>")
+    assert 'id="cc-country"' not in c and 'id="cc-net"' in c and "Choose your network" in c and 'class="cv ' not in c   # nothing faked without JS
+    assert "Cheapo — on Anet" in text_of(c)
+    assert h.index("<h2>Specs</h2>") < h.index('id="carrier"') < h.index("More from") if "More from" in h else True
+    assert len(h.encode()) <= 60_000
+
+
+def text_of(h):
+    import html as _h
+    return re.sub(r"\s+", " ", _h.unescape(re.sub(r"<[^>]+>", " ", h)))
+
+
+def test_phone_page_without_a_country_prompts_and_keeps_the_eu_lines(monkeypatch):
+    for region, area in (("EU", ""), ("Global", "")):
+        h = _carrier_page(monkeypatch, region, area)
+        bullet = _section(h, 'id="s-csum"', 'id="s-eu"')
+        assert "Pick your country to check its networks" in bullet and 'href="#carrier"' in bullet
+        assert 'id="s-eu"' in h and 'id="s-eu" hidden' not in h and 'id="s-clink" href="#carrier" hidden' in h
+        assert "version on EU networks:</b>" in h and 'id="s-csums" hidden' in h and 'id="s-eulines" hidden' not in h
+        c = _section(h, 'id="carrier"', "</section>")
+        assert 'id="cc-country"' in c and 'id="cc-net"' not in c and "Bands only" not in c
+
+
+def test_phone_page_other_countries_from_the_settings(monkeypatch):
+    for region, area, name in (("UK", "", "United Kingdom"), ("CA", "ON", "Canada"), ("US", "", "United States")):
+        h = _carrier_page(monkeypatch, region, area)
+        assert f"In {name}: " in _section(h, 'id="s-csum"', 'id="s-eu"')
+        assert 'id="cc-country"' not in _section(h, 'id="carrier"', "</section>")
+
+
+def test_phone_page_without_any_bands_keeps_the_old_text(monkeypatch):
+    h = _carrier_page(monkeypatch, "EU", "", bands="none")
+    assert 'id="carrier"' not in h and 'id="s-csum"' not in h and "Pick your country" not in h
+    assert "Some 4G/5G bands may be missing" in _means(h)
+    assert 'data-bands=\'{"china": null, "global": null}\'' in h
+
+
+def test_phone_page_data_attributes_are_valid_json(monkeypatch):
+    for bands in ("both", "china", "none"):
+        h = _carrier_page(monkeypatch, "EU", "DE", bands=bands)
+        b = _bands_attr(h)
+        c = json.loads(html.unescape(re.search(r"data-carriers='([^']*)'", h).group(1)))
+        assert set(b) == {"china", "global"} and all(v is None or set(v) == {"lte", "nr"} for v in b.values())
+        assert set(c) == set(__import__("pricechecker.carriers", fromlist=["x"]).COUNTRIES)
+        assert (b["global"] is None) == (bands != "both") and (b["china"] is None) == (bands == "none")

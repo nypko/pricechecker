@@ -89,4 +89,33 @@ assert.equal(focusSelector(null), null);
   assert.equal(trendHtml(doc, tax, viewRows(doc.offers, tax, eur), eur, { ed: "china", mem: "12/256" }, null, "../history/x").includes("price_trend"), true);
 }
 
+// the carrier check (Review Focus 3): the country comes from the settings, never another country's networks
+{
+  const { countryFor, resolvePick, COUNTRY_NAMES } = await import("../../static/js/carriers.js");
+  const st = (region, area = "") => ({ region, area, pay: "card", cur: "eur" });
+  assert.equal(countryFor(st("EU", "DE")), "DE");
+  assert.equal(countryFor(st("EU")), null);                    // EU without a country: the picker's own select
+  assert.equal(countryFor(st("Global")), null);
+  assert.equal(countryFor(st("Global", "DE")), null);          // a stale area never counts outside the EU
+  assert.equal(countryFor(st("CA", "ON")), "CA");              // any province is Canada
+  assert.equal(countryFor(st("CA")), "CA");
+  assert.equal(countryFor(st("UK")), "GB");
+  assert.equal(countryFor(st("US")), "US");
+  assert.equal(countryFor(st("AU")), "AU");
+  assert.equal(COUNTRY_NAMES.DE, "Germany");
+
+  // Review Focus 4: a saved network that is gone, or belongs to another country, is ignored: the first network
+  const doc = { country: "DE", networks: [{ id: "de-a", mvnos: ["Cheapo"] }, { id: "de-b", mvnos: [] }] };
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-b" }, "DE"), "de-b");
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-a|Cheapo" }, "DE"), "de-a|Cheapo");   // a virtual carrier of a network
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-gone" }, "DE"), "de-a");              // removed from the data
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-a|Gone" }, "DE"), "de-a");            // its virtual carrier removed
+  assert.equal(resolvePick(doc, { country: "FR", network: "de-b" }, "DE"), "de-a");                 // saved for another country
+  assert.equal(resolvePick(doc, { country: "DE", network: "fr-x" }, "DE"), "de-a");
+  assert.equal(resolvePick(doc, { country: "DE", network: "" }, "DE"), "de-a");
+  for (const bad of [null, undefined, {}, { country: "DE" }, { country: "DE", network: 5 }, "x", []]) assert.equal(resolvePick(doc, bad, "DE"), "de-a");
+  assert.equal(resolvePick({ networks: [] }, { country: "DE", network: "de-a" }, "DE"), null);
+  assert.equal(resolvePick(null, null, "DE"), null);
+}
+
 console.log("phone cases: ok");

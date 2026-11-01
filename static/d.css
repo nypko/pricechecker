@@ -332,6 +332,25 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .bandchk { display: grid; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .9rem; }
 .bandchk p { margin: 0; }
 .bandchk .bad { color: var(--warn); font-weight: 600; } .bandchk .fine { color: var(--good); font-weight: 600; }
+.bandchk > div { display: grid; gap: 8px; }
+.bandchk > div[hidden] { display: none; }
+#s-csum::after { content: "."; }
+.csum a, #s-clink { color: var(--ink); text-underline-offset: 2px; }
+/* "Check your carrier": two selects, then one verdict per version side by side (the text says it; the border only echoes it) */
+.carrier { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .9rem; }
+.carrier h3 { margin: 0 0 10px; font: 700 1rem var(--serif); }
+.cc-pick { display: grid; gap: 10px; }
+.cc-pick label { display: grid; gap: 4px; font-weight: 600; font-size: .82rem; color: var(--ink-2); }
+.cc-pick select { width: 100%; min-height: 44px; font: 500 .94rem var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 0 10px; }
+.cc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 12px; }
+.cv { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--ground); border-left: 4px solid var(--rule); line-height: 1.4; overflow-wrap: anywhere; }
+.cv b { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+.cv.cn b { color: var(--cn-ink); } .cv.gl b { color: var(--gl-ink); }
+.cv[data-kind="risk"] { background: var(--warn-soft); border-left-color: var(--warn); }
+.cv[data-kind="risk"] span { font-weight: 600; color: var(--warn); }
+.cv[data-kind="4g"], .cv[data-kind="minor"] { border-left-color: var(--warn); }
+.cv[data-kind="full"], .cv[data-kind="nogaps"] { border-left-color: var(--good); }
+.cc-note { margin: 10px 0 0; font-size: .8rem; color: var(--ink-2); }
 .allspecs { display: flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 14px; border-radius: 12px; border: 1.5px solid var(--ink); font-weight: 700; text-decoration: none; color: var(--ink); }
 .src { font-size: .86rem; color: var(--ink-2); margin: 0 0 6px; }
 .sgroup { margin-top: 18px; }

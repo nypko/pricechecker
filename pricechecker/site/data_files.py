@@ -134,16 +134,17 @@ def _band_subset(nets: list[dict], table: dict) -> dict:
     return {**out, "covers": table.get("covers") or {}}
 
 
+def carrier_doc(cc: str, doc: dict, table: dict) -> dict:
+    """The published shape of one country's carrier file (no sources text)."""
+    nets = [{"id": n["id"], "name": n["name"], "lte": n.get("lte"), "nr": n.get("nr"), "basis": n.get("basis"),
+             "complete": bool(n.get("complete")), "mvnos": n.get("mvnos") or []} for n in doc.get("networks") or []]
+    return {"v": 1, "country": cc, "name": carriers.COUNTRY_NAMES[cc], "networks": nets, "bands": _band_subset(nets, table)}
+
+
 def write_carriers(docs: dict[str, dict], table: dict, out: Path) -> dict[str, str]:
     """One file per country, "carriers/<CC>": {"v": 1, country, name, networks [{id, name, lte, nr, basis, complete,
     mvnos}], bands}; no sources text. Returns {"carriers/<CC>": published path}."""
-    names = {}
-    for cc, doc in docs.items():
-        nets = [{"id": n["id"], "name": n["name"], "lte": n.get("lte"), "nr": n.get("nr"), "basis": n.get("basis"),
-                 "complete": bool(n.get("complete")), "mvnos": n.get("mvnos") or []} for n in doc.get("networks") or []]
-        names[f"carriers/{cc}"] = _put(out, f"carriers/{cc}", {
-            "v": 1, "country": cc, "name": carriers.COUNTRY_NAMES[cc], "networks": nets, "bands": _band_subset(nets, table)})
-    return names
+    return {f"carriers/{cc}": _put(out, f"carriers/{cc}", carrier_doc(cc, doc, table)) for cc, doc in docs.items()}
 
 
 def write(data: SiteData, out: Path, phones: list[dict] | None = None) -> dict[str, str]:

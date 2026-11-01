@@ -87,3 +87,31 @@ export function summary(phone, countryDoc, table, countryName) {
   };
   return { counts, text: `In ${countryName}: ` + GROUPS.map((k) => parts[k]).filter((p) => p).join("; ") };
 }
+
+// ---- the visitor's country, the picker's names and the saved pick (pricechecker/carriers.py country_for / COUNTRY_NAMES) ----
+
+export const COUNTRY_NAMES = {
+  AT: "Austria", BE: "Belgium", BG: "Bulgaria", HR: "Croatia", CY: "Cyprus", CZ: "Czechia",
+  DK: "Denmark", EE: "Estonia", FI: "Finland", FR: "France", DE: "Germany", GR: "Greece",
+  HU: "Hungary", IE: "Ireland", IT: "Italy", LV: "Latvia", LT: "Lithuania", LU: "Luxembourg",
+  MT: "Malta", NL: "Netherlands", PL: "Poland", PT: "Portugal", RO: "Romania", SK: "Slovakia",
+  SI: "Slovenia", ES: "Spain", SE: "Sweden", GB: "United Kingdom", US: "United States",
+  CA: "Canada", AU: "Australia" };
+
+const REGION_COUNTRY = { UK: "GB", US: "US", CA: "CA", AU: "AU" };
+
+/** The carrier country of the settings: EU -> its country (null until one is picked), UK -> GB, US, CA (any province), AU;
+ *  Global -> null (the picker has its own country select). */
+export const countryFor = (s) => s.region === "EU" ? (s.area || null) : (REGION_COUNTRY[s.region] || null);
+
+/** The option value to select in `doc`'s network list: the saved pick when it is for this country `cc` and the network
+ *  ("de-telekom", or a virtual carrier of it: "de-telekom|congstar") is still in the file, else the first network;
+ *  null when the file lists none. */
+export function resolvePick(doc, saved, cc) {
+  const nets = (doc && doc.networks) || [];
+  if (!nets.length) return null;
+  const v = saved && saved.country === cc && typeof saved.network === "string" ? saved.network : "";
+  const i = v.indexOf("|"), host = i < 0 ? v : v.slice(0, i), net = nets.find((n) => n.id === host);
+  if (net && (i < 0 || (net.mvnos || []).includes(v.slice(i + 1)))) return v;
+  return nets[0].id;
+}

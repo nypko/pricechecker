@@ -736,3 +736,105 @@ def test_price_trend_none_is_empty_and_strings_are_escaped():
     py, js = macro("price_trend", t, view.DEFAULT, "../history/x"), _trend_js(t)
     assert "<b>" not in py and "<b>" not in js
     assert structure(py) == structure(js) and text(py) == text(js)
+
+
+# --- carrier blocks: the bands bullet summary and the "Check your carrier" picker ---
+
+def _carrier_doc_de():
+    """A synthetic Germany file in the published shape, from the real band table: one network per kind of verdict."""
+    from pricechecker import carriers
+    from pricechecker.site import data_files
+    nets = [{"id": "risk", "name": "Rnet", "lte": [1, 3, 20], "nr": [], "basis": "licensed", "complete": True, "mvnos": ["rmvno", "<b>x</b>"]},
+            {"id": "g4", "name": "Gnet", "lte": [1, 3], "nr": [78], "basis": "used", "complete": True, "mvnos": []},
+            {"id": "minor", "name": "Mnet", "lte": [1, 3, 7], "nr": [], "basis": "used", "complete": True, "mvnos": ["congstar"]},
+            {"id": "nogaps", "name": "Nnet", "lte": [1, 3], "nr": [], "basis": "used", "complete": False, "mvnos": []},
+            {"id": "full", "name": "Fnet & Co", "lte": [1, 3], "nr": [], "basis": "used", "complete": True, "mvnos": []}]
+    return data_files.carrier_doc("DE", {"networks": nets}, carriers.band_table())
+
+
+PH_A = {"lte": [1, 3], "nr": []}          # full / nogaps / minor (no 7) / risk (no 20) / 4g (no 78) depending on the network
+PH_B = {"lte": [1, 3, 7, 20], "nr": [78]}
+SETTINGS = [("DE", "EU,DE,card,eur"), ("none", "EU,,card,eur"), ("global", "Global,,card,eur"), ("ca", "CA,ON,card,cad"), ("uk", "UK,,card,gbp")]
+
+
+def _carrier_cases():
+    doc = _carrier_doc_de()
+    two = {"china": PH_A, "global": PH_B}
+    out = [(doc, two, p, "EU,DE,card,eur") for p in ("risk", "g4", "minor", "nogaps", "full", "minor|congstar", "risk|<b>x</b>", None)]
+    out += [(doc, {"china": None, "global": PH_B}, "full", "EU,DE,card,eur"),     # a version with no bands -> unknown
+            (doc, {"china": PH_A}, "risk", "Global,,card,eur"),                    # Global: the country select shows, one version
+            (None, two, None, "EU,,card,eur"),                                     # no country picked yet
+            (None, two, None, "Global,,card,eur"),
+            ({**doc, "country": "CA", "name": "Canada"}, two, "full", "CA,ON,card,cad"),
+            ({**doc, "networks": []}, two, None, "Global,,card,eur")]
+    return out
+
+
+@needs_node
+def test_carrier_summary_and_check_blocks_match_the_js_twins():
+    from pricechecker import carriers
+    lab = {"global": "Global", "china": "China"}
+    seen = set()
+    sums = [None, {"counts": {}, "text": "In Germany: works fully on all 3 networks"}, {"counts": {}, "text": "In <Q> & \"x\": 4G only on A"}]
+    for sm in sums:
+        py = macro("carrier_summary", sm, Settings("EU", "", "card", "eur"))
+        js = _carrier_js({"sum": sm, "s": "EU,,card,eur"})["carrier_summary"]
+        assert text(py) == text(js) and root_of(py) == root_of(js) and structure(py) == structure(js)
+        assert 'data-block="carrier_summary"' in py
+    assert 'href="#carrier"' in macro("carrier_summary", None, Settings("EU", "", "card", "eur"))
+    assert "Pick your country to check its networks" in text(macro("carrier_summary", None, Settings("Global", "", "card", "eur")))
+    for doc, bands, picked, st in _carrier_cases():
+        region, area, pay, cur = st.split(",")
+        s = Settings(region, area, pay, cur)
+        py = macro("carrier_check", doc, bands, picked, lab, s)
+        js = _carrier_js({"doc": json.loads(json.dumps(doc)), "bands": bands, "picked": picked, "labels": lab, "s": st})["carrier_check"]
+        where = f"{picked} {st}"
+        assert text(py) == text(js), where
+        assert root_of(py) == root_of(js) == "section|carrier|carrier_check", where
+        assert structure(py) == structure(js), where
+        if doc and picked:
+            host = picked.split("|")[0]
+            net = next(n for n in doc["networks"] if n["id"] == host)
+            seen |= {carriers.verdict(b, net, doc["bands"])["kind"] for b in bands.values()}
+    assert seen == {"unknown", "risk", "4g", "minor", "nogaps", "full"}
+
+
+def _carrier_js(case):
+    r = subprocess.run(["node", str(HARNESS), "--carrier", json.dumps(case)], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stderr
+    return json.loads(r.stdout)
+
+
+def _check(doc, bands, picked, st="EU,DE,card,eur"):
+    region, area, pay, cur = st.split(",")
+    return macro("carrier_check", doc, bands, picked, {"global": "Global", "china": "China"}, Settings(region, area, pay, cur))
+
+
+def test_carrier_check_markup_py():
+    doc = _carrier_doc_de()
+    two = {"china": PH_A, "global": PH_B}
+    h = _check(doc, two, "minor")
+    assert h.startswith('<section id="carrier"') and 'data-block="carrier_check"' in h
+    assert 'id="cc-country"' not in h                     # the country comes from the settings
+    assert "Bands only: calls over 4G (VoLTE) and Wi-Fi calling depend on the network supporting the phone, which we can't check." in text(h)
+    assert h.count('class="cv ') == 2 and h.index("China") < h.index("Global")
+    t = text(h)
+    assert "Works; no band 7" in t and "Works fully" not in t.split("Global")[0]
+    # MVNO options sit under their host, indented, and map to the host network
+    assert 'value="minor|congstar"' in h and "congstar — on Mnet" in t
+    assert h.index('value="minor"') < h.index('value="minor|congstar"') < h.index('value="nogaps"')
+    assert 'value="minor|congstar" selected' not in h and 'value="minor" selected' in h
+    assert "&lt;b&gt;x&lt;/b&gt; — on Rnet" in h and "<b>x</b>" not in h and "Fnet &amp; Co" in h   # escaped
+    # the country select shows for Global and for EU without a country, and sets only the picker
+    g = _check(doc, two, "minor", "Global,,card,eur")
+    assert 'id="cc-country"' in g and g.count("<option") > 31 and '<option value="DE" selected>Germany</option>' in g
+    n = _check(None, two, None, "EU,,card,eur")
+    assert 'id="cc-country"' in n and 'id="cc-net"' not in n and "class=\"cv" not in n and "Bands only" not in n
+    assert '<option value="" selected>Choose country</option>' in n
+    # no JS: a carrier is not chosen, so no verdict is faked
+    u = _check(doc, two, None)
+    assert 'id="cc-net"' in u and '<option value="" selected>Choose your network</option>' in u and "class=\"cv" not in u and "Bands only" not in u
+    # a version without bands says so
+    assert "Bands not published for this version" in text(_check(doc, {"china": None, "global": PH_B}, "full"))
+    # every verdict line carries its kind and the words, not a colour alone
+    assert 'data-kind="risk"' in _check(doc, two, "risk") and "Coverage risk:" in text(_check(doc, two, "risk"))

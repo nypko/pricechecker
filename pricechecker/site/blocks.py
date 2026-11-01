@@ -4,6 +4,7 @@ has the same functions with the same rules, so a block reads the same rendered o
 import math
 from datetime import datetime
 
+from .. import carriers
 from . import view
 
 SYMBOL = {"eur": "€", "gbp": "£", "usd": "$", "cad": "C$", "aud": "A$"}
@@ -186,4 +187,5 @@ def register(env) -> None:
     env.globals.update(money=money, fixed=fixed, pct=pct, group=group, mem_parts=mem_parts, mem_label=mem_label, mem_text=mem_text, mem_short=mem_short,
                        mem_tiny=mem_tiny, stamp=stamp, short_day=short_day, days_ago=days_ago, month_of=month, days_text=days, cap=cap,
                        caveat=caveat, why=why, mem_union=mem_union, nearest_memory=view.nearest_memory, stores_n=stores_n, ledger_rows=ledger_rows,
-                       best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY)
+                       best_of=view.best_of, gap_of=view.gap, PLACE=PLACE, PAY_BY=PAY_BY,
+                       carrier_verdict=carriers.verdict, country_for=carriers.country_for, COUNTRY_NAMES=carriers.COUNTRY_NAMES)

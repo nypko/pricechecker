@@ -5,6 +5,7 @@
 // labels = the brand's edition names {global, china}. No DOM, no I/O, no dynamic import().
 import { bestOf, gap, nearestMemory } from "./view.js";
 import { PAY_BY, PLACE } from "./settings.js";
+import { verdict as carrierVerdict, countryFor, COUNTRY_NAMES } from "./carriers.js";
 
 const SYMBOL = { eur: "€", gbp: "£", usd: "$", cad: "C$", aud: "A$" };
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -280,4 +281,39 @@ export function ledger(rows, s, labels, sort = "rank") {
       (r.ship === null ? td("not listed", "q") : td(r.ship === 0 ? "free" : (r.shipMin ? "from " : "") + d(r.ship))) +
       (r.duties === true ? td("store pays") : r.taxEst === null ? td("not estimated") : r.duties === false ? td("+" + d(r.taxAdded)) : td("not stated", "q")) +
       td((r.approx ? "≈" : "") + d(r.total) + (r.unknown ? "+" : ""), "tot") + td(n) + "</tr>").join("") + "</tbody></table>";
+}
+
+/** The bands bullet and Specs lines: how the phone version does on the networks of the visitor's country; no summary
+ *  (no country yet) asks for the country. */
+export const carrierSummary = (sum, s) => '<span class="csum" data-block="carrier_summary">' +
+  (sum ? esc(sum.text) : '<a href="#carrier">Pick your country to check its networks</a>') + "</span>";
+
+const BY_NAME = Object.entries(COUNTRY_NAMES).sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0));
+
+/** "Check your carrier" under Specs. doc: the country's carrier file or null; bands: {version: {lte, nr} | null}; picked:
+ *  the option value ("<network id>" or "<network id>|<virtual carrier>", both judge the host network) or null, which
+ *  shows no verdict. The country select appears only when the settings give no country; it sets this picker only. */
+export function carrierCheck(doc, bands, picked, labels, s) {
+  const host = String(picked || "").split("|")[0];
+  const net = doc && picked ? (doc.networks.find((n) => n.id === host) || null) : null;
+  const sel = (on) => (on ? " selected" : "");
+  let h = '<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h"><h3 id="carrier-h">Check your carrier</h3><div class="cc-pick">';
+  if (!countryFor(s)) {
+    h += `<label>Country <select id="cc-country"><option value=""${sel(!doc)}>Choose country</option>` +
+      BY_NAME.map(([c, n]) => `<option value="${esc(c)}"${sel(doc && doc.country === c)}>${esc(n)}</option>`).join("") + "</select></label>";
+  }
+  if (doc) {
+    h += '<label>Your network <select id="cc-net">' + (net ? "" : '<option value="" selected>Choose your network</option>') +
+      doc.networks.map((n) => `<option value="${esc(n.id)}"${sel(picked === n.id)}>${esc(n.name)}</option>` +
+        n.mvnos.map((m) => `<option value="${esc(n.id)}|${esc(m)}"${sel(picked === n.id + "|" + m)}>&nbsp;&nbsp;${esc(m)} — on ${esc(n.name)}</option>`).join("")).join("") +
+      "</select></label>";
+  }
+  h += "</div>";
+  if (net) {
+    h += '<div class="cc-out">' + Object.entries(bands).map(([e, bd]) => {
+      const v = carrierVerdict(bd, net, doc.bands);
+      return `<p class="cv ${e === "china" ? "cn" : "gl"}" data-kind="${v.kind}"><b>${esc(labels[e])}</b> <span>${esc(v.text)}</span></p>`;
+    }).join("") + "</div><p class=\"cc-note\">Bands only: calls over 4G (VoLTE) and Wi-Fi calling depend on the network supporting the phone, which we can't check.</p>";
+  }
+  return h + "</section>";
 }

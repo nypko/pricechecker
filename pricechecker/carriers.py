@@ -33,6 +33,14 @@ COUNTRY_NAMES = {
     "SI": "Slovenia", "ES": "Spain", "SE": "Sweden", "GB": "United Kingdom", "US": "United States",
     "CA": "Canada", "AU": "Australia"}
 
+# the carrier country of a visitor's settings (static/js/carriers.js countryFor: the same)
+_REGION_COUNTRY = {"UK": "GB", "US": "US", "CA": "CA", "AU": "AU"}
+
+
+def country_for(s) -> str | None:
+    """EU -> its country (None until one is picked), UK -> GB, US, CA (any province), AU; Global -> None."""
+    return (s.area or None) if s.region == "EU" else _REGION_COUNTRY.get(s.region)
+
 
 def load(dir: Path = CARRIERS_DIR) -> dict[str, dict]:
     """{country code: file} for every <CC>.yaml in dir (none if the folder does not exist)."""

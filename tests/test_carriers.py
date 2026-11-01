@@ -487,3 +487,24 @@ def test_verdict_and_summary_match_the_js(tmp_path):
     want_s = [carriers.summary(p, _doc3(*nets[:k]), VT, names[0]) for p in phones for k in (1, 3, 7, 11)]
     assert got["summaries"] == want_s
     assert {v["kind"] for row in want_v for v in row} == {"unknown", "risk", "4g", "minor", "nogaps", "full"}
+
+
+def test_country_for_settings_python():
+    from pricechecker.pricing import Settings
+    s = lambda region, area="": Settings(region, area, "card", "eur")
+    assert carriers.country_for(s("EU", "DE")) == "DE" and carriers.country_for(s("EU")) is None
+    assert carriers.country_for(s("UK")) == "GB" and carriers.country_for(s("CA", "ON")) == "CA" and carriers.country_for(s("Global", "DE")) is None
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_country_for_and_names_match_the_js():
+    from pricechecker.pricing import Settings
+    cases = [(r, a) for r in ("EU", "UK", "US", "CA", "AU", "Global") for a in ("", "DE", "ON")]
+    js = ('import {countryFor, COUNTRY_NAMES} from "./static/js/carriers.js";'
+          f'const c = {json.dumps(cases)};'
+          'console.log(JSON.stringify({got: c.map(([region, area]) => countryFor({region, area})), names: COUNTRY_NAMES}));')
+    r = subprocess.run(["node", "--input-type=module", "-e", js], check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout)
+    assert out["got"] == [carriers.country_for(Settings(r_, a, "card", "eur")) for r_, a in cases]
+    assert out["names"] == carriers.COUNTRY_NAMES and list(out["names"]) == list(carriers.COUNTRY_NAMES)

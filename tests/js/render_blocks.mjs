@@ -11,7 +11,13 @@ import * as B from "../../static/js/blocks.js";
 
 const arg = (n, d = null) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : d; };
 
-if (arg("--trend")) {
+if (arg("--carrier")) {
+  // --carrier '{sum, doc, bands, picked, labels, s: "region,area,pay,cur"}' prints {carrier_summary, carrier_check}
+  const c = JSON.parse(arg("--carrier")), [region, area, pay, cur] = c.s.split(",");
+  const s = { region, area, pay, cur };
+  console.log(JSON.stringify({ carrier_summary: B.carrierSummary(c.sum ?? null, s),
+    carrier_check: "doc" in c ? B.carrierCheck(c.doc, c.bands, c.picked, c.labels, s) : "" }));
+} else if (arg("--trend")) {
   const [region, area, pay, cur] = arg("--settings", "EU,,card,eur").split(",");
   console.log(JSON.stringify({ price_trend: B.priceTrendBlock(JSON.parse(arg("--trend")), { region, area, pay, cur }, arg("--hist", "../history/x")) }));
 } else if (arg("--money")) {

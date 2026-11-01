@@ -250,3 +250,43 @@
 </tbody></table>
 {%- endif -%}
 {%- endmacro -%}
+
+{#- The bands bullet and Specs lines: how the phone version does on the networks of the visitor's country ("In Germany:
+    works fully on 2 of 3 networks; ..."), from carriers.summary; no summary (no country yet) asks for the country. -#}
+{%- macro carrier_summary(sum, s) -%}
+{%- if sum -%}
+<span class="csum" data-block="carrier_summary">{{ sum.text }}</span>
+{%- else -%}
+<span class="csum" data-block="carrier_summary"><a href="#carrier">Pick your country to check its networks</a></span>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- "Check your carrier" under Specs. doc: the country's carrier file ({country, name, networks, bands}) or none; bands:
+    {version: {lte, nr} | none} for the versions shown; picked: the chosen option value ("<network id>" or
+    "<network id>|<virtual carrier>"; both judge the host network) or none, which shows no verdict. The country select
+    appears only when the settings give no country (Global, EU without one); it sets this picker only. -#}
+{%- macro carrier_check(doc, bands, picked, labels, s) -%}
+{%- set host = (picked or "").split("|")[0] -%}
+{%- set net = (doc.networks|selectattr("id", "equalto", host)|first) if doc and picked else none -%}
+<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h">
+<h3 id="carrier-h">Check your carrier</h3>
+<div class="cc-pick">
+{%- if not country_for(s) %}
+<label>Country <select id="cc-country"><option value=""{% if not doc %} selected{% endif %}>Choose country</option>{% for c, n in COUNTRY_NAMES.items()|sort(attribute="1") %}<option value="{{ c }}"{% if doc and doc.country == c %} selected{% endif %}>{{ n }}</option>{% endfor %}</select></label>
+{%- endif %}
+{%- if doc %}
+<label>Your network <select id="cc-net">{% if not net %}<option value="" selected>Choose your network</option>{% endif %}
+{%- for n in doc.networks %}<option value="{{ n.id }}"{% if picked == n.id %} selected{% endif %}>{{ n.name }}</option>
+{%- for m in n.mvnos %}<option value="{{ n.id }}|{{ m }}"{% if picked == n.id ~ "|" ~ m %} selected{% endif %}>&nbsp;&nbsp;{{ m }} — on {{ n.name }}</option>{% endfor %}{% endfor %}</select></label>
+{%- endif %}
+</div>
+{%- if net %}
+<div class="cc-out">
+{%- for e, bd in bands.items() %}{% set v = carrier_verdict(bd, net, doc.bands) %}
+<p class="cv {{ 'cn' if e == 'china' else 'gl' }}" data-kind="{{ v.kind }}"><b>{{ labels[e] }}</b> <span>{{ v.text }}</span></p>
+{%- endfor %}
+</div>
+<p class="cc-note">Bands only: calls over 4G (VoLTE) and Wi-Fi calling depend on the network supporting the phone, which we can't check.</p>
+{%- endif %}
+</section>
+{%- endmacro -%}

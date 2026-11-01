@@ -7,3 +7,9 @@ key:
   screen: "7.58 inside"
   battery: "6,000 mAh"
   charging: "67 W"
+sources:
+  china: {url: https://www.mi.com/prod/xiaomi-18-fold/specs, checked: 2026-11-01, lang: Chinese}
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 13, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78, 79]

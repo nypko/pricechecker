@@ -9,8 +9,13 @@ key:
   battery: "7,000 mAh (China) / 6,330 mAh (Global)"
   charging: "100 W"
 sources:
+  china: {url: https://www.mi.com/prod/xiaomi-17/specs, checked: 2026-11-01, lang: Chinese}
   global: {url: https://www.mi.com/global/product/xiaomi-17/specs/, checked: 2026-11-01, lang: English}
 bands:
+  china:
+    # mi.com lists n3/n80/n81/n89 as enabled by software update once carriers launch them
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 18, 20, 25, 26, 28, 38, 40, 41, 48, 66, 77, 78, 80, 81, 83, 84, 89]
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71, 38, 39, 40, 41, 42, 48]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 48, 66, 71, 75, 77, 78]

@@ -1,8 +1,8 @@
 {
- "updated": "2026-10-31T20:21:54Z",
+ "updated": "2026-11-01T00:07:18Z",
  "stores": {
   "wonda": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -3017,7 +3017,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -5879,7 +5879,7 @@
    ]
   },
   "averagedad": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -8384,7 +8384,7 @@
    ]
   },
   "tradingshenzhen": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -10280,7 +10280,7 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -10342,7 +10342,7 @@
    ]
   },
   "giztop": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -14122,7 +14122,7 @@
    ]
   },
   "gomibo": {
-   "checked": "2026-10-31T20:21:54Z",
+   "checked": "2026-11-01T00:07:18Z",
    "ok": true,
    "offers": [
     {
@@ -14243,12 +14243,12 @@
      "edition": "global",
      "storage": "12/256",
      "title": "OnePlus 15 256GB Schwarz",
-     "price": 1431.0,
+     "price": 1429.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/oneplus-15/256gb-schwarz",
      "prices": {
-      "EUR": 1431.0
+      "EUR": 1429.0
      }
     },
     {
@@ -14257,12 +14257,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "OnePlus 15 512GB Lila",
-     "price": 1248.0,
+     "price": 1245.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/oneplus-15/512gb-lila",
      "prices": {
-      "EUR": 1248.0
+      "EUR": 1245.0
      }
     },
     {
@@ -14439,12 +14439,12 @@
      "edition": "global",
      "storage": "12/256",
      "title": "Xiaomi 17 256GB Schwarz",
-     "price": 777.0,
+     "price": 775.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/xiaomi-17/256gb-schwarz",
      "prices": {
-      "EUR": 777.0
+      "EUR": 775.0
      }
     },
     {
@@ -14495,12 +14495,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "Motorola Razr Fold 512GB Schwarz",
-     "price": 1467.0,
+     "price": 1466.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/motorola-razr-fold/512gb-schwarz",
      "prices": {
-      "EUR": 1467.0
+      "EUR": 1466.0
      }
     },
     {
@@ -14607,12 +14607,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "Motorola Razr 70 Ultra 512GB Lila",
-     "price": 1250.0,
+     "price": 1249.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/motorola-razr-70-ultra/512gb-lila",
      "prices": {
-      "EUR": 1250.0
+      "EUR": 1249.0
      }
     },
     {

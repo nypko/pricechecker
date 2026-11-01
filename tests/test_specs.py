@@ -80,3 +80,26 @@ def test_iqoo_sheet_sourced_from_vivo_hosts_validates_but_unrelated_host_does_no
         assert specs.validate(s) == [], url
     s["sources"] = {"china": {"url": "https://www.notvivo.com/x", "checked": "2026-11-01"}}
     assert any("notvivo" in p for p in specs.validate(s))
+
+
+def test_one_band_list_may_be_null_but_not_both_or_a_string():
+    base = deepcopy(_sheets()["oppo-find-x9-ultra"])
+    for kind in ("nr", "lte"):
+        s = deepcopy(base)
+        s["bands"]["china"][kind] = None
+        assert specs.validate(s) == [], kind
+    s = deepcopy(base)
+    s["bands"]["china"]["nr"] = s["bands"]["china"]["lte"] = None
+    assert any("both be null" in e for e in specs.validate(s))
+    s = deepcopy(base)
+    s["bands"]["china"]["nr"] = "n78"
+    assert any("bands.china.nr" in e for e in specs.validate(s))
+
+
+def test_band_check_skips_a_null_list():
+    s = deepcopy(_sheets()["oneplus-16"])
+    s["bands"]["china"]["nr"] = None
+    r = specs.band_check(s, "china")
+    assert r["nr"] == [] and r["lte"] == [20]
+    s["bands"]["china"]["lte"], s["bands"]["china"]["nr"] = None, [1]
+    assert specs.band_check(s, "china")["lte"] == []

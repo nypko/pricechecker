@@ -1,7 +1,7 @@
 """Spec sheets: config/specs/<id>.yaml, one file per phone, and the EU band check (config/region_bands.yaml).
 
 File: id; sources {china|global: {url, checked, lang?}}; key {chip, screen, battery, charging} (what every page shows);
-groups {<group>: {<field>: value}}; bands {china|global: {lte: [int], nr: [int]}}.
+groups {<group>: {<field>: value}}; bands {china|global: {lte: [int]|null, nr: [int]|null}} (null = the page lists none: unknown; not both null).
 A value is a string, null (not on the brand's page), {china: str|null, global: str|null} (the two pages disagree)
 or {value: str, from: china|global} (only that page lists the same hardware fact).
 A version with no `sources` entry or no `bands` entry has not been read yet."""
@@ -131,8 +131,12 @@ def validate(sheet: dict, brand: str | None = None) -> list[str]:
         if ver not in VERSIONS:
             out.append(f"bands.{ver}: not china/global")
             continue
+        if isinstance(b, dict) and b.get("lte") is None and b.get("nr") is None:
+            out.append(f"bands.{ver}: lte and nr cannot both be null")
         for kind in ("lte", "nr"):
             xs = (b or {}).get(kind)
+            if xs is None and isinstance(b, dict) and kind in b:
+                continue
             if not isinstance(xs, list) or not all(isinstance(x, int) for x in xs):
                 out.append(f"bands.{ver}.{kind}: list of band numbers")
             else:
@@ -153,8 +157,8 @@ def band_check(sheet: dict, edition: str, region: str = "EU") -> dict | None:
     if not have:
         return None
     r = _regions()[region]
-    lte = [b for b in r["lte"] if b not in have.get("lte", [])]
-    nr = [b for b in r["nr"] if b not in have.get("nr", [])]
+    lte = [b for b in r["lte"] if b not in have["lte"]] if have.get("lte") is not None else []
+    nr = [b for b in r["nr"] if b not in have["nr"]] if have.get("nr") is not None else []
     why = {b: r["why"][b] for b in dict.fromkeys(lte + nr) if b in r.get("why", {})}
     return {"lte": lte, "nr": nr, "why": why}
 

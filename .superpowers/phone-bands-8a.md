@@ -3,9 +3,9 @@
 ## Filled (all Global version, from Huawei's own regional site, section "Network")
 Single-SIM and dual-SIM model blocks list identical bands on every page. Text is HTML, no graphics.
 - huawei-pura-80-ultra / global: https://consumer.huawei.com/en/phones/pura80-ultra/specs/ (model LMU-LX9)
-  "4G LTE FDD: Bands 1/2/3/4/5/6/7/8/9/12/13/17/18/19/20/25/26/28/32/66"; "4G LTE TDD: Bands 34/38/39/40/41/42". No 5G NR line on the page, so nr: [] (page lists none).
+  "4G LTE FDD: Bands 1/2/3/4/5/6/7/8/9/12/13/17/18/19/20/25/26/28/32/66"; "4G LTE TDD: Bands 34/38/39/40/41/42". No 5G NR line on the page: NR unknown (the page lists no NR bands), nr: null.
 - huawei-mate-x7 / global: https://consumer.huawei.com/en/phones/mate-x7/specs/
-  "4G LTE FDD: Bands 1/2/3/4/5/6/7/8/9/12/13/17/18/19/20/26/28/66"; "4G LTE TDD: Bands 34/38/39/40/41/42/48". No 5G NR line, so nr: [].
+  "4G LTE FDD: Bands 1/2/3/4/5/6/7/8/9/12/13/17/18/19/20/26/28/66"; "4G LTE TDD: Bands 34/38/39/40/41/42/48". No 5G NR line: NR unknown (the page lists no NR bands), nr: null.
 - huawei-pura-90s-pro / global: https://consumer.huawei.com/en/phones/pura90s-pro/specs/ (MLN-LX9; /my/ and /ph/ pages identical)
   "5G NR: n1/n2/n3/n5/n7/n8/n12/n20/n26/n28/n38/n40/n41/n48/n66/n71/n77/n78/n79/n80/n81/n83/n84"; LTE FDD "Bands 1/2/3/4/5/6/7/8/9/12/13/17/18/19/20/26/28/66"; TDD "Bands 34/38/39/40/41/42/48".
 - huawei-pura-90s-pro-max / global: https://consumer.huawei.com/en/phones/pura90s-pro-max/specs/ (SCA-LX9; /my/ /ph/ identical)
@@ -20,7 +20,7 @@ Global edition in offers: mate-x7 global (filled above). China edition of pura-8
 Added LTE B6 (875 MHz) and B9 (1845 MHz), generic use text.
 
 ## Concerns
-- nr: [] for Pura 80 Ultra and Mate X7 global means "page lists no 5G NR", not a verified statement that the phones have no 5G.
+- nr: null for Pura 80 Ultra and Mate X7 global: NR unknown because the page lists no NR bands.
 - Third-party sites disagree for Pura 90s Pro; they were not used.
 
 ## Follow-up: vmall.com (华为商城) attempt, 2026-11-01

@@ -40,3 +40,7 @@ Global left out: none of the catalog's Global versions (x300, x300-pro, x300-ult
 - n28A/n28B stored as 28 (page names a sub-band; integer list cannot show it).
 - x500 / x500-pro-max / x-fold-6 Global come from one regional site each (sg, sg, ae); regional band sets differ by site (e.g. x300-pro /en vs other regions not compared).
 - Offers contain no versions beyond the catalog editions.
+
+## Update (controller ruling: iQOO is vivo's sub-brand, vivo.com / vivo.com.cn are first-party for iQOO)
+- pricechecker/specs.py BRAND_HOSTS: iqoo = iqoo.com, vivo.com, vivo.com.cn; vivo = vivo.com, vivo.com.cn. New test in tests/test_specs.py (iQOO sheet from vivo.com / vivo.com.cn validates, notvivo.com does not).
+- Filled bands.china + sources.china (checked 2026-11-01, lang Chinese) for iqoo-15, iqoo-15-ultra, iqoo-16 from https://www.vivo.com/cn/products/param/iqoo15 / iqoo15ultra / iqoo16, exactly the text quoted above (n28A/n28B stored as 28). Full `-m "not live"` suite: 276 passed.

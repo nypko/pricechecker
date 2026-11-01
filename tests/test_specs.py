@@ -71,3 +71,12 @@ def test_phone_band_missing_from_the_band_table_is_rejected():
     s["bands"]["china"]["nr"].append(998)
     errs = specs.validate(s)
     assert any("lte" in e and "999" in e for e in errs) and any("nr" in e and "998" in e for e in errs)
+
+
+def test_iqoo_sheet_sourced_from_vivo_hosts_validates_but_unrelated_host_does_not():
+    s = deepcopy(_sheets()["iqoo-16"])
+    for url in ("https://www.vivo.com/cn/products/param/iqoo16", "https://www.vivo.com.cn/vivo/param/iqoo16"):
+        s["sources"] = {"china": {"url": url, "checked": "2026-11-01"}}
+        assert specs.validate(s) == [], url
+    s["sources"] = {"china": {"url": "https://www.notvivo.com/x", "checked": "2026-11-01"}}
+    assert any("notvivo" in p for p in specs.validate(s))

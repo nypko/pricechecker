@@ -55,9 +55,9 @@ BRAND_HOSTS: dict[str, tuple[str, ...]] = {
     "redmi": ("mi.com", "xiaomi.com"),
     "samsung": ("samsung.com",),
     "sony": ("sony.com",),
-    "vivo": ("vivo.com",),
+    "vivo": ("vivo.com", "vivo.com.cn"),
     "xiaomi": ("xiaomi.com", "mi.com"),
-    "iqoo": ("iqoo.com",),
+    "iqoo": ("iqoo.com", "vivo.com", "vivo.com.cn"),
 }
 
 

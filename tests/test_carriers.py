@@ -1,4 +1,7 @@
+import json
 import re
+import shutil
+import subprocess
 from copy import deepcopy
 from datetime import date
 from pathlib import Path
@@ -203,3 +206,224 @@ def test_build_logs_stale_networks(tmp_path, capsys):
     (tmp_path / "DE.yaml").write_text(yaml.safe_dump(d))
     check_carriers(tmp_path)
     assert "de-telekom (DE)" in capsys.readouterr().out
+
+
+# ---- verdict and country summary (mirrored by static/js/carriers.js) ----
+
+def _b(mhz, cls, use):
+    return {"mhz": mhz, "class": cls, "use": use}
+
+
+VT = {  # a synthetic band table, so the cases do not move with config/bands.yaml
+    "lte": {1: _b(2100, "mid", "2100 MHz: mid"), 2: _b(1900, "mid", "1900 MHz: mid"), 3: _b(1800, "mid", "1800 MHz: mid"),
+            7: _b(2600, "mid", "2600 MHz: extra speed in busy areas"), 20: _b(800, "low", "800 MHz: coverage indoors and outside towns"),
+            28: _b(700, "low", "700 MHz: low"), 12: _b(700, "low", "700 MHz: low12"), 17: _b(700, "low", "700 MHz: low17"),
+            25: _b(1900, "mid", "1900 MHz: mid25")},
+    "nr": {78: _b(3500, "high", "3.5 GHz: fast 5G"), 77: _b(3700, "high", "3.7 GHz: fast 5G"), 3: _b(1800, "mid", "1800 MHz: mid"),
+           28: _b(700, "low", "700 MHz: low"), 258: _b(26000, "mmwave", "26 GHz: very fast 5G at short range")},
+    "covers": {"lte": {12: [17], 25: [2]}, "nr": {77: [78]}},
+}
+
+
+def _n(name="O2", lte=(1, 7, 20), nr=(78,), basis="licensed", complete=True):
+    return {"id": name.lower(), "name": name, "lte": None if lte is None else list(lte),
+            "nr": None if nr is None else list(nr), "basis": basis, "complete": complete}
+
+
+def _p(lte=(1, 7, 20), nr=(78,)):
+    return {"lte": None if lte is None else list(lte), "nr": None if nr is None else list(nr)}
+
+
+def _v(phone, net):
+    return carriers.verdict(phone, net, VT)
+
+
+def test_verdict_unknown_phone_or_network():
+    assert _v(None, _n())["kind"] == "unknown"
+    assert _v(None, _n())["text"] == "Bands not published for this version"
+    assert _v(_p(None, None), _n())["kind"] == "unknown"
+    r = _v(_p(), _n(lte=None, nr=None))
+    assert r["kind"] == "unknown" and r["missing"] == []
+    assert _v(_p(lte=[]), _n(lte=None, nr=None, complete=False))["kind"] == "unknown"   # beats risk: nothing to judge
+
+
+def test_verdict_risk_names_the_band_and_who_holds_it():
+    r = _v(_p(lte=[1, 7]), _n())
+    assert r["kind"] == "risk"
+    assert r["text"] == "Coverage risk: no band 20, which O2 holds (800 MHz: coverage indoors and outside towns)"
+    assert r["missing"] == [{"kind": "lte", "n": 20, "mhz": 800, "use": "800 MHz: coverage indoors and outside towns"}]
+    r = _v(_p(lte=[1, 7]), _n(basis="used"))
+    assert "which O2 uses (800" in r["text"]
+
+
+def test_verdict_risk_beats_4g_only_and_minor():
+    r = _v(_p(lte=[1], nr=[]), _n(lte=[1, 7, 20], nr=[78]))   # misses low 20, also mid 7 and all NR
+    assert r["kind"] == "risk"
+    assert [(m["kind"], m["n"]) for m in r["missing"]] == [("lte", 7), ("lte", 20), ("nr", 78)]
+    assert r["text"].count("band") == 1   # only the low band is named as the risk
+
+
+def test_verdict_low_nr_band_is_a_risk_too():
+    r = _v(_p(nr=[78]), _n(lte=[1], nr=[28, 78]))
+    assert r["kind"] == "risk"
+    assert r["text"].startswith("Coverage risk: no 5G band n28, which O2 holds (700 MHz")
+
+
+def test_verdict_4g_only():
+    r = _v(_p(nr=[]), _n())
+    assert r["kind"] == "4g" and r["text"] == "4G works; no 5G on this network"
+    assert _v(_p(nr=[3]), _n())["kind"] == "4g"   # has an NR band, but none of the network's
+    assert _v(_p(nr=None), _n())["kind"] == "nogaps"   # phone nr unknown: not "no 5G"
+
+
+def test_verdict_never_4g_only_without_network_5g():
+    assert _v(_p(nr=[]), _n(nr=[]))["kind"] == "full"
+    assert _v(_p(nr=[]), _n(nr=[], complete=False))["kind"] == "nogaps"
+    assert _v(_p(nr=[]), _n(nr=None))["kind"] == "nogaps"
+
+
+def test_verdict_4g_only_needs_every_lte_band():
+    r = _v(_p(lte=[1], nr=[]), _n(lte=[1, 7], nr=[78]))   # misses mid 7: minor, with the NR band listed
+    assert r["kind"] == "minor"
+
+
+def test_verdict_minor_lists_every_missing_band_nr_included():
+    r = _v(_p(lte=[1, 20], nr=[3]), _n(lte=[1, 7, 20], nr=[3, 78, 258]))
+    assert r["kind"] == "minor"
+    assert [(m["kind"], m["n"]) for m in r["missing"]] == [("lte", 7), ("nr", 78), ("nr", 258)]
+    assert r["text"] == ("Works; no band 7, which O2 holds (2600 MHz: extra speed in busy areas); "
+                         "no 5G band n78, which O2 holds (3.5 GHz: fast 5G); "
+                         "no 5G band n258, which O2 holds (26 GHz: very fast 5G at short range)")
+    assert "uses" in _v(_p(lte=[1, 20]), _n(basis="used"))["text"]
+
+
+def test_verdict_no_gaps_found_versus_works_fully():
+    assert _v(_p(), _n(complete=False)) == {"kind": "nogaps", "missing": [], "text": "No gaps on the bands we could confirm"}
+    assert _v(_p(), _n()) == {"kind": "full", "missing": [], "text": "Works fully on 4G and 5G"}
+    assert _v(_p(lte=[1, 7, 20, 28], nr=[78, 3]), _n())["kind"] == "full"   # extra phone bands do not matter
+
+
+def test_verdict_null_on_one_side_judges_the_known_part_and_is_never_full():
+    r = _v(_p(), _n(lte=None, nr=[78]))
+    assert r["kind"] == "nogaps"
+    r = _v(_p(nr=[]), _n(lte=None, nr=[78]))
+    assert r["kind"] == "minor" and r["missing"][0]["n"] == 78   # LTE unknown: no "4G works" claim
+    r = _v(_p(lte=[1]), _n(lte=[1, 7], nr=None))
+    assert r["kind"] == "minor" and [m["n"] for m in r["missing"]] == [7]
+    assert _v(_p(lte=[1, 7]), _n(lte=[1, 7], nr=None))["kind"] == "nogaps"
+    assert _v(_p(lte=[1]), _n(lte=[1, 20], nr=None))["kind"] == "risk"
+
+
+def test_verdict_phone_null_list_judges_the_known_part_and_is_never_full():
+    r = _v(_p(nr=None), _n())
+    assert r["kind"] == "nogaps" and r["missing"] == []
+    r = _v(_p(nr=None, lte=[1]), _n())
+    assert r["kind"] == "risk" and [m["n"] for m in r["missing"]] == [7, 20]
+    assert _v(_p(nr=None, lte=[1, 20]), _n())["kind"] == "minor"
+    assert _v(_p(nr=None), _n(lte=[1], nr=[78]))["kind"] == "nogaps"
+    assert _v(_p(nr=None), _n(lte=None, nr=[78]))["text"] == "Bands not published for this version"   # nothing left to judge
+    r = _v(_p(lte=None, nr=[78]), _n())
+    assert r["kind"] == "nogaps"
+    assert _v(_p(lte=None, nr=[]), _n())["kind"] == "minor"   # lte unknown, 5G judged: lacks n78
+    assert _v({"lte": [1, 7, 20]}, _n())["kind"] == "nogaps"   # absent nr = null
+
+
+def test_verdict_superset_bands_count_as_having_the_band():
+    assert _v(_p(nr=[77]), _n(lte=[1], nr=[78]))["kind"] == "full"        # n77 holds n78
+    assert _v(_p(lte=[1, 12], nr=[78]), _n(lte=[1, 17], nr=[78]))["kind"] == "full"   # 12 holds 17
+    assert _v(_p(lte=[1, 25], nr=[78]), _n(lte=[1, 2], nr=[78]))["kind"] == "full"
+    r = _v(_p(nr=[78]), _n(lte=[1], nr=[77]))                             # the reverse does not hold
+    assert r["kind"] == "4g" and [m["n"] for m in r["missing"]] == [77]
+    r = _v(_p(lte=[1, 17], nr=[78]), _n(lte=[1, 12], nr=[78]))
+    assert r["kind"] == "risk" and r["missing"][0]["n"] == 12
+    assert _v(_p(nr=[77]), _n(lte=[1], nr=[78]))["missing"] == []
+
+
+def test_verdict_superset_is_per_kind():
+    assert _v(_p(lte=[1, 77], nr=[]), _n(lte=[1], nr=[78]))["kind"] == "4g"   # lte "77" is no nr band
+
+
+def test_real_covers_pairs_exist_in_the_table_and_nest_by_frequency():
+    cov = TABLE["covers"]
+    assert {(k, a, b) for k in cov for a, bs in cov[k].items() for b in bs} >= {
+        ("nr", 77, 78), ("lte", 66, 4), ("lte", 12, 17), ("lte", 25, 2), ("lte", 26, 5), ("nr", 25, 2), ("nr", 26, 5)}
+    for kind, d in cov.items():
+        for big, smalls in d.items():
+            assert big in TABLE[kind]
+            for s in smalls:
+                assert s in TABLE[kind] and s != big, (kind, big, s)
+                assert d.get(s, []) == [] or big not in d[s]   # no loops
+    r = carriers.verdict(_p(lte=[1], nr=[77]), {**_n(lte=[1], nr=[78]), "complete": True}, TABLE)
+    assert r["kind"] == "full"
+    r = carriers.verdict(_p(lte=[1], nr=[78]), {**_n(lte=[1], nr=[77]), "complete": True}, TABLE)
+    assert [m["n"] for m in r["missing"]] == [77]
+
+
+def _doc3(*nets):
+    return {"country": "DE", "networks": list(nets)}
+
+
+def test_summary_wording():
+    full = [_n("A"), _n("B")]
+    s = carriers.summary(_p(), _doc3(*full), VT, "Germany")
+    assert s["text"] == "In Germany: works fully on all 2 networks"
+    assert s["counts"] == {"unknown": 0, "risk": 0, "4g": 0, "minor": 0, "nogaps": 0, "full": 2}
+    s = carriers.summary(_p(lte=[1, 7]), _doc3(_n("Telekom", lte=[1, 7]), _n("Vodafone", lte=[1, 7]), _n("O2")), VT, "Germany")
+    assert s["text"] == "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"
+    assert s["counts"]["full"] == 2 and s["counts"]["risk"] == 1
+
+
+def test_summary_names_every_non_full_network_with_its_first_reason():
+    nets = [_n("A", lte=[1], nr=[78]), _n("B", lte=[1, 3], nr=[78]), _n("C", lte=[1], nr=[3]), _n("D", lte=None, nr=None),
+            _n("E", lte=[1], nr=[78], complete=False), _n("F", lte=[28])]
+    s = carriers.summary(_p(lte=[1, 7], nr=[78]), _doc3(*nets), VT, "Germany")
+    assert s["text"] == ("In Germany: works fully on 1 of 6 networks; minor gaps on B (no band 3); 4G only on C (no 5G); "
+                         "bands unknown on D; no gaps found on E; coverage risk on F (no band 28)")
+    assert s["counts"] == {"unknown": 1, "risk": 1, "4g": 1, "minor": 1, "nogaps": 1, "full": 1}
+    s = carriers.summary(_p(lte=[1, 7], nr=[]), _doc3(_n("B", lte=[1], nr=[78, 258])), VT, "Germany")
+    assert s["text"] == "In Germany: 4G only on B (no 5G)"
+    s = carriers.summary(_p(lte=[1, 7], nr=[3]), _doc3(_n("B", lte=[1], nr=[3, 78])), VT, "Germany")
+    assert s["text"] == "In Germany: minor gaps on B (no 5G band n78)"
+
+
+def test_summary_all_unknown_and_phone_unknown():
+    s = carriers.summary(_p(), _doc3(_n("A", lte=None, nr=None), _n("B", lte=None, nr=None)), VT, "Germany")
+    assert s["text"] == "In Germany: bands unknown on A; bands unknown on B"
+    assert s["counts"]["unknown"] == 2 and s["counts"]["full"] == 0
+    s = carriers.summary(None, _doc3(_n("A")), VT, "Germany")
+    assert s["text"] == "In Germany: bands unknown on A"
+
+
+def test_summary_none_full_starts_with_the_first_reason():
+    s = carriers.summary(_p(lte=[1]), _doc3(_n("A", lte=[1, 20]), _n("B", lte=[1, 7], nr=[])), VT, "Germany")
+    assert s["text"] == "In Germany: coverage risk on A (no band 20); minor gaps on B (no band 7)"
+
+
+def test_country_names_cover_every_country():
+    assert set(carriers.COUNTRY_NAMES) == set(carriers.COUNTRIES)
+    assert carriers.COUNTRY_NAMES["DE"] == "Germany"
+
+
+def _cases():
+    nets = [_n(), _n(basis="used"), _n("X", lte=None, nr=[78]), _n("Y", lte=[1, 12], nr=[77, 78], complete=False),
+            _n("Z", lte=None, nr=None), _n("W", lte=[1], nr=[]), _n("V", lte=[1, 17, 2], nr=[78, 28, 258])]
+    phones = [None, _p(None, None), _p(nr=None), _p(lte=None), _p(), _p(lte=[1, 7]), _p(lte=[1], nr=[]), _p(nr=[77]), _p(lte=[1, 12, 25], nr=[3, 77]),
+              _p(lte=[], nr=None), _p(lte=[1, 7, 20], nr=[]), {"lte": [1, 7, 20]}, _p(lte=[1, 7, 20, 28], nr=[78, 28, 258])]
+    return nets, phones
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_verdict_and_summary_match_the_js(tmp_path):
+    nets, phones = _cases()
+    names = ["Germany", "Chad"]
+    doc = {"phones": phones, "networks": nets, "table": VT, "names": names}
+    f = tmp_path / "c.json"
+    f.write_text(json.dumps(doc))
+    r = subprocess.run(["node", "tests/js/carrier_cases.mjs", str(f)], check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    got = json.loads(r.stdout)
+    want_v = [[carriers.verdict(p, n, VT) for n in nets] for p in phones]
+    assert got["verdicts"] == want_v
+    want_s = [carriers.summary(p, _doc3(*nets[:k]), VT, names[0]) for p in phones for k in (1, 3, 7)]
+    assert got["summaries"] == want_s
+    assert {v["kind"] for row in want_v for v in row} == {"unknown", "risk", "4g", "minor", "nogaps", "full"}

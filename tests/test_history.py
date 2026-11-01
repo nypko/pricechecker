@@ -51,6 +51,15 @@ def test_load_history_months(tmp_path, monkeypatch):
     assert history.load_history() and history.load_history(months=0) == []
 
 
+def test_load_history_months_more_than_there_are(tmp_path, monkeypatch):
+    """Asking for more months than exist reads them all (the 3-month window on the second month file read only the last)."""
+    monkeypatch.chdir(tmp_path)
+    history.append([_row("2026-10-01T00:00:00Z", 1.0), _row("2026-11-01T00:00:00Z", 2.0)])
+    assert [r["price"] for r in history.load_history(months=3)] == [1.0, 2.0]
+    history.append([_row("2026-09-01T00:00:00Z", 0.5)])
+    assert [r["price"] for r in history.load_history(months=5)] == [0.5, 1.0, 2.0]
+
+
 def test_split_roundtrip(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     src = tmp_path / "history.csv"

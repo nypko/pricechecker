@@ -109,5 +109,5 @@ def load_history(months: int | None = None) -> list[dict]:
     """Rows oldest first; months=N reads only the newest N month files."""
     files = _month_files()
     if months is not None:
-        files = files[len(files) - months:] if months > 0 else []
+        files = files[max(0, len(files) - months):] if months > 0 else []
     return [r for p in files for r in _read(p)]

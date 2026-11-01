@@ -7491,3 +7491,9 @@ time,store,model_id,edition,storage,price,currency,available
 2026-10-31T09:51:05Z,gomibo,apple-iphone-duo,global,12/2048,3775.0,EUR,0
 2026-10-31T09:51:05Z,gomibo,apple-iphone-duo,global,12/1024,3049.0,EUR,0
 2026-10-31T09:51:05Z,gomibo,apple-iphone-duo,global,12/512,2549.0,EUR,0
+2026-10-31T16:17:31Z,averagedad,huawei-mate-90-pro-max,china,16/1024,2527.0,USD,1
+2026-10-31T16:17:31Z,averagedad,xiaomi-18-pro,china,16/1024,1639.0,USD,1
+2026-10-31T16:17:31Z,averagedad,xiaomi-18-pro-max,china,16/512,1639.0,USD,1
+2026-10-31T16:17:31Z,averagedad,samsung-galaxy-z-fold-8-ultra,china,12/512,2527.0,USD,1
+2026-10-31T16:17:31Z,averagedad,samsung-galaxy-z-fold-8,china,16/1024,2527.0,USD,1
+2026-10-31T16:17:31Z,averagedad,vivo-x-fold-6,china,16/512,1639.0,USD,1

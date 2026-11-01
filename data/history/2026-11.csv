@@ -1,0 +1,6 @@
+time,store,model_id,edition,storage,price,currency,available
+2026-11-01T00:07:18Z,gomibo,oneplus-15,global,12/256,1429.0,EUR,1
+2026-11-01T00:07:18Z,gomibo,oneplus-15,global,16/512,1245.0,EUR,1
+2026-11-01T00:07:18Z,gomibo,xiaomi-17,global,12/256,775.0,EUR,1
+2026-11-01T00:07:18Z,gomibo,motorola-razr-fold,global,16/512,1466.0,EUR,1
+2026-11-01T00:07:18Z,gomibo,motorola-razr-70-ultra,global,16/512,1249.0,EUR,1

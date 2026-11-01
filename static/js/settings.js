@@ -7,6 +7,8 @@ import { DEFAULT } from "./view.js";
 
 const REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"];
 const SYMBOL = { eur: "€", gbp: "£", usd: "$", cad: "C$", aud: "A$" };
+// Each region's own currency: the currency follows the region until the visitor picks one (pc-cur-own = "1")
+export const REGION_CUR = { EU: "eur", UK: "gbp", US: "usd", CA: "cad", AU: "aud", Global: "usd" };
 const PAY_LABEL = { card: "Card", paypal: "PayPal", bank: "Bank" };
 export const PAY_BY = { card: "card", paypal: "PayPal", bank: "bank transfer" };
 export const PLACE = { EU: "the EU", UK: "the UK", US: "the US", CA: "Canada", AU: "Australia", Global: "your country" };
@@ -73,10 +75,27 @@ export function save(s, storage = store()) {
   if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("dp:settings", { detail: s }));
 }
 
+/** Whether the shown currency is the visitor's own pick. No flag yet (saved before it existed): a saved currency counts
+ *  as picked, so nobody's currency jumps. */
+export function curOwn(storage = store()) {
+  const f = get(storage, "pc-cur-own");
+  return f === null ? !!get(storage, "pc-cur") : f === "1";
+}
+export const saveCurOwn = (own, storage = store()) => put(storage, "pc-cur-own", own ? "1" : "0");
+
+/** One change in the settings sheet: {s, own}. name = the changed control: "r" (region), "c" (currency), "match"
+ *  ("Match currency to region"), anything else (country, province, payment) leaves the currency alone. */
+export function applyChange(was, s, name, own) {
+  if (name === "c") return { s, own: true };
+  if (name === "match") return { s: { ...s, cur: REGION_CUR[s.region] || s.cur }, own: false };
+  if (name === "r" && s.region !== was.region && !own) return { s: { ...s, cur: REGION_CUR[s.region] || s.cur }, own };
+  return { s, own };
+}
+
 export const isDefault = (s) => s.region === DEFAULT.region && !s.area && s.pay === DEFAULT.pay && s.cur === DEFAULT.cur;
 
-/** "BG · Card · €" (the picked country or province, else the region; Global reads "Elsewhere"). */
-export const label = (s) => `${s.area || (s.region === "Global" ? "Elsewhere" : s.region)} · ${PAY_LABEL[s.pay]} · ${SYMBOL[s.cur]}`;
+/** "BG · Card · €" (the picked country or province, else the region; Global reads "World", the sheet says "Rest of the world"). */
+export const label = (s) => `${s.area || (s.region === "Global" ? "World" : s.region)} · ${PAY_LABEL[s.pay]} · ${SYMBOL[s.cur]}`;
 
 /** "Delivered to Bulgaria by card"; names = {countries: {BG: "Bulgaria"}, provinces: {QC: "Quebec"}} */
 export function forLine(s, names = {}) {
@@ -143,13 +162,19 @@ function wire() {
   if (d) {
     const form = d.querySelector("form");
     // changing the region shows its country / province list; every change is saved at once and the page repaints
-    form.addEventListener("change", (e) => {
-      const was = load(), s = readSheet(d);
-      if (e.target.name === "r" && s.region !== was.region) s.area = "";   // the old list's pick means nothing in the new region
+    // the currency follows the region until the visitor picks one (applyChange)
+    const commit = (name) => {
+      const was = load(), read = readSheet(d);
+      if (name === "r" && read.region !== was.region) read.area = "";   // the old list's pick means nothing in the new region
+      const { s, own } = applyChange(was, read, name, curOwn());
       fillSheet(d, s);
+      saveCurOwn(own);
       save(s);
       refresh();
-    });
+    };
+    form.addEventListener("change", (e) => commit(e.target.name || "area"));
+    const match = form.querySelector("[data-cur-match]");
+    if (match) match.addEventListener("click", (e) => { e.preventDefault(); commit("match"); });
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });   // tap outside the panel
   }
   window.addEventListener("dp:settings", refresh);

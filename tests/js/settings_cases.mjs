@@ -1,6 +1,6 @@
 // Pure-function cases for static/js/settings.js: node tests/js/settings_cases.mjs (exit 1 on the first failure).
 import assert from "node:assert/strict";
-import { load, save, guess, isDefault, label, forLine, watched, toggleWatch, refresh } from "../../static/js/settings.js";
+import { load, save, guess, isDefault, label, forLine, watched, toggleWatch, refresh, REGION_CUR, curOwn, saveCurOwn, applyChange } from "../../static/js/settings.js";
 
 const mem = (init = {}) => { const d = { ...init }; return { getItem: (k) => (k in d ? d[k] : null), setItem: (k, v) => { d[k] = String(v); }, d }; };
 const names = { countries: { BG: "Bulgaria", DE: "Germany" }, provinces: { QC: "Quebec", ON: "Ontario" } };
@@ -36,7 +36,7 @@ assert.equal(isDefault({ region: "EU", area: "", pay: "card", cur: "eur" }), tru
 assert.equal(isDefault({ region: "EU", area: "BG", pay: "card", cur: "eur" }), false);
 assert.equal(label({ region: "EU", area: "BG", pay: "card", cur: "eur" }), "BG · Card · €");
 assert.equal(label({ region: "CA", area: "", pay: "paypal", cur: "cad" }), "CA · PayPal · C$");
-assert.equal(label({ region: "Global", area: "", pay: "bank", cur: "usd" }), "Elsewhere · Bank · $");
+assert.equal(label({ region: "Global", area: "", pay: "bank", cur: "usd" }), "World · Bank · $");
 assert.equal(label({ region: "UK", area: "", pay: "card", cur: "gbp" }), "UK · Card · £");
 assert.equal(label({ region: "AU", area: "", pay: "card", cur: "aud" }), "AU · Card · A$");
 
@@ -71,4 +71,25 @@ globalThis.document = {
 refresh();
 assert.equal(span.textContent, label(load()));
 delete globalThis.document;
+// currency follows the region until the visitor picks one, then it sticks
+assert.deepEqual(REGION_CUR, { EU: "eur", UK: "gbp", US: "usd", CA: "cad", AU: "aud", Global: "usd" });
+const base = { region: "EU", area: "", pay: "card", cur: "eur" };
+// a region change moves the currency while the visitor hasn't picked one
+assert.deepEqual(applyChange(base, { ...base, region: "UK" }, "r", false), { s: { region: "UK", area: "", pay: "card", cur: "gbp" }, own: false });
+assert.deepEqual(applyChange(base, { ...base, region: "Global" }, "r", false).s.cur, "usd");
+// picking a currency makes it the visitor's own; later region changes leave it
+const picked = applyChange(base, { ...base, cur: "usd" }, "c", false);
+assert.deepEqual(picked, { s: { ...base, cur: "usd" }, own: true });
+assert.deepEqual(applyChange(picked.s, { ...picked.s, region: "AU" }, "r", true).s.cur, "usd");
+// other changes (country, payment) never touch the currency or the flag
+assert.deepEqual(applyChange(base, { ...base, area: "BG" }, "area", false), { s: { ...base, area: "BG" }, own: false });
+assert.deepEqual(applyChange(base, { ...base, pay: "bank" }, "p", true), { s: { ...base, pay: "bank" }, own: true });
+// "Match currency to region" resets: the region's currency, no longer the visitor's own
+assert.deepEqual(applyChange({ ...base, region: "CA", cur: "eur" }, { ...base, region: "CA", cur: "eur" }, "match", true), { s: { ...base, region: "CA", cur: "cad" }, own: false });
+// curOwn: the stored flag wins; an older visitor with a saved currency but no flag keeps it (no jump)
+assert.equal(curOwn(mem()), false);
+assert.equal(curOwn(mem({ "pc-cur": "gbp" })), true);
+assert.equal(curOwn(mem({ "pc-cur": "gbp", "pc-cur-own": "0" })), false);
+assert.equal(curOwn(mem({ "pc-cur-own": "1" })), true);
+const so = mem(); saveCurOwn(false, so); assert.equal(so.d["pc-cur-own"], "0"); saveCurOwn(true, so); assert.equal(so.d["pc-cur-own"], "1");
 console.log("settings ok");

@@ -8,3 +8,9 @@ key:
   screen: 6.59
   battery: "7,000 mAh (China) / 6,500 mAh (Global)"
   charging: "67 W"
+sources:
+  global: {url: https://www.mi.com/global/product/xiaomi-17t/specs/, checked: 2026-11-01, lang: English}
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 26, 28, 32, 66, 71, 34, 38, 39, 40, 41, 42, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 26, 28, 34, 38, 39, 40, 41, 48, 66, 71, 75, 77, 78]

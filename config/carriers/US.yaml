@@ -8,18 +8,19 @@ networks:
     complete: false
     mvnos: []
     sources:
-      - {url: "https://web.archive.org/web/20260907235553/https://www.t-mobile.com/support/coverage/t-mobile-network", kind: carrier, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260907235553/https://www.t-mobile.com/support/coverage/t-mobile-network", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-09-07
       - {url: "https://convergedigest.com/t-mobile-closes-4-3b-acquisition-of-uscellular-wireless-operations/?amp=1", kind: other, checked: 2026-10-31}
   - id: us-att
     name: AT&T
-    lte: null
-    nr: [5, 77, 260]
+    lte: [2, 4, 5, 12, 14, 29, 30, 66]
+    nr: [2, 5, 14, 66, 77, 260]
     basis: used
     complete: false
     mvnos: [Cricket Wireless]
     sources:
-      - {url: "https://web.archive.org/web/20260608143501/https://about.att.com/blogs/2023/standalone-5g-innovations.html", kind: carrier, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260608143501/https://about.att.com/blogs/2023/standalone-5g-innovations.html", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-06-08
       - {url: "https://www.att.com/support/article/wireless/KM1475228/", kind: carrier, checked: 2026-10-31}
+      - {url: "https://iotdevices.att.com/Uploaded_Docs/radiated_performance_requirements_2_1_20251023050310567.pdf", kind: carrier, checked: 2026-11-01}
       - {url: "https://www.cricketwireless.com/", kind: brand, checked: 2026-10-31}
   - id: us-verizon
     name: Verizon

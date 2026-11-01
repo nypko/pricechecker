@@ -1,3 +1,6 @@
+# Australia, basis licensed: ACMA spectrum-licence tables only (apparatus licences are not in them, so complete false).
+# 900 MHz: Optus only (Dec 2021 ACMA 850/900 MHz auction; ACMA table 12468165, to 2044). Telstra and Vodafone/TPG legacy
+# 900 MHz apparatus licences ended by 1 July 2024 and neither won 900 MHz spectrum, so no B8/n8 for them.
 country: AU
 networks:
   - id: au-telstra
@@ -8,7 +11,8 @@ networks:
     complete: false
     mvnos: [Boost Mobile, ALDI Mobile]
     sources:
-      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}  # archive copy, captured 2025-07-22
+      - {url: "https://web.archive.org/web/20260606172723/https://www.acma.gov.au/articles/2026-05/acma-releases-pricing-expiring-spectrum-licences", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2026-06-06
       - {url: "https://www.boost.com.au/", kind: brand, checked: 2026-10-31}
       - {url: "https://www.aldimobile.com.au/", kind: brand, checked: 2026-10-31}
   - id: au-optus
@@ -19,7 +23,9 @@ networks:
     complete: false
     mvnos: []
     sources:
-      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}  # archive copy, captured 2025-07-22
+      - {url: "https://web.archive.org/web/20241009030813/https://www.acma.gov.au/articles/2021-12/outcome-850900-mhz-band-spectrum-auction", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2024-10-09
+      - {url: "https://web.archive.org/web/20260606172723/https://www.acma.gov.au/articles/2026-05/acma-releases-pricing-expiring-spectrum-licences", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2026-06-06
   - id: au-tpg
     name: TPG Telecom (Vodafone)
     lte: [1, 3, 5, 28]
@@ -28,4 +34,5 @@ networks:
     complete: false
     mvnos: []
     sources:
-      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20250722221014/https://www.acma.gov.au/sites/default/files/2025-04/Supporting%20paper%201%20-%20Overview%20of%20expiring%20licences%20incumbent%20holdings%20use%20and%20the%20secondary%20market.pdf", kind: regulator, checked: 2026-10-31}  # archive copy, captured 2025-07-22
+      - {url: "https://web.archive.org/web/20260606172723/https://www.acma.gov.au/articles/2026-05/acma-releases-pricing-expiring-spectrum-licences", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2026-06-06

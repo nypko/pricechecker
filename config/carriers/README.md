@@ -36,3 +36,4 @@ Networks not checked for 12 months are logged in the build.
 1. Add an entry to the country's file (create the file if the country has none).
 2. Fill `lte`, `nr`, `basis`, `complete` and `mvnos` from your sources; add each source with today's date.
 3. Run `.venv/bin/python -m pytest -q tests/test_carriers.py`.
+CA is `basis: used` from the ISED Terrestrial Spectrum Licence Site Data Extract (2026-10-05): a band is kept at 200+ stations, or if named on the carrier's own page.

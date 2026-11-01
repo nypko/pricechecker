@@ -1,3 +1,6 @@
+# Canada, basis used. Band kept if >= 200 stations in the 2026-10-05 ISED Terrestrial Spectrum Licence Site Data
+# Extract (classified by technology and downlink frequency), or named on the carrier's own page.
+# The data cannot tell B12 from B17, so only 12 is listed. Licences are by tier/region; no national table exists.
 country: CA
 networks:
   - id: ca-rogers
@@ -13,7 +16,7 @@ networks:
       - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
   - id: ca-bell
     name: Bell
-    lte: [2, 4, 5, 7, 12, 13, 17, 25, 29, 41, 66, 71]
+    lte: [2, 4, 5, 7, 12, 13, 25, 29, 41, 66, 71]
     nr: [2, 5, 25, 66, 71, 77, 78]
     basis: used
     complete: false
@@ -24,19 +27,19 @@ networks:
       - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
   - id: ca-telus
     name: TELUS
-    lte: [2, 4, 5, 7, 12, 13, 17, 25, 29, 30, 66, 71]
+    lte: [2, 4, 5, 7, 12, 13, 25, 29, 30, 66, 71]
     nr: [2, 25, 66, 71, 77, 78]
     basis: used
     complete: false
     mvnos: []
     sources:
-      - {url: "https://web.archive.org/web/20260925043719/https://www.telus.com/en/about/news-and-events/media-releases/telus-secures-new-600-mhz-spectrum-licences", kind: carrier, checked: 2026-10-31}
-      - {url: "https://web.archive.org/web/20261002010408/https://www.telus.com/en/about/news-and-events/media-releases/telus-deploys-3500-mhz-5g-spectrum-accelerating-canada%27s-digital-economy", kind: carrier, checked: 2026-10-31}
+      - {url: "https://web.archive.org/web/20260925043719/https://www.telus.com/en/about/news-and-events/media-releases/telus-secures-new-600-mhz-spectrum-licences", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-09-25
+      - {url: "https://web.archive.org/web/20261002010408/https://www.telus.com/en/about/news-and-events/media-releases/telus-deploys-3500-mhz-5g-spectrum-accelerating-canada%27s-digital-economy", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-10-02
       - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
   - id: ca-freedom
     name: Freedom Mobile / Videotron
-    lte: [4, 7, 12, 13, 17, 66, 71]
+    lte: [4, 7, 13, 66, 71]
     nr: [66, 71, 77, 78]
     basis: used
     complete: false
@@ -68,7 +71,7 @@ networks:
       - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
   - id: ca-tbaytel
     name: TBayTel
-    lte: [4, 12, 17, 66]
+    lte: [4, 12, 66]
     nr: [66]
     basis: used
     complete: false

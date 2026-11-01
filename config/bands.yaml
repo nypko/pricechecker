@@ -89,16 +89,20 @@ nr:
   260: {mhz: 39000, class: mmwave, use: "39 GHz: very fast 5G at short range"}
   261: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}
 # covers: a phone that lists the key band also works on every band listed under it, because the key band's frequency
-# range contains the other's completely (3GPP TS 36.101 / 38.101 operating bands, uplink / downlink in MHz). Only
-# this direction holds: a phone with the small band does not cover the big one. Checked per kind (lte, nr).
+# range contains the other's completely and both use the same duplex mode (FDD, TDD or SDL), per the 3GPP operating
+# bands (TS 36.101 / 38.101; uplink / downlink in MHz). Only this direction holds: a phone with the small band does
+# not cover the big one. Checked per kind (lte, nr); the verdict follows chains (a covers b, b covers c) transitively.
 covers:
   lte:
-    66: [4]    # 66: 1710-1780 / 2110-2200 contains 4: 1710-1755 / 2110-2155
-    12: [17]   # 12: 699-716 / 729-746 contains 17: 704-716 / 734-746
-    25: [2]    # 25: 1850-1915 / 1930-1995 contains 2: 1850-1910 / 1930-1990
-    26: [5]    # 26: 814-849 / 859-894 contains 5: 824-849 / 869-894
+    66: [4]    # FDD: 66: 1710-1780 / 2110-2200 contains 4: 1710-1755 / 2110-2155
+    12: [17]   # FDD: 12: 699-716 / 729-746 contains 17: 704-716 / 734-746
+    25: [2]    # FDD: 25: 1850-1915 / 1930-1995 contains 2: 1850-1910 / 1930-1990
+    26: [5]    # FDD: 26: 814-849 / 859-894 contains 5: 824-849 / 869-894
+    41: [38]   # TDD: 41: 2496-2690 contains 38: 2570-2620
+    75: [32]   # SDL: 75: 1432-1517 contains 32: 1452-1496
   nr:
-    77: [78]   # n77: 3300-4200 contains n78: 3300-3800 (TDD)
-    25: [2]    # n25: 1850-1915 / 1930-1995 contains n2: 1850-1910 / 1930-1990
-    26: [5]    # n26: 814-849 / 859-894 contains n5: 824-849 / 869-894
+    77: [78]   # TDD: n77: 3300-4200 contains n78: 3300-3800
+    25: [2]    # FDD: n25: 1850-1915 / 1930-1995 contains n2: 1850-1910 / 1930-1990
+    26: [5]    # FDD: n26: 814-849 / 859-894 contains n5: 824-849 / 869-894
+    41: [38]   # TDD: n41: 2496-2690 contains n38: 2570-2620
     # n66 / n4: n4 is not in this table, so no pair

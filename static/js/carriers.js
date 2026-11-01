@@ -2,70 +2,88 @@
 // verdict section of pricechecker/carriers.py. No DOM, no I/O; the band table comes in as an argument.
 
 export const KINDS_ORDER = ["unknown", "risk", "4g", "minor", "nogaps", "full"];
+const GROUPS = ["full", "nogaps", "minor", "4g", "risk", "unknown"];   // the order the summary names them in
+
+// the phone's bands plus every band they contain, following `covers` chains
+function held(kind, have, table) {
+  const covers = ((table.covers || {})[kind]) || {};
+  const out = new Set(have), todo = [...have];
+  while (todo.length) for (const s of covers[todo.pop()] || []) if (!out.has(s)) { out.add(s); todo.push(s); }
+  return out;
+}
 
 // the network bands (`want`) the phone lacks; a phone band that contains the network band (table covers) counts
 function missingBands(kind, have, want, table) {
-  const covers = ((table.covers || {})[kind]) || {};
-  const held = new Set(have);
-  for (const big of have) for (const s of covers[big] || []) held.add(s);
-  return want.filter((n) => !held.has(n)).map((n) => ({ kind, n, mhz: table[kind][n].mhz, use: table[kind][n].use }));
+  const h = held(kind, have, table);
+  return want.filter((n) => !h.has(n)).map((n) => ({ kind, n, mhz: table[kind][n].mhz, use: table[kind][n].use }));
 }
 
 const label = (m) => m.kind === "lte" ? `no band ${m.n}` : `no 5G band n${m.n}`;
+const unknown = (why) => ({ kind: "unknown", missing: [], text: `Bands not published for this ${why}` });
 
-// {kind: unknown|risk|4g|minor|nogaps|full, missing: [{kind, n, mhz, use}], text}; first matching row wins.
-// A null lte or nr on the network or on the phone is left out of the judgement and the result can then never be "full".
-export function verdict(phone, network, table) {
-  const nlte = network.lte ?? null, nnr = network.nr ?? null;
-  if (phone == null || ((phone.lte ?? null) === null && (phone.nr ?? null) === null)) {
-    return { kind: "unknown", missing: [], text: "Bands not published for this version" };
-  }
-  if (nlte === null && nnr === null) return { kind: "unknown", missing: [], text: "Bands not published for this network" };
+// [verdict, the first reason in short words, e.g. "no band 20"]; see verdict()
+function judge(phone, network, table) {
+  if (phone == null || ((phone.lte ?? null) === null && (phone.nr ?? null) === null)) return [unknown("version"), ""];
+  const used = network.basis !== "licensed";   // mmWave counts only where the network is known to use it
+  const keep = (kind, xs) => xs == null ? null : xs.filter((n) => used || table[kind][n].class !== "mmwave");
+  const wlte = keep("lte", network.lte), wnr = keep("nr", network.nr);
   const plte = phone.lte ?? null, pnr = phone.nr ?? null;
-  const lteKnown = nlte !== null && plte !== null, nrKnown = nnr !== null && pnr !== null;
-  if (!lteKnown && !nrKnown) {   // the phone's null list hides the only part the network has
-    return { kind: "unknown", missing: [], text: "Bands not published for this version" };
+  const lteKnown = wlte !== null && plte !== null, nrKnown = wnr !== null && pnr !== null;
+  if (!((lteKnown && wlte.length) || (nrKnown && wnr.length))) {   // nothing left to compare
+    const phoneSide = (wlte !== null && plte === null) || (wnr !== null && pnr === null);
+    return [unknown(phoneSide ? "version" : "network"), ""];
   }
-  const mLte = lteKnown ? missingBands("lte", plte, nlte, table) : [];
-  const mNr = nrKnown ? missingBands("nr", pnr, nnr, table) : [];
+  const mLte = lteKnown ? missingBands("lte", plte, wlte, table) : [];
+  const mNr = nrKnown ? missingBands("nr", pnr, wnr, table) : [];
   const missing = [...mLte, ...mNr];
   const low = missing.filter((m) => table[m.kind][m.n].class === "low");
   const who = `which ${network.name} ${network.basis === "licensed" ? "holds" : "uses"}`;
   const say = (m) => `${label(m)}, ${who} (${m.use})`;
   const complete = !!network.complete && lteKnown && nrKnown;
-  let kind, text;
-  if (low.length) {
-    kind = "risk"; text = "Coverage risk: " + low.map(say).join("; ");
-  } else if (nrKnown && nnr.length && lteKnown && !mLte.length && mNr.length === nnr.length) {
-    kind = "4g"; text = "4G works; no 5G on this network";
-  } else if (missing.length) {
-    kind = "minor"; text = "Works; " + missing.map(say).join("; ");
-  } else if (!complete) {
-    kind = "nogaps"; text = "No gaps on the bands we could confirm";
-  } else {
-    kind = "full"; text = nnr && nnr.length ? "Works fully on 4G and 5G" : "Works fully on 4G";
+  if (low.length) return [{ kind: "risk", missing, text: "Coverage risk: " + low.map(say).join("; ") }, label(low[0])];
+  if (nrKnown && wnr.length && lteKnown && !mLte.length && mNr.length === wnr.length) {
+    return [{ kind: "4g", missing, text: "4G works; no 5G on this network" }, "no 5G"];
   }
-  return { kind, missing, text };
+  if (missing.length) {
+    const no5g = mNr.length > 0 && mNr.length === wnr.length;   // all the network's 5G bands: one clause
+    const clauses = [...mLte.map((m) => [label(m), say(m)]),
+      ...(no5g ? [["no 5G on this network", "no 5G on this network"]] : mNr.map((m) => [label(m), say(m)]))];
+    return [{ kind: "minor", missing, text: "Works; " + clauses.map((c) => c[1]).join("; ") }, clauses[0][0]];
+  }
+  if (!complete) return [{ kind: "nogaps", missing: [], text: "No gaps on the bands we could confirm" }, ""];
+  return [{ kind: "full", missing: [], text: wnr.length ? "Works fully on 4G and 5G" : "Works fully on 4G" }, ""];
 }
 
-// {counts: {kind: n}, text}: e.g. "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"
+// {kind: unknown|risk|4g|minor|nogaps|full, missing: [{kind, n, mhz, use}], text}; first matching row wins.
+// A null lte or nr on the network or on the phone is left out of the judgement and the result can then never be "full";
+// if no band is left to compare the verdict is unknown. mmWave bands of a licensed network are ignored.
+export const verdict = (phone, network, table) => judge(phone, network, table)[0];
+
+const names = (xs) => xs.length === 1 ? xs[0] : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
+
+// {counts: {kind: n}, text}, networks grouped by verdict:
+// "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"
 export function summary(phone, countryDoc, table, countryName) {
   const nets = countryDoc.networks || [];
   const counts = Object.fromEntries(KINDS_ORDER.map((k) => [k, 0]));
-  const parts = [];
+  const groups = Object.fromEntries(KINDS_ORDER.map((k) => [k, []]));
   for (const n of nets) {
-    const v = verdict(phone, n, table);
+    const [v, first] = judge(phone, n, table);
     counts[v.kind] += 1;
-    let first = v.missing.length ? label(v.missing[0]) : "";
-    if (v.kind === "risk") first = label(v.missing.find((m) => table[m.kind][m.n].class === "low"));
-    parts.push({
-      unknown: `bands unknown on ${n.name}`, nogaps: `no gaps found on ${n.name}`,
-      risk: `coverage risk on ${n.name} (${first})`, minor: `minor gaps on ${n.name} (${first})`,
-      "4g": `4G only on ${n.name} (no 5G)`, full: "",
-    }[v.kind]);
+    groups[v.kind].push(v.kind === "risk" || v.kind === "minor" ? `${n.name} (${first})` : n.name);
+  }
+  if (phone == null || ((phone.lte ?? null) === null && (phone.nr ?? null) === null)) {
+    return { counts, text: `In ${countryName}: bands not published for this version` };
   }
   const total = nets.length, full = counts.full;
-  const head = [];
-  if (full) head.push(full === total ? `works fully on all ${total} network${total !== 1 ? "s" : ""}` : `works fully on ${full} of ${total} networks`);
-  return { counts, text: `In ${countryName}: ` + [...head, ...parts.filter((p) => p)].join("; ") };
+  const parts = {
+    full: !full ? "" : total === 1 ? "works fully on its only network"
+      : full === total ? `works fully on all ${total} networks` : `works fully on ${full} of ${total} networks`,
+    nogaps: groups.nogaps.length ? `no gaps found on ${names(groups.nogaps)}` : "",
+    minor: groups.minor.length ? `minor gaps on ${names(groups.minor)}` : "",
+    "4g": groups["4g"].length ? `4G only on ${names(groups["4g"])} (no 5G)` : "",
+    risk: groups.risk.length ? `coverage risk on ${names(groups.risk)}` : "",
+    unknown: groups.unknown.length ? `bands unknown on ${names(groups.unknown)}` : "",
+  };
+  return { counts, text: `In ${countryName}: ` + GROUPS.map((k) => parts[k]).filter((p) => p).join("; ") };
 }

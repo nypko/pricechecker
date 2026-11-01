@@ -158,12 +158,21 @@ def stale(doc: dict, today: datetime.date, months: int = 12) -> list[str]:
 
 # ---- verdict: one phone version on one network (mirrored by static/js/carriers.js) ----
 
+def _held(kind: str, have: list, table: dict) -> set:
+    """The phone's bands plus every band they contain, following `covers` chains."""
+    covers = (table.get("covers") or {}).get(kind) or {}
+    held, todo = set(have), list(have)
+    while todo:
+        for s in covers.get(todo.pop()) or []:
+            if s not in held:
+                held.add(s)
+                todo.append(s)
+    return held
+
+
 def _missing(kind: str, have: list, want: list, table: dict) -> list[dict]:
     """The network bands (`want`) the phone lacks; a phone band that contains the network band (table covers) counts."""
-    covers = (table.get("covers") or {}).get(kind) or {}
-    held = set(have)
-    for big in have:
-        held.update(covers.get(big) or [])
+    held = _held(kind, have, table)
     return [{"kind": kind, "n": n, "mhz": table[kind][n]["mhz"], "use": table[kind][n]["use"]}
             for n in want if n not in held]
 
@@ -172,58 +181,78 @@ def _label(m: dict) -> str:
     return f"no band {m['n']}" if m["kind"] == "lte" else f"no 5G band n{m['n']}"
 
 
-def verdict(phone: dict | None, network: dict, table: dict) -> dict:
-    """{kind: unknown|risk|4g|minor|nogaps|full, missing: [{kind, n, mhz, use}], text}; first matching row wins.
-    A null lte or nr on the network or on the phone is left out of the judgement and the result can then never be "full"."""
-    nlte, nnr = network.get("lte"), network.get("nr")
+def _unknown(why: str) -> dict:
+    return {"kind": "unknown", "missing": [], "text": f"Bands not published for this {why}"}
+
+
+def _judge(phone: dict | None, network: dict, table: dict) -> tuple[dict, str]:
+    """(verdict, the first reason in short words, e.g. "no band 20"); see verdict()."""
     if phone is None or (phone.get("lte") is None and phone.get("nr") is None):
-        return {"kind": "unknown", "missing": [], "text": "Bands not published for this version"}
-    if nlte is None and nnr is None:
-        return {"kind": "unknown", "missing": [], "text": "Bands not published for this network"}
+        return _unknown("version"), ""
+    used = network.get("basis") != "licensed"   # mmWave counts only where the network is known to use it
+    keep = lambda kind, xs: None if xs is None else [n for n in xs if used or table[kind][n]["class"] != "mmwave"]
+    wlte, wnr = keep("lte", network.get("lte")), keep("nr", network.get("nr"))
     plte, pnr = phone.get("lte"), phone.get("nr")
-    lte_known, nr_known = nlte is not None and plte is not None, nnr is not None and pnr is not None
-    if not lte_known and not nr_known:   # the phone's null list hides the only part the network has
-        return {"kind": "unknown", "missing": [], "text": "Bands not published for this version"}
-    m_lte = _missing("lte", plte, nlte, table) if lte_known else []
-    m_nr = _missing("nr", pnr, nnr, table) if nr_known else []
+    lte_known, nr_known = wlte is not None and plte is not None, wnr is not None and pnr is not None
+    if not ((lte_known and wlte) or (nr_known and wnr)):   # nothing left to compare
+        phone_side = (wlte is not None and plte is None) or (wnr is not None and pnr is None)
+        return _unknown("version" if phone_side else "network"), ""
+    m_lte = _missing("lte", plte, wlte, table) if lte_known else []
+    m_nr = _missing("nr", pnr, wnr, table) if nr_known else []
     missing = m_lte + m_nr
     low = [m for m in missing if table[m["kind"]][m["n"]]["class"] == "low"]
     who = f"which {network['name']} {'holds' if network.get('basis') == 'licensed' else 'uses'}"
     say = lambda m: f"{_label(m)}, {who} ({m['use']})"
     complete = bool(network.get("complete")) and lte_known and nr_known
     if low:
-        kind, text = "risk", "Coverage risk: " + "; ".join(say(m) for m in low)
-    elif nr_known and nnr and lte_known and not m_lte and len(m_nr) == len(nnr):
-        kind, text = "4g", "4G works; no 5G on this network"
-    elif missing:
-        kind, text = "minor", "Works; " + "; ".join(say(m) for m in missing)
-    elif not complete:
-        kind, text = "nogaps", "No gaps on the bands we could confirm"
-    else:
-        kind, text = "full", "Works fully on 4G and 5G" if nnr else "Works fully on 4G"
-    return {"kind": kind, "missing": missing, "text": text}
+        return {"kind": "risk", "missing": missing, "text": "Coverage risk: " + "; ".join(say(m) for m in low)}, _label(low[0])
+    if nr_known and wnr and lte_known and not m_lte and len(m_nr) == len(wnr):
+        return {"kind": "4g", "missing": missing, "text": "4G works; no 5G on this network"}, "no 5G"
+    if missing:
+        no5g = bool(m_nr) and len(m_nr) == len(wnr)   # all the network's 5G bands: one clause
+        clauses = [(_label(m), say(m)) for m in m_lte] + (
+            [("no 5G on this network",) * 2] if no5g else [(_label(m), say(m)) for m in m_nr])
+        return {"kind": "minor", "missing": missing, "text": "Works; " + "; ".join(c[1] for c in clauses)}, clauses[0][0]
+    if not complete:
+        return {"kind": "nogaps", "missing": [], "text": "No gaps on the bands we could confirm"}, ""
+    return {"kind": "full", "missing": [], "text": "Works fully on 4G and 5G" if wnr else "Works fully on 4G"}, ""
+
+
+def verdict(phone: dict | None, network: dict, table: dict) -> dict:
+    """{kind: unknown|risk|4g|minor|nogaps|full, missing: [{kind, n, mhz, use}], text}; first matching row wins.
+    A null lte or nr on the network or on the phone is left out of the judgement and the result can then never be "full";
+    if no band is left to compare the verdict is unknown. mmWave bands of a licensed network are ignored."""
+    return _judge(phone, network, table)[0]
 
 
 KINDS_ORDER = ("unknown", "risk", "4g", "minor", "nogaps", "full")
+GROUPS = ("full", "nogaps", "minor", "4g", "risk", "unknown")   # the order the summary names them in
+
+
+def _names(xs: list[str]) -> str:
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
 def summary(phone: dict | None, country_doc: dict, table: dict, country_name: str) -> dict:
-    """{counts: {kind: n}, text}: e.g. "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"."""
+    """{counts: {kind: n}, text}, networks grouped by verdict:
+    "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"."""
     nets = country_doc.get("networks") or []
     counts = {k: 0 for k in KINDS_ORDER}
-    parts = []
+    groups: dict[str, list[str]] = {k: [] for k in KINDS_ORDER}
     for n in nets:
-        v = verdict(phone, n, table)
+        v, first = _judge(phone, n, table)
         counts[v["kind"]] += 1
-        first = _label(v["missing"][0]) if v["missing"] else ""
-        if v["kind"] == "risk":
-            first = _label(next(m for m in v["missing"] if table[m["kind"]][m["n"]]["class"] == "low"))
-        parts.append({"unknown": f"bands unknown on {n['name']}", "nogaps": f"no gaps found on {n['name']}",
-                      "risk": f"coverage risk on {n['name']} ({first})", "minor": f"minor gaps on {n['name']} ({first})",
-                      "4g": f"4G only on {n['name']} (no 5G)", "full": ""}[v["kind"]])
+        groups[v["kind"]].append(f"{n['name']} ({first})" if v["kind"] in ("risk", "minor") else n["name"])
+    if phone is None or (phone.get("lte") is None and phone.get("nr") is None):
+        return {"counts": counts, "text": f"In {country_name}: bands not published for this version"}
     total, full = len(nets), counts["full"]
-    head = []
-    if full:
-        head.append(f"works fully on all {total} network{'s' if total != 1 else ''}" if full == total
-                    else f"works fully on {full} of {total} networks")
-    return {"counts": counts, "text": f"In {country_name}: " + "; ".join(head + [p for p in parts if p])}
+    parts = {
+        "full": "" if not full else "works fully on its only network" if total == 1 else
+        f"works fully on all {total} networks" if full == total else f"works fully on {full} of {total} networks",
+        "nogaps": f"no gaps found on {_names(groups['nogaps'])}" if groups["nogaps"] else "",
+        "minor": f"minor gaps on {_names(groups['minor'])}" if groups["minor"] else "",
+        "4g": f"4G only on {_names(groups['4g'])} (no 5G)" if groups["4g"] else "",
+        "risk": f"coverage risk on {_names(groups['risk'])}" if groups["risk"] else "",
+        "unknown": f"bands unknown on {_names(groups['unknown'])}" if groups["unknown"] else "",
+    }
+    return {"counts": counts, "text": f"In {country_name}: " + "; ".join(parts[k] for k in GROUPS if parts[k])}

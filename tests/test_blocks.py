@@ -834,6 +834,10 @@ def test_carrier_check_markup_py():
     # no JS: a carrier is not chosen, so no verdict is faked
     u = _check(doc, two, None)
     assert 'id="cc-net"' in u and '<option value="" selected>Choose your network</option>' in u and "class=\"cv" not in u and "Bands only" not in u
+    # the verdicts name the network, or the virtual carrier and its host; the live region exists, empty, before a pick
+    assert "On Mnet:" in text(h) and "On congstar (Mnet):" in text(_check(doc, two, "minor|congstar"))
+    assert '<div class="cc-out" aria-live="polite" aria-atomic="true"></div>' in _check(doc, two, None)
+    assert '<div class="cc-out" aria-live="polite" aria-atomic="true"></div>' in _check(None, two, None)
     # a version without bands says so
     assert "Bands not published for this version" in text(_check(doc, {"china": None, "global": PH_B}, "full"))
     # every verdict line carries its kind and the words, not a colour alone

@@ -104,14 +104,12 @@ const REGION_COUNTRY = { UK: "GB", US: "US", CA: "CA", AU: "AU" };
  *  Global -> null (the picker has its own country select). */
 export const countryFor = (s) => s.region === "EU" ? (s.area || null) : (REGION_COUNTRY[s.region] || null);
 
-/** The option value to select in `doc`'s network list: the saved pick when it is for this country `cc` and the network
- *  ("de-telekom", or a virtual carrier of it: "de-telekom|congstar") is still in the file, else the first network;
- *  null when the file lists none. */
+/** The saved pick as the option value to select in `doc`'s network list: only when it is for this country `cc` and the
+ *  network ("de-telekom", or a virtual carrier of it: "de-telekom|congstar") is still in the file; else null, and the
+ *  picker says "Choose your network" (a stale or other-country pick is ignored, none is preselected). */
 export function resolvePick(doc, saved, cc) {
   const nets = (doc && doc.networks) || [];
-  if (!nets.length) return null;
   const v = saved && saved.country === cc && typeof saved.network === "string" ? saved.network : "";
   const i = v.indexOf("|"), host = i < 0 ? v : v.slice(0, i), net = nets.find((n) => n.id === host);
-  if (net && (i < 0 || (net.mvnos || []).includes(v.slice(i + 1)))) return v;
-  return nets[0].id;
+  return net && (i < 0 || (net.mvnos || []).includes(v.slice(i + 1))) ? v : null;
 }

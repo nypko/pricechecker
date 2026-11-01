@@ -290,30 +290,39 @@ export const carrierSummary = (sum, s) => '<span class="csum" data-block="carrie
 
 const BY_NAME = Object.entries(COUNTRY_NAMES).sort((a, b) => (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0));
 
-/** "Check your carrier" under Specs. doc: the country's carrier file or null; bands: {version: {lte, nr} | null}; picked:
- *  the option value ("<network id>" or "<network id>|<virtual carrier>", both judge the host network) or null, which
- *  shows no verdict. The country select appears only when the settings give no country; it sets this picker only. */
-export function carrierCheck(doc, bands, picked, labels, s) {
-  const host = String(picked || "").split("|")[0];
-  const net = doc && picked ? (doc.networks.find((n) => n.id === host) || null) : null;
-  const sel = (on) => (on ? " selected" : "");
-  let h = '<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h"><h3 id="carrier-h">Check your carrier</h3><div class="cc-pick">';
-  if (!countryFor(s)) {
-    h += `<label>Country <select id="cc-country"><option value=""${sel(!doc)}>Choose country</option>` +
-      BY_NAME.map(([c, n]) => `<option value="${esc(c)}"${sel(doc && doc.country === c)}>${esc(n)}</option>`).join("") + "</select></label>";
-  }
-  if (doc) {
-    h += '<label>Your network <select id="cc-net">' + (net ? "" : '<option value="" selected>Choose your network</option>') +
-      doc.networks.map((n) => `<option value="${esc(n.id)}"${sel(picked === n.id)}>${esc(n.name)}</option>` +
-        n.mvnos.map((m) => `<option value="${esc(n.id)}|${esc(m)}"${sel(picked === n.id + "|" + m)}>&nbsp;&nbsp;${esc(m)} — on ${esc(n.name)}</option>`).join("")).join("") +
-      "</select></label>";
-  }
-  h += "</div>";
-  if (net) {
-    h += '<div class="cc-out">' + Object.entries(bands).map(([e, bd]) => {
+const NET = (doc, picked) => (doc && picked ? doc.networks.find((n) => n.id === String(picked).split("|")[0]) || null : null);
+const sel = (on) => (on ? " selected" : "");
+
+/** The network select of "Check your carrier" (inside .cc-nets): "" without a country file; "Choose your network" is
+ *  selected until `picked` ("<network id>" or "<network id>|<virtual carrier>") names a network of the file. */
+export const carrierNets = (doc, picked) => !doc ? "" :
+  '<label>Your network <select id="cc-net">' + `<option value=""${sel(!NET(doc, picked))}>Choose your network</option>` +
+  doc.networks.map((n) => `<option value="${esc(n.id)}"${sel(picked === n.id)}>${esc(n.name)}</option>` +
+    n.mvnos.map((m) => `<option value="${esc(n.id)}|${esc(m)}"${sel(picked === n.id + "|" + m)}>&nbsp;&nbsp;${esc(m)} — on ${esc(n.name)}</option>`).join("")).join("") +
+  "</select></label>";
+
+/** The verdicts (inside .cc-out, a live region): "On Telekom:" or "On congstar (Telekom):", one card per version, the
+ *  caveat; "" until a network is picked. bands: {version: {lte, nr} | null}. */
+export function carrierOut(doc, bands, picked, labels) {
+  const net = NET(doc, picked);
+  if (!net) return "";
+  const i = picked.indexOf("|");
+  return `<p class="cc-on">On ${esc(i < 0 ? net.name : picked.slice(i + 1) + " (" + net.name + ")")}:</p><div class="cc-cards">` +
+    Object.entries(bands).map(([e, bd]) => {
       const v = carrierVerdict(bd, net, doc.bands);
       return `<p class="cv ${e === "china" ? "cn" : "gl"}" data-kind="${v.kind}"><b>${esc(labels[e])}</b> <span>${esc(v.text)}</span></p>`;
     }).join("") + "</div><p class=\"cc-note\">Bands only: calls over 4G (VoLTE) and Wi-Fi calling depend on the network supporting the phone, which we can't check.</p>";
-  }
-  return h + "</section>";
+}
+
+/** The country select (inside .cc-country): only when the settings give no country; it sets this picker only. */
+export const carrierCountry = (doc, s) => countryFor(s) ? "" : `<label>Country <select id="cc-country"><option value=""${sel(!doc)}>Choose country</option>` +
+  BY_NAME.map(([c, n]) => `<option value="${esc(c)}"${sel(doc && doc.country === c)}>${esc(n)}</option>`).join("") + "</select></label>";
+
+/** "Check your carrier" under Specs. doc: the country's carrier file or null; bands: {version: {lte, nr} | null}; picked:
+ *  the option value or null, which shows no verdict. The page repaints .cc-country, .cc-nets and .cc-out in place
+ *  (carrierCountry, carrierNets, carrierOut). */
+export function carrierCheck(doc, bands, picked, labels, s) {
+  return '<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h"><h3 id="carrier-h">Check your carrier</h3><div class="cc-pick">' +
+    `<div class="cc-country">${carrierCountry(doc, s)}</div><div class="cc-nets">${carrierNets(doc, picked)}</div></div>` +
+    `<div class="cc-out" aria-live="polite" aria-atomic="true">${carrierOut(doc, bands, picked, labels)}</div></section>`;
 }

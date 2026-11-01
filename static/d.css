@@ -334,7 +334,6 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .bandchk .bad { color: var(--warn); font-weight: 600; } .bandchk .fine { color: var(--good); font-weight: 600; }
 .bandchk > div { display: grid; gap: 8px; }
 .bandchk > div[hidden] { display: none; }
-#s-csum::after { content: "."; }
 .csum a, #s-clink { color: var(--ink); text-underline-offset: 2px; }
 /* "Check your carrier": two selects, then one verdict per version side by side (the text says it; the border only echoes it) */
 .carrier { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .9rem; }
@@ -342,7 +341,9 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .cc-pick { display: grid; gap: 10px; }
 .cc-pick label { display: grid; gap: 4px; font-weight: 600; font-size: .82rem; color: var(--ink-2); }
 .cc-pick select { width: 100%; min-height: 44px; font: 500 .94rem var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 0 10px; }
-.cc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 12px; }
+.cc-nets:empty, .cc-country:empty { display: none; }
+.cc-on { margin: 12px 0 8px; font-weight: 600; }
+.cc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
 .cv { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--ground); border-left: 4px solid var(--rule); line-height: 1.4; overflow-wrap: anywhere; }
 .cv b { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
 .cv.cn b { color: var(--cn-ink); } .cv.gl b { color: var(--gl-ink); }

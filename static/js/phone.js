@@ -69,6 +69,55 @@ export function trendHtml(doc, tax, rows, s, pick, now, histHref) {
 const getJson = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.json(); });
 const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 
+/** The carrier check on the phone page: the bands bullet (#s-csum), the Specs lines (#s-csums over the old #s-eulines) and the
+ *  picker (#carrier) for the settings' country, or the picker's own country. env: {root, $ (getElementById), load (settings),
+ *  getJson, storage (localStorage or null), bandSets (data-bands), files (data-carriers), eds, L}. Returns {paint, reread}.
+ *  The country file is fetched on demand and kept; a failed fetch (or a country with no file) leaves the neutral state (the prompt,
+ *  the EU lines, no verdicts) and the next paint tries again. The pick is saved in "pc-carrier" as {country, network}; a pick
+ *  for another country or a network no longer listed is ignored, and until one is picked no verdict shows. The selects are
+ *  never replaced while in use: only the country select (when the settings start or stop giving a country), the network options (on a new country) and the verdict area (a live region) are repainted. */
+export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, eds, L }) {
+  const docs = {};   // country -> its file's promise
+  const loadCountry = (cc) => docs[cc] || (docs[cc] = (files[cc] ? getJson(files[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete docs[cc]; throw e; }));
+  const readPick = () => { try { const v = JSON.parse(storage.getItem("pc-carrier")); return v && typeof v === "object" ? v : null; } catch (e) { return null; } };
+  let pick = readPick();   // {country, network}: also held here, for when storage is not available
+  const savePick = (v) => { pick = v; try { storage.setItem("pc-carrier", JSON.stringify(v)); } catch (e) { /* kept for this visit only */ } };
+  let seq = 0, shown = null, painted;   // shown: the country the picker lists; painted: its file
+  function paint() {
+    if (!$("carrier")) return Promise.resolve();
+    const s = load(), fixed = countryFor(s), cc = fixed || (pick && files[pick.country] ? pick.country : null), my = ++seq;
+    const draw = (doc) => {
+      if (my !== seq) return;   // a newer paint is on its way
+      shown = doc ? cc : null;
+      const sums = fixed && doc ? Object.fromEntries(Object.entries(bandSets).map(([e, b]) => [e, carrierSummary(b, doc, doc.bands, doc.name)])) : null;
+      if ($("s-csum") && (!sums || sums.china)) {
+        $("s-csum").innerHTML = B.carrierSummary(sums && sums.china, s) + ".";
+        $("s-eu").hidden = !!sums;
+        $("s-clink").hidden = !sums;
+      }
+      if ($("s-csums")) {
+        $("s-csums").hidden = !sums;
+        $("s-csums").innerHTML = sums ? eds.map((e) => `<p><b>${B.esc(L[e])} version:</b> ${B.carrierSummary(sums[e], s)}</p>`).join("") : "";
+        $("s-eulines").hidden = !!sums;
+      }
+      const picked = doc ? resolvePick(doc, pick, cc) : null, box = $("carrier");
+      if (painted !== doc) { box.querySelector(".cc-nets").innerHTML = B.carrierNets(doc, picked); painted = doc; }
+      else if ($("cc-net")) $("cc-net").value = picked || "";
+      if (!!$("cc-country") === !!fixed) box.querySelector(".cc-country").innerHTML = B.carrierCountry(doc && cc ? doc : null, s);   // the settings now give (or no longer give) a country
+      if ($("cc-country")) $("cc-country").value = cc || "";
+      box.querySelector(".cc-out").innerHTML = B.carrierOut(doc, bandSets, picked, L);
+    };
+    if (!cc) { draw(null); return Promise.resolve(); }
+    return loadCountry(cc).then(draw, () => draw(null));   // no data: the neutral state, and the next change retries
+  }
+  root.addEventListener("change", (ev) => {
+    const t = ev.target;
+    if (t.id === "cc-country") { savePick({ country: t.value, network: "" }); paint(); }
+    else if (t.id === "cc-net" && shown) { savePick({ country: shown, network: t.value }); paint(); }
+  });
+  return { paint, reread: () => { pick = readPick(); } };
+}
+
 function wire(root) {
   const $ = (id) => document.getElementById(id);
   const L = json(root.dataset.labels, { global: "Global", china: "China" }), now = root.dataset.now || null, id = root.dataset.id;
@@ -132,42 +181,9 @@ function wire(root) {
     if (back && back !== document.activeElement && !back.disabled) back.focus({ preventScroll: true });
   }
 
-  // ---- carrier check (spec §6): the bands bullet, the Specs lines and the picker, for the settings' country, or the picker's own ----
-  const bandSets = json(root.dataset.bands, {}), cfiles = json(root.dataset.carriers, {}), cdocs = {};   // cdocs: country -> its file's promise
-  const loadCountry = (cc) => cdocs[cc] || (cdocs[cc] = (cfiles[cc] ? getJson(cfiles[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete cdocs[cc]; throw e; }));   // a failed load is forgotten: the next change retries
-  const readPick = () => { try { const v = JSON.parse(localStorage.getItem("pc-carrier")); return v && typeof v === "object" ? v : null; } catch (e) { return null; } };
-  let pick = readPick();   // {country, network}: also held here, for when storage is not available
-  const savePick = (v) => { pick = v; try { localStorage.setItem("pc-carrier", JSON.stringify(v)); } catch (e) { /* kept for this visit only */ } };
-  let carrierSeq = 0, shown = null;   // shown: the country the picker lists
-  function paintCarrier() {
-    if (!$("carrier")) return;
-    const s = load(), fixed = countryFor(s), cc = fixed || (pick && cfiles[pick.country] ? pick.country : null), my = ++carrierSeq;
-    const draw = (doc) => {
-      if (my !== carrierSeq) return;
-      shown = doc ? cc : null;
-      const sums = fixed && doc ? Object.fromEntries(Object.entries(bandSets).map(([e, b]) => [e, carrierSummary(b, doc, doc.bands, doc.name)])) : null;
-      if ($("s-csum") && (!fixed || (sums && sums.china))) {
-        set($("s-csum"), B.carrierSummary(sums && sums.china, s));
-        $("s-eu").hidden = !!sums;
-        $("s-clink").hidden = !sums;
-      }
-      if ($("s-csums")) {
-        $("s-csums").hidden = !sums;
-        set($("s-csums"), sums ? eds.map((e) => `<p><b>${B.esc(L[e])} version:</b> ${B.carrierSummary(sums[e], s)}</p>`).join("") : "");
-        $("s-eulines").hidden = !!sums;
-      }
-      const a = document.activeElement, again = a && a.closest && a.closest("#carrier") && a.id;
-      $("carrier").outerHTML = B.carrierCheck(doc, bandSets, doc ? resolvePick(doc, pick, cc) : null, L, s);
-      if (again && $(again)) $(again).focus({ preventScroll: true });
-    };
-    if (!cc) draw(null);
-    else loadCountry(cc).then(draw, () => {});   // offline or a missing file: the server's text stays, the next change tries again
-  }
-  root.addEventListener("change", (ev) => {
-    const t = ev.target;
-    if (t.id === "cc-country") { savePick({ country: t.value, network: "" }); paintCarrier(); }
-    else if (t.id === "cc-net" && shown) { savePick({ country: shown, network: t.value }); paintCarrier(); }
-  });
+  // ---- carrier check (spec §6): see wireCarrier ----
+  const cv = wireCarrier({ root, $, load, getJson, storage: (() => { try { return localStorage; } catch (e) { return null; } })(),
+    bandSets: json(root.dataset.bands, {}), files: json(root.dataset.carriers, {}), eds, L });
 
   // ---- "More from <brand>": each phone's own file, only when the settings differ from the defaults ----
   let moreFor = "";
@@ -212,16 +228,16 @@ function wire(root) {
     else if (f && !f.disabled) { S.f[f.dataset.f] = !S.f[f.dataset.f]; update(); }
     else if (sort) { S.sort = sort.dataset.s; update(); }
   });
-  const again = () => { update(true); paintCarrier(); };
+  const again = () => { update(true); cv.paint(); };
   window.addEventListener("dp:settings", again);
-  window.addEventListener("storage", (e) => { if (!e.key || (e.key.startsWith("pc-") && e.key !== "pc-watch")) { if (!e.key || e.key === "pc-carrier") pick = readPick(); again(); } });
+  window.addEventListener("storage", (e) => { if (!e.key || (e.key.startsWith("pc-") && e.key !== "pc-watch")) { if (!e.key || e.key === "pc-carrier") cv.reread(); again(); } });
   // a shared link's pick ("#16-512-china"), else other settings than the defaults: paint once the files are in
   const shared = parseHash(location.hash);
   if (shared && root.dataset.file) {
     S.touched = true;
     update(false, false, (rows) => { const p = pickFromHash(rows, location.hash); return p && eds.includes(p.ed) ? p : {}; });
   } else if (!isDefault(load()) && root.dataset.file) update(true);
-  paintCarrier();
+  cv.paint();
 
   // ---- the buyer report form posts natively; the endpoint sends the visitor back here with #report-thanks or #report-error ----
   const rs = $("rf-status");

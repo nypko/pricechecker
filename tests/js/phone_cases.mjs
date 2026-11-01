@@ -104,18 +104,103 @@ assert.equal(focusSelector(null), null);
   assert.equal(countryFor(st("AU")), "AU");
   assert.equal(COUNTRY_NAMES.DE, "Germany");
 
-  // Review Focus 4: a saved network that is gone, or belongs to another country, is ignored: the first network
+  // Review Focus 4 (ledger ruling): a saved network that is gone, or belongs to another country, is ignored and nothing is
+  // preselected ("Choose your network")
   const doc = { country: "DE", networks: [{ id: "de-a", mvnos: ["Cheapo"] }, { id: "de-b", mvnos: [] }] };
   assert.equal(resolvePick(doc, { country: "DE", network: "de-b" }, "DE"), "de-b");
   assert.equal(resolvePick(doc, { country: "DE", network: "de-a|Cheapo" }, "DE"), "de-a|Cheapo");   // a virtual carrier of a network
-  assert.equal(resolvePick(doc, { country: "DE", network: "de-gone" }, "DE"), "de-a");              // removed from the data
-  assert.equal(resolvePick(doc, { country: "DE", network: "de-a|Gone" }, "DE"), "de-a");            // its virtual carrier removed
-  assert.equal(resolvePick(doc, { country: "FR", network: "de-b" }, "DE"), "de-a");                 // saved for another country
-  assert.equal(resolvePick(doc, { country: "DE", network: "fr-x" }, "DE"), "de-a");
-  assert.equal(resolvePick(doc, { country: "DE", network: "" }, "DE"), "de-a");
-  for (const bad of [null, undefined, {}, { country: "DE" }, { country: "DE", network: 5 }, "x", []]) assert.equal(resolvePick(doc, bad, "DE"), "de-a");
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-gone" }, "DE"), null);                // removed from the data
+  assert.equal(resolvePick(doc, { country: "DE", network: "de-a|Gone" }, "DE"), null);              // its virtual carrier removed
+  assert.equal(resolvePick(doc, { country: "FR", network: "de-b" }, "DE"), null);                   // saved for another country
+  assert.equal(resolvePick(doc, { country: "DE", network: "" }, "DE"), null);
+  for (const bad of [null, undefined, {}, { country: "DE" }, { country: "DE", network: 5 }, "x", []]) assert.equal(resolvePick(doc, bad, "DE"), null);
   assert.equal(resolvePick({ networks: [] }, { country: "DE", network: "de-a" }, "DE"), null);
   assert.equal(resolvePick(null, null, "DE"), null);
+}
+
+// the paint wiring on a minimal fake DOM: a failed load, no saved pick, a stale saved pick, a pick
+{
+  const { wireCarrier } = await import("../../static/js/phone.js");
+  const net = (id, name, mvnos = []) => ({ id, name, lte: [1, 3], nr: [], basis: "used", complete: true, mvnos });
+  const table = { lte: { 1: { mhz: 2100, class: "mid", use: "u" }, 3: { mhz: 1800, class: "mid", use: "u" } }, nr: {}, covers: {} };
+  const DE = { v: 1, country: "DE", name: "Germany", networks: [net("de-a", "Anet", ["Cheapo"]), net("de-b", "Bnet")], bands: table };
+  const bandSets = { china: { lte: [1, 3], nr: [] }, global: null };
+  const L = { china: "China", global: "Global" };
+  const setup = ({ settings, saved = null, failFR = true }) => {
+    const el = (extra = {}) => ({ innerHTML: "", hidden: false, value: "", ...extra });
+    const dom = { carrier: { ...el(), nets: el(), out: el(), country: el(), querySelector(q) { return q === ".cc-nets" ? this.nets : q === ".cc-country" ? this.country : this.out; } },
+      "s-csum": el(), "s-eu": el(), "s-clink": el({ hidden: true }), "s-csums": el({ hidden: true }), "s-eulines": el(), "cc-net": el() };
+    const store = new Map(saved ? [["pc-carrier", JSON.stringify(saved)]] : []);
+    const calls = [];
+    let handler = null;
+    const cur = { ...settings };
+    const cv = wireCarrier({
+      root: { addEventListener: (t, f) => { handler = f; } }, $: (id) => dom[id] || null, load: () => cur, storage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) },
+      getJson: (u) => { calls.push(u); return u.includes("FR") && failFR ? Promise.reject(new Error(u)) : Promise.resolve(DE); },
+      bandSets, files: { DE: "carriers/DE.json", FR: "carriers/FR.json" }, eds: ["china", "global"], L });
+    return { dom, cv, cur, calls, store, change: (id, value) => handler({ target: { id, value } }) };
+  };
+  const eu = (area) => ({ region: "EU", area, pay: "card", cur: "eur" });
+  const text = (h) => h.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+
+  // DE paints the summary, the network list with "Choose your network" selected, and no verdict
+  let t = setup({ settings: eu("DE") });
+  await t.cv.paint();
+  assert.match(t.dom["s-csum"].innerHTML, /In Germany: works fully on all 2 networks/);
+  assert.equal(t.dom["s-eu"].hidden, true); assert.equal(t.dom["s-clink"].hidden, false);
+  assert.equal(t.dom["s-csums"].hidden, false); assert.equal(t.dom["s-eulines"].hidden, true);
+  assert.match(t.dom["s-csums"].innerHTML, /China version:<\/b> <span[^>]*>In Germany/);
+  assert.match(t.dom.carrier.nets.innerHTML, /<option value="" selected>Choose your network<\/option>/);
+  assert.equal(t.dom.carrier.out.innerHTML, "");
+  // then a country whose file fails to load: the neutral state, nothing from Germany left, and the next paint retries
+  t.cur.area = "FR";
+  await t.cv.paint();
+  assert.match(t.dom["s-csum"].innerHTML, /Pick your country to check its networks<\/a><\/span>\.$/);
+  assert.equal(t.dom["s-eu"].hidden, false); assert.equal(t.dom["s-clink"].hidden, true);
+  assert.equal(t.dom["s-csums"].hidden, true); assert.equal(t.dom["s-csums"].innerHTML, ""); assert.equal(t.dom["s-eulines"].hidden, false);
+  assert.equal(t.dom.carrier.nets.innerHTML, ""); assert.equal(t.dom.carrier.out.innerHTML, "");
+  await t.cv.paint();
+  assert.equal(t.calls.filter((u) => u.includes("FR")).length, 2);
+  // a settings country with no file at all is the same state
+  t = setup({ settings: eu("PL") });
+  await t.cv.paint();
+  assert.match(t.dom["s-csum"].innerHTML, /Pick your country/); assert.equal(t.dom["s-eulines"].hidden, false); assert.equal(t.calls.length, 0);
+
+  // a stale saved pick (network gone, or another country's) shows no verdict and no preselection
+  for (const saved of [{ country: "DE", network: "de-gone" }, { country: "FR", network: "de-a" }]) {
+    t = setup({ settings: eu("DE"), saved });
+    await t.cv.paint();
+    assert.equal(t.dom.carrier.out.innerHTML, "");
+    assert.match(t.dom.carrier.nets.innerHTML, /<option value="" selected>Choose your network<\/option>/);
+  }
+  // a valid saved pick is shown, naming the network
+  t = setup({ settings: eu("DE"), saved: { country: "DE", network: "de-b" } });
+  await t.cv.paint();
+  assert.match(t.dom.carrier.nets.innerHTML, /<option value="de-b" selected>/);
+  assert.match(text(t.dom.carrier.out.innerHTML), /^On Bnet: China Works fully on 4G Global Bands not published for this version Bands only/);
+
+  // picking a network: the verdict names it, the pick is saved, and the network list is left alone
+  t = setup({ settings: eu("DE") });
+  await t.cv.paint();
+  const before = t.dom.carrier.nets.innerHTML;
+  t.dom["cc-net"].value = "de-a|Cheapo";
+  await t.change("cc-net", "de-a|Cheapo");
+  await new Promise((r) => setTimeout(r, 0));
+  assert.match(text(t.dom.carrier.out.innerHTML), /^On Cheapo \(Anet\): China Works fully on 4G/);
+  assert.equal(t.dom.carrier.nets.innerHTML, before);
+  assert.deepEqual(JSON.parse(t.store.get("pc-carrier")), { country: "DE", network: "de-a|Cheapo" });
+  // the server rendered the country select (no country in the default settings) but these settings give one: it goes
+  t = setup({ settings: eu("DE") });
+  t.dom["cc-country"] = { value: "" }; t.dom.carrier.country.innerHTML = "<label>stale</label>";
+  await t.cv.paint();
+  assert.equal(t.dom.carrier.country.innerHTML, "");
+  // Global: the picker's own country (saved) loads its file; the settings are not touched
+  t = setup({ settings: { region: "Global", area: "", pay: "card", cur: "eur" }, saved: { country: "DE", network: "de-b" } });
+  t.dom["cc-country"] = { value: "" };
+  await t.cv.paint();
+  assert.equal(t.dom["cc-country"].value, "DE");
+  assert.match(t.dom["s-csum"].innerHTML, /Pick your country/);   // the bullet still asks: only the picker has a country
+  assert.match(text(t.dom.carrier.out.innerHTML), /^On Bnet:/);
 }
 
 console.log("phone cases: ok");

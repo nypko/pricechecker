@@ -1281,7 +1281,10 @@ def test_phone_page_with_a_country_shows_the_summary_not_the_eu_lines(monkeypatc
     c = _section(h, 'id="carrier"', "</section>")
     assert 'id="cc-country"' not in c and 'id="cc-net"' in c and "Choose your network" in c and 'class="cv ' not in c   # nothing faked without JS
     assert "Cheapo — on Anet" in text_of(c)
-    assert h.index("<h2>Specs</h2>") < h.index('id="carrier"') < h.index("More from") if "More from" in h else True
+    assert h.index("<h2>Specs</h2>") < h.index('class="bandchk"') < h.index('id="carrier"')   # under Specs, after the band lines
+    assert '<div class="cc-out" aria-live="polite" aria-atomic="true"></div>' in c
+    assert '</span>.</b> <a id="s-clink"' in h      # the bullet's full stop is markup, not CSS
+    assert "#s-csum::after" not in (ROOT / "static/d.css").read_text()
     assert len(h.encode()) <= 60_000
 
 

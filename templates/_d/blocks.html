@@ -264,29 +264,45 @@
 {#- "Check your carrier" under Specs. doc: the country's carrier file ({country, name, networks, bands}) or none; bands:
     {version: {lte, nr} | none} for the versions shown; picked: the chosen option value ("<network id>" or
     "<network id>|<virtual carrier>"; both judge the host network) or none, which shows no verdict. The country select
-    appears only when the settings give no country (Global, EU without one); it sets this picker only. -#}
-{%- macro carrier_check(doc, bands, picked, labels, s) -%}
+    appears only when the settings give no country (Global, EU without one); it sets this picker only. The pieces
+    (.cc-nets, .cc-out) are what the page repaints in place, so the selects keep the focus and the live region announces. -#}
+{%- macro carrier_nets(doc, picked) -%}
+{%- if doc -%}
 {%- set host = (picked or "").split("|")[0] -%}
-{%- set net = (doc.networks|selectattr("id", "equalto", host)|first) if doc and picked else none -%}
-<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h">
-<h3 id="carrier-h">Check your carrier</h3>
-<div class="cc-pick">
-{%- if not country_for(s) %}
-<label>Country <select id="cc-country"><option value=""{% if not doc %} selected{% endif %}>Choose country</option>{% for c, n in COUNTRY_NAMES.items()|sort(attribute="1") %}<option value="{{ c }}"{% if doc and doc.country == c %} selected{% endif %}>{{ n }}</option>{% endfor %}</select></label>
-{%- endif %}
-{%- if doc %}
-<label>Your network <select id="cc-net">{% if not net %}<option value="" selected>Choose your network</option>{% endif %}
+{%- set net = (doc.networks|selectattr("id", "equalto", host)|first) if picked else none -%}
+<label>Your network <select id="cc-net"><option value=""{% if not net %} selected{% endif %}>Choose your network</option>
 {%- for n in doc.networks %}<option value="{{ n.id }}"{% if picked == n.id %} selected{% endif %}>{{ n.name }}</option>
 {%- for m in n.mvnos %}<option value="{{ n.id }}|{{ m }}"{% if picked == n.id ~ "|" ~ m %} selected{% endif %}>&nbsp;&nbsp;{{ m }} — on {{ n.name }}</option>{% endfor %}{% endfor %}</select></label>
-{%- endif %}
-</div>
-{%- if net %}
-<div class="cc-out">
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro carrier_out(doc, bands, picked, labels) -%}
+{%- set host = (picked or "").split("|")[0] -%}
+{%- set net = (doc.networks|selectattr("id", "equalto", host)|first) if doc and picked else none -%}
+{%- if net -%}
+<p class="cc-on">On {{ net.name if "|" not in picked else picked.split("|", 1)[1] ~ " (" ~ net.name ~ ")" }}:</p>
+<div class="cc-cards">
 {%- for e, bd in bands.items() %}{% set v = carrier_verdict(bd, net, doc.bands) %}
 <p class="cv {{ 'cn' if e == 'china' else 'gl' }}" data-kind="{{ v.kind }}"><b>{{ labels[e] }}</b> <span>{{ v.text }}</span></p>
 {%- endfor %}
 </div>
 <p class="cc-note">Bands only: calls over 4G (VoLTE) and Wi-Fi calling depend on the network supporting the phone, which we can't check.</p>
-{%- endif %}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro carrier_country(doc, s) -%}
+{%- if not country_for(s) -%}
+<label>Country <select id="cc-country"><option value=""{% if not doc %} selected{% endif %}>Choose country</option>{% for c, n in COUNTRY_NAMES.items()|sort(attribute="1") %}<option value="{{ c }}"{% if doc and doc.country == c %} selected{% endif %}>{{ n }}</option>{% endfor %}</select></label>
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro carrier_check(doc, bands, picked, labels, s) -%}
+<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h">
+<h3 id="carrier-h">Check your carrier</h3>
+<div class="cc-pick">
+<div class="cc-country">{{ carrier_country(doc, s) }}</div>
+<div class="cc-nets">{{ carrier_nets(doc, picked) }}</div>
+</div>
+<div class="cc-out" aria-live="polite" aria-atomic="true">{{ carrier_out(doc, bands, picked, labels) }}</div>
 </section>
 {%- endmacro -%}

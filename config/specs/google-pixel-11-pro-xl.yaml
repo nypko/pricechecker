@@ -3,8 +3,14 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # source: brand (the brand's own spec page)
 id: google-pixel-11-pro-xl
+sources:
+  global: {url: https://support.google.com/pixelphone/answer/7158570, checked: 2026-11-01}
 key:
   chip: "Tensor G6"
   screen: 6.8
   battery: "5,115 mAh"
   charging: "45 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 14, 17, 18, 19, 20, 21, 25, 26, 28, 29, 30, 32, 38, 39, 40, 41, 42, 48, 66, 71, 75]
+    nr: [1, 2, 3, 5, 7, 8, 12, 13, 14, 20, 25, 26, 28, 30, 38, 40, 41, 66, 71, 75, 77, 78, 79]

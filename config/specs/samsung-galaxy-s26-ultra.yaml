@@ -2,8 +2,14 @@
 # Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 id: samsung-galaxy-s26-ultra
+sources:
+  global: {url: https://www.samsung.com/uk/business/smartphones/galaxy-s/galaxy-s26-ultra-cobalt-violet-256gb-sm-s948bzvdeub/, checked: 2026-11-01}
 key:
   chip: "Snapdragon 8 Elite Gen 5 for Galaxy"
   screen: 6.9
   battery: "5,000 mAh"
   charging: "60 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 38, 39, 40, 41]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 66, 38, 40, 41, 77, 78, 75]

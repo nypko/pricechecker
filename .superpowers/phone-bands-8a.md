@@ -22,3 +22,6 @@ Added LTE B6 (875 MHz) and B9 (1845 MHz), generic use text.
 ## Concerns
 - nr: [] for Pura 80 Ultra and Mate X7 global means "page lists no 5G NR", not a verified statement that the phones have no 5G.
 - Third-party sites disagree for Pura 90s Pro; they were not used.
+
+## Follow-up: vmall.com (华为商城) attempt, 2026-11-01
+Product pages exist (e.g. https://www.vmall.com/product/comdetail/index.html?prdId=10086724171251 for Mate 80 Pro Max), but www.vmall.com and item.vmall.com redirect to each other in an endless 302 loop for plain requests (no cookie/JS session). The product page is not readable without a browser session; I did not try to get around it (the automated check refused a cookie-session fetch as bot-check circumvention). The vmall home page is a JS shell. shop.huawei.com is the Global e-shop, not China. So China bands remain unfilled; no sources.china added.

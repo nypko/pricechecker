@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 
 from jinja2 import Environment
 
-from ... import derive, specs
+from ... import carriers, derive, specs
 from ..blocks import PLACE, ledger_rows, short_day
 from ..context import SiteData
 from ..data_files import offer_inputs, trend_series
@@ -83,6 +83,27 @@ def _bands(sheet: dict, e: str) -> dict:
             "unknown": " and ".join("4G" if k == "lte" else "5G" for k in unk) + " bands not published" if unk else ""}
 
 
+def bands_attr(sheet: dict, eds: list[str]) -> dict:
+    """data-bands: {version: {lte, nr} | None} for the versions the page shows; None where the sheet has no bands."""
+    have = (sheet or {}).get("bands") or {}
+    return {e: {"lte": have[e].get("lte"), "nr": have[e].get("nr")} if have.get(e) else None for e in eds}
+
+
+def country_for(s) -> str | None:
+    """The carrier country of the settings: EU -> its country (None until one is picked), UK -> GB, US, CA, AU; Global -> None."""
+    return (s.area or None) if s.region == "EU" else {"UK": "GB", "US": "US", "CA": "CA", "AU": "AU"}.get(s.region)
+
+
+def _carrier(sheet: dict, eds: list[str]) -> dict | None:
+    """{version: summary} for the default settings' country (None when it has none)."""
+    cc = country_for(DEFAULT)
+    doc = carriers.load().get(cc) if cc else None
+    if not doc:
+        return None
+    return {e: carriers.summary(((sheet.get("bands") or {}).get(e)), doc, carriers.band_table(), carriers.COUNTRY_NAMES[cc])
+            for e in eds}
+
+
 def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None, mem: str | None) -> dict | None:
     """The price trend of the default pick, from the same series the phone's data file carries (data_files._phone_doc);
     today is the build's updated day. None without a current price."""
@@ -132,6 +153,8 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "buyers": {o["store_label"]: o["buyers"] for o in p["offers"] if o.get("buyers")},
         "buyers_line": buyers_text(next((o.get("buyers") for o in p["offers"] if best and o["store_label"] == best["store"]), None),
                                    DEFAULT.region),
+        "band_sets": bands_attr(sheet, eds), "carrier_files": {cc: rel(files.get(f"carriers/{cc}")) for cc in carriers.COUNTRIES},
+        "carrier": _carrier(sheet, eds),
         "now": ctx.get("updated") or None,
         "trend": _trend(p, data, ctx, best, ed, mem),
     }

@@ -1,4 +1,5 @@
 import html
+import json
 import os
 import re
 import shutil
@@ -1172,3 +1173,54 @@ def test_phone_bands_helpers_with_a_null_list():
     assert ph._bands(s, "china")["missing"] == ["LTE 20"]
     sb = sp._bands(s, "china")
     assert sb["nr"] == [] and sb["unk_nr"] and not sb["unk_lte"]
+
+
+def test_country_for_settings():
+    from pricechecker.pricing import Settings
+    from pricechecker.site.pages.phone import country_for
+    s = lambda region, area="": Settings(region, area, "card", "eur")
+    assert country_for(s("EU", "DE")) == "DE" and country_for(s("EU")) is None
+    assert country_for(s("UK")) == "GB" and country_for(s("US")) == "US" and country_for(s("AU")) == "AU"
+    assert country_for(s("CA", "ON")) == "CA" and country_for(s("CA")) == "CA"
+    assert country_for(s("Global")) is None
+
+
+def _bands_attr(html_text):
+    m = re.search(r"data-bands='([^']*)'", html_text)
+    return json.loads(html.unescape(m.group(1))) if m else None
+
+
+@live
+def test_phone_page_carries_bands_and_carrier_files(site_build):
+    from pricechecker import carriers
+    pages = [p for p in (site_build / "phones").glob("*.html") if "data-bands=" in p.read_text()]
+    assert pages
+    for page in pages:
+        text = page.read_text()
+        b = _bands_attr(text)
+        assert set(b) <= {"china", "global"} and all(v is None or set(v) == {"lte", "nr"} for v in b.values())
+        c = json.loads(html.unescape(re.search(r"data-carriers='([^']*)'", text).group(1)))
+        assert set(c) == set(carriers.COUNTRIES)
+        assert all((page.parent / p).resolve().exists() for p in c.values())
+
+
+def test_phone_page_bands_only_for_shown_versions_and_never_invented():
+    from pricechecker.site.pages import phone
+    sheet = {"bands": {"global": {"lte": [1, 3], "nr": None}}}
+    assert phone.bands_attr(sheet, ["china", "global"]) == {"china": None, "global": {"lte": [1, 3], "nr": None}}
+    assert phone.bands_attr(sheet, ["global"]) == {"global": {"lte": [1, 3], "nr": None}}
+    assert phone.bands_attr({}, ["china"]) == {"china": None}
+
+
+def test_phone_page_carrier_summary_is_none_without_a_country_and_per_version_with_one(monkeypatch):
+    from pricechecker import carriers
+    from pricechecker.pricing import Settings
+    from pricechecker.site.pages import phone
+    sheet = {"bands": {"global": {"lte": [1], "nr": None}}}
+    assert phone._carrier(sheet, ["global"]) is None            # default: EU, no country
+    net = {"id": "a", "name": "A", "lte": [1], "nr": None, "basis": "used", "complete": False}
+    monkeypatch.setattr(phone, "DEFAULT", Settings("UK", "", "card", "gbp"))
+    monkeypatch.setattr(carriers, "load", lambda: {"GB": {"country": "GB", "networks": [net]}})
+    r = phone._carrier(sheet, ["china", "global"])
+    assert set(r) == {"china", "global"} and r["china"]["text"].startswith("In United Kingdom: bands not published")
+    assert r["global"]["counts"]["nogaps"] == 1

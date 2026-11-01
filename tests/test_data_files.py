@@ -181,3 +181,41 @@ def test_trend_series_converts_a_changed_currency():
     offers = [{"store": "a", "store_label": "Shop A", "edition": "china", "storage": "12/256", "price": 900, "currency": "EUR"}]
     t = data_files.trend_series(rows, "m", offers, {"EUR": 1.0, "USD": 1.1})
     assert t["china"]["12/256"]["Shop A"]["pts"] == [["2026-10-01", 1.1111], ["2026-10-02", 1.0]]
+
+
+def _carrier_doc():
+    return {"country": "ZZ", "networks": [
+        {"id": "a", "name": "A", "lte": [1, 20], "nr": None, "basis": "used", "complete": False, "mvnos": ["M"],
+         "sources": [{"url": "https://x.example", "kind": "carrier", "checked": "2026-01-01"}]},
+        {"id": "b", "name": "B", "lte": None, "nr": [78], "basis": "licensed", "complete": False, "sources": []}]}
+
+
+def test_carrier_file_has_networks_and_the_band_subset(tmp_path):
+    table = {"lte": {1: {"mhz": 2100, "class": "mid", "use": "u1"}, 20: {"mhz": 800, "class": "low", "use": "u20"},
+                     3: {"mhz": 1800, "class": "mid", "use": "u3"}},
+             "nr": {78: {"mhz": 3500, "class": "high", "use": "u78"}, 77: {"mhz": 3700, "class": "high", "use": "u77"}},
+             "covers": {"lte": {3: [1]}, "nr": {77: [78]}}}
+    names = data_files.write_carriers({"DE": {**_carrier_doc(), "country": "DE"}}, table, tmp_path)
+    assert list(names) == ["carriers/DE"] and re.fullmatch(r"/data/v1/carriers/DE\.[0-9a-f]{10}\.json", names["carriers/DE"])
+    doc = json.loads((tmp_path / names["carriers/DE"].lstrip("/")).read_text())
+    assert doc["v"] == 1 and doc["country"] == "DE" and doc["name"] == "Germany"
+    assert doc["networks"][0] == {"id": "a", "name": "A", "lte": [1, 20], "nr": None, "basis": "used", "complete": False,
+                                  "mvnos": ["M"]}
+    assert doc["networks"][1]["mvnos"] == [] and "sources" not in doc["networks"][0]
+    assert set(doc["bands"]) == {"lte", "nr", "covers"}
+    assert set(doc["bands"]["lte"]) == {"1", "20"} and set(doc["bands"]["nr"]) == {"78"}   # only the bands the networks list
+    assert doc["bands"]["lte"]["20"] == {"mhz": 800, "class": "low", "use": "u20"}
+    assert doc["bands"]["covers"] == table["covers"] or doc["bands"]["covers"] == {"lte": {"3": [1]}, "nr": {"77": [78]}}
+
+
+def test_real_carrier_files_one_per_country_within_budget(tmp_path):
+    from pricechecker import carriers
+    names = data_files.write_carriers(carriers.load(), carriers.band_table(), tmp_path)
+    assert set(names) == {f"carriers/{cc}" for cc in carriers.COUNTRIES}
+    for path in names.values():
+        body = (tmp_path / path.lstrip("/")).read_bytes()
+        assert len(body) <= BUDGET
+        doc = json.loads(body)
+        for n in doc["networks"]:
+            for kind in ("lte", "nr"):
+                assert all(str(b) in doc["bands"][kind] for b in n[kind] or [])

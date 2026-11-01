@@ -21,6 +21,7 @@
 {%- set s = v.s -%}
 <div class="wrap phone" id="phone" data-id="{{ p.slug }}" data-file="{{ p.data_file }}" data-tax="{{ v.tax_file }}" data-now="{{ v.now or '' }}"
   data-labels='{{ L|tojson }}' data-ed="{{ v.ed or '' }}" data-mem="{{ v.mem or '' }}" data-eds="{{ v.eds|join(',') }}"
+  data-bands='{{ v.band_sets|tojson }}' data-carriers='{{ v.carrier_files|tojson }}'
   {%- if v.buyers %} data-buyers='{{ v.buyers|tojson }}'{% endif %}>
   <p class="kicker"><a href="../">All phones</a> · {{ p.brand }}{% if p.announced %} · announced {{ month_of(p.announced) }}{% endif %}</p>
   <h1>{{ p.name }} price{% if p.editions|length > 1 %}: <em>{{ L.china }} vs {{ L.global }}</em>{% elif "china" in p.editions %}: <em>{{ L.china }} version</em>{% endif %}</h1>

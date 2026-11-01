@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from .. import derive, specs, terms
+from .. import carriers, derive, specs, terms
 from . import offers as offers_mod
 from .context import SiteData
 
@@ -128,9 +128,27 @@ def _home_doc(region: str, rows: list[dict]) -> dict:
     return {"v": 1, "region": region, "offers": rows}
 
 
+def _band_subset(nets: list[dict], table: dict) -> dict:
+    """The band table limited to the bands these networks list, plus the whole `covers` table (carriers.js verdict reads it)."""
+    out = {k: {n: table[k][n] for n in sorted({n for net in nets for n in net.get(k) or []})} for k in ("lte", "nr")}
+    return {**out, "covers": table.get("covers") or {}}
+
+
+def write_carriers(docs: dict[str, dict], table: dict, out: Path) -> dict[str, str]:
+    """One file per country, "carriers/<CC>": {"v": 1, country, name, networks [{id, name, lte, nr, basis, complete,
+    mvnos}], bands}; no sources text. Returns {"carriers/<CC>": published path}."""
+    names = {}
+    for cc, doc in docs.items():
+        nets = [{"id": n["id"], "name": n["name"], "lte": n.get("lte"), "nr": n.get("nr"), "basis": n.get("basis"),
+                 "complete": bool(n.get("complete")), "mvnos": n.get("mvnos") or []} for n in doc.get("networks") or []]
+        names[f"carriers/{cc}"] = _put(out, f"carriers/{cc}", {
+            "v": 1, "country": cc, "name": carriers.COUNTRY_NAMES[cc], "networks": nets, "bands": _band_subset(nets, table)})
+    return names
+
+
 def write(data: SiteData, out: Path, phones: list[dict] | None = None) -> dict[str, str]:
     """Write the data files under out/data/v1/. Returns {logical name: published path}: "tax", "phone/<id>" and
-    "home/<region>" (a list of paths: the region's parts, home-<region>-<n>.<hash>.json) for the templates."""
+    "home/<region>" (a list of paths: the region's parts, home-<region>-<n>.<hash>.json) and "carriers/<CC>" for the templates."""
     phones = offers_mod.assemble(data) if phones is None else phones
     names = {"tax": _put(out, "tax", data.tax_cfg)}
     for region in terms.REGIONS:
@@ -138,4 +156,5 @@ def write(data: SiteData, out: Path, phones: list[dict] | None = None) -> dict[s
                                    for n, rows in enumerate(_home_parts(data, phones, region), 1)]
     for p in phones:
         names[f"phone/{p['id']}"] = _put(out, f"phone/{p['id']}", _phone_doc(data, p))
+    names.update(write_carriers(carriers.load(), carriers.band_table(), out))
     return names

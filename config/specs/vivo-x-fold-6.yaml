@@ -3,8 +3,18 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # fixed 2026-10-20 (GSMArena + launch coverage)
 id: vivo-x-fold-6
+sources:
+  china: {url: https://www.vivo.com/cn/products/param/xfold6, checked: 2026-11-01, lang: Chinese}
+  global: {url: https://www.vivo.com/ae/products/param/x-fold6, checked: 2026-11-01}
 key:
   chip: "Dimensity 9500 Super Edition"
   screen: "8.02 inside"
   battery: "7,000 mAh (China) / 6,900 mAh (Global)"
   charging: "80 W"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78, 79]
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 25, 26, 28, 32, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 12, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 75, 77, 78, 79]

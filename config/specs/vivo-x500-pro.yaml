@@ -2,8 +2,14 @@
 # Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 id: vivo-x500-pro
+sources:
+  china: {url: https://www.vivo.com/cn/products/param/x500pro, checked: 2026-11-01, lang: Chinese}
 key:
   chip: "Dimensity 9600 Pro"
   screen: 6.36
   battery: "6,510 mAh"
   charging: "90 W"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78, 79]

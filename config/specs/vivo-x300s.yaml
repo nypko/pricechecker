@@ -3,8 +3,14 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # added 2026-10-21 from GSMArena's spec pages (battery is the China unit's unless noted)
 id: vivo-x300s
+sources:
+  china: {url: https://www.vivo.com/cn/products/param/x300s, checked: 2026-11-01, lang: Chinese}
 key:
   chip: "Dimensity 9500"
   screen: 6.78
   battery: "7,100 mAh"
   charging: "90 W"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 20, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78, 79]

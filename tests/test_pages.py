@@ -1143,6 +1143,8 @@ def test_unknown_nr_is_said_not_counted_on_the_phone_and_specs_pages(tmp_path, m
     assert s["bands"]["global"]["nr"] is None
     s["groups"] = {"display": {"size": "8.0 in"}}
     s["sources"]["global"] = {"url": "https://consumer.huawei.com/en/phones/mate-x7/specs/", "checked": "2026-11-01"}
+    s["bands"]["china"] = deepcopy(s["bands"]["global"])
+    s["sources"]["china"] = {"url": "https://consumer.huawei.com/cn/phones/mate-x7/specs/", "checked": "2026-11-01"}
     b = ph._bands(s, "global")
     assert b["unknown"] == "5G bands not published" and b["known"] == "4G"
     monkeypatch.setattr(specs_cfg, "load", lambda *a, **k: sheets)
@@ -1152,8 +1154,11 @@ def test_unknown_nr_is_said_not_counted_on_the_phone_and_specs_pages(tmp_path, m
     site.build(catalog, stores, fx.cached(), terms.saved_status())
     sp = (out / "phones/huawei-mate-x7/specs.html").read_text()
     assert "not published" in sp
+    assert "Has all the main EU 4G bands; 5G bands not published" in sp
+    assert "Has all the main EU bands<" not in sp
     pg = (out / "phones/huawei-mate-x7.html").read_text()
     assert "5G bands not published" in pg
+    assert "<b>Has the main EU 4G bands; 5G bands not published.</b>" in pg
 
 
 def test_phone_bands_helpers_with_a_null_list():

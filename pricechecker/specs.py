@@ -151,8 +151,8 @@ def _regions() -> dict:
 
 
 def band_check(sheet: dict, edition: str, region: str = "EU") -> dict | None:
-    """Main bands of the region that this version lacks: {"lte": [...], "nr": [...], "why": {band: text}, "unknown": ["lte"|"nr" lists the page does not publish]}.
-    A null list is unknown: it adds no missing bands. None when we have not read that version's bands."""
+    """Main bands of the region that this version lacks: {"lte": [...], "nr": [...], "why": {band: text}, "unknown": [lists the page does not publish: "lte" and/or "nr"]};
+    an unknown (null) list adds no missing bands. None when we have not read that version's bands."""
     have = (sheet.get("bands") or {}).get(edition)
     if not have:
         return None

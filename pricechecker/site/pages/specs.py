@@ -45,6 +45,9 @@ def _bands(sheet: dict, e: str) -> dict | None:
         return None
     why = chk["why"]
     return {"lte": sorted(have.get("lte") or []), "nr": sorted(have.get("nr") or []),
+            "known": "5G" if "lte" in chk["unknown"] else "4G" if chk["unknown"] else "",
+            "unknown": " and ".join("4G" if k == "lte" else "5G" for k in chk["unknown"]) + " bands not published"
+                       if chk["unknown"] else "",
             "unk_lte": have.get("lte") is None, "unk_nr": have.get("nr") is None,
             "miss_lte": chk["lte"], "miss_nr": chk["nr"],
             "missing": [f"LTE {b}" for b in chk["lte"]] + [f"5G n{b}" for b in chk["nr"]],

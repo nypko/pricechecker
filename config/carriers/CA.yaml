@@ -4,7 +4,7 @@
 country: CA
 networks:
   - id: ca-rogers
-    name: Rogers (incl. Fido)
+    name: Rogers
     lte: [2, 4, 5, 7, 12, 25, 41, 66, 71]
     nr: [2, 25, 41, 66, 71, 77, 78]
     basis: used

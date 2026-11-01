@@ -1279,6 +1279,7 @@ def test_phone_page_with_a_country_shows_the_summary_not_the_eu_lines(monkeypatc
     assert lines.count("In Germany: ") == 2 and "coverage risk on Anet (no band 20)" in lines     # China lacks band 20
     assert 'id="s-eulines" hidden' in h and 'id="s-csums" hidden' not in h
     c = _section(h, 'id="carrier"', "</section>")
+    assert re.search(r'<section id="carrier"[^>]* hidden>', h)      # revealed by the script: dead controls without JS
     assert 'id="cc-country"' not in c and 'id="cc-net"' in c and "Choose your network" in c and 'class="cv ' not in c   # nothing faked without JS
     assert "Cheapo — on Anet" in text_of(c)
     assert h.index("<h2>Specs</h2>") < h.index('class="bandchk"') < h.index('id="carrier"')   # under Specs, after the band lines
@@ -1297,7 +1298,8 @@ def test_phone_page_without_a_country_prompts_and_keeps_the_eu_lines(monkeypatch
     for region, area in (("EU", ""), ("Global", "")):
         h = _carrier_page(monkeypatch, region, area)
         bullet = _section(h, 'id="s-csum"', 'id="s-eu"')
-        assert "Pick your country to check its networks" in bullet and 'href="#carrier"' in bullet
+        assert 'id="s-csum" hidden></b>' in h and "Pick your country" not in bullet   # no dead link without JS
+        assert re.search(r'<section id="carrier"[^>]* hidden>', h)
         assert 'id="s-eu"' in h and 'id="s-eu" hidden' not in h and 'id="s-clink" href="#carrier" hidden' in h
         assert "version on EU networks:</b>" in h and 'id="s-csums" hidden' in h and 'id="s-eulines" hidden' not in h
         c = _section(h, 'id="carrier"', "</section>")

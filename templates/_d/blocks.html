@@ -297,7 +297,7 @@
 {%- endmacro -%}
 
 {%- macro carrier_check(doc, bands, picked, labels, s) -%}
-<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h">
+<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h" hidden>
 <h3 id="carrier-h">Check your carrier</h3>
 <div class="cc-pick">
 <div class="cc-country">{{ carrier_country(doc, s) }}</div>

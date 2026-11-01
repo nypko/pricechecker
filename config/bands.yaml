@@ -2,6 +2,7 @@
 # upload-only bands n80 n81 n83 n84 n89 n95 n98), class = low <1 GHz, mid 1-2.7 GHz, high 3-7 GHz, mmwave >24 GHz.
 # `use` is plain words for a buyer: the frequency and a generic purpose by class,
 # no carriers or countries. carriers.py and specs.validate check every band number against this table.
+# supplementary: true = a downlink-only (SDL) or uplink-only (SUL) add-on band; a phone missing it is at most a minor gap, never a coverage risk.
 lte:
   1: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
   2: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
@@ -23,9 +24,9 @@ lte:
   25: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
   26: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
   28: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
-  29: {mhz: 700, class: low, use: "700 MHz: extra download speed"}
+  29: {mhz: 700, class: low, use: "700 MHz: extra download speed", supplementary: true}
   30: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
-  32: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  32: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed", supplementary: true}
   34: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
   38: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
   39: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
@@ -38,7 +39,7 @@ lte:
   53: {mhz: 2400, class: mid, use: "2400 MHz: extra speed in busy areas"}
   66: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
   71: {mhz: 600, class: low, use: "600 MHz: coverage indoors and outside towns"}
-  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed", supplementary: true}
   106: {mhz: 900, class: low, use: "900 MHz: coverage indoors and outside towns"}
 nr:
   1: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
@@ -55,7 +56,7 @@ nr:
   25: {mhz: 1900, class: mid, use: "1900 MHz: extra speed in busy areas"}
   26: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
   28: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
-  29: {mhz: 700, class: low, use: "700 MHz: extra download speed"}
+  29: {mhz: 700, class: low, use: "700 MHz: extra download speed", supplementary: true}
   30: {mhz: 2300, class: mid, use: "2300 MHz: extra speed in busy areas"}
   34: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
   38: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
@@ -67,22 +68,22 @@ nr:
   66: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
   70: {mhz: 2000, class: mid, use: "2000 MHz: extra speed in busy areas"}
   71: {mhz: 600, class: low, use: "600 MHz: coverage indoors and outside towns"}
-  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
-  76: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed"}
+  75: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed", supplementary: true}
+  76: {mhz: 1500, class: mid, use: "1500 MHz: extra download speed", supplementary: true}
   77: {mhz: 3700, class: high, use: "3.7 GHz: fast 5G"}
   78: {mhz: 3500, class: high, use: "3.5 GHz: fast 5G"}
   79: {mhz: 4700, class: high, use: "4.7 GHz: fast 5G"}
-  80: {mhz: 1800, class: mid, use: "1800 MHz: extra upload capacity"}
-  81: {mhz: 900, class: low, use: "900 MHz: extra upload capacity"}
-  83: {mhz: 700, class: low, use: "700 MHz: extra upload capacity"}
-  84: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity"}
-  89: {mhz: 850, class: low, use: "850 MHz: extra upload capacity"}
-  91: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
-  92: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
-  93: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
-  94: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
-  95: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity"}
-  98: {mhz: 1900, class: mid, use: "1900 MHz: extra upload capacity"}
+  80: {mhz: 1800, class: mid, use: "1800 MHz: extra upload capacity", supplementary: true}
+  81: {mhz: 900, class: low, use: "900 MHz: extra upload capacity", supplementary: true}
+  83: {mhz: 700, class: low, use: "700 MHz: extra upload capacity", supplementary: true}
+  84: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity", supplementary: true}
+  89: {mhz: 850, class: low, use: "850 MHz: extra upload capacity", supplementary: true}
+  91: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
+  92: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
+  93: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
+  94: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
+  95: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity", supplementary: true}
+  98: {mhz: 1900, class: mid, use: "1900 MHz: extra upload capacity", supplementary: true}
   257: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}
   258: {mhz: 26000, class: mmwave, use: "26 GHz: very fast 5G at short range"}
   259: {mhz: 41000, class: mmwave, use: "41 GHz: very fast 5G at short range"}

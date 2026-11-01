@@ -78,20 +78,21 @@ const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { retur
  *  never replaced while in use: only the country select (when the settings start or stop giving a country), the network options (on a new country) and the verdict area (a live region) are repainted. */
 export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, eds, L }) {
   const docs = {};   // country -> its file's promise
-  const loadCountry = (cc) => docs[cc] || (docs[cc] = (files[cc] ? getJson(files[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete docs[cc]; throw e; }));
+  const loadCountry = (cc) => Object.hasOwn(docs, cc) ? docs[cc] : (docs[cc] = (Object.hasOwn(files, cc) ? getJson(files[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete docs[cc]; throw e; }));
   const readPick = () => { try { const v = JSON.parse(storage.getItem("pc-carrier")); return v && typeof v === "object" ? v : null; } catch (e) { return null; } };
   let pick = readPick();   // {country, network}: also held here, for when storage is not available
   const savePick = (v) => { pick = v; try { storage.setItem("pc-carrier", JSON.stringify(v)); } catch (e) { /* kept for this visit only */ } };
   let seq = 0, shown = null, painted;   // shown: the country the picker lists; painted: its file
   function paint() {
     if (!$("carrier")) return Promise.resolve();
-    const s = load(), fixed = countryFor(s), cc = fixed || (pick && files[pick.country] ? pick.country : null), my = ++seq;
+    const s = load(), fixed = countryFor(s), cc = fixed || (pick && typeof pick.country === "string" && Object.hasOwn(files, pick.country) ? pick.country : null), my = ++seq;
     const draw = (doc) => {
       if (my !== seq) return;   // a newer paint is on its way
       shown = doc ? cc : null;
-      const sums = fixed && doc ? Object.fromEntries(Object.entries(bandSets).map(([e, b]) => [e, carrierSummary(b, doc, doc.bands, doc.name)])) : null;
+      const sums = doc ? Object.fromEntries(Object.entries(bandSets).map(([e, b]) => [e, carrierSummary(b, doc, doc.bands, doc.name)])) : null;
       if ($("s-csum") && (!sums || sums.china)) {
         $("s-csum").innerHTML = B.carrierSummary(sums && sums.china, s) + ".";
+        $("s-csum").hidden = false;   // the server leaves it hidden when it has no summary: without JS there is nothing to pick with
         $("s-eu").hidden = !!sums;
         $("s-clink").hidden = !sums;
       }
@@ -101,6 +102,7 @@ export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, 
         $("s-eulines").hidden = !!sums;
       }
       const picked = doc ? resolvePick(doc, pick, cc) : null, box = $("carrier");
+      box.hidden = false;   // the server renders the picker hidden: it does nothing without JS
       if (painted !== doc) { box.querySelector(".cc-nets").innerHTML = B.carrierNets(doc, picked); painted = doc; }
       else if ($("cc-net")) $("cc-net").value = picked || "";
       if (!!$("cc-country") === !!fixed) box.querySelector(".cc-country").innerHTML = B.carrierCountry(doc && cc ? doc : null, s);   // the settings now give (or no longer give) a country

@@ -4,7 +4,8 @@ File: country (ISO code, the file name); networks [{id, name, lte: [int]|null, n
 complete: bool, mvnos: [str], sources [{url (https), kind: regulator|carrier|brand|other, checked: YYYY-MM-DD}]}].
 lte/nr list the bands the network uses (basis used) or the regulator says it holds (basis licensed); complete = a
 source gives the full list; null = not researched. Band numbers must be in
-the band table, whose `class` (low <1 GHz, mid 1-2.7 GHz, high 3-7 GHz, mmwave >24 GHz) is the only place classes live."""
+the band table, whose `class` (low <1 GHz, mid 1-2.7 GHz, high 3-7 GHz, mmwave >24 GHz) is the only place classes live;
+`supplementary: true` marks a downlink-only or uplink-only add-on band, never a coverage risk when missing."""
 import calendar
 import datetime
 import re
@@ -44,7 +45,16 @@ def country_for(s) -> str | None:
 
 def load(dir: Path = CARRIERS_DIR) -> dict[str, dict]:
     """{country code: file} for every <CC>.yaml in dir (none if the folder does not exist)."""
-    return {p.stem: yaml.safe_load(p.read_text()) or {} for p in sorted(Path(dir).glob("*.yaml"))}
+    out: dict[str, dict] = {}
+    for p in sorted(Path(dir).glob("*.yaml")):
+        try:
+            doc = yaml.safe_load(p.read_text()) or {}
+        except yaml.YAMLError as e:
+            raise ValueError(f"{p.name}: not valid YAML ({str(e).splitlines()[0] if str(e) else type(e).__name__}); see line {getattr(getattr(e, 'problem_mark', None), 'line', -1) + 1}") from e
+        if not isinstance(doc, dict):
+            raise ValueError(f"{p.name}: the top level must be a mapping with country and networks, not a {type(doc).__name__}")
+        out[p.stem] = doc
+    return out
 
 
 @lru_cache(maxsize=1)
@@ -80,6 +90,8 @@ def _network_problems(n, table: dict) -> list[str]:
         out.append(f"{who}: id missing")
     if not isinstance(n.get("name"), str) or not n["name"].strip():
         out.append(f"{who}: name missing")
+    elif "(" in n["name"] or "," in n["name"]:
+        out.append(f"{who}: name must be a plain brand name, no brackets or commas ({n['name']})")
     for kind in ("lte", "nr"):
         xs = n.get(kind)
         if xs is None:
@@ -208,7 +220,8 @@ def _judge(phone: dict | None, network: dict, table: dict) -> tuple[dict, str]:
     m_lte = _missing("lte", plte, wlte, table) if lte_known else []
     m_nr = _missing("nr", pnr, wnr, table) if nr_known else []
     missing = m_lte + m_nr
-    low = [m for m in missing if table[m["kind"]][m["n"]]["class"] == "low"]
+    # a missing supplementary (downlink-only / uplink-only) band is never a coverage risk, at most a minor gap
+    low = [m for m in missing if table[m["kind"]][m["n"]]["class"] == "low" and not table[m["kind"]][m["n"]].get("supplementary")]
     who = f"which {network['name']} {'holds' if network.get('basis') == 'licensed' else 'uses'}"
     say = lambda m: f"{_label(m)}, {who} ({m['use']})"
     complete = bool(network.get("complete")) and lte_known and nr_known

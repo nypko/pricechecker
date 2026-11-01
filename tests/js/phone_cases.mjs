@@ -199,8 +199,35 @@ assert.equal(focusSelector(null), null);
   t.dom["cc-country"] = { value: "" };
   await t.cv.paint();
   assert.equal(t.dom["cc-country"].value, "DE");
-  assert.match(t.dom["s-csum"].innerHTML, /Pick your country/);   // the bullet still asks: only the picker has a country
+  assert.match(t.dom["s-csum"].innerHTML, /In Germany: works fully on all 2 networks/);   // the picker's country gives the bullet and the Specs lines
+  assert.equal(t.dom["s-csum"].hidden, false); assert.equal(t.dom["s-clink"].hidden, false); assert.equal(t.dom["s-eu"].hidden, true);
+  assert.equal(t.dom["s-csums"].hidden, false); assert.equal(t.dom["s-eulines"].hidden, true);
+  assert.match(t.dom["s-csums"].innerHTML, /China version:<\/b> <span[^>]*>In Germany/);
   assert.match(text(t.dom.carrier.out.innerHTML), /^On Bnet:/);
+  // Global with no saved country: the neutral state, picker revealed, bullet shown with its prompt
+  t = setup({ settings: { region: "Global", area: "", pay: "card", cur: "eur" } });
+  t.dom["s-csum"].hidden = true; t.dom.carrier.hidden = true;
+  await t.cv.paint();
+  assert.match(t.dom["s-csum"].innerHTML, /Pick your country/); assert.equal(t.dom["s-csum"].hidden, false); assert.equal(t.dom.carrier.hidden, false);
+  // choosing a country in the picker moves the bullet to its summary
+  t.dom["cc-country"] = { value: "DE" };
+  await t.change("cc-country", "DE");
+  await new Promise((r) => setTimeout(r, 0));
+  assert.match(t.dom["s-csum"].innerHTML, /In Germany: /); assert.equal(t.dom["s-eu"].hidden, true);
+
+  // malformed saved settings never reach an object lookup as a key: no throw, the neutral state
+  for (const bad of ["constructor", "__proto__", "toString", "hasOwnProperty"]) {
+    t = setup({ settings: eu("DE"), saved: { country: bad, network: "x" } });
+    t.cur.area = ""; t.cur.region = "Global";
+    await t.cv.paint();
+    assert.equal(t.calls.length, 0, bad); assert.match(t.dom["s-csum"].innerHTML, /Pick your country/, bad);
+    t = setup({ settings: eu(bad) });   // the EU pc-country
+    await t.cv.paint();
+    assert.equal(t.calls.length, 0, bad); assert.match(t.dom["s-csum"].innerHTML, /Pick your country/, bad); assert.equal(t.dom.carrier.nets.innerHTML, "", bad);
+    t = setup({ settings: { region: "Global", area: "", pay: "card", cur: "eur" }, saved: { country: ["DE"], network: 1 } });
+    await t.cv.paint();
+    assert.equal(t.calls.length, 0);
+  }
 }
 
 console.log("phone cases: ok");

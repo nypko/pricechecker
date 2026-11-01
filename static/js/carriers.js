@@ -36,7 +36,8 @@ function judge(phone, network, table) {
   const mLte = lteKnown ? missingBands("lte", plte, wlte, table) : [];
   const mNr = nrKnown ? missingBands("nr", pnr, wnr, table) : [];
   const missing = [...mLte, ...mNr];
-  const low = missing.filter((m) => table[m.kind][m.n].class === "low");
+  // a missing supplementary (downlink-only / uplink-only) band is never a coverage risk, at most a minor gap
+  const low = missing.filter((m) => table[m.kind][m.n].class === "low" && !table[m.kind][m.n].supplementary);
   const who = `which ${network.name} ${network.basis === "licensed" ? "holds" : "uses"}`;
   const say = (m) => `${label(m)}, ${who} (${m.use})`;
   const complete = !!network.complete && lteKnown && nrKnown;
@@ -102,7 +103,7 @@ const REGION_COUNTRY = { UK: "GB", US: "US", CA: "CA", AU: "AU" };
 
 /** The carrier country of the settings: EU -> its country (null until one is picked), UK -> GB, US, CA (any province), AU;
  *  Global -> null (the picker has its own country select). */
-export const countryFor = (s) => s.region === "EU" ? (s.area || null) : (REGION_COUNTRY[s.region] || null);
+export const countryFor = (s) => s.region === "EU" ? (s.area || null) : (Object.hasOwn(REGION_COUNTRY, s.region) ? REGION_COUNTRY[s.region] : null);
 
 /** The saved pick as the option value to select in `doc`'s network list: only when it is for this country `cc` and the
  *  network ("de-telekom", or a virtual carrier of it: "de-telekom|congstar") is still in the file; else null, and the

@@ -199,6 +199,25 @@ def test_build_stops_on_an_invalid_carrier_file(tmp_path, capsys):
     assert capsys.readouterr().out == ""   # checked today: not stale
 
 
+def test_build_names_the_file_for_yaml_syntax_errors_and_non_mapping_files(tmp_path):
+    from pricechecker.site import check_carriers
+    (tmp_path / "FR.yaml").write_text("country: FR\nnetworks: [unclosed\n  - x: : :\n")
+    with pytest.raises(SystemExit) as e:
+        check_carriers(tmp_path)
+    assert "FR.yaml" in str(e.value) and "YAML" in str(e.value)
+    (tmp_path / "FR.yaml").write_text("- id: a\n- id: b\n")
+    with pytest.raises(SystemExit) as e:
+        check_carriers(tmp_path)
+    assert "FR.yaml" in str(e.value) and "mapping" in str(e.value) and "list" in str(e.value)
+
+
+def test_name_has_no_brackets_or_commas():
+    for bad in ("Rogers (incl. Fido)", "TDC Net, YouSee"):
+        d = _doc()
+        _net(d)["name"] = bad
+        assert any("de-telekom" in e and "plain brand name" in e for e in carriers.validate(d, TABLE)), bad
+
+
 def test_build_logs_stale_networks(tmp_path, capsys):
     from pricechecker.site import check_carriers
     d = _doc()
@@ -218,7 +237,8 @@ VT = {  # a synthetic band table, so the cases do not move with config/bands.yam
     "lte": {1: _b(2100, "mid", "2100 MHz: mid"), 2: _b(1900, "mid", "1900 MHz: mid"), 3: _b(1800, "mid", "1800 MHz: mid"),
             7: _b(2600, "mid", "2600 MHz: extra speed in busy areas"), 20: _b(800, "low", "800 MHz: coverage indoors and outside towns"),
             28: _b(700, "low", "700 MHz: low"), 12: _b(700, "low", "700 MHz: low12"), 17: _b(700, "low", "700 MHz: low17"),
-            25: _b(1900, "mid", "1900 MHz: mid25")},
+            25: _b(1900, "mid", "1900 MHz: mid25"),
+            29: {**_b(700, "low", "700 MHz: extra download speed"), "supplementary": True}},
     "nr": {78: _b(3500, "high", "3.5 GHz: fast 5G"), 77: _b(3700, "high", "3.7 GHz: fast 5G"), 3: _b(1800, "mid", "1800 MHz: mid"),
            28: _b(700, "low", "700 MHz: low"), 258: _b(26000, "mmwave", "26 GHz: very fast 5G at short range")},
     "covers": {"lte": {12: [17], 25: [2], 3: [2, 1]}, "nr": {77: [78], 78: [3]}},
@@ -254,6 +274,16 @@ def test_verdict_risk_names_the_band_and_who_holds_it():
     assert r["missing"] == [{"kind": "lte", "n": 20, "mhz": 800, "use": "800 MHz: coverage indoors and outside towns"}]
     r = _v(_p(lte=[1, 7]), _n(basis="used"))
     assert "which O2 uses (800" in r["text"]
+
+
+def test_verdict_missing_supplementary_band_is_minor_never_risk():
+    net = _n("T", lte=[1, 29, 12], nr=[78], basis="used")
+    r = _v(_p(lte=[1, 12], nr=[78]), net)
+    assert r["kind"] == "minor" and r["text"].startswith("Works; no band 29, which T uses (700 MHz: extra download speed)")
+    r = _v(_p(lte=[1], nr=[78]), net)
+    assert r["kind"] == "risk" and r["text"].startswith("Coverage risk: no band 12,") and "band 29" not in r["text"]
+    assert [m["n"] for m in r["missing"]] == [29, 12]
+    assert _v(_p(lte=[1, 12, 29], nr=[78]), {**net, "complete": True})["kind"] == "full"
 
 
 def test_verdict_risk_beats_4g_only_and_minor():
@@ -466,9 +496,11 @@ def test_country_names_cover_every_country():
 def _cases():
     nets = [_n(), _n(basis="used"), _n("X", lte=None, nr=[78]), _n("Y", lte=[1, 12], nr=[77, 78], complete=False),
             _n("Z", lte=None, nr=None), _n("W", lte=[1], nr=[]), _n("V", lte=[1, 17, 2], nr=[78, 28, 258]),
-            _n("M", lte=[1, 7], nr=[78, 258], basis="used"), _n("Q", lte=None, nr=[]), _n("R", lte=[], nr=[258]), _n("S", lte=[1, 7, 20], nr=[3, 78, 3], complete=False)]
+            _n("M", lte=[1, 7], nr=[78, 258], basis="used"), _n("Q", lte=None, nr=[]), _n("R", lte=[], nr=[258]), _n("S", lte=[1, 7, 20], nr=[3, 78, 3], complete=False),
+            _n("T", lte=[1, 29, 12], nr=[78], basis="used")]
     phones = [None, _p(None, None), _p(nr=None), _p(lte=None), _p(), _p(lte=[1, 7]), _p(lte=[1], nr=[]), _p(nr=[77]), _p(lte=[1, 12, 25], nr=[3, 77]),
-              _p(lte=[], nr=None), _p(lte=[1, 7, 20], nr=[]), _p(lte=None, nr=[78]), _p(lte=[3], nr=[77]), {"lte": [1, 7, 20]}, _p(lte=[1, 7, 20, 28], nr=[78, 28, 258])]
+              _p(lte=[], nr=None), _p(lte=[1, 7, 20], nr=[]), _p(lte=None, nr=[78]), _p(lte=[3], nr=[77]), {"lte": [1, 7, 20]}, _p(lte=[1, 7, 20, 28], nr=[78, 28, 258]),
+              _p(lte=[1, 12], nr=[78]), _p(lte=[1], nr=[78]), _p(lte=[1, 12, 29], nr=[78])]
     return nets, phones
 
 

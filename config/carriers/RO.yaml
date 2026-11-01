@@ -27,7 +27,7 @@ networks:
       - {url: "https://www.ancom.ro/en/about-us/media-en/press-releases/ancom-issues-new-licenses-for-vodafone-digi-and-telekom-romania-mobile-communications/", kind: regulator, checked: 2026-10-31}
       - {url: "https://media.mobile.telekom.ro/images/docs/Legal_docs/LM/Notificare_Fuziune_Vodafone_Telekom_26.05.2026.pdf", kind: carrier, checked: 2026-10-31}
   - id: ro-digi
-    name: Digi Romania (RCS & RDS)
+    name: Digi Romania
     lte: [1, 3, 7, 8, 38]
     nr: [1, 3, 7, 8, 38, 78]
     basis: licensed

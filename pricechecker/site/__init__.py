@@ -90,7 +90,10 @@ def _share_cards(phones: list[dict], ctx: dict) -> None:
 
 def check_carriers(dir: Path = carriers.CARRIERS_DIR) -> None:
     """Stop the build on an invalid carrier file (naming file and network); log networks not checked for 12 months."""
-    docs = carriers.load(dir)
+    try:
+        docs = carriers.load(dir)
+    except ValueError as e:
+        raise SystemExit(f"config/carriers is invalid:\n  {e}") from e
     problems = carriers.validate_all(docs, carriers.band_table())
     if problems:
         raise SystemExit("config/carriers is invalid:\n  " + "\n  ".join(problems))

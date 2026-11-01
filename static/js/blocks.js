@@ -322,7 +322,7 @@ export const carrierCountry = (doc, s) => countryFor(s) ? "" : `<label>Country <
  *  the option value or null, which shows no verdict. The page repaints .cc-country, .cc-nets and .cc-out in place
  *  (carrierCountry, carrierNets, carrierOut). */
 export function carrierCheck(doc, bands, picked, labels, s) {
-  return '<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h"><h3 id="carrier-h">Check your carrier</h3><div class="cc-pick">' +
+  return '<section id="carrier" class="carrier" data-block="carrier_check" aria-labelledby="carrier-h" hidden><h3 id="carrier-h">Check your carrier</h3><div class="cc-pick">' +
     `<div class="cc-country">${carrierCountry(doc, s)}</div><div class="cc-nets">${carrierNets(doc, picked)}</div></div>` +
     `<div class="cc-out" aria-live="polite" aria-atomic="true">${carrierOut(doc, bands, picked, labels)}</div></section>`;
 }

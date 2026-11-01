@@ -27,7 +27,7 @@ networks:
       - {url: "https://web.archive.org/web/20241009030813/https://www.acma.gov.au/articles/2021-12/outcome-850900-mhz-band-spectrum-auction", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2024-10-09
       - {url: "https://web.archive.org/web/20260606172723/https://www.acma.gov.au/articles/2026-05/acma-releases-pricing-expiring-spectrum-licences", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2026-06-06
   - id: au-tpg
-    name: TPG Telecom (Vodafone)
+    name: TPG Telecom
     lte: [1, 3, 5, 28]
     nr: [1, 3, 5, 28, 78, 258]
     basis: licensed

@@ -37,7 +37,7 @@ networks:
       - {url: "https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-spravy-frekvencneho-spektra/zoznam-rozhodnuti-oblasti-spravy-frekvencneho-spektra/vyberove-konania/frekvencne-pasmo-900-mhz/2410531006_h_o2_do-2028.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-spravy-frekvencneho-spektra/zoznam-rozhodnuti-oblasti-spravy-frekvencneho-spektra/vyberove-konania/frekvencne-pasmo-2100-mhz/2510571002_o2-a_s_2100-mhz.pdf", kind: regulator, checked: 2026-10-31}
   - id: sk-swan
-    name: SWAN (4ka)
+    name: SWAN
     lte: [1, 3]
     nr: [1, 78]
     basis: licensed

@@ -10,7 +10,7 @@ networks:
     sources:
       - {url: "https://www.traficom.fi/en/communications/radio-licences-and-frequencies/frequency-planning-and-use/frequencies-and-license", kind: regulator, checked: 2026-10-31}
   - id: fi-telia
-    name: Telia Finland (Sonera)
+    name: Telia Finland
     lte: [1, 3, 7, 8, 20, 28]
     nr: [1, 3, 7, 8, 20, 28, 78, 258]
     basis: licensed

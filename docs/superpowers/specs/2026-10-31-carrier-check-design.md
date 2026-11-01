@@ -80,6 +80,15 @@ checked date; network ids unique; mvnos are strings; a `checked` older than 12 m
 | No gaps found | list not `complete` and the phone has every listed band | "No gaps on the bands we could confirm" |
 | Works fully | `complete` list and the phone has every LTE and NR band on it | "Works fully on 4G and 5G" |
 
+Amended 2026-11-01 (task review): mmWave bands (class `mmwave`) count only on networks with `basis: used`; on a
+licensed-only network a missing mmWave band is ignored (licences alone don't show phone service at 26 GHz). A band a
+phone lists also covers the network bands it fully contains (`covers:` in config/bands.yaml, same duplex mode,
+closed transitively, e.g. n77 covers n78). When nothing is left to compare (unknown or empty on the side that matters)
+the verdict is Unknown: "Bands not published for this version" (phone side) / "Bands not published for this network"
+(network side). A network with no 5G (`nr: []`) and every 4G band present: "Works fully on 4G". In Minor gaps, a phone
+missing all of the network's NR bands gets one clause "no 5G on this network"; some missing NR bands are listed one by
+one ("no 5G band n78, which …").
+
 First matching row wins (top to bottom). For `basis: licensed` networks the missing-band texts say "which <network>
 holds" (e.g. "Coverage risk: no band 20, which O2 holds (800 MHz: coverage indoors and outside towns)"); for `used`,
 "which <network> uses". "4G only" applies only to a network that runs at least one NR band. "Minor
@@ -87,8 +96,9 @@ gaps" lists every missing band, 5G ones included (e.g. a phone missing band 7 an
 no band 7 (…); no 5G on this network"). Every result carries the line: "Bands only: calls over 4G (VoLTE) and Wi-Fi
 calling depend on the network supporting the phone, which we can't check."
 
-Country summary: count of networks per verdict for one version, e.g. "In Germany: works fully on 2 of 3 networks;
-coverage risk on O2 (no band 20)".
+Country summary: count of networks per verdict for one version, grouped by verdict in network order, e.g. "In Germany:
+works fully on 2 of 3 networks; coverage risk on O2 (no band 20)" or "In Germany: no gaps found on Telekom, Vodafone,
+O2 and 1&1". Unknown phone version: "In Germany: bands not published for this version".
 
 ## 6. On the page
 

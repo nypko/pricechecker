@@ -409,7 +409,7 @@ def test_summary_wording():
     assert s["text"] == "In Germany: works fully on all 2 networks"
     assert s["counts"] == {"unknown": 0, "risk": 0, "4g": 0, "minor": 0, "nogaps": 0, "full": 2}
     s = carriers.summary(_p(lte=[1, 7]), _doc3(_n("Telekom", lte=[1, 7]), _n("Vodafone", lte=[1, 7]), _n("O2")), VT, "Germany")
-    assert s["text"] == "In Germany: works fully on 2 of 3 networks; coverage risk on O2 (no band 20)"
+    assert s["text"] == "In Germany: coverage risk on O2 (no band 20); works fully on 2 of 3 networks"
     assert s["counts"]["full"] == 2 and s["counts"]["risk"] == 1
 
 
@@ -418,9 +418,9 @@ def test_summary_groups_networks_by_verdict_in_network_order():
             _n("E", lte=[1], nr=[78], complete=False), _n("F", lte=[28]), _n("G", lte=[1, 7]), _n("H", lte=[1], nr=[78], complete=False),
             _n("I", lte=[1], nr=[77]), _n("J", lte=[20])]
     s = carriers.summary(_p(lte=[1, 7], nr=[78]), _doc3(*nets), VT, "Germany")
-    assert s["text"] == ("In Germany: works fully on 2 of 10 networks; no gaps found on E and H; "
-                         "minor gaps on B (no band 3); 4G only on C and I (no 5G); "
-                         "coverage risk on F (no band 28) and J (no band 20); bands unknown on D")
+    assert s["text"] == ("In Germany: coverage risk on F (no band 28) and J (no band 20); 4G only on C and I (no 5G); "
+                         "minor gaps on B (no band 3); no gaps found on E and H; works fully on 2 of 10 networks; "
+                         "bands unknown on D")
     assert s["counts"] == {"unknown": 1, "risk": 2, "4g": 2, "minor": 1, "nogaps": 2, "full": 2}
     s = carriers.summary(_p(lte=[1, 7], nr=[3]), _doc3(_n("B", lte=[1], nr=[3, 78])), VT, "Germany")
     assert s["text"] == "In Germany: minor gaps on B (no 5G band n78)"
@@ -455,7 +455,7 @@ def test_summary_all_unknown_and_phone_unknown():
 
 def test_summary_none_full_starts_with_the_first_reason():
     s = carriers.summary(_p(lte=[1]), _doc3(_n("A", lte=[1, 20]), _n("B", lte=[1, 7], nr=[])), VT, "Germany")
-    assert s["text"] == "In Germany: minor gaps on B (no band 7); coverage risk on A (no band 20)"
+    assert s["text"] == "In Germany: coverage risk on A (no band 20); minor gaps on B (no band 7)"
 
 
 def test_country_names_cover_every_country():

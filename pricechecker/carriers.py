@@ -226,7 +226,7 @@ def verdict(phone: dict | None, network: dict, table: dict) -> dict:
 
 
 KINDS_ORDER = ("unknown", "risk", "4g", "minor", "nogaps", "full")
-GROUPS = ("full", "nogaps", "minor", "4g", "risk", "unknown")   # the order the summary names them in
+GROUPS = ("risk", "4g", "minor", "nogaps", "full", "unknown")   # the order the summary names them in
 
 
 def _names(xs: list[str]) -> str:

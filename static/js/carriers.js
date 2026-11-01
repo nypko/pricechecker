@@ -2,7 +2,7 @@
 // verdict section of pricechecker/carriers.py. No DOM, no I/O; the band table comes in as an argument.
 
 export const KINDS_ORDER = ["unknown", "risk", "4g", "minor", "nogaps", "full"];
-const GROUPS = ["full", "nogaps", "minor", "4g", "risk", "unknown"];   // the order the summary names them in
+const GROUPS = ["risk", "4g", "minor", "nogaps", "full", "unknown"];   // the order the summary names them in
 
 // the phone's bands plus every band they contain, following `covers` chains
 function held(kind, have, table) {

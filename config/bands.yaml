@@ -78,10 +78,10 @@ nr:
   83: {mhz: 700, class: low, use: "700 MHz: extra upload capacity", supplementary: true}
   84: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity", supplementary: true}
   89: {mhz: 850, class: low, use: "850 MHz: extra upload capacity", supplementary: true}
-  91: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
-  92: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
-  93: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
-  94: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas", supplementary: true}
+  91: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  92: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  93: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
+  94: {mhz: 1500, class: mid, use: "1500 MHz: extra speed in busy areas"}
   95: {mhz: 2100, class: mid, use: "2100 MHz: extra upload capacity", supplementary: true}
   98: {mhz: 1900, class: mid, use: "1900 MHz: extra upload capacity", supplementary: true}
   257: {mhz: 28000, class: mmwave, use: "28 GHz: very fast 5G at short range"}

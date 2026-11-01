@@ -3,8 +3,14 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # added 2026-10-21 from GSMArena's spec pages (battery is the China unit's unless noted)
 id: huawei-mate-x7
+sources:
+  global: {url: https://consumer.huawei.com/en/phones/mate-x7/specs/, checked: 2026-11-01}
 key:
   chip: "Kirin 9030 Pro"
   screen: "8.0 inside"
   battery: "5,600 mAh (5,525 mAh on 12 GB models)"
   charging: "66 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 17, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66]
+    nr: []

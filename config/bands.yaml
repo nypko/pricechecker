@@ -8,8 +8,10 @@ lte:
   3: {mhz: 1800, class: mid, use: "1800 MHz: extra speed in busy areas"}
   4: {mhz: 2100, class: mid, use: "2100 MHz: extra speed in busy areas"}
   5: {mhz: 850, class: low, use: "850 MHz: coverage indoors and outside towns"}
+  6: {mhz: 875, class: low, use: "875 MHz: coverage indoors and outside towns"}
   7: {mhz: 2600, class: mid, use: "2600 MHz: extra speed in busy areas"}
   8: {mhz: 900, class: low, use: "900 MHz: coverage indoors and outside towns"}
+  9: {mhz: 1845, class: mid, use: "1845 MHz: extra speed in busy areas"}
   12: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
   13: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}
   14: {mhz: 700, class: low, use: "700 MHz: coverage indoors and outside towns"}

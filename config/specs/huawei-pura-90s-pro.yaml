@@ -3,8 +3,14 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # fixed 2026-10-20 (GSMArena + launch coverage)
 id: huawei-pura-90s-pro
+sources:
+  global: {url: https://consumer.huawei.com/en/phones/pura90s-pro/specs/, checked: 2026-11-01}
 key:
   chip: "Kirin 9030S"
   screen: 6.6
   battery: "6,000 mAh / 5,500 mAh (EU)"
   charging: "66 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 17, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 26, 28, 38, 40, 41, 48, 66, 71, 77, 78, 79, 80, 81, 83, 84]

@@ -2,8 +2,14 @@
 # Android Authority. 'brand' = the brand's own spec page; otherwise launch coverage where at least two sources agree.
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 id: huawei-pura-80-ultra
+sources:
+  global: {url: https://consumer.huawei.com/en/phones/pura80-ultra/specs/, checked: 2026-11-01}
 key:
   chip: "Kirin 9020"
   screen: 6.8
   battery: "5,700 mAh (China) / 5,170 mAh (Global)"
   charging: "100 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 34, 38, 39, 40, 41, 42, 66]
+    nr: []

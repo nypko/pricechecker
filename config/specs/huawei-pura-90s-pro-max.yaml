@@ -3,7 +3,13 @@
 # A field sources disagree on is left out rather than guessed. Battery is the typical (advertised) capacity.
 # battery left out 2026-10-20: Global units reported as 6,000, 5,270 (rated) or 5,400 mAh; re-add once Huawei's global page settles it
 id: huawei-pura-90s-pro-max
+sources:
+  global: {url: https://consumer.huawei.com/en/phones/pura90s-pro-max/specs/, checked: 2026-11-01}
 key:
   chip: "Kirin 9030S"
   screen: 6.9
   charging: "100 W"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 17, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 26, 28, 38, 40, 41, 48, 66, 71, 77, 78, 79, 80, 81, 83, 84]

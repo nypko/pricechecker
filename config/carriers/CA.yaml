@@ -33,8 +33,8 @@ networks:
     complete: false
     mvnos: []
     sources:
-      - {url: "https://web.archive.org/web/20260925043719/https://www.telus.com/en/about/news-and-events/media-releases/telus-secures-new-600-mhz-spectrum-licences", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-09-25
-      - {url: "https://web.archive.org/web/20261002010408/https://www.telus.com/en/about/news-and-events/media-releases/telus-deploys-3500-mhz-5g-spectrum-accelerating-canada%27s-digital-economy", kind: carrier, checked: 2026-10-31}  # archive copy, captured 2026-10-02
+      - {url: "https://www.telus.com/en/about/news-and-events/media-releases/telus-secures-new-600-mhz-spectrum-licences", kind: carrier, checked: 2026-11-01}  # live, browser-checked 2026-11-01
+      - {url: "https://www.telus.com/en/about/news-and-events/media-releases/telus-deploys-3500-mhz-5g-spectrum-accelerating-canada%27s-digital-economy", kind: carrier, checked: 2026-11-01}  # live, browser-checked 2026-11-01
       - {url: "https://ised-isde.canada.ca/site/spectrum-management-system/en/download-sms-data", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.ic.gc.ca/engineering/SMS_TAFL_Files/Site_Data_Extract_FX.zip", kind: regulator, checked: 2026-10-31}
   - id: ca-freedom

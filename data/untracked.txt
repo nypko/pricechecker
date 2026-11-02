@@ -205,6 +205,7 @@ giztop	oneplus-ace-5/china
 giztop	oneplus-ace-6-ultra/china
 giztop	oneplus-ace-6/china
 giztop	oneplus-ace-6t/china
+giztop	oneplus-ace-7-pro/china
 giztop	oneplus-turbo-6/china
 giztop	oneplus-turbo-6v/china
 giztop	oneplus-turbo-6x-pro/china

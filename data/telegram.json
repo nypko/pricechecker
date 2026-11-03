@@ -26,11 +26,11 @@
   },
   "honor-magic-8": {
    "left": "shipping and import tax",
-   "ref": 568.2
+   "ref": 592.02
   },
   "honor-magic-8-pro": {
    "left": "",
-   "ref": 920.95
+   "ref": 922.48
   },
   "honor-magic-8-pro-air": {
    "left": "",
@@ -50,7 +50,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1150.95
+   "ref": 1212.56
   },
   "honor-magic-v6": {
    "left": "",
@@ -150,7 +150,7 @@
   },
   "oneplus-15t": {
    "left": "shipping and import tax",
-   "ref": 611.97
+   "ref": 637.63
   },
   "oneplus-16": {
    "left": "",
@@ -188,6 +188,14 @@
    "left": "",
    "ref": 707.0
   },
+  "posted": [
+   {
+    "at": "2026-11-03T16:01:26Z",
+    "eur": 1667.0,
+    "slug": "xiaomi-18-fold",
+    "was": 1734.13
+   }
+  ],
   "realme-gt-8-pro": {
    "left": "",
    "ref": 709.95
@@ -214,7 +222,7 @@
   },
   "samsung-galaxy-z-fold-8": {
    "left": "",
-   "ref": 1350.95
+   "ref": 1368.95
   },
   "samsung-galaxy-z-fold-8-ultra": {
    "left": "",
@@ -290,11 +298,11 @@
   },
   "xiaomi-17t-pro": {
    "left": "",
-   "ref": 697.95
+   "ref": 700.95
   },
   "xiaomi-18-fold": {
    "left": "",
-   "ref": 1734.13
+   "ref": 1667.0
   },
   "xiaomi-18-pro": {
    "left": "",
@@ -309,5 +317,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-11-03T07:40:18Z"
+ "updated": "2026-11-03T16:01:27Z"
 }

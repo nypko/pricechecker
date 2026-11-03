@@ -232,12 +232,14 @@ giztop	realme-gt-8/china
 giztop	realme-neo-7-turbo/china
 giztop	red-magic-10s-pro-fighting-buddha-collector-s-edition/china
 giztop	red-magic-11-pro-plus-wuthering-waves/china
+giztop	red-magic-11-pro-plus/china
 giztop	red-magic-11s-pro-plus/china
 giztop	red-magic-12-pro-plus/china
 giztop	red-magic-9s-pro-plus/china
 giztop	red-magic-9s-pro/china
 giztop	red-magic-gaming-pad-pro/china
 giztop	red-magic-gaming-tablet-5-pro/china
+giztop	redmagic-gaming-tablet-3-pro-golden-saga/china
 giztop	redmi-k100-pro/china
 giztop	redmi-k80-ultra/china
 giztop	redmi-k90-max/china

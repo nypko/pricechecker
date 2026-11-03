@@ -10,17 +10,6 @@
 "ram_mb": 16384
 }
 },
-"https://www.gomibo.de/google-pixel-10-pro-eu/128gb-grau": {
-"lastmod": "",
-"fetched": "2026-11-03T00:17:42+00:00",
-"info": {
-"name": "Google Pixel 10 Pro 128GB Grau",
-"price": 716.0,
-"currency": "EUR",
-"available": false,
-"ram_mb": 16384
-}
-},
 "https://www.gomibo.de/google-pixel-10-pro-xl-eu/256gb-schwarz": {
 "lastmod": "",
 "fetched": "2026-11-03T00:17:42+00:00",
@@ -271,17 +260,6 @@
 "price": 1149.0,
 "currency": "EUR",
 "available": true,
-"ram_mb": 16384
-}
-},
-"https://www.gomibo.de/honor-magic-v5/512gb-weiss": {
-"lastmod": "",
-"fetched": "2026-11-03T00:17:42+00:00",
-"info": {
-"name": "Honor Magic V5 16GB/512GB Wei\u00df",
-"price": 1146.0,
-"currency": "EUR",
-"available": false,
 "ram_mb": 16384
 }
 },
@@ -1798,6 +1776,39 @@
 "info": {
 "name": "Apple iPhone Duo 512GB Wei\u00df",
 "price": 2549.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/xiaomi-17/512gb-rosa": {
+"lastmod": "",
+"fetched": "2026-11-03T07:34:16+00:00",
+"info": {
+"name": "Xiaomi 17 512GB Rosa",
+"price": 872.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500-pro/256gb-schwarz": {
+"lastmod": "",
+"fetched": "2026-11-03T07:34:16+00:00",
+"info": {
+"name": "vivo X500 Pro 12GB/256GB Schwarz",
+"price": 1326.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500-pro-max/512gb-schwarz": {
+"lastmod": "",
+"fetched": "2026-11-03T07:34:16+00:00",
+"info": {
+"name": "vivo X500 Pro Max 12GB/512GB Schwarz",
+"price": 1602.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288

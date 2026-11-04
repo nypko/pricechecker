@@ -232,7 +232,6 @@ giztop	realme-gt-8/china
 giztop	realme-neo-7-turbo/china
 giztop	red-magic-10s-pro-fighting-buddha-collector-s-edition/china
 giztop	red-magic-11-pro-plus-wuthering-waves/china
-giztop	red-magic-11-pro-plus/china
 giztop	red-magic-11s-pro-plus/china
 giztop	red-magic-12-pro-plus/china
 giztop	red-magic-9s-pro-plus/china

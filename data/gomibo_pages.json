@@ -1813,5 +1813,16 @@
 "available": false,
 "ram_mb": 12288
 }
+},
+"https://www.gomibo.de/honor-magic-v5/512gb-weiss": {
+"lastmod": "",
+"fetched": "2026-11-04T02:43:50+00:00",
+"info": {
+"name": "Honor Magic V5 16GB/512GB Wei\u00df",
+"price": 1142.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 16384
+}
 }
 }

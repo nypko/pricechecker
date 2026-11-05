@@ -14,7 +14,7 @@
   },
   "google-pixel-11": {
    "left": "",
-   "ref": 813.95
+   "ref": 822.95
   },
   "google-pixel-11-pro": {
    "left": "",
@@ -126,11 +126,11 @@
   },
   "iqoo-15": {
    "left": "",
-   "ref": 657.0
+   "ref": 677.0
   },
   "iqoo-15-ultra": {
    "left": "",
-   "ref": 807.0
+   "ref": 837.0
   },
   "iqoo-16": {
    "left": "",
@@ -142,7 +142,7 @@
   },
   "motorola-razr-fold": {
    "left": "",
-   "ref": 1474.95
+   "ref": 1377.95
   },
   "oneplus-15": {
    "left": "",
@@ -200,6 +200,12 @@
     "eur": 1150.95,
     "slug": "honor-magic-v5",
     "was": 1212.56
+   },
+   {
+    "at": "2026-11-05T17:18:42Z",
+    "eur": 1377.95,
+    "slug": "motorola-razr-fold",
+    "was": 1474.95
    }
   ],
   "realme-gt-8-pro": {
@@ -232,7 +238,7 @@
   },
   "samsung-galaxy-z-fold-8-ultra": {
    "left": "",
-   "ref": 1376.95
+   "ref": 1384.95
   },
   "sony-xperia-1-viii": {
    "left": "",
@@ -288,7 +294,7 @@
   },
   "xiaomi-17-pro-max": {
    "left": "",
-   "ref": 857.0
+   "ref": 907.0
   },
   "xiaomi-17-ultra": {
    "left": "",
@@ -323,5 +329,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-11-05T08:38:40Z"
+ "updated": "2026-11-05T17:18:42Z"
 }

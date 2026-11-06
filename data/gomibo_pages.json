@@ -1835,5 +1835,16 @@
 "available": true,
 "ram_mb": 12288
 }
+},
+"https://www.gomibo.de/vivo-x500-pro-max/256gb-schwarz": {
+"lastmod": "",
+"fetched": "2026-11-06T03:45:36+00:00",
+"info": {
+"name": "vivo X500 Pro Max 12GB/256GB Schwarz",
+"price": 1523.0,
+"currency": "EUR",
+"available": true,
+"ram_mb": 12288
+}
 }
 }

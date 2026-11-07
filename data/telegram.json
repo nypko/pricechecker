@@ -34,11 +34,11 @@
   },
   "honor-magic-8-pro-air": {
    "left": "",
-   "ref": 757.0
+   "ref": 657.0
   },
   "honor-magic-9": {
    "left": "",
-   "ref": 817.0
+   "ref": 787.0
   },
   "honor-magic-9-pro-max": {
    "left": "",
@@ -130,11 +130,11 @@
   },
   "iqoo-15-ultra": {
    "left": "",
-   "ref": 837.0
+   "ref": 807.0
   },
   "iqoo-16": {
    "left": "",
-   "ref": 877.0
+   "ref": 847.0
   },
   "motorola-razr-70-ultra": {
    "left": "",
@@ -142,7 +142,7 @@
   },
   "motorola-razr-fold": {
    "left": "",
-   "ref": 1380.95
+   "ref": 1384.95
   },
   "oneplus-15": {
    "left": "",
@@ -166,7 +166,7 @@
   },
   "oppo-find-x10": {
    "left": "",
-   "ref": 867.0
+   "ref": 807.0
   },
   "oppo-find-x10-pro-max": {
    "left": "",
@@ -206,15 +206,93 @@
     "eur": 1377.95,
     "slug": "motorola-razr-fold",
     "was": 1474.95
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 657.0,
+    "slug": "honor-magic-8-pro-air",
+    "was": 757.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 627.0,
+    "slug": "redmi-k100-pro-max",
+    "was": 687.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 807.0,
+    "slug": "xiaomi-18-pro",
+    "was": 867.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 807.0,
+    "slug": "oppo-find-x10",
+    "was": 867.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 977.0,
+    "slug": "vivo-x500-pro",
+    "was": 1037.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 817.0,
+    "slug": "vivo-x500",
+    "was": 867.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 670.95,
+    "slug": "realme-gt-8-pro",
+    "was": 709.95
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 727.0,
+    "slug": "xiaomi-17-pro",
+    "was": 767.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 947.0,
+    "slug": "xiaomi-18-pro-max",
+    "was": 997.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 787.0,
+    "slug": "honor-magic-9",
+    "was": 817.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 1607.0,
+    "slug": "xiaomi-18-fold",
+    "was": 1667.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 807.0,
+    "slug": "iqoo-15-ultra",
+    "was": 837.0
+   },
+   {
+    "at": "2026-11-07T06:53:51Z",
+    "eur": 847.0,
+    "slug": "iqoo-16",
+    "was": 877.0
    }
   ],
   "realme-gt-8-pro": {
    "left": "",
-   "ref": 709.95
+   "ref": 670.95
   },
   "redmi-k100-pro-max": {
    "left": "",
-   "ref": 687.0
+   "ref": 627.0
   },
   "redmi-k90-pro-max": {
    "left": "",
@@ -226,7 +304,7 @@
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
-   "ref": 913.95
+   "ref": 925.95
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
@@ -270,11 +348,11 @@
   },
   "vivo-x500": {
    "left": "",
-   "ref": 867.0
+   "ref": 817.0
   },
   "vivo-x500-pro": {
    "left": "",
-   "ref": 1037.0
+   "ref": 977.0
   },
   "vivo-x500-pro-max": {
    "left": "",
@@ -290,7 +368,7 @@
   },
   "xiaomi-17-pro": {
    "left": "",
-   "ref": 767.0
+   "ref": 727.0
   },
   "xiaomi-17-pro-max": {
    "left": "",
@@ -314,20 +392,20 @@
   },
   "xiaomi-18-fold": {
    "left": "",
-   "ref": 1667.0
+   "ref": 1607.0
   },
   "xiaomi-18-pro": {
    "left": "",
-   "ref": 867.0
+   "ref": 807.0
   },
   "xiaomi-18-pro-max": {
    "left": "",
-   "ref": 997.0
+   "ref": 947.0
   },
   "xiaomi-mix-flip-2": {
    "left": "",
    "ref": 910.86
   }
  },
- "updated": "2026-11-07T00:36:42Z"
+ "updated": "2026-11-07T06:53:57Z"
 }

@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-07T18:23:10Z",
+ "updated": "2026-11-07T22:38:17Z",
  "stores": {
   "wonda": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -3051,7 +3051,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -5947,7 +5947,7 @@
    ]
   },
   "averagedad": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -8384,7 +8384,7 @@
    ]
   },
   "tradingshenzhen": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -10266,7 +10266,7 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -10300,7 +10300,7 @@
    ]
   },
   "giztop": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -14080,7 +14080,7 @@
    ]
   },
   "gomibo": {
-   "checked": "2026-11-07T18:23:10Z",
+   "checked": "2026-11-07T22:38:17Z",
    "ok": true,
    "offers": [
     {
@@ -14159,12 +14159,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "OPPO Find X9 Pro 16GB/512GB Wei\u00df",
-     "price": 1134.0,
+     "price": 1135.0,
      "currency": "EUR",
-     "available": false,
+     "available": true,
      "url": "https://www.gomibo.de/oppo-find-x9-pro/512gb-weiss",
      "prices": {
-      "EUR": 1134.0
+      "EUR": 1135.0
      }
     },
     {
@@ -14368,13 +14368,13 @@
      "model_id": "xiaomi-17",
      "edition": "global",
      "storage": "12/512",
-     "title": "Xiaomi 17 512GB Blau",
-     "price": 886.0,
+     "title": "Xiaomi 17 512GB Rosa",
+     "price": 872.0,
      "currency": "EUR",
      "available": true,
-     "url": "https://www.gomibo.de/xiaomi-17/512gb-blau",
+     "url": "https://www.gomibo.de/xiaomi-17/512gb-rosa",
      "prices": {
-      "EUR": 886.0
+      "EUR": 872.0
      }
     },
     {
@@ -14383,12 +14383,12 @@
      "edition": "global",
      "storage": "12/256",
      "title": "Xiaomi 17 256GB Schwarz",
-     "price": 772.0,
+     "price": 770.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/xiaomi-17/256gb-schwarz",
      "prices": {
-      "EUR": 772.0
+      "EUR": 770.0
      }
     },
     {
@@ -14691,12 +14691,12 @@
      "edition": "global",
      "storage": "12/512",
      "title": "Samsung Galaxy Z Fold 8 Ultra 512GB Gr\u00fcn",
-     "price": 1609.0,
+     "price": 1611.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-gruen",
      "prices": {
-      "EUR": 1609.0
+      "EUR": 1611.0
      }
     },
     {

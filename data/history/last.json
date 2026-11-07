@@ -1628,8 +1628,8 @@
 1
 ],
 "gomibo|oppo-find-x9-pro|global|16/512": [
-1134.0,
-0
+1135.0,
+1
 ],
 "gomibo|oppo-find-x9-ultra|global|12/512": [
 1479.0,
@@ -1688,7 +1688,7 @@
 1
 ],
 "gomibo|samsung-galaxy-z-fold-8-ultra|global|12/512": [
-1609.0,
+1611.0,
 1
 ],
 "gomibo|samsung-galaxy-z-fold-8-ultra|global|16/1024": [
@@ -1768,11 +1768,11 @@
 1
 ],
 "gomibo|xiaomi-17|global|12/256": [
-772.0,
+770.0,
 1
 ],
 "gomibo|xiaomi-17|global|12/512": [
-886.0,
+872.0,
 1
 ],
 "mobilemarvel|apple-iphone-duo|china|12/1024": [

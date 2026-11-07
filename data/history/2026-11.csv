@@ -3150,3 +3150,5 @@ time,store,model_id,edition,storage,price,currency,available
 2026-11-07T06:53:21Z,gomibo,motorola-razr-70-ultra,global,16/512,1241.0,EUR,1
 2026-11-07T06:53:21Z,gomibo,samsung-galaxy-z-fold-8-ultra,global,12/512,1609.0,EUR,1
 2026-11-07T06:53:21Z,gomibo,vivo-x500-pro-max,global,12/512,1600.0,EUR,1
+2026-11-07T18:23:10Z,mobilemarvel,oppo-find-x10,global,12/256,1262.0,USD,1
+2026-11-07T18:23:10Z,mobilemarvel,oppo-find-x10-pro-max,global,16/512,1705.0,USD,1

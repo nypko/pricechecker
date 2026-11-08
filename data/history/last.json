@@ -1,14 +1,14 @@
 {
 "averagedad|apple-iphone-duo|china|12/1024": [
-4493.0,
+4491.0,
 1
 ],
 "averagedad|apple-iphone-duo|china|12/256": [
-3131.0,
+3130.0,
 1
 ],
 "averagedad|apple-iphone-duo|china|12/512": [
-3812.0,
+3811.0,
 1
 ],
 "averagedad|honor-magic-8-pro-air|china|12/256": [
@@ -16,7 +16,7 @@
 1
 ],
 "averagedad|honor-magic-8-pro-air|china|16/1024": [
-1059.0,
+1058.0,
 1
 ],
 "averagedad|honor-magic-8-pro-air|china|16/512": [
@@ -24,7 +24,7 @@
 1
 ],
 "averagedad|honor-magic-8-pro|china|12/256": [
-1048.0,
+1047.0,
 1
 ],
 "averagedad|honor-magic-8-pro|china|16/1024": [
@@ -36,15 +36,15 @@
 1
 ],
 "averagedad|honor-magic-8-pro|global|12/512": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|honor-magic-8-pro|global|16/1024": [
-1293.0,
+1292.0,
 1
 ],
 "averagedad|honor-magic-9-pro-max|china|12/256": [
-1225.0,
+1224.0,
 1
 ],
 "averagedad|honor-magic-9-pro-max|china|12/512": [
@@ -56,23 +56,23 @@
 1
 ],
 "averagedad|honor-magic-9-pro-max|china|16/512": [
-1402.0,
+1401.0,
 1
 ],
 "averagedad|honor-magic-9-pro-max|global|12/512": [
-1729.0,
+1728.0,
 1
 ],
 "averagedad|honor-magic-9-pro-max|global|16/1024": [
-2246.0,
+2245.0,
 1
 ],
 "averagedad|honor-magic-v6|china|12/256": [
-1606.0,
+1605.0,
 1
 ],
 "averagedad|honor-magic-v6|china|16/1024": [
-2042.0,
+2041.0,
 1
 ],
 "averagedad|honor-magic-v6|china|16/512": [
@@ -80,11 +80,11 @@
 1
 ],
 "averagedad|honor-magic-v6|global|16/1024": [
-2042.0,
+2041.0,
 1
 ],
 "averagedad|honor-magic-v6|global|16/512": [
-1906.0,
+1905.0,
 1
 ],
 "averagedad|huawei-mate-80-pro-max|china|16/1024": [
@@ -92,7 +92,7 @@
 1
 ],
 "averagedad|huawei-mate-80-pro-max|china|16/512": [
-1293.0,
+1292.0,
 1
 ],
 "averagedad|huawei-mate-80-pro|china|16/512": [
@@ -104,7 +104,7 @@
 1
 ],
 "averagedad|huawei-mate-80|china|16/512": [
-1021.0,
+1020.0,
 1
 ],
 "averagedad|huawei-mate-90-pro-max|china|12/512": [
@@ -112,43 +112,43 @@
 1
 ],
 "averagedad|huawei-mate-90-pro-max|china|16/1024": [
-2519.0,
+2518.0,
 1
 ],
 "averagedad|huawei-mate-90-pro-max|china|16/512": [
-2042.0,
+2041.0,
 1
 ],
 "averagedad|huawei-mate-90-rs|china|16/1024": [
-3063.0,
+3062.0,
 1
 ],
 "averagedad|huawei-mate-90-rs|china|16/2048": [
-3676.0,
+3675.0,
 1
 ],
 "averagedad|huawei-mate-90-rs|china|16/512": [
-2587.0,
+2586.0,
 1
 ],
 "averagedad|huawei-mate-x7|china|12/512": [
-2587.0,
+2586.0,
 1
 ],
 "averagedad|huawei-mate-x7|china|16/1024": [
-2927.0,
+2926.0,
 1
 ],
 "averagedad|huawei-mate-x7|china|16/512": [
-2723.0,
+2722.0,
 1
 ],
 "averagedad|huawei-mate-x7|china|20/1024": [
-3131.0,
+3130.0,
 1
 ],
 "averagedad|huawei-mate-x7|global|16/512": [
-2314.0,
+2313.0,
 1
 ],
 "averagedad|huawei-pura-80-ultra|china|16/1024": [
@@ -168,19 +168,19 @@
 1
 ],
 "averagedad|huawei-pura-90-pro-max|china|16/1024": [
-1620.0,
+1619.0,
 1
 ],
 "averagedad|huawei-pura-90-pro-max|china|16/512": [
-1470.0,
+1469.0,
 1
 ],
 "averagedad|huawei-pura-90-pro|china|12/256": [
-1116.0,
+1115.0,
 1
 ],
 "averagedad|huawei-pura-90-pro|china|16/1024": [
-1470.0,
+1469.0,
 1
 ],
 "averagedad|huawei-pura-90-pro|china|16/512": [
@@ -188,11 +188,11 @@
 1
 ],
 "averagedad|huawei-pura-90s-pro-max|global|12/512": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|huawei-pura-90s-pro|global|12/256": [
-1021.0,
+1020.0,
 1
 ],
 "averagedad|huawei-pura-90s-pro|global|12/512": [
@@ -204,31 +204,31 @@
 1
 ],
 "averagedad|huawei-pura-90|china|16/512": [
-1089.0,
+1088.0,
 1
 ],
 "averagedad|huawei-pura-x-max|china|12/256": [
-1974.0,
+1973.0,
 1
 ],
 "averagedad|huawei-pura-x-max|china|16/1024": [
-2450.0,
+2449.0,
 1
 ],
 "averagedad|huawei-pura-x-max|china|16/512": [
-2246.0,
+2245.0,
 1
 ],
 "averagedad|huawei-pura-x-view|china|12/1024": [
-1606.0,
+1605.0,
 1
 ],
 "averagedad|huawei-pura-x-view|china|12/256": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|huawei-pura-x-view|china|12/512": [
-1361.0,
+1360.0,
 1
 ],
 "averagedad|huawei-pura-x-view|china|16/1024": [
@@ -236,11 +236,11 @@
 1
 ],
 "averagedad|iqoo-15|china|12/256": [
-803.0,
+802.0,
 1
 ],
 "averagedad|iqoo-15|china|16/1024": [
-1021.0,
+1020.0,
 1
 ],
 "averagedad|iqoo-15|china|16/512": [
@@ -252,7 +252,7 @@
 1
 ],
 "averagedad|oneplus-15|china|16/1024": [
-1048.0,
+1047.0,
 1
 ],
 "averagedad|oneplus-15|china|16/512": [
@@ -272,19 +272,19 @@
 1
 ],
 "averagedad|oneplus-16|china|16/512": [
-1361.0,
+1360.0,
 1
 ],
 "averagedad|oppo-find-n6|china|16/1024": [
-1974.0,
+1973.0,
 1
 ],
 "averagedad|oppo-find-n6|global|16/512": [
-1906.0,
+1905.0,
 1
 ],
 "averagedad|oppo-find-x10-pro-max|china|12/256": [
-1293.0,
+1292.0,
 1
 ],
 "averagedad|oppo-find-x10-pro-max|china|12/512": [
@@ -292,7 +292,7 @@
 1
 ],
 "averagedad|oppo-find-x10-pro-max|china|16/1024": [
-1770.0,
+1769.0,
 1
 ],
 "averagedad|oppo-find-x10-pro-max|china|16/512": [
@@ -304,19 +304,19 @@
 1
 ],
 "averagedad|oppo-find-x10|china|12/256": [
-1021.0,
+1020.0,
 1
 ],
 "averagedad|oppo-find-x10|china|12/512": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|oppo-find-x10|china|16/1024": [
-1361.0,
+1360.0,
 1
 ],
 "averagedad|oppo-find-x10|china|16/512": [
-1225.0,
+1224.0,
 1
 ],
 "averagedad|oppo-find-x10|global|12/512": [
@@ -328,15 +328,15 @@
 1
 ],
 "averagedad|oppo-find-x9-pro|china|16/1024": [
-1225.0,
+1224.0,
 1
 ],
 "averagedad|oppo-find-x9-pro|china|16/512": [
-1089.0,
+1088.0,
 1
 ],
 "averagedad|oppo-find-x9-ultra|china|12/256": [
-1293.0,
+1292.0,
 1
 ],
 "averagedad|oppo-find-x9-ultra|china|16/1024": [
@@ -348,11 +348,11 @@
 1
 ],
 "averagedad|oppo-find-x9-ultra|china|base": [
-2450.0,
+2449.0,
 1
 ],
 "averagedad|oppo-find-x9-ultra|global|12/512": [
-1606.0,
+1605.0,
 1
 ],
 "averagedad|oppo-find-x9-ultra|global|16/1024": [
@@ -364,7 +364,7 @@
 1
 ],
 "averagedad|redmi-k100-pro-max|china|16/1024": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|redmi-k100-pro-max|china|16/512": [
@@ -372,19 +372,19 @@
 1
 ],
 "averagedad|samsung-galaxy-z-fold-8-ultra|china|12/512": [
-2519.0,
+2518.0,
 1
 ],
 "averagedad|samsung-galaxy-z-fold-8-ultra|china|16/1024": [
-2791.0,
+2790.0,
 1
 ],
 "averagedad|samsung-galaxy-z-fold-8|china|12/512": [
-2205.0,
+2204.0,
 1
 ],
 "averagedad|samsung-galaxy-z-fold-8|china|16/1024": [
-2519.0,
+2518.0,
 1
 ],
 "averagedad|sony-xperia-1-viii|china|12/256": [
@@ -396,11 +396,11 @@
 1
 ],
 "averagedad|vivo-x-fold-6|china|12/256": [
-1361.0,
+1360.0,
 1
 ],
 "averagedad|vivo-x-fold-6|china|16/1024": [
-1770.0,
+1769.0,
 1
 ],
 "averagedad|vivo-x-fold-6|china|16/512": [
@@ -408,11 +408,11 @@
 1
 ],
 "averagedad|vivo-x-fold-6|global|12/512": [
-2110.0,
+2109.0,
 1
 ],
 "averagedad|vivo-x300-fe|global|12/256": [
-1225.0,
+1224.0,
 1
 ],
 "averagedad|vivo-x300-fe|global|12/512": [
@@ -424,19 +424,19 @@
 1
 ],
 "averagedad|vivo-x300-ultra|china|12/256": [
-1277.0,
+1276.0,
 1
 ],
 "averagedad|vivo-x300-ultra|china|16/1024": [
-1606.0,
+1605.0,
 1
 ],
 "averagedad|vivo-x300-ultra|china|16/512": [
-1429.0,
+1428.0,
 1
 ],
 "averagedad|vivo-x300-ultra|global|16/1024": [
-1892.0,
+1891.0,
 1
 ],
 "averagedad|vivo-x300-ultra|global|16/512": [
@@ -456,15 +456,15 @@
 1
 ],
 "averagedad|vivo-x500-pro-max|china|16/1024": [
-2627.0,
+2626.0,
 1
 ],
 "averagedad|vivo-x500-pro-max|china|16/512": [
-1620.0,
+1619.0,
 1
 ],
 "averagedad|vivo-x500-pro-max|global|12/512": [
-1838.0,
+1837.0,
 1
 ],
 "averagedad|vivo-x500-pro|china|12/1024": [
@@ -472,11 +472,11 @@
 1
 ],
 "averagedad|vivo-x500-pro|china|12/256": [
-1225.0,
+1224.0,
 1
 ],
 "averagedad|vivo-x500-pro|china|12/512": [
-1402.0,
+1401.0,
 1
 ],
 "averagedad|vivo-x500-pro|china|16/1024": [
@@ -484,19 +484,19 @@
 1
 ],
 "averagedad|vivo-x500-pro|china|16/512": [
-1470.0,
+1469.0,
 1
 ],
 "averagedad|vivo-x500|china|12/1024": [
-1361.0,
+1360.0,
 1
 ],
 "averagedad|vivo-x500|china|12/256": [
-1048.0,
+1047.0,
 1
 ],
 "averagedad|vivo-x500|china|12/512": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|xiaomi-17-pro-max|china|12/512": [
@@ -524,23 +524,23 @@
 1
 ],
 "averagedad|xiaomi-17-ultra-leica-edition|china|16/1024": [
-1606.0,
+1605.0,
 1
 ],
 "averagedad|xiaomi-17-ultra-leica-edition|china|16/512": [
-1429.0,
+1428.0,
 1
 ],
 "averagedad|xiaomi-17-ultra|china|12/512": [
-1157.0,
+1156.0,
 1
 ],
 "averagedad|xiaomi-17-ultra|china|16/1024": [
-1334.0,
+1333.0,
 1
 ],
 "averagedad|xiaomi-17-ultra|china|16/512": [
-1198.0,
+1197.0,
 1
 ],
 "averagedad|xiaomi-17-ultra|global|16/1024": [
@@ -556,23 +556,23 @@
 1
 ],
 "averagedad|xiaomi-17|global|12/512": [
-1021.0,
+1020.0,
 1
 ],
 "averagedad|xiaomi-18-fold|china|12/256": [
-1974.0,
+1973.0,
 1
 ],
 "averagedad|xiaomi-18-fold|china|12/512": [
-2137.0,
+2136.0,
 1
 ],
 "averagedad|xiaomi-18-fold|china|16/1024": [
-2627.0,
+2626.0,
 1
 ],
 "averagedad|xiaomi-18-fold|china|16/512": [
-2287.0,
+2286.0,
 1
 ],
 "averagedad|xiaomi-18-pro-max|china|12/256": [
@@ -1776,7 +1776,7 @@
 1
 ],
 "mobilemarvel|apple-iphone-duo|china|12/1024": [
-3838.0,
+3839.0,
 1
 ],
 "mobilemarvel|apple-iphone-duo|china|12/2048": [
@@ -1820,7 +1820,7 @@
 1
 ],
 "mobilemarvel|honor-magic-9-pro-max|china|12/512": [
-1301.0,
+1302.0,
 1
 ],
 "mobilemarvel|honor-magic-9-pro-max|china|16/1024": [
@@ -1844,7 +1844,7 @@
 1
 ],
 "mobilemarvel|honor-magic-9|china|16/1024": [
-1301.0,
+1302.0,
 1
 ],
 "mobilemarvel|honor-magic-9|china|16/512": [
@@ -1852,7 +1852,7 @@
 1
 ],
 "mobilemarvel|honor-magic-v5|china|12/256": [
-1327.0,
+1328.0,
 1
 ],
 "mobilemarvel|honor-magic-v5|china|16/1024": [
@@ -1860,7 +1860,7 @@
 1
 ],
 "mobilemarvel|honor-magic-v5|china|16/512": [
-1405.0,
+1406.0,
 1
 ],
 "mobilemarvel|honor-magic-v5|global|16/512": [
@@ -1876,7 +1876,7 @@
 1
 ],
 "mobilemarvel|honor-magic-v6|china|16/1024": [
-1996.0,
+1997.0,
 1
 ],
 "mobilemarvel|honor-magic-v6|china|16/512": [
@@ -1892,7 +1892,7 @@
 1
 ],
 "mobilemarvel|huawei-mate-80-pro-max|china|16/1024": [
-1552.0,
+1553.0,
 1
 ],
 "mobilemarvel|huawei-mate-80-pro-max|china|16/512": [
@@ -1912,7 +1912,7 @@
 1
 ],
 "mobilemarvel|huawei-mate-90-rs|china|16/1024": [
-2758.0,
+2759.0,
 1
 ],
 "mobilemarvel|huawei-mate-90-rs|china|16/2048": [
@@ -1928,11 +1928,11 @@
 1
 ],
 "mobilemarvel|huawei-mate-xt-2-ultimate-design|china|16/1024": [
-4689.0,
+4690.0,
 1
 ],
 "mobilemarvel|huawei-mate-xt-2-ultimate-design|china|16/2048": [
-5824.0,
+5825.0,
 1
 ],
 "mobilemarvel|huawei-mate-xt-2-ultimate-design|china|16/256": [
@@ -1940,7 +1940,7 @@
 1
 ],
 "mobilemarvel|huawei-mate-xt-2-ultimate-design|china|16/512": [
-4396.0,
+4397.0,
 1
 ],
 "mobilemarvel|huawei-pura-80-ultra|china|16/1024": [
@@ -1960,7 +1960,7 @@
 1
 ],
 "mobilemarvel|huawei-pura-90-pro-max|china|12/512": [
-1275.0,
+1276.0,
 1
 ],
 "mobilemarvel|huawei-pura-90-pro-max|china|16/1024": [
@@ -2024,7 +2024,7 @@
 1
 ],
 "mobilemarvel|oneplus-16|china|16/1024": [
-1405.0,
+1406.0,
 1
 ],
 "mobilemarvel|oneplus-16|china|16/512": [
@@ -2032,7 +2032,7 @@
 1
 ],
 "mobilemarvel|oppo-find-n5|china|12/256": [
-1366.0,
+1367.0,
 1
 ],
 "mobilemarvel|oppo-find-n5|china|16/1024": [
@@ -2060,7 +2060,7 @@
 1
 ],
 "mobilemarvel|oppo-find-n6|global|16/512": [
-1887.0,
+1888.0,
 1
 ],
 "mobilemarvel|oppo-find-x10-pro-max|china|12/256": [
@@ -2104,7 +2104,7 @@
 1
 ],
 "mobilemarvel|oppo-find-x10|global|12/512": [
-1366.0,
+1367.0,
 1
 ],
 "mobilemarvel|oppo-find-x9-pro|china|12/256": [
@@ -2136,7 +2136,7 @@
 1
 ],
 "mobilemarvel|oppo-find-x9-ultra|global|12/512": [
-1651.0,
+1652.0,
 1
 ],
 "mobilemarvel|oppo-find-x9-ultra|global|16/1024": [
@@ -2148,7 +2148,7 @@
 1
 ],
 "mobilemarvel|oppo-find-x9|china|12/512": [
-897.0,
+898.0,
 1
 ],
 "mobilemarvel|oppo-find-x9|china|16/1024": [
@@ -2176,7 +2176,7 @@
 1
 ],
 "mobilemarvel|redmi-k100-pro-max|china|16/512": [
-969.0,
+970.0,
 1
 ],
 "mobilemarvel|redmi-k90-pro-max|china|12/256": [
@@ -2188,7 +2188,7 @@
 1
 ],
 "mobilemarvel|redmi-k90-pro-max|china|16/1024": [
-931.0,
+932.0,
 1
 ],
 "mobilemarvel|redmi-k90-pro-max|china|16/512": [
@@ -2200,7 +2200,7 @@
 1
 ],
 "mobilemarvel|vivo-x-fold-6|china|12/512": [
-1530.0,
+1531.0,
 1
 ],
 "mobilemarvel|vivo-x-fold-6|china|16/1024": [
@@ -2212,7 +2212,7 @@
 1
 ],
 "mobilemarvel|vivo-x-fold-6|global|12/512": [
-2049.0,
+2050.0,
 1
 ],
 "mobilemarvel|vivo-x300-fe|global|12/512": [
@@ -2236,7 +2236,7 @@
 0
 ],
 "mobilemarvel|vivo-x300-ultra|global|16/1024": [
-1785.0,
+1786.0,
 1
 ],
 "mobilemarvel|vivo-x300-ultra|global|16/512": [
@@ -2292,11 +2292,11 @@
 1
 ],
 "mobilemarvel|vivo-x500-pro|china|12/1024": [
-1418.0,
+1419.0,
 1
 ],
 "mobilemarvel|vivo-x500-pro|china|12/512": [
-1288.0,
+1289.0,
 1
 ],
 "mobilemarvel|vivo-x500-pro|china|16/1024": [
@@ -2308,7 +2308,7 @@
 1
 ],
 "mobilemarvel|vivo-x500|china|12/1024": [
-1326.0,
+1327.0,
 1
 ],
 "mobilemarvel|vivo-x500|china|12/256": [
@@ -2316,7 +2316,7 @@
 1
 ],
 "mobilemarvel|vivo-x500|china|12/512": [
-1173.0,
+1174.0,
 1
 ],
 "mobilemarvel|xiaomi-17-pro-max|china|12/512": [
@@ -2376,7 +2376,7 @@
 1
 ],
 "mobilemarvel|xiaomi-17t-pro|global|12/1024": [
-1020.0,
+1021.0,
 1
 ],
 "mobilemarvel|xiaomi-17t-pro|global|12/256": [
@@ -2416,7 +2416,7 @@
 1
 ],
 "mobilemarvel|xiaomi-18-pro-max|china|12/512": [
-1418.0,
+1419.0,
 1
 ],
 "mobilemarvel|xiaomi-18-pro-max|china|16/1024": [
@@ -2432,7 +2432,7 @@
 1
 ],
 "mobilemarvel|xiaomi-18-pro|china|12/512": [
-1275.0,
+1276.0,
 1
 ],
 "mobilemarvel|xiaomi-18-pro|china|16/1024": [
@@ -2440,7 +2440,7 @@
 1
 ],
 "mobilemarvel|xiaomi-18-pro|china|16/512": [
-1418.0,
+1419.0,
 1
 ],
 "mobilemarvel|xiaomi-mix-flip-2|china|12/256": [

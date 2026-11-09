@@ -42,10 +42,10 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
                         "id": f"{base}/history/{r['model_id']}#{r['time']}-{r['store']}-{r['edition']}-{r['storage']}"})
     entries.reverse()   # newest first
 
-    def feed(title: str, link: str, items: list[dict]) -> str:
+    def feed(title: str, link: str, items: list[dict], limit: int | None = 50) -> str:
         stamp = items[0]["time"] if items else (f"{updated_at:%Y-%m-%dT%H:%M:%SZ}" if updated_at else "2026-01-01T00:00:00Z")
         body = "".join(f"<entry><title>{escape(e['title'])}</title><id>{escape(e['id'])}</id><updated>{e['time']}</updated>"
-                       f'<link href="{escape(e.get("href") or base + "/history/" + e["model"])}"/></entry>' for e in items[:50])
+                       f'<link href="{escape(e.get("href") or base + "/history/" + e["model"])}"/></entry>' for e in items[:limit])
         return ('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">'
                 f"<title>{escape(title)}</title><id>{escape(link)}</id><updated>{stamp}</updated>"
                 f'<link href="{escape(link)}"/><author><name>DoorPrice</name></author>{body}</feed>\n')
@@ -59,7 +59,7 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
          "title": f"{d['name']} {d['labels'][d['edition']]}" + (f" {spec(d['storage'])}" if "/" in d["storage"] else "")
                   + f" at {d['store_label']}: down {abs(d['pct']):g}% to €{d['now']:,.0f} (was €{d['then']:,.0f})",
          "id": f"{base}/drops#{d['when']}-{d['store']}-{d['slug']}-{d['edition']}-{d['storage']}"}
-        for d in sorted(drops or [], key=lambda d: d["when"], reverse=True)])
+        for d in sorted(drops or [], key=lambda d: d["when"], reverse=True)], limit=None)   # the whole week, as the page
     return out
 
 

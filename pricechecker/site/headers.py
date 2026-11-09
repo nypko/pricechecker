@@ -1,7 +1,8 @@
 """build/_headers for Cloudflare Pages: cache rules for the hashed assets, and security headers on every response.
 
-The Content-Security-Policy is sent as Report-Only first (browsers log violations in the console and block nothing),
-so a missed case can't break the site; switch the header name to Content-Security-Policy once it has run clean.
+The Content-Security-Policy is enforced since 2026-11-09, after running Report-Only from 31 Oct: headless Chromium
+with console logging found no violation on any page type of the live site (home, phone, specs, history, compare,
+drops, stores, store, about with Cloudflare's same-origin email-decode script, privacy, methodology, 404).
 Inline scripts are allowed by hash only, and the hashes are worked out here from the pages just rendered (today: the
 pages.dev -> doorprice.app redirect in templates/base.html), so a changed script or base_url can't leave a stale hash.
 JSON data blocks (application/json, application/ld+json) are not scripts to the browser and need no hash."""
@@ -36,18 +37,17 @@ def csp(hashes: list[str]) -> str:
             "style-src 'self'; style-src-attr 'unsafe-inline'; "
             "img-src 'self' data:; font-src 'self'; "
             "connect-src 'self' https://cloudflareinsights.com; "
-            "form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'")
+            "form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests")
 
 
 def security(hashes: list[str]) -> str:
-    # upgrade-insecure-requests is left out while the policy is Report-Only: browsers ignore it there (and say so)
     return ("/*\n"
             "  Strict-Transport-Security: max-age=31536000; includeSubDomains\n"
             "  X-Content-Type-Options: nosniff\n"
             "  Referrer-Policy: strict-origin-when-cross-origin\n"
             "  X-Frame-Options: DENY\n"
             "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()\n"
-            f"  Content-Security-Policy-Report-Only: {csp(hashes)}\n")
+            f"  Content-Security-Policy: {csp(hashes)}\n")
 
 
 def headers(pages: Iterable[str]) -> str:

@@ -1058,9 +1058,11 @@ def test_headers_send_the_security_headers_on_every_page(site_build):
                  "Referrer-Policy: strict-origin-when-cross-origin", "X-Frame-Options: DENY",
                  "Permissions-Policy: camera=(), microphone=(), geolocation=()"):
         assert f"\n  {line}" in block, line
-    csp = re.search(r"\n  Content-Security-Policy-Report-Only: ([^\n]+)", block).group(1)
+    csp = re.search(r"\n  Content-Security-Policy: ([^\n]+)", block).group(1)   # enforced since 2026-11-09
+    assert "Report-Only" not in block
     for d in ("default-src 'self'", "style-src 'self'", "style-src-attr 'unsafe-inline'", "form-action 'self'",
-              "frame-ancestors 'none'", "object-src 'none'", "https://static.cloudflareinsights.com", "connect-src 'self' https://cloudflareinsights.com"):
+              "frame-ancestors 'none'", "object-src 'none'", "https://static.cloudflareinsights.com",
+              "connect-src 'self' https://cloudflareinsights.com", "upgrade-insecure-requests"):
         assert d in csp, d
     assert "unsafe-inline" not in csp.split("script-src", 1)[1].split(";", 1)[0]
 
@@ -1068,7 +1070,7 @@ def test_headers_send_the_security_headers_on_every_page(site_build):
 def test_csp_hashes_cover_every_inline_script(site_build):
     import base64
     import hashlib
-    csp = re.search(r"Content-Security-Policy-Report-Only: ([^\n]+)", (site_build / "_headers").read_text()).group(1)
+    csp = re.search(r"Content-Security-Policy: ([^\n]+)", (site_build / "_headers").read_text()).group(1)
     allowed = set(re.findall(r"'(sha256-[A-Za-z0-9+/=]+)'", csp))
     seen = set()
     for f in site_build.rglob("*.html"):

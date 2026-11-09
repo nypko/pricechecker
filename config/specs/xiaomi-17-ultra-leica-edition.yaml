@@ -5,5 +5,5 @@ id: xiaomi-17-ultra-leica-edition
 key:
   chip: "Snapdragon 8 Elite Gen 5"
   screen: 6.9
-  battery: "6,800 mAh"
+  battery: "6,800 mAh (China)"   # the Global version (Leica Leitzphone) has a smaller battery: read it from Xiaomi's page
   charging: "90 W"

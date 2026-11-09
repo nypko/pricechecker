@@ -24,6 +24,8 @@ phones:
   - {id: honor-magic-9-pro-max, edition: china, name: "Honor Magic 9 Pro Max", announced: 2026-09-28}
   - {id: honor-magic-9-super, edition: china, name: "Honor Magic 9 Super", announced: 2026-09-28}
   - {id: honor-magic-v6, edition: global, name: "Honor Magic V6", announced: 2026-03-01}
+  # added 2026-11-09: launched in China 12 Aug 2026, China only so far; Wonda, Mobile Marvel, Average Dad and Giztop list it.
+  - {id: honor-robot-phone, edition: china, name: "Honor Robot Phone", announced: 2026-08-12}
   - {id: huawei-mate-80, edition: china, name: "Huawei Mate 80", announced: 2025-11-25}
   - {id: huawei-mate-80-pro, edition: china, name: "Huawei Mate 80 Pro", announced: 2025-11-25}
   - {id: huawei-mate-80-pro-max, edition: china, name: "Huawei Mate 80 Pro Max", announced: 2025-11-25}
@@ -73,6 +75,10 @@ phones:
   - {id: xiaomi-17-pro-max, edition: china, name: "Xiaomi 17 Pro Max", announced: 2025-09-25}
   - {id: xiaomi-17-ultra, edition: global, name: "Xiaomi 17 Ultra", announced: 2025-12-25}
   - {id: xiaomi-17-ultra-leica-edition, edition: china, name: "Xiaomi 17 Ultra (Leica Edition)", announced: 2025-12-25}
+  # Global version, sold as "Leica Leitzphone powered by Xiaomi" (unveiled 28 Feb 2026; GSMArena news 71762, TechRadar).
+  # Mobile Marvel lists it as "Leica Leitzphone (Xiaomi 17 Ultra Leica Edition)". Added 2026-11-09.
+  - {id: xiaomi-17-ultra-leica-edition, edition: global, name: "Xiaomi 17 Ultra (Leica Edition)", announced: 2025-12-25,
+     also: [leica-leitzphone-xiaomi-17-ultra-leica-edition, leica-leitzphone-powered-by-xiaomi, leica-leitzphone]}
   - {id: xiaomi-18-fold, edition: china, name: "Xiaomi 18 Fold", announced: 2026-09-07}
   - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro", announced: 2026-09-23}
   - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max", announced: 2026-09-23}

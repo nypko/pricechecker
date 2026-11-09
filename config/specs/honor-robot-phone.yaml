@@ -1,0 +1,11 @@
+# Key specs shown on the phone page. Copied from the brand's own spec page (see sources below), checked 2026-11-09.
+# A field the page does not give is left out rather than guessed. Battery is the typical (advertised) capacity.
+# Bands: honor.com/cn lists the networks (China Mobile, Telecom, Unicom, Broadnet), not band numbers, so none are given.
+id: honor-robot-phone
+sources:
+  china: {url: https://www.honor.com/cn/phones/honor-robot-phone/spec/, checked: 2026-11-09, lang: Chinese}
+key:
+  chip: "Snapdragon 8 Elite Gen 5"
+  screen: 6.31
+  battery: "7,060 mAh"
+  charging: "120 W"

@@ -49,6 +49,8 @@ def model_id(title: str) -> str:
         words = [w2 for w in words for w2 in (re.match(r"(gt)(\d+)$", w).groups() if re.match(r"gt\d+$", w) else (w,))]
     if len(words) > 1 and words[0] == "samsung" and words[1] != "galaxy":
         words.insert(1, "galaxy")
+    while len(words) > 1 and words[-1] == "with":   # "OnePlus 15 with Global ROM": only noise followed "with"
+        words.pop()
     return "-".join(words)
 
 

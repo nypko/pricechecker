@@ -58,6 +58,22 @@ def test_giztop_titles():
     assert split_title("Honor Magic 8 Pro") == ("Honor Magic 8 Pro", None)
 
 
+def test_giztop_clearance_titles():
+    # Giztop's clearance units: "<model>-<colour>-<storage> (Brand New, Clearance, N% off, )" (seen 2026-11)
+    from pricechecker.stores.magento import split_title
+    assert split_title("Realme Neo 8-Purple-12GB - 256GB (Brand New, Clearance, 30% off, )") == ("Realme Neo 8", "12/256")
+    title, storage = split_title("IQOO 16-Dream Purple-16GB - 512GB (Brand New, Clearance, 10% off, )")
+    assert (model_id(title), storage) == ("iqoo-16", "16/512")
+    title, storage = split_title("OPPO Find X9 Ultra-Orange-16GB - 1TB (Brand New, Clearance, 15% off, )")
+    assert (model_id(title), storage) == ("oppo-find-x9-ultra", "16/1024")
+
+
+def test_dangling_with_after_noise():
+    # Mobile Marvel "OnePlus 15 with Global ROM": the noise words go, and "with" must not be left on the id.
+    assert model_id("OnePlus 15 with Global ROM") == "oneplus-15" and edition_of("OnePlus 15 with Global ROM") == "china"
+    assert model_id("OnePlus 15 with Free Gift Box") == "oneplus-15-with-free-gift-box"   # a real word after it stays
+
+
 def test_tradingshenzhen_affiliate_link():
     from pathlib import Path
 

@@ -21,7 +21,9 @@ _ITEM = re.compile(r'class="product-item-link"\s+href="([^"]+)">\s*([^<]+?)\s*</
 _COUNT = re.compile(r'toolbar-number">(\d+)</span>')
 _SP_CONFIG = re.compile(r'"spConfig":\s*(\{.*?\})\s*,\s*"gallerySwitchStrategy"', re.DOTALL)
 # single-variant listings: "OPPO Find X9 Ultra-Black-12GB - 256GB"
-_SIMPLE = re.compile(r"^(?P<base>.+?)-(?P<color>[^-]+)-(?P<storage>\d+\s*GB\s*-\s*\d+\s*(?:GB|TB))$", re.IGNORECASE)
+# "Model-Colour-12GB - 256GB", optionally followed by a note: "(Brand New, Clearance, 30% off, )" on clearance units
+_SIMPLE = re.compile(r"^(?P<base>.+?)-(?P<color>[^-]+)-(?P<storage>\d+\s*GB\s*-\s*\d+\s*(?:GB|TB))(?:\s*\([^()]*\))?$",
+                     re.IGNORECASE)
 PER_PAGE = 24
 REFRESH = timedelta(hours=6)
 SITE_CURRENCIES = ["EUR", "GBP", "AUD"]

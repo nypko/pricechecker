@@ -118,6 +118,7 @@ giztop	honor-magic-pad-3-12-5-inch/china
 giztop	honor-magic-pad-3-13-3-inch/china
 giztop	honor-magic-pad-3-pro-13-3-inch/china
 giztop	honor-magic-pad-4-12-1/china
+giztop	honor-magic-v-flip-2-grey-brand-new-clearance-20-off/china
 giztop	honor-magic-v-flip-2/china
 giztop	honor-magic-v-flip/china
 giztop	honor-magic-v3/china
@@ -201,6 +202,7 @@ giztop	oneplus-12r-genshin-impact-edition/china
 giztop	oneplus-ace-5-pro/china
 giztop	oneplus-ace-5-ultra/china
 giztop	oneplus-ace-5/china
+giztop	oneplus-ace-6-ultra-black-brand-new-clearance-19-off/china
 giztop	oneplus-ace-6-ultra/china
 giztop	oneplus-ace-6/china
 giztop	oneplus-ace-6t/china
@@ -216,6 +218,7 @@ giztop	oppo-find-x8-ultra-white-brand-new-clearance-20-off/china
 giztop	oppo-find-x8-ultra/china
 giztop	oppo-find-x8s-plus/china
 giztop	oppo-find-x9-ultra-hasselblad-earth-explorer-master-set/china
+giztop	oppo-find-x9-ultra-orange-brand-new-clearance-15-off/china
 giztop	oppo-k15-pro-plus/china
 giztop	oppo-k15-pro/china
 giztop	oppo-k15/china
@@ -257,6 +260,7 @@ giztop	redmi-note-15/china
 giztop	redmi-note-17-pro/china
 giztop	redmi-note-17/china
 giztop	redmi-pad-2/china
+giztop	redmi-turbo-4-black-brand-new-clearance-30-off/china
 giztop	redmi-turbo-4-pro-harry-potter-edition/china
 giztop	redmi-turbo-4-pro/china
 giztop	redmi-turbo-4/china
@@ -278,6 +282,7 @@ giztop	vivo-s50-pro-mini/china
 giztop	vivo-s50/china
 giztop	vivo-s60-vitality-edition/china
 giztop	vivo-s60/china
+giztop	vivo-x-fold-6-green-brand-new-clearance-18-off/china
 giztop	vivo-x-fold-6-photography-kit-edition/china
 giztop	vivo-x100-ultra/china
 giztop	vivo-x200-pro-mini/china
@@ -285,14 +290,15 @@ giztop	vivo-x200-pro/china
 giztop	vivo-x200-ultra/china
 giztop	vivo-x200/china
 giztop	vivo-x300-e/china
+giztop	vivo-x300-ultra-black-brand-new-clearance-15-off/china
 giztop	vivo-x300-ultra-photography-kit-edition/china
 giztop	vivo-x500-pro-max-creator-kit/china
+giztop	vivo-x500-pro-max-silver-brand-new-clearance-15-off/china
 giztop	xiaomi-15-diamond-limited-edition/china
 giztop	xiaomi-15-pro/china
 giztop	xiaomi-15-ultra/china
 giztop	xiaomi-15/china
 giztop	xiaomi-17-pro-black-brand-new-clearance-15-off/china
-giztop	xiaomi-17-ultra-by-leica-edition-black-brand-new-clearance-15-off/china
 giztop	xiaomi-17-ultra-by-leica-edition-white-brand-new-clearance-15-off/china
 giztop	xiaomi-18-pro-blue-brand-new-clearance-15-off/china
 giztop	xiaomi-18-pro-max-pink-brand-new-clearance-14-off/china

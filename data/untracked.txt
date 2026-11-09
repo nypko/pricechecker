@@ -41,6 +41,7 @@ mobilemarvel	redmagic-11-pro-plus/china
 mobilemarvel	redmagic-11s-pro/china
 mobilemarvel	redmagic-11s-pro/global
 mobilemarvel	redmagic-12-pro-plus/china
+mobilemarvel	redmagic-12-pro/global
 mobilemarvel	redmagic-astra-2/global
 mobilemarvel	samsung-galaxy-w26-china-exclusive/china
 mobilemarvel	samsung-galaxy-z-flip-8-snapdragon-version/global

@@ -1393,5 +1393,25 @@
 "currency": "EUR",
 "available": true
 }
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-16gb512gb": {
+"lastmod": "2026-09-18",
+"fetched": "2026-11-09T22:52:19+00:00",
+"info": {
+"name": "Redmi K100 Pro - 16GB/512GB",
+"price": 727.0,
+"currency": "EUR",
+"available": true
+}
+},
+"https://tradingshenzhen.com/en/redmi-k100-series/redmi-k100-pro-12gb256gb": {
+"lastmod": "2026-09-15",
+"fetched": "2026-11-09T22:52:19+00:00",
+"info": {
+"name": "Redmi K100 Pro - 12GB/256GB",
+"price": 597.0,
+"currency": "EUR",
+"available": true
+}
 }
 }

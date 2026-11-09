@@ -593,12 +593,12 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-pro-blue-16gb-1tb.html": {
-"low": 1399.0,
-"fetched": "2026-11-05T23:08:42+00:00",
+"low": 1299.0,
+"fetched": "2026-11-09T22:52:45+00:00",
 "variants": [
 [
 "16/1024",
-1399.0
+1299.0
 ]
 ],
 "available": true
@@ -1483,12 +1483,12 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-n6-black-16gb-512gb.html": {
-"low": 1659.0,
-"fetched": "2026-11-05T08:26:50+00:00",
+"low": 1499.0,
+"fetched": "2026-11-09T22:52:45+00:00",
 "variants": [
 [
 "16/512",
-1659.0
+1499.0
 ]
 ],
 "available": true
@@ -3627,6 +3627,210 @@
 [
 "16/1024",
 1499.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/honor-robot-phone-grey-12gb-512gb.html": {
+"low": 1699.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/512",
+1699.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/honor-robot-phone.html": {
+"low": 1699.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/512",
+1699.0
+],
+[
+"16/1024",
+2199.0
+],
+[
+"12/512",
+1699.0
+],
+[
+"16/1024",
+2199.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/redmi-k100-pro.html": {
+"low": 649.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/256",
+649.0
+],
+[
+"16/256",
+699.0
+],
+[
+"12/512",
+749.0
+],
+[
+"16/512",
+799.0
+],
+[
+"12/256",
+699.0
+],
+[
+"16/256",
+799.0
+],
+[
+"12/512",
+849.0
+],
+[
+"16/512",
+899.0
+],
+[
+"12/256",
+699.0
+],
+[
+"16/256",
+799.0
+],
+[
+"12/512",
+849.0
+],
+[
+"16/512",
+899.0
+],
+[
+"12/256",
+699.0
+],
+[
+"16/256",
+799.0
+],
+[
+"12/512",
+849.0
+],
+[
+"16/512",
+899.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-iqoo-16-dream-purple-12gb-256gb.html": {
+"low": 889.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/256",
+889.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-18-pro-max-pink-16gb-1tb.html": {
+"low": 1399.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"16/1024",
+1399.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-x500-pro-max-silver-12gb-512gb.html": {
+"low": 1199.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/512",
+1199.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-x-fold-6-green-16gb-512gb.html": {
+"low": 1399.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"16/512",
+1399.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/huawei-pura-90-pro-max-gold-16gb-1tb.html": {
+"low": 1199.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"16/1024",
+1199.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/oppo-find-x9-ultra-orange-12gb-512gb.html": {
+"low": 1129.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/512",
+1129.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-x300-ultra-black-16gb-1tb.html": {
+"low": 1349.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"16/1024",
+1349.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-x300-ultra-black-16gb-512gb.html": {
+"low": 1199.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"16/512",
+1199.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-pro-black-12gb-512gb.html": {
+"low": 769.0,
+"fetched": "2026-11-09T22:52:45+00:00",
+"variants": [
+[
+"12/512",
+769.0
 ]
 ],
 "available": true

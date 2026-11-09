@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
@@ -76,6 +77,30 @@ def test_terms_page_wording_and_diff():
     new = terms.policy_lines(html.replace("few duties", "duties and GST"))
     assert terms.page_diff(lines, new) == ["-Canada: few duties and taxes, we usually declare a lower value.",
                                            "+Canada: duties and GST and taxes, we usually declare a lower value."]
+
+
+def test_terms_page_reviews_widget_is_not_wording():
+    # Trading Shenzhen's terms pages have no <main>; its "Store Reviews" carousel rotates every few days.
+    def page(count, review):
+        return ("<p>EU: duties are covered by us, nothing to pay at delivery.</p>"
+                f"<div>Store Reviews ( {count} )</div><p>{review}</p><p>Review By Annabelle H</p>"
+                "<a>See all Store Reviews</a><p>Redeem the code at checkout while the timer is running.</p>")
+    lines = terms.policy_lines(page(2064, "This is my first purchase on this site."))
+    assert lines == ["EU: duties are covered by us, nothing to pay at delivery.",
+                     "Redeem the code at checkout while the timer is running."]
+    assert terms.policy_lines(page(2080, "Fourth order, again flawless delivery here.")) == lines
+
+
+def test_saved_reviews_widget_is_not_a_change():
+    # Snapshots saved before the widget was skipped still hold its lines: comparing must not report them,
+    # and the store page's "Terms last changed" date must not move.
+    old = {"lines": ["EU: duties are covered by us, nothing to pay at delivery.", "Store Reviews ( 2064 )",
+                     "Review By Diego S", "See all Store Reviews"],
+           "checked": "2026-11-01T07:00:00+00:00", "changed": "2026-10-22T07:00:00+00:00"}
+    new = ["EU: duties are covered by us, nothing to pay at delivery."]
+    snap = terms.snapshot(old, new, datetime(2026, 11, 9, 7, tzinfo=UTC))
+    assert snap["changed"] == "2026-10-22T07:00:00+00:00" and snap["lines"] == new
+    assert terms.page_diff(terms.without_reviews(old["lines"]), new) == []
 
 
 def test_store_that_does_not_deliver():

@@ -89,7 +89,24 @@ def policy_lines(html: str) -> list[str]:
     four or more words, so a changed price in a product carousel or a cart counter isn't reported as a new policy."""
     from .promos import text_of
     m = re.search(r"(?is)<main\b.*?</main>", html)
-    return [ln for ln in text_of(m.group(0) if m else html) if len(ln.split()) >= 4]
+    return without_reviews([ln for ln in text_of(m.group(0) if m else html) if len(ln.split()) >= 4])
+
+
+_REVIEWS_START = re.compile(r"^Store Reviews \(\s*[\d.,]+\s*\)$")
+
+
+def without_reviews(lines: list[str]) -> list[str]:
+    """Lines minus a store-reviews widget ("Store Reviews ( 2080 )" up to "See all Store Reviews"): its reviews
+    rotate every few days and are not policy wording. Also applied to saved snapshots, which may still hold it."""
+    out, skip = [], False
+    for ln in lines:
+        if _REVIEWS_START.match(ln):
+            skip = True
+        elif skip and ln.startswith("See all Store Reviews"):
+            skip = False
+        elif not skip:
+            out.append(ln)
+    return out
 
 
 def page_diff(old: list[str], new: list[str], limit: int = 40) -> list[str]:
@@ -102,7 +119,8 @@ def snapshot(old: dict | None, lines: list[str], now: datetime) -> dict:
     """A terms page's saved record after a read: its lines, when it was read, and (store pages show it as "Terms last
     changed") when its wording last differed from the read before. First sight is not a change."""
     out = {"lines": lines, "checked": now.isoformat(timespec="seconds")}
-    changed = now.isoformat(timespec="seconds") if old is not None and old["lines"] != lines else (old or {}).get("changed")
+    changed = (now.isoformat(timespec="seconds") if old is not None and without_reviews(old["lines"]) != lines
+               else (old or {}).get("changed"))
     if changed:
         out["changed"] = changed
     return out
@@ -143,8 +161,8 @@ def check_pages(stores_cfg: dict, force: bool = False) -> dict:
                 problems.append(f"'{w['expect']}' no longer on {w['url']}")
         for u, html in texts.items():
             lines, old = policy_lines(html), snaps.get(u)
-            if old is not None and old["lines"] != lines:
-                diff = page_diff(old["lines"], lines)
+            if old is not None and without_reviews(old["lines"]) != lines:
+                diff = page_diff(without_reviews(old["lines"]), lines)
                 if diff:
                     report += [f"**{cfg.get('label', name)}**: {u} (last read {old['checked'][:10]})", "", *fence(diff, "diff"), ""]
             snaps[u] = snapshot(old, lines, now)

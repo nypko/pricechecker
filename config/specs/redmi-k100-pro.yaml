@@ -1,0 +1,15 @@
+# Key specs shown on the phone page. Copied from the brand's own spec page (see sources below), checked 2026-11-09
+# (mi.com blocks headless browsers; read in a desktop browser). A field the page does not give is left out.
+# Battery is the typical (advertised) capacity. The chip is the "V Series" bin of the 8 Elite Gen 5 (SM8850-1-AB).
+id: redmi-k100-pro
+sources:
+  china: {url: https://www.mi.com/prod/redmi-k100-pro/specs, checked: 2026-11-09, lang: Chinese}
+key:
+  chip: "Snapdragon 8 Elite Gen 5 (V Series)"
+  screen: 6.59
+  battery: "8,580 mAh"
+  charging: "100 W"
+bands:
+  china:
+    lte: [1, 3, 4, 5, 7, 8, 18, 19, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 3, 5, 7, 8, 18, 26, 28, 66, 38, 40, 41, 48, 77, 78]

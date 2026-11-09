@@ -4,6 +4,8 @@
 # its line-up: leaks and launches not yet on the brand's site stay out, and their empty cells say "no offers".
 # Not listed yet (checked 2026-11-09): vivo.com/en/products/param/x500-pro and .../x500-pro-max show the same page (6.85",
 # 7,800 mAh), which contradicts vivo's China X500 Pro (6.36"): looks like a placeholder, not used. X Fold 6 isn't on vivo.com/en; mi.com blocks automated reading (Xiaomi 17 Ultra Global: 12/512, 16/512, 16/1TB per GSMArena).
+xiaomi-17-ultra-leica-edition:   # added 2026-11-09: the Global version is sold as "Leica Leitzphone powered by Xiaomi"
+  global: {made: [16/1024], source: "https://www.mi.com/global/product/leica-leitzphone-powered-by-xiaomi/specs/"}
 google-pixel-10-pro:   # added 2026-10-22: Google's hardware tech specs (same storage in the US and elsewhere)
   global: {made: [16/128, 16/256, 16/512, 16/1024], source: "https://support.google.com/pixelphone/answer/7158570"}
 google-pixel-10-pro-xl:

@@ -247,7 +247,7 @@ body:has(.buybar) footer { padding-bottom: 90px; }
 .verdict .fine { margin: 10px 0 0; font-size: .78rem; color: var(--on-ink-2); }
 
 .receipt { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; margin-bottom: 8px; }
-.receipt h3 { margin: 0 0 10px; font: 700 1.05rem var(--serif); }
+.receipt h2 { margin: 0 0 10px; font: 700 1.05rem var(--serif); }
 .costbar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; gap: 2px; margin-bottom: 12px; background: var(--rule); }
 .costbar span { display: block; height: 100%; }
 .receipt dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; font-size: .94rem; }

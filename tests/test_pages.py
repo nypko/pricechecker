@@ -784,14 +784,36 @@ def test_internal_links_resolve(site_build):
     assert not bad, bad[:20]
 
 
+def test_headings_never_skip_a_level(site_build):
+    """Lighthouse (accessibility) flags h1 -> h3 jumps: on phone pages the receipt heading followed the h1 directly."""
+    bad = []
+    for f in [site_build / "index.html", site_build / "compare.html", *sorted((site_build / "phones").glob("*.html"))]:
+        prev = 0
+        for lv in (int(x) for x in re.findall(r"<h([1-6])\b", f.read_text())):
+            if prev and lv > prev + 1:
+                bad.append((f.name, f"h{prev} -> h{lv}"))
+            prev = lv
+    assert not bad, bad[:10]
+
+
 def test_home_search_links_resolve_to_home(site_build):
-    n = 0
+    """The header's search button links to the home search ("?q="). Resolved the way a browser does, against the URL
+    the page is served at (Pages drops .html): on /about a bare "?q=" would stay on /about (2026-11-09 bug)."""
+    from urllib.parse import urljoin, urlsplit
+    n, bad = 0, []
     for f in site_build.rglob("*.html"):
+        rel = f.relative_to(site_build).as_posix()
+        if rel.startswith("mock/"):
+            continue
+        served = "https://x.test/" + ("" if rel == "index.html" else rel.removesuffix(".html"))
+        if rel == "404.html":
+            served = "https://x.test/some/missing/page"   # served at any path
         for href in _href_targets(f.read_text()):
             if "?q=" in href and not href.startswith(("http", "mailto")):
                 n += 1
-                assert _resolves(site_build, f, href), (f, href)
-    assert n >= 1
+                if urlsplit(urljoin(served, html.unescape(href))).path != "/":
+                    bad.append((rel, href))
+    assert n >= 1 and not bad, bad[:10]
 
 
 def _store_hosts():

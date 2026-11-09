@@ -159,7 +159,7 @@
 <section class="receipt" data-block="receipt" aria-label="How the total adds up">
 {%- if row and row.state == "ok" -%}
 {%- set fee = row.adjAmt if row.adjAmt > 0 else 0 -%}
-<h3>How {{ money(row.total, s.cur) }} adds up</h3>
+<h2>How {{ money(row.total, s.cur) }} adds up</h2>
 <div class="costbar" aria-hidden="true">{{ _seg(row.base, "--bar-phone") }}{{ _seg(fee, "--bar-fee") }}{{ _seg(row.ship or 0, "--bar-ship") }}{{ _seg(row.taxAdded, "--bar-tax") }}</div><dl>
 <dt><i style="background:var(--bar-phone)"></i>Store price</dt><dd>{{ money(row.list, s.cur, true) }}</dd>
 {%- if row.promoAmt > 0.005 %}<dt><i style="background:var(--bar-promo)"></i>{{ row.promoLabel or "Sale" }}, {{ pct(row.promoPct) }}% off at checkout</dt><dd class="neg">−{{ money(row.promoAmt, s.cur, true) }}</dd>{% endif -%}

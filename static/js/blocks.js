@@ -204,7 +204,7 @@ export function receipt(row, s, labels) {
   if (!row || row.state !== "ok") return open + "</section>";   // never a stale, sold-out, undelivered or unpayable row
   const fee = row.adjAmt > 0 ? row.adjAmt : 0, d = (v) => money(v, s.cur, true);
   const tax = row.duties === true ? "paid by the store" : row.taxEst === null ? "not estimated" : row.duties === false ? "≈" + d(row.taxAdded) : `not stated (≈${money(row.taxEst, s.cur)} if due)`;
-  return open + `<h3>How ${money(row.total, s.cur)} adds up</h3><div class="costbar" aria-hidden="true">` +
+  return open + `<h2>How ${money(row.total, s.cur)} adds up</h2><div class="costbar" aria-hidden="true">` +
     seg(row.base, "--bar-phone") + seg(fee, "--bar-fee") + seg(row.ship || 0, "--bar-ship") + seg(row.taxAdded, "--bar-tax") + "</div><dl>" +
     dt("--bar-phone", "Store price") + `<dd>${d(row.list)}</dd>` +
     (row.promoAmt > 0.005 ? dt("--bar-promo", `${esc(row.promoLabel || "Sale")}, ${pct(row.promoPct)}% off at checkout`) + `<dd class="neg">−${d(row.promoAmt)}</dd>` : "") +

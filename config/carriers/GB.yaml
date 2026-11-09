@@ -30,9 +30,11 @@ networks:
     nr: [1, 3, 7, 8, 20, 28, 78, 258, 259]
     basis: licensed
     complete: false
-    mvnos: []
+    mvnos: [VOXI, SMARTY]
     sources:
       - {url: "https://www.ofcom.org.uk/spectrum/frequencies/below-5ghz", kind: regulator, checked: 2026-11-01}  # live, browser-checked 2026-11-01
       - {url: "https://www.ofcom.org.uk/spectrum/spectrum-awards/ofcom-spectrum-auction-final-results-announced", kind: regulator, checked: 2026-11-01}  # live, browser-checked 2026-11-01
       - {url: "https://web.archive.org/web/20251103225032/https://www.ofcom.org.uk/siteassets/resources/documents/consultations/category-1-10-weeks/255827-exploring-future-use-of-the-unpaired-2100-mhz-1900---1920-mhz-spectrum/associated-documents/future-use-2100-mhz-spectrum-condoc.pdf", kind: regulator, checked: 2026-11-01}  # archive copy, captured 2025-11-03
       - {url: "https://comparebroadbandpackages.co.uk/guides/news/vodafonethree-completes-core-radio-access-network-integration/", kind: other, checked: 2026-10-31}
+      - {url: "https://www.voxi.co.uk/", kind: brand, checked: 2026-11-09}
+      - {url: "https://smarty.co.uk/", kind: brand, checked: 2026-11-09}

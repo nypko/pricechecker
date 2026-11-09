@@ -6,10 +6,11 @@ networks:
     nr: [1, 3, 7, 8, 20, 28, 78, 258]
     basis: licensed
     complete: true
-    mvnos: []
+    mvnos: [Kena Mobile]
     sources:
       - {url: "https://www.agcom.it/sites/default/files/media/allegato/2025/Allegato_A_Delibera_154-25-CONS.pdf", kind: regulator, checked: 2026-10-31}
       - {url: "https://www.agcom.it/sites/default/files/migration/attachment/Allegato%2021-10-2021.pdf", kind: regulator, checked: 2026-10-31}
+      - {url: "https://www.kenamobile.it/", kind: brand, checked: 2026-11-09}
   - id: it-vodafone
     name: Vodafone
     lte: [1, 3, 7, 8, 20, 28]

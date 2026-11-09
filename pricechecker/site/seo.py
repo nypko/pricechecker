@@ -1,6 +1,7 @@
 """What search engines and feed readers get: robots.txt, sitemap.xml, Atom feeds of price changes, schema.org Product
 data, and the cheapest delivered price used in page titles. Files come back as {relative path: text}; build() writes them."""
 import json
+import re
 from datetime import datetime
 from xml.sax.saxutils import escape
 
@@ -63,9 +64,43 @@ def _feeds(site_cfg: dict, phones: list[dict], rows: list[dict], stores_cfg: dic
     return out
 
 
-def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), extra: list[str] = ()) -> dict[str, str]:
+def lastmods(rows: list[dict], phones: list[dict], stores_cfg: dict) -> dict[str, str]:
+    """The sitemap's <lastmod> per page path: when the prices that page shows last changed (history rows are written
+    on change only, so the newest row is the last change). A phone and its history page: that phone's newest row; a
+    store page: its newest row, an EU-warehouse sub-store counting for its store; the home, drops, compare and stores
+    pages: the newest row overall. Pages with no honest date (about, privacy, methodology, specs, a phone with no
+    recorded change yet) get none: search engines learn to ignore a lastmod that is always "now"."""
+    ids = {p["id"]: p["slug"] for p in phones}
+    by_phone: dict[str, str] = {}
+    by_store: dict[str, str] = {}
+    for r in rows:
+        if r["model_id"] not in ids:
+            continue
+        t = r["time"]
+        by_phone[r["model_id"]] = max(by_phone.get(r["model_id"], ""), t)
+        store = (stores_cfg.get(r["store"]) or {}).get("part_of") or r["store"]
+        by_store[store] = max(by_store.get(store, ""), t)
+    out = {}
+    for pid, t in by_phone.items():
+        out[f"phones/{ids[pid]}"] = out[f"history/{ids[pid]}"] = t
+    for name, t in by_store.items():
+        out[f"stores/{name}"] = t
+    if by_phone:
+        newest = max(by_phone.values())
+        out.update({"": newest, "drops": newest, "compare": newest, "stores": newest})
+    return out
+
+
+# A month's archive of one phone's price history (history/<slug>/<YYYY-MM>): kept on the site and linked from the
+# history page, but not listed in the sitemap - ~80 thin pages a month would outnumber the pages people search for.
+_MONTH_PAGE = re.compile(r"history/[^/]+/\d{4}-\d{2}")
+
+
+def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), extra: list[str] = (),
+               lastmod: dict[str, str] | None = None) -> dict[str, str]:
     """robots.txt and sitemap.xml for search engines; the sitemap lists absolute URLs, so only once the domain is live.
-    extra: more page paths without .html (a phone's specs page, a history month page)."""
+    extra: more page paths without .html (a phone's specs page; history month pages are left out). lastmod: path ->
+    when its content last changed (lastmods)."""
     base = (site_cfg.get("base_url") or "").rstrip("/")
     live = bool(site_cfg.get("domain_live") and base)
     if site_cfg.get("testing"):   # the testing copy must never be indexed
@@ -80,8 +115,12 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), 
     out = {"robots.txt": robots}
     if not live:
         return out
-    paths = ["", "drops", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names] + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones] + sorted(extra)
-    urls = "".join(f"<url><loc>{base}/{p}</loc></url>" for p in paths)
+    paths = (["", "drops", "compare", "stores", "methodology", "about", "privacy"] + [f"stores/{n}" for n in store_names]
+             + [f"phones/{p['slug']}" for p in phones] + [f"history/{p['slug']}" for p in phones]
+             + sorted(p for p in extra if not _MONTH_PAGE.fullmatch(p)))
+    lastmod = lastmod or {}
+    urls = "".join(f"<url><loc>{base}/{p}</loc>" + (f"<lastmod>{lastmod[p]}</lastmod>" if p in lastmod else "") + "</url>"
+                   for p in paths)
     out["sitemap.xml"] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     return out

@@ -136,6 +136,7 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
     (OUT / "_headers").write_text(headers.security(sorted(script_hashes)) + headers.CACHE)
     # specs pages and monthly history pages are real pages too; the phones' own pages and the fixed ones are listed by seo itself
     extra = [f[:-5] for f in rendered if re.fullmatch(r"phones/[^/]+/specs\.html|history/[^/]+/[^/]+\.html", f)]
-    _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg), extra))
+    _write(seo._seo_files(ctx["site"], phones, stores.page_names(stores_cfg), extra,
+                          seo.lastmods(data.rows_all, phones, stores_cfg)))
     _write(seo._feeds(ctx["site"], phones, data.rows_all, stores_cfg, data.updated_at, drops.this_week(data, phones)))
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")

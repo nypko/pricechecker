@@ -870,8 +870,33 @@ def test_sitemap_lists_new_pages(site_build):
     specs_pages = {str(p.relative_to(site_build).with_suffix("")) for p in site_build.glob("phones/*/specs.html")}
     months = {str(p.relative_to(site_build).with_suffix("")) for p in site_build.glob("history/*/*.html")}
     assert specs_pages and months
-    assert specs_pages <= locs and months <= locs
+    assert specs_pages <= locs
+    assert not months & locs   # monthly archives stay on the site (linked) but out of the sitemap (2026-11-10)
     assert "404" not in locs
+    # <lastmod>: the phone and history pages carry their phone's last price change; about/privacy/specs carry none
+    entries = dict(re.findall(r"<url><loc>https://doorprice.app/([^<]*)</loc>(?:<lastmod>([^<]+)</lastmod>)?</url>", sm))
+    assert all(re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", v) for v in entries.values() if v)
+    assert entries["about"] == "" and entries["privacy"] == "" and all(entries[p] == "" for p in specs_pages)
+    assert sum(1 for k, v in entries.items() if k.startswith("phones/") and "/" not in k[7:] and v) >= 50
+
+
+def test_sitemap_lastmod_is_the_last_price_change():
+    from pricechecker.site import seo
+    phones = [{"id": "a", "slug": "a"}, {"id": "b", "slug": "b"}, {"id": "c", "slug": "c"}]
+    rows = [{"time": "2026-11-01T00:00:00Z", "store": "shop", "model_id": "a"},
+            {"time": "2026-11-05T10:00:00Z", "store": "shop_eu", "model_id": "a"},   # EU warehouse: on the shop's page
+            {"time": "2026-11-03T08:00:00Z", "store": "other", "model_id": "b"},
+            {"time": "2026-11-09T09:00:00Z", "store": "other", "model_id": "untracked"}]   # not a phone we list: ignored
+    lm = seo.lastmods(rows, phones, {"shop": {}, "shop_eu": {"part_of": "shop"}, "other": {}})
+    assert lm["phones/a"] == lm["history/a"] == "2026-11-05T10:00:00Z" and lm["phones/b"] == "2026-11-03T08:00:00Z"
+    assert "phones/c" not in lm   # no recorded change yet: no date rather than a made-up one
+    assert lm[""] == lm["drops"] == lm["compare"] == lm["stores"] == "2026-11-05T10:00:00Z"
+    assert lm["stores/shop"] == "2026-11-05T10:00:00Z" and lm["stores/other"] == "2026-11-03T08:00:00Z"
+    sm = seo._seo_files({"domain_live": True, "base_url": "https://x.test"}, phones, ["shop", "other"],
+                        ["phones/a/specs", "history/a/2026-11"], lm)["sitemap.xml"]
+    assert "<url><loc>https://x.test/phones/a</loc><lastmod>2026-11-05T10:00:00Z</lastmod></url>" in sm
+    assert "<url><loc>https://x.test/phones/c</loc></url>" in sm and "<url><loc>https://x.test/about</loc></url>" in sm
+    assert "phones/a/specs</loc></url>" in sm and "history/a/2026-11" not in sm
 
 
 def test_testing_build_is_still_noindex(tmp_path):

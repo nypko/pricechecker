@@ -6,10 +6,11 @@ networks:
     nr: [2, 25, 41, 71, 258, 260, 261]
     basis: used
     complete: false
-    mvnos: []
+    mvnos: [Mint Mobile]
     sources:
       - {url: "https://www.t-mobile.com/support/coverage/t-mobile-network", kind: carrier, checked: 2026-11-01}  # live, browser-checked 2026-11-01
       - {url: "https://convergedigest.com/t-mobile-closes-4-3b-acquisition-of-uscellular-wireless-operations/?amp=1", kind: other, checked: 2026-10-31}
+      - {url: "https://www.mintmobile.com/coverage/", kind: brand, checked: 2026-11-09}  # "Mint Mobile is on the T-Mobile network" (browser)
   - id: us-att
     name: AT&T
     lte: [2, 4, 5, 12, 14, 29, 30, 66]

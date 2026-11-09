@@ -17,7 +17,7 @@ groups:
     resolution: "3168 × 1440 (QHD+), 510 ppi"
     refresh_rate: "Up to 144 Hz (in some games)"
     brightness: "800 nits typical, 1,800 nits high-brightness mode"
-    colour: "10-bit"
+    colour: "10-bit, 100% DCI-P3"
   performance:
     chip: "Snapdragon 8 Elite Gen 5"
     cpu: "8 cores"

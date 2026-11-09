@@ -1138,6 +1138,7 @@ def test_phone_page_trend_is_empty_without_a_current_price():
 def test_unknown_nr_is_said_not_counted_on_the_phone_and_specs_pages(tmp_path, monkeypatch):
     """A synthetic Mate X7 sheet with fields and nr null, built into a temp site."""
     from copy import deepcopy
+
     from pricechecker import fx, run, site, terms
     from pricechecker import specs as specs_cfg
     from pricechecker.site.pages import phone as ph
@@ -1166,7 +1167,9 @@ def test_unknown_nr_is_said_not_counted_on_the_phone_and_specs_pages(tmp_path, m
 
 def test_phone_bands_helpers_with_a_null_list():
     import yaml
-    from pricechecker.site.pages import phone as ph, specs as sp
+
+    from pricechecker.site.pages import phone as ph
+    from pricechecker.site.pages import specs as sp
     s = yaml.safe_load(open("config/specs/oppo-find-x9-ultra.yaml"))
     s["bands"]["china"]["nr"] = None
     b = ph._bands(s, "china")

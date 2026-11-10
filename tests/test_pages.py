@@ -225,7 +225,7 @@ def _home(site_build):
 def test_home_sections(site_build):
     h = _home(site_build)
     assert "China version or Global? <em>Both prices, delivered.</em>" in h and "data-for" in h
-    assert re.search(r'<input id="hq" name="q" type="search" placeholder="Search phones" data-wide="Which phone\? e\.g\. “x9 ultra”"', h)
+    assert re.search(r'<input id="hq" name="q" type="search" placeholder="Search" data-wide="Which phone\? e\.g\. “x9 ultra”"', h)
     assert re.search(r'<a class="teaser" href="drops">\s*<b>\d+ price drops? this week</b>', h)
     chips = h[h.index('id="chips"'):h.index('id="sorts"')]
     for label in (">All<", ">Both versions<", ">China<", ">Global<", "Watched (<span"):

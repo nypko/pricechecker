@@ -183,7 +183,8 @@ function wire() {
   // the header's search field: the long hint only where it fits
   const hq = document.getElementById("hq"), wide = window.matchMedia && window.matchMedia("(min-width: 640px)");
   if (hq && wide) {
-    const hint = () => { hq.placeholder = wide.matches ? hq.dataset.wide : "Search phones"; };
+    const narrow = hq.placeholder;   // the short hint is the one in the markup
+    const hint = () => { hq.placeholder = wide.matches ? hq.dataset.wide : narrow; };
     hint(); wide.addEventListener("change", hint);
   }
   document.querySelectorAll("[data-prefs]").forEach((b) => b.addEventListener("click", openSheet));

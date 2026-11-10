@@ -418,7 +418,7 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
   .topnav a { padding: 6px 0 8px; }
 }
 /* phones: the field takes the free width between the logo and the settings button */
-@media (max-width: 639px) { .hsearch { min-width: 120px; max-width: none; } }
+@media (max-width: 639px) { .hsearch { min-width: 90px; max-width: none; } .hsearch input { font-size: 16px; padding: 0 12px; } }   /* 16px: iOS zooms on focus below it */
 
 /* ---- phone page (templates/phone.html) ---- */
 [hidden] { display: none !important; }

@@ -4,7 +4,7 @@
     JS both versions show stacked; static/js/history.js adds the version switch. The month pages use the same layout. -#}
 {% set crumbs = [(p.name, "phones/" ~ p.slug), ("Price history", "history/" ~ p.slug)] + ([(v.month_label, "history/" ~ p.slug ~ "/" ~ v.month)] if v.month else []) %}
 {% block title %}{{ p.name }} price history{% if v.month %}, {{ v.month_label }}{% endif %} – DoorPrice{% endblock %}
-{% block description %}{% if v.month %}Every store price change for the {{ p.name }} in {{ v.month_label }}.{% else %}How the {{ p.name }}'s price has changed at each store over the last {{ v.window }} days, checked every hour.{% endif %}{% endblock %}
+{% block description %}{% if v.month %}Every store price change for the {{ p.name }} in {{ v.month_label }}.{% else %}How the {{ p.name }}'s price has changed at each store over the last {{ v.window }} days, checked several times a day.{% endif %}{% endblock %}
 {% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="{{ root }}feeds/{{ p.slug }}.xml">{% endblock %}
 {% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
 {% block og_alt %}{{ p.name }} on DoorPrice: price history{% endblock %}
@@ -24,7 +24,7 @@
   <p class="lead">
     {%- if v.month %}Every price and stock change in {{ v.month_label }}, as the store listed it, converted to euro.
     {%- else %}Every price and stock change in the last {{ v.window }} days{% if v.since %} (we have recorded this phone since {{ v.since }}){% endif %}, as the store listed it, converted to euro.{% endif %}
-    Prices are checked every hour; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
+    Prices are checked several times a day; last update <time datetime="{{ updated }}">{{ updated_label }}</time>.
     <a href="{{ root }}feeds/{{ p.slug }}.xml">Follow price changes (RSS)</a></p>
   <div class="actions"><button type="button" class="share" hidden>Share</button></div>
   {{ monthnav(v, p, root) }}
@@ -55,7 +55,7 @@
       {%- for c in d.lines %}<li{% if c.dir %} class="{{ c.dir }}"{% endif %}><span class="hm">{{ c.hm }}</span><span class="tx">{{ c.text }}</span></li>{% endfor %}
     </ul>
     {%- else %}
-    <p class="empty-note">{% if not v.has_rows %}No price history recorded yet. It will appear here after the next hourly check.{% elif v.month %}No price changes this month{% else %}No price changes in the last {{ v.window }} days{% endif %}.</p>
+    <p class="empty-note">{% if not v.has_rows %}No price history recorded yet. It will appear here after the next check.{% elif v.month %}No price changes this month{% else %}No price changes in the last {{ v.window }} days{% endif %}.</p>
     {%- endfor %}
   </section>
   {%- endfor %}

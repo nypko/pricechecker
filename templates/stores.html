@@ -7,7 +7,7 @@
 <div class="wrap spage" id="stores">
   <p class="kicker"><a href="{{ root }}">All phones</a></p>
   <h1>Import phone <em>stores</em></h1>
-  <p class="lead">The {{ store_pages|length }} stores DoorPrice checks every hour, side by side. Terms come from each store's own pages and are dated;
+  <p class="lead">The {{ store_pages|length }} stores DoorPrice checks several times a day, side by side. Terms come from each store's own pages and are dated;
     prices are the stores' lowest in-stock prices, before shipping and tax.</p>
   <div class="chips js-only" id="chips" role="group" aria-label="Filter stores by delivery">
     {%- for k, label in chips %}<button type="button" data-f="{{ k }}" aria-pressed="false">{{ label }} <span class="n">{{ counts[k] }}</span></button>{% endfor -%}

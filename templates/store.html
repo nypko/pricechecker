@@ -5,7 +5,7 @@
 {% set crumbs = [("Stores", "stores"), (sp.label, "stores/" ~ sp.name)] %}
 {% set cur = stores|selectattr("name", "equalto", sp.name)|first %}
 {% block title %}{{ sp.label }} review: shipping, import tax and warranty [{{ month }}] – DoorPrice{% endblock %}
-{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping, import tax, payment fees, warranty and returns for the EU, UK, US, Canada and Australia, and its prices on {{ sp.phones|length }} phones, checked hourly.{% endblock %}
+{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping, import tax, payment fees, warranty and returns for the EU, UK, US, Canada and Australia, and its prices on {{ sp.phones|length }} phones.{% endblock %}
 {% macro shiprows(cells, skip_unlisted=false) %}
   {%- for c in cells if not (skip_unlisted and c.cost == "not listed") %}
     <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>
@@ -20,7 +20,7 @@
   <h1>{{ sp.label }}</h1>
   <p class="lead">{% if t.reviews %}★ <b class="num">{{ "%.1f"|format(t.reviews.score) }}</b> on <a href="{{ t.reviews.url }}" rel="nofollow noopener">{{ t.reviews.source }}</a>
     ({{ "{:,}".format(t.reviews.count) }} reviews){% endif %}{% if t.warranty_months %} · {{ t.warranty_months }}-month store warranty{% endif %}{% if t.returns_days %} · {{ t.returns_days }}-day returns{% endif %}.
-    {% if sp.phones %}Lowest store price on {{ sp.n_cheapest }} of the {{ sp.phones|length }} phones it has in stock.{% else %}Prices appear here after the next hourly check.{% endif %}
+    {% if sp.phones %}Lowest store price on {{ sp.n_cheapest }} of the {{ sp.phones|length }} phones it has in stock.{% else %}Prices appear here after the next check.{% endif %}
     {% if t.checked %}<span class="muted">Terms checked {{ t.checked }}.</span>{% endif %}</p>
   {%- if cur and not cur.terms_ok %}<p class="alert">The store's terms pages changed and are being reviewed; the terms below may be out of date.</p>{% endif %}
   {%- if sp.google_play %}<p>{{ sp.label }}: {{ sp.google_play[0]|lower }}{{ sp.google_play[1:] }} on China-version phones.</p>{% endif %}

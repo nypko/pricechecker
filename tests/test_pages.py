@@ -123,7 +123,7 @@ def _title_rules(p, month):
     n = p["n_stores"]
     desc = (f"{p['name']}" + ((f" from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
             + f": compare {n} store{'s' if n != 1 else ''}" + (", Global and China versions side by side" if len(eds) > 1 else "")
-            + ", with payment fees, shipping and import tax worked in. Updated hourly.")
+            + ", with payment fees, shipping and import tax worked in. Updated several times a day.")
     alt = f"{p['name']} on DoorPrice" + ((f": from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
     return title, desc, alt
 
@@ -1381,3 +1381,24 @@ def test_phone_page_data_attributes_are_valid_json(monkeypatch):
         assert set(b) == {"china", "global"} and all(v is None or set(v) == {"lte", "nr"} for v in b.values())
         assert set(c) == set(__import__("pricechecker.carriers", fromlist=["x"]).COUNTRIES)
         assert (b["global"] is None) == (bands != "both") and (b["china"] is None) == (bands == "none")
+
+
+@live
+def test_no_hourly_claims(site_build):
+    """Prices are checked several times a day; nothing a visitor or search engine reads says hourly (spec §8)."""
+    bad = []
+    for f in [*site_build.rglob("*.html"), *site_build.rglob("*.xml")]:
+        t = html.unescape(re.sub(r"<script\b.*?</script>", " ", f.read_text(), flags=re.DOTALL))
+        if re.search(r"(?i)\bevery hour\b|\bhourly\b", t):
+            bad.append(f.relative_to(site_build).as_posix())
+    assert not bad, bad[:10]
+
+
+def test_telegram_intro_and_cards_say_several_times_a_day():
+    import inspect
+
+    from pricechecker import telegram
+    from pricechecker.site import cards
+    for mod in (telegram, cards):
+        src = inspect.getsource(mod)
+        assert "every hour" not in src and "several times a day" in src

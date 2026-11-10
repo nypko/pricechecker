@@ -21,7 +21,7 @@
   {%- for name, href in crumbs %},{"@type":"ListItem","position":{{ loop.index + 1 }},"name":{{ name|tojson }},"item":{{ (base ~ "/" ~ href)|tojson }}}{% endfor %}]}</script>
 {% endif %}
 {% endif %}
-<meta name="description" content="{% block description %}Hourly price comparison for flagship phones across Wonda Mobile, Trading Shenzhen, Giztop and more.{% endblock %}">
+<meta name="description" content="{% block description %}Flagship phone prices compared across Wonda Mobile, Trading Shenzhen, Giztop and more, checked several times a day.{% endblock %}">
 {#- the first view's faces: body text (Albert Sans 400) and the H1 (Schibsted Grotesk 800); the logo is an SVG outline -#}
 <link rel="preload" href="{{ root }}static/fonts/albert-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ root }}static/fonts/schibsted-grotesk-800.woff2" as="font" type="font/woff2" crossorigin>

@@ -178,7 +178,7 @@ def check(token: str, chat: str, post: bool) -> int:
 
 WELCOME = ("👋 <b>DoorPrice price drops</b>\n\n"
            "DoorPrice compares flagship phone prices at specialist import stores, with shipping, payment fees and import "
-           "tax worked in, Global and China versions side by side. Prices are checked every hour.\n\n"
+           "tax worked in, Global and China versions side by side. Prices are checked several times a day.\n\n"
            "Here you get a post when a phone's delivered price drops by 3% or more, and when a new phone is added. "
            "Posts show the price delivered to the EU, paying by card; the site works it out for your country, "
            "currency and payment method.\n\n"

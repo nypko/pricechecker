@@ -58,7 +58,7 @@ def _base(footer: str) -> tuple[Image.Image, ImageDraw.ImageDraw]:
 def phone_card(path: Path, name: str, editions: list[tuple[str, str]], price: str | None, note: str, n_stores: int) -> None:
     """name, its versions [("global", "Global"), ("china", "China")], the headline ("from €987") and what it covers
     ("delivered to the EU" or "+ import tax, delivered to the EU")."""
-    img, d = _base(f"{n_stores} import store{'s' if n_stores != 1 else ''} compared · prices checked every hour")
+    img, d = _base(f"{n_stores} import store{'s' if n_stores != 1 else ''} compared · prices checked several times a day")
     d.text((PAD, 236), name, font=_fit(d, name, 700, 76, W - 2 * PAD), fill=INK, anchor="ls")
     x, bf = PAD, _font(700, 26)
     for ed, label in editions:   # version badges, as on the site
@@ -78,7 +78,7 @@ def phone_card(path: Path, name: str, editions: list[tuple[str, str]], price: st
 
 
 def site_card(path: Path, n_phones: int, n_stores: int) -> None:
-    img, d = _base(f"{n_phones} phones · {n_stores} stores · checked every hour")
+    img, d = _base(f"{n_phones} phones · {n_stores} stores · checked several times a day")
     f = _font(700, 64)
     d.text((PAD, 236), "What a flagship phone", font=f, fill=INK, anchor="ls")
     d.text((PAD, 312), "really costs, delivered", font=f, fill=INK, anchor="ls")

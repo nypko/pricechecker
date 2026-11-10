@@ -89,6 +89,40 @@ export function summary(phone, countryDoc, table, countryName) {
   return { counts, text: `In ${countryName}: ` + GROUPS.map((k) => parts[k]).filter((p) => p).join("; ") };
 }
 
+const SEVERITY = ["risk", "4g", "minor", "unknown", "nogaps", "full"];   // worst first: the kind the price box's line is about
+
+// {tone: good|bad|neutral|muted|pick, text}: one line for a price box, about the worst kind of network in the country:
+// "No band 20 in Bulgaria: weaker coverage indoors and outside towns", "✓ works on all 3 networks in Bulgaria"
+export function boxLine(phone, countryDoc, table, countryName) {
+  if (phone == null || ((phone.lte ?? null) === null && (phone.nr ?? null) === null)) {
+    return { tone: "muted", text: "Bands not published for this version" };
+  }
+  const nets = (countryDoc && countryDoc.networks) || [];
+  if (!nets.length) return { tone: "pick", text: "Networks: choose your country" };
+  const judged = nets.map((n) => [n, ...judge(phone, n, table)]);
+  const worst = SEVERITY.find((k) => judged.some(([, v]) => v.kind === k));
+  const group = judged.filter(([, v]) => v.kind === worst);
+  const [, v, first] = group[0];
+  const gnames = names(group.map(([n]) => n.name));
+  const where = group.length === nets.length ? `in ${countryName}` : `on ${gnames}`;
+  const m = v.missing.find((x) => label(x) === first);
+  const use = m ? m.use.split(": ").slice(1).join(": ") : "";
+  if (worst === "full") {
+    const total = nets.length;
+    return { tone: "good", text: total === 1 ? `✓ works on ${gnames}` :
+      total === 2 ? `✓ works on both networks in ${countryName}` : `✓ works on all ${total} networks in ${countryName}` };
+  }
+  if (worst === "nogaps") return { tone: "good", text: `✓ no gaps found in ${countryName}` };
+  if (worst === "risk") return { tone: "bad", text: `${first[0].toUpperCase()}${first.slice(1)} ${where}: weaker ${use}` };
+  if (worst === "4g") return { tone: "neutral", text: `No 5G ${where}` };
+  if (worst === "minor") {
+    const tail = use ? ` (${use})` : "";
+    return { tone: "neutral", text: group.length === nets.length ? `Works in ${countryName}; ${first}${tail}`
+      : `Works in ${countryName}; ${first} on ${gnames}${tail}` };
+  }
+  return { tone: "muted", text: `Bands not known ${where}` };
+}
+
 // ---- the visitor's country, the picker's names and the saved pick (pricechecker/carriers.py country_for / COUNTRY_NAMES) ----
 
 export const COUNTRY_NAMES = {

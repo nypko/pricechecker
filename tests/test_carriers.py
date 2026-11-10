@@ -11,6 +11,7 @@ import yaml
 
 from pricechecker import carriers
 
+live = pytest.mark.live
 TABLE = carriers.band_table()
 
 
@@ -504,6 +505,23 @@ def _cases():
     return nets, phones
 
 
+def test_box_line_wording():
+    bl = lambda p, *nets: carriers.box_line(p, _doc3(*nets) if nets else None, VT, "Germany")
+    assert bl(_p(), _n("A")) == {"tone": "good", "text": "✓ works on A"}
+    assert bl(_p(), _n("A"), _n("B"))["text"] == "✓ works on both networks in Germany"
+    assert bl(_p(), _n("A"), _n("B"), _n("C"))["text"] == "✓ works on all 3 networks in Germany"
+    assert bl(_p(), _n("A"), _n("B", complete=False)) == {"tone": "good", "text": "✓ no gaps found in Germany"}
+    assert bl(_p(lte=(1, 7)), _n("A"), _n("B")) == {"tone": "bad", "text": "No band 20 in Germany: weaker coverage indoors and outside towns"}
+    assert bl(_p(lte=(1, 7)), _n("A"), _n("C", lte=(1, 7)))["text"] == "No band 20 on A: weaker coverage indoors and outside towns"
+    assert bl(_p(nr=()), _n("A"), _n("B")) == {"tone": "neutral", "text": "No 5G in Germany"}
+    assert bl(_p(lte=(1, 20)), _n("A"), _n("B"))["text"] == "Works in Germany; no band 7 (extra speed in busy areas)"
+    assert bl(_p(lte=(1, 20)), _n("A"), _n("D", lte=(1, 20)))["text"] == "Works in Germany; no band 7 on A (extra speed in busy areas)"
+    assert bl(_p(), _n("A"), _n("Z", lte=None, nr=None)) == {"tone": "muted", "text": "Bands not known on Z"}
+    assert bl(None, _n("A")) == bl(_p(None, None), _n("A")) == {"tone": "muted", "text": "Bands not published for this version"}
+    assert bl(_p()) == {"tone": "pick", "text": "Networks: choose your country"}
+    assert bl(None) == {"tone": "muted", "text": "Bands not published for this version"}
+
+
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_verdict_and_summary_match_the_js(tmp_path):
     nets, phones = _cases()
@@ -518,7 +536,31 @@ def test_verdict_and_summary_match_the_js(tmp_path):
     assert got["verdicts"] == want_v
     want_s = [carriers.summary(p, _doc3(*nets[:k]), VT, names[0]) for p in phones for k in (1, 3, 7, 11)]
     assert got["summaries"] == want_s
+    want_b = [carriers.box_line(p, d, VT, None if d is None else names[0])
+              for p in phones for d in (None, *(_doc3(*nets[:k]) for k in (1, 3, 7, 11)))]
+    assert got["boxLines"] == want_b
     assert {v["kind"] for row in want_v for v in row} == {"unknown", "risk", "4g", "minor", "nogaps", "full"}
+
+
+@live
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_box_line_matches_the_js_on_every_real_sheet_and_country(tmp_path):
+    from pricechecker import specs
+    table = carriers.band_table()
+    cases = []   # one entry per (sheet, version, country): the JS side reads the same documents
+    for sheet in specs.load().values():
+        for ver in ("china", "global"):
+            for cc, doc in carriers.load().items():
+                cases.append({"phone": (sheet.get("bands") or {}).get(ver), "doc": doc, "name": carriers.COUNTRY_NAMES[cc]})
+    assert cases
+    f = tmp_path / "live.json"
+    f.write_text(json.dumps({"cases": cases, "table": table}, default=str))
+    js = ('import {readFileSync} from "node:fs"; import {boxLine} from "./static/js/carriers.js";'
+          f'const {{cases, table}} = JSON.parse(readFileSync({json.dumps(str(f))}, "utf8"));'
+          'console.log(JSON.stringify(cases.map((c) => boxLine(c.phone, c.doc, table, c.name))));')
+    r = subprocess.run(["node", "--input-type=module", "-e", js], check=False, capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout) == [carriers.box_line(c["phone"], c["doc"], table, c["name"]) for c in cases]
 
 
 def test_country_for_settings_python():

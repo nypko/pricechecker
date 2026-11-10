@@ -277,3 +277,38 @@ def summary(phone: dict | None, country_doc: dict, table: dict, country_name: st
         "unknown": f"bands unknown on {_names(groups['unknown'])}" if groups["unknown"] else "",
     }
     return {"counts": counts, "text": f"In {country_name}: " + "; ".join(parts[k] for k in GROUPS if parts[k])}
+
+
+SEVERITY = ("risk", "4g", "minor", "unknown", "nogaps", "full")   # worst first: the kind the price box's line is about
+
+
+def box_line(phone: dict | None, country_doc: dict | None, table: dict, country_name: str | None) -> dict:
+    """{tone: good|bad|neutral|muted|pick, text}: one line for a price box, about the worst kind of network in the country:
+    "No band 20 in Bulgaria: weaker coverage indoors and outside towns", "✓ works on all 3 networks in Bulgaria"."""
+    if phone is None or (phone.get("lte") is None and phone.get("nr") is None):
+        return {"tone": "muted", "text": "Bands not published for this version"}
+    nets = (country_doc or {}).get("networks") or []
+    if not nets:
+        return {"tone": "pick", "text": "Networks: choose your country"}
+    judged = [(n, *_judge(phone, n, table)) for n in nets]
+    worst = next(k for k in SEVERITY if any(v["kind"] == k for _, v, _ in judged))
+    group = [(n, v, first) for n, v, first in judged if v["kind"] == worst]
+    _, v, first = group[0]
+    names = _names([n["name"] for n, _, _ in group])
+    where = f"in {country_name}" if len(group) == len(nets) else f"on {names}"
+    use = next((m["use"].partition(": ")[2] for m in v["missing"] if _label(m) == first), "")
+    if worst == "full":
+        total = len(nets)
+        return {"tone": "good", "text": f"✓ works on {names}" if total == 1 else
+                f"✓ works on both networks in {country_name}" if total == 2 else f"✓ works on all {total} networks in {country_name}"}
+    if worst == "nogaps":
+        return {"tone": "good", "text": f"✓ no gaps found in {country_name}"}
+    if worst == "risk":
+        return {"tone": "bad", "text": f"{first[0].upper()}{first[1:]} {where}: weaker {use}"}
+    if worst == "4g":
+        return {"tone": "neutral", "text": f"No 5G {where}"}
+    if worst == "minor":
+        tail = f" ({use})" if use else ""
+        return {"tone": "neutral", "text": f"Works in {country_name}; {first}{tail}" if len(group) == len(nets)
+                else f"Works in {country_name}; {first} on {names}{tail}"}
+    return {"tone": "muted", "text": f"Bands not known {where}"}

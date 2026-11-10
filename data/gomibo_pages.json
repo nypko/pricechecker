@@ -1627,28 +1627,6 @@
 "ram_mb": 16384
 }
 },
-"https://www.gomibo.de/oppo-find-x10-pro-max/512gb-weiss": {
-"lastmod": "",
-"fetched": "2026-11-09T08:37:36+00:00",
-"info": {
-"name": "OPPO Find X10 Pro Max 16GB/512GB Wei\u00df",
-"price": 1561.0,
-"currency": "EUR",
-"available": true,
-"ram_mb": 16384
-}
-},
-"https://www.gomibo.de/oppo-find-x10-pro-max/512gb-grau": {
-"lastmod": "",
-"fetched": "2026-11-09T08:37:36+00:00",
-"info": {
-"name": "OPPO Find X10 Pro Max 16GB/512GB Grau",
-"price": 1553.0,
-"currency": "EUR",
-"available": true,
-"ram_mb": 16384
-}
-},
 "https://www.gomibo.de/oppo-find-x10/256gb-grau": {
 "lastmod": "",
 "fetched": "2026-11-09T22:54:03+00:00",
@@ -1886,6 +1864,50 @@
 "info": {
 "name": "vivo X500 Pro 12GB/256GB Wei\u00df",
 "price": 1326.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500-pro-max/512gb-grau": {
+"lastmod": "",
+"fetched": "2026-11-10T02:46:53+00:00",
+"info": {
+"name": "vivo X500 Pro Max 12GB/512GB Grau",
+"price": 1648.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500-pro-max/512gb-orange": {
+"lastmod": "",
+"fetched": "2026-11-10T02:46:53+00:00",
+"info": {
+"name": "vivo X500 Pro Max 12GB/512GB Orange",
+"price": 1654.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500/512gb-schwarz": {
+"lastmod": "",
+"fetched": "2026-11-10T02:46:53+00:00",
+"info": {
+"name": "vivo X500 12GB/512GB Schwarz",
+"price": 1324.0,
+"currency": "EUR",
+"available": false,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500/512gb-weiss": {
+"lastmod": "",
+"fetched": "2026-11-10T02:46:53+00:00",
+"info": {
+"name": "vivo X500 12GB/512GB Wei\u00df",
+"price": 1324.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288

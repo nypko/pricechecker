@@ -102,7 +102,6 @@ giztop	honor-600-pro/china
 giztop	honor-600-super-edition/china
 giztop	honor-600-vitality-edition/china
 giztop	honor-gt-pro/china
-giztop	honor-gt/china
 giztop	honor-gt2-pro/china
 giztop	honor-magic-7-pro/china
 giztop	honor-magic-7-rsr-porsche-design/china

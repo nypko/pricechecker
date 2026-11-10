@@ -139,8 +139,6 @@ giztop	huawei-mate-x6/china
 giztop	huawei-mate-x7-collector-s-edition/china
 giztop	huawei-mate-xt-2-ultimate-design-lingdun-privacy-screen/china
 giztop	huawei-mate-xts-ultimate-design/china
-giztop	huawei-matebook-pro-2026-kirin-x90-plus/china
-giztop	huawei-matepad-air-2026-joy-edition/china
 giztop	huawei-matepad-air-2026/china
 giztop	huawei-nova-14-pro/china
 giztop	huawei-nova-14-ultra/china
@@ -280,5 +278,4 @@ giztop	xiaomi-15-diamond-limited-edition/china
 giztop	xiaomi-15-pro/china
 giztop	xiaomi-15-ultra/china
 giztop	xiaomi-15/china
-giztop	xiaomi-17-ultra-by-leica-edition/china
 giztop	xiaomi-civi-5-pro/china

@@ -50,7 +50,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1210.56
+   "ref": 1217.3
   },
   "honor-magic-v6": {
    "left": "",
@@ -58,7 +58,7 @@
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1721.14
+   "ref": 1730.82
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -326,11 +326,11 @@
   },
   "samsung-galaxy-z-fold-8": {
    "left": "",
-   "ref": 1368.95
+   "ref": 1373.95
   },
   "samsung-galaxy-z-fold-8-ultra": {
    "left": "",
-   "ref": 1384.95
+   "ref": 1388.95
   },
   "sony-xperia-1-viii": {
    "left": "",
@@ -421,5 +421,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-11-10T10:42:06Z"
+ "updated": "2026-11-10T18:49:07Z"
 }

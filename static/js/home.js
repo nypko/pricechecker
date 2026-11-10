@@ -97,7 +97,7 @@ const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { retur
 
 function wire(root) {
   const $ = (id) => document.getElementById(id);
-  const files = json(root.dataset.files, {}), list = $("list"), q = $("q");
+  const files = json(root.dataset.files, {}), list = $("list"), q = $("hq");
   const phones = json($("home-meta").textContent, []);
   const stock = new Map(phones.map((p) => [p.id, p.s || {}]));   // the server's default-settings summaries
   const dflt = new Map([...list.children].map((li) => [li.dataset.id, li]));   // and its rows
@@ -211,9 +211,8 @@ function wire(root) {
   });
   window.addEventListener("pageshow", (e) => { if (e.persisted) render(); });   // back from a phone page after watching it
 
-  // ---- the header's search button: on this page it just puts the cursor in the search ----
-  const hb = document.querySelector('.top .icon-btn');
-  if (hb) hb.addEventListener("click", (e) => { e.preventDefault(); q.focus(); q.scrollIntoView({ block: "center" }); });
+  // ---- the header's search form: filtering is live, so Enter must not reload the page ----
+  q.form.addEventListener("submit", (e) => { e.preventDefault(); q.blur(); });
 
   // ---- "?q=<text>" fills and applies the search, "#search" focuses it ----
   const params = new URLSearchParams(location.search), qp = params.get("q") || "";

@@ -180,6 +180,12 @@ export function openSheet() {
 function wire() {
   document.documentElement.classList.remove("no-js");
   const d = dialog();
+  // the header's search field: the long hint only where it fits
+  const hq = document.getElementById("hq"), wide = window.matchMedia && window.matchMedia("(min-width: 640px)");
+  if (hq && wide) {
+    const hint = () => { hq.placeholder = wide.matches ? hq.dataset.wide : "Search phones"; };
+    hint(); wide.addEventListener("change", hint);
+  }
   document.querySelectorAll("[data-prefs]").forEach((b) => b.addEventListener("click", openSheet));
   if (d) {
     const form = d.querySelector("form");

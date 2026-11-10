@@ -81,7 +81,7 @@ def test_every_page_has_the_shell(site_build):
         assert "Other countries and payment methods need JavaScript" in html, f
         assert "Delivered = store price" in html, f
         assert 'type="module" src=' in html and "js/settings.js?v=" in html, f
-        assert 'aria-label="Search phones"' in html, f
+        assert 'for="hq" class="sr-only">Search phones<' in html, f
 
 
 # ---- phone page (spec §5.2) ----
@@ -225,7 +225,7 @@ def _home(site_build):
 def test_home_sections(site_build):
     h = _home(site_build)
     assert "China version or Global? <em>Both prices, delivered.</em>" in h and "data-for" in h
-    assert re.search(r'<input id="q" type="search" placeholder="Which phone\? e\.g\. “x9 ultra”"', h)
+    assert re.search(r'<input id="hq" name="q" type="search" placeholder="Search phones" data-wide="Which phone\? e\.g\. “x9 ultra”"', h)
     assert re.search(r'<a class="teaser" href="drops">\s*<b>\d+ price drops? this week</b>', h)
     chips = h[h.index('id="chips"'):h.index('id="sorts"')]
     for label in (">All<", ">Both versions<", ">China<", ">Global<", "Watched (<span"):
@@ -797,24 +797,25 @@ def test_headings_never_skip_a_level(site_build):
     assert not bad, bad[:10]
 
 
-def test_home_search_links_resolve_to_home(site_build):
-    """The header's search button links to the home search ("?q="). Resolved the way a browser does, against the URL
-    the page is served at (Pages drops .html): on /about a bare "?q=" would stay on /about (2026-11-09 bug)."""
+@live
+def test_header_search_form_on_every_page_resolves_to_home(site_build):
+    """One search field in every page's header; its form submits to the home page from wherever the page is served
+    (Pages drops .html; /404.html is served at any path)."""
     from urllib.parse import urljoin, urlsplit
-    n, bad = 0, []
+    bad = []
     for f in site_build.rglob("*.html"):
         rel = f.relative_to(site_build).as_posix()
         if rel.startswith("mock/"):
             continue
+        h = f.read_text()
         served = "https://x.test/" + ("" if rel == "index.html" else rel.removesuffix(".html"))
         if rel == "404.html":
-            served = "https://x.test/some/missing/page"   # served at any path
-        for href in _href_targets(f.read_text()):
-            if "?q=" in href and not href.startswith(("http", "mailto")):
-                n += 1
-                if urlsplit(urljoin(served, html.unescape(href))).path != "/":
-                    bad.append((rel, href))
-    assert n >= 1 and not bad, bad[:10]
+            served = "https://x.test/some/missing/page"
+        forms = re.findall(r'<form class="hsearch" role="search" action="([^"]*)" method="get">', h)
+        if len(forms) != 1 or 'id="hq" name="q"' not in h or urlsplit(urljoin(served, html.unescape(forms[0]))).path != "/":
+            bad.append(rel)
+    assert not bad, bad[:10]
+    assert 'id="q"' not in (site_build / "index.html").read_text()   # the hero search box is gone
 
 
 def _store_hosts():

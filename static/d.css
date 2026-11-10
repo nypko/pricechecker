@@ -77,8 +77,6 @@ header.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srg
 .top .wrap { display: flex; align-items: center; gap: 10px; min-height: 58px; }
 .top a.home { text-decoration: none; }
 .prefs { margin-left: auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .86rem var(--body); cursor: pointer; }
-.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); }
-.icon-btn svg { width: 17px; height: 17px; }
 
 .kicker { font: 600 .78rem var(--body); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); margin: 22px 0 6px; }
 .kicker a { color: var(--ink-2); }
@@ -403,13 +401,15 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 @media (prefers-reduced-motion: no-preference) { header.top { transition: transform .2s ease; } }
 header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
 /* logo and nav on the left; search and the settings button on the right */
-.top .icon-btn { margin-left: auto; }
+.hsearch { margin-left: auto; flex: 1 1 0; max-width: 460px; min-width: 0; }
+.hsearch input { width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .86rem var(--body); }
+.hsearch input::placeholder { color: var(--ink-2); opacity: 1; }
+.hsearch input:focus { outline: none; border-color: var(--ink); }
 .top .prefs { margin-left: 0; white-space: nowrap; }
 .for { margin: -4px 0 14px; font-size: .92rem; color: var(--ink-2); }
 .foot-links a { white-space: nowrap; }
 @media (max-width: 420px) {
   .top .wrap { gap: 6px; } .topnav { gap: 10px; font-size: .84rem; } .prefs { padding: 0 10px; font-size: .8rem; }
-  .icon-btn { width: 36px; height: 36px; }
 }
 /* phones: the nav gets its own row under logo, search and settings, so the settings label never wraps */
 @media (max-width: 520px) {
@@ -417,6 +417,8 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
   .topnav { order: 3; width: 100%; margin-left: 0; gap: 18px; }
   .topnav a { padding: 6px 0 8px; }
 }
+/* phones: the field takes the free width between the logo and the settings button */
+@media (max-width: 639px) { .hsearch { min-width: 120px; max-width: none; } }
 
 /* ---- phone page (templates/phone.html) ---- */
 [hidden] { display: none !important; }

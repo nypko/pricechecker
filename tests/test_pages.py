@@ -113,12 +113,13 @@ def test_phone_page_sections(site_build):
     assert 'id="offers"' not in h   # the offers come from the v1 file, not the HTML
 
 
-def _old_title_rules(p, month):
-    """The live title, description and share-card text rules, written out (templates/phone.html before the rewrite)."""
+def _title_rules(p, month):
+    """The title, description and share-card text rules, written out: name and price first, then "China vs Global"."""
     L, eds, tp = p["ed_label"], p["editions"], p["title_price"]
-    kind = f"price in {L['china']} vs Global" if len(eds) > 1 else (f"{L['china']} version price" if "china" in eds else "price")
+    kind = f"{L['china']} version price" if eds == ["china"] else "price"
     frm = (f": from €{tp[0]:,.0f}" + (" delivered" if tp[1] else "")) if tp else ""
-    title = f"{p['name']} {kind}{frm} [{month}] – DoorPrice"
+    versus = f", {L['china']} vs Global" if len(eds) > 1 else ""
+    title = f"{p['name']} {kind}{frm}{versus} [{month}] – DoorPrice"
     n = p["n_stores"]
     desc = (f"{p['name']}" + ((f" from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
             + f": compare {n} store{'s' if n != 1 else ''}" + (", Global and China versions side by side" if len(eds) > 1 else "")
@@ -128,7 +129,7 @@ def _old_title_rules(p, month):
 
 
 @live
-def test_phone_title_rules_unchanged(site_build):
+def test_phone_title_rules(site_build):
     from pricechecker import fx, run, terms
     from pricechecker.site import context, offers
     stores, catalog = run.load_config()
@@ -140,7 +141,7 @@ def test_phone_title_rules_unchanged(site_build):
         h = _phone(site_build, pid)
         got = [html.unescape(re.search(pat, h, re.DOTALL)[1]) for pat in
                (r"<title>(.*?)</title>", r'<meta name="description" content="(.*?)">', r'og:image:alt" content="(.*?)">')]
-        assert got == list(_old_title_rules(phones[pid], month)), pid
+        assert got == list(_title_rules(phones[pid], month)), pid
 
 
 @live
@@ -1023,7 +1024,7 @@ def test_default_pick_total_is_the_title_price_on_made_up_prices():
     for pid in ids:
         h = out[f"phones/{pid}.html"]
         _memory_first(h)
-        title = re.search(r"<title>.*?: from €([\d,]+)", h)[1]
+        title = re.search(r"<title>.*?: from €(\d[\d,]*\d|\d)", h)[1]
         panel = h[h.index('id="pick-panel"'):]
         total = re.search(r'<div class="total num">[≈]?€([\d,]+)', panel)[1]
         assert total == title, pid

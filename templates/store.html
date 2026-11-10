@@ -4,8 +4,8 @@
 {% set t = sp.trust %}
 {% set crumbs = [("Stores", "stores"), (sp.label, "stores/" ~ sp.name)] %}
 {% set cur = stores|selectattr("name", "equalto", sp.name)|first %}
-{% block title %}{{ sp.label }} review: shipping, import tax, warranty and prices [{{ month }}] – DoorPrice{% endblock %}
-{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping cost and time to the EU, UK, US, Canada and Australia, who pays import tax, payment fees, warranty and returns, and its prices on {{ sp.phones|length }} flagship phones, checked hourly.{% endblock %}
+{% block title %}{{ sp.label }} review: shipping, import tax and warranty [{{ month }}] – DoorPrice{% endblock %}
+{% block description %}{{ sp.label }}{% if t.reviews %} (★ {{ "%.1f"|format(t.reviews.score) }} on {{ t.reviews.source }}){% endif %}: shipping, import tax, payment fees, warranty and returns for the EU, UK, US, Canada and Australia, and its prices on {{ sp.phones|length }} phones, checked hourly.{% endblock %}
 {% macro shiprows(cells, skip_unlisted=false) %}
   {%- for c in cells if not (skip_unlisted and c.cost == "not listed") %}
     <tr><th scope="row">{{ c.label }}</th><td>{{ c.cost }}</td><td>{{ c.days or ("–" if not c.ships else "not stated") }}</td>

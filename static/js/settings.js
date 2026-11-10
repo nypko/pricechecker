@@ -4,6 +4,7 @@
 // The pure parts take storage / time zone / language as arguments, so node tests import this file; every DOM and
 // window access is guarded. No dynamic import().
 import { DEFAULT } from "./view.js";
+import { agoText } from "./ago.js";
 
 const REGIONS = ["EU", "UK", "US", "CA", "AU", "Global"];
 const SYMBOL = { eur: "€", gbp: "£", usd: "$", cad: "C$", aud: "A$" };
@@ -103,9 +104,13 @@ export const label = (s) => `${s.area || (s.region === "Global" ? "World" : s.re
 
 /** "Delivered to Bulgaria by card"; names = {countries: {BG: "Bulgaria"}, provinces: {QC: "Quebec"}} */
 export function forLine(s, names = {}) {
+  return `Delivered to ${placeOf(s, names)} by ${PAY_BY[s.pay]}`;
+}
+
+/** "Bulgaria" / "Quebec" (the picked country or province), else "the EU", "Canada", "your country"... */
+export function placeOf(s, names = {}) {
   const list = s.region === "EU" ? names.countries : s.region === "CA" ? names.provinces : null;
-  const place = (list && list[s.area]) || PLACE[s.region] || PLACE.Global;
-  return `Delivered to ${place} by ${PAY_BY[s.pay]}`;
+  return (list && list[s.area]) || PLACE[s.region] || PLACE.Global;
 }
 
 // ---- watched phones: pc-watch = {"<id>": true} (older entries hold an object; any truthy value counts) ----
@@ -125,13 +130,26 @@ function namesOf(d) {
   try { return { countries: JSON.parse(d.dataset.countries || "{}"), provinces: JSON.parse(d.dataset.provinces || "{}") }; } catch (e) { return {}; }
 }
 
-/** Paint the header button and every [data-for] line from the saved settings. */
+/** Every time[data-ago] says how long ago its datetime was; the build's text stays when the date does not parse. */
+function paintAgo() {
+  document.querySelectorAll("time[data-ago]").forEach((t) => {
+    const text = agoText(t.getAttribute("datetime"), Date.now());
+    if (text !== null) t.textContent = text;
+  });
+}
+
+/** Paint the header button, every [data-place] and [data-for] and the "ago" times from the saved settings and the clock. */
 export function refresh() {
   if (typeof document === "undefined") return;
   const s = load(), d = dialog(), names = d ? namesOf(d) : {};
   // only the visible part changes: the button's sr-only ", delivery settings, change" stays, so its name keeps the label
   document.querySelectorAll("[data-prefs] [data-prefs-label]").forEach((t) => { t.textContent = label(s); });
-  document.querySelectorAll("[data-for]").forEach((p) => { p.textContent = forLine(s, names); });
+  document.querySelectorAll("[data-place]").forEach((p) => { p.textContent = placeOf(s, names); });
+  document.querySelectorAll("[data-for]").forEach((p) => {
+    const line = forLine(s, names);
+    p.textContent = p.dataset.for === "lower" ? line.charAt(0).toLowerCase() + line.slice(1) : line;
+  });
+  paintAgo();
 }
 
 function fillSheet(d, s) {
@@ -183,6 +201,7 @@ function wire() {
   }
   window.addEventListener("dp:settings", refresh);
   window.addEventListener("storage", refresh);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") paintAgo(); });
   refresh();
   hideOnScroll();
 }

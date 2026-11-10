@@ -96,6 +96,7 @@ def page_context(data: SiteData, phones: list[dict]) -> dict:
     ver.update({f"js/{n}": h for n, (_, h) in assets.versioned_modules(Path("static/js")).items()})   # hash of the rewritten module
     return {"asset_v": ver, "updated": upd, "updated_label": upd_label, "fx_date": data.rates_info.get("date"),
             "stores": [{"name": s, "label": c.get("label", s), "ok": latest["stores"].get(s, {}).get("ok"), "part_of": c.get("part_of"),
+                        "score": ((c.get("trust") or {}).get("reviews") or {}).get("score"),
                         "error": latest["stores"].get(s, {}).get("error", ""), "count": len(latest["stores"].get(s, {}).get("offers", [])),
                         "terms_ok": terms_status.get(s, {}).get("ok", True), "notes": terms.notes(c),
                         "pay": {m: terms.payment_pct(c, m) for m in terms.METHODS},

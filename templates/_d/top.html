@@ -1,0 +1,25 @@
+{#- The top of the home page: what DoorPrice is, who it compares and when it last looked. Spec: trust-top design (B1). -#}
+
+{#- "checked 40 min ago": settings.js repaints time[data-ago] from its datetime; the build's label stays without JS -#}
+{%- macro ago_time(updated, label) -%}<time datetime="{{ updated }}" data-ago>{{ label }}</time>{%- endmacro -%}
+
+{#- stores that answered in the last check, best rated first; an EU warehouse is its store's, not another store -#}
+{%- macro home_intro(stores, updated, updated_label, root) -%}
+{%- set answering = stores|rejectattr("ok", "none")|rejectattr("part_of")|sort(attribute="label")|list -%}
+{%- set shown = answering|selectattr("score")|sort(attribute="score", reverse=true)|list + answering|rejectattr("score")|list -%}
+<section class="hero intro">
+  <h1>What imported flagship phones really cost, <em>delivered to your door.</em></h1>
+  <p class="lede">DoorPrice compares <b>{{ shown|length }} import stores</b> several times a day and adds shipping, payment fees and import tax for <b data-place>the EU</b>. We don't sell phones.</p>
+  <div class="storechips" aria-label="Stores compared, with their Trustpilot score">
+    {%- for st in shown %}
+    {%- if st.name in v.store_pages %}<a class="chip" href="{{ root }}stores/{{ st.name }}">{{ st.label }}{% if st.score %} <b>★{{ "%.1f"|format(st.score) }}</b>{% endif %}</a>
+    {%- else %}<span class="chip">{{ st.label }}{% if st.score %} <b>★{{ "%.1f"|format(st.score) }}</b>{% endif %}</span>{% endif %}
+    {%- endfor %}
+  </div>
+  {{ home_checked(updated, updated_label, root) }}
+</section>
+{%- endmacro -%}
+
+{%- macro home_checked(updated, updated_label, root) -%}
+<p class="checked"><span class="dot" aria-hidden="true">●</span> Prices checked {{ ago_time(updated, updated_label) }} · Affiliate links never change the order · <a href="{{ root }}about">How it works</a></p>
+{%- endmacro -%}

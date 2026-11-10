@@ -224,9 +224,9 @@ def _home(site_build):
 @live
 def test_home_sections(site_build):
     h = _home(site_build)
-    assert "China version or Global? <em>Both prices, delivered.</em>" in h and "data-for" in h
+    assert "What imported flagship phones really cost, <em>delivered to your door.</em>" in h and 'class="hero intro"' in h
     assert re.search(r'<input id="hq" name="q" type="search" placeholder="Search" data-wide="Which phone\? e\.g\. “x9 ultra”"', h)
-    assert re.search(r'<a class="teaser" href="drops">\s*<b>\d+ price drops? this week</b>', h)
+    assert re.search(r'<a class="teaser" href="drops">\s*<b>↓ \d+ price drops? this week</b>', h)
     chips = h[h.index('id="chips"'):h.index('id="sorts"')]
     for label in (">All<", ">Both versions<", ">China<", ">Global<", "Watched (<span"):
         assert label in chips, label
@@ -338,7 +338,7 @@ def _drops(site_build):
 def test_drops_page_lists_what_the_home_page_counts(site_build):
     h, home = _drops(site_build), _home(site_build)
     n = len(re.findall(r'<li class="drop" ', h))
-    m = re.search(r"<b>(\d+) price drops? this week</b>", home)
+    m = re.search(r"<b>↓ (\d+) price drops? this week</b>", home)
     assert n == (int(m.group(1)) if m else 0)
     assert '<link rel="canonical"' in h and "feeds/drops.xml" in h and "https://t.me/DoorPriceDeals" in h
     assert h.count('data-block="store_row"') == n   # every row's current total is the store_row block
@@ -346,11 +346,28 @@ def test_drops_page_lists_what_the_home_page_counts(site_build):
     assert entries == n
 
 
-def test_home_teaser_names_the_rule_it_counts_by(site_build):
+def test_price_drop_rule_is_on_the_drops_page_not_the_home_page(site_build):
     from pricechecker import derive
-    home = _home(site_build)
-    if "class=\"teaser\"" in home:
-        assert f"cheaper by {derive.MIN_PCT}% and €{derive.MIN_EUR} or more" in home
+    rule = f"{derive.MIN_PCT}% and €{derive.MIN_EUR}"
+    assert rule in text_of(_drops(site_build))
+    assert "cheaper by" not in _home(site_build) and rule not in text_of(_home(site_build))
+
+
+def test_home_intro_says_what_doorprice_is():
+    from pricechecker.site.pages import home
+    data, phones, env, ctx = _made_up([("wonda", "oppo-find-x9-ultra", "china", "12/256", 1000.0, True),
+                                       ("giztop", "oppo-find-x9-ultra", "global", "12/256", 1300.0, True),
+                                       ("mobilemarvel", "oneplus-16", "china", "12/256", 900.0, True)])
+    h = home.render(env, data, ctx, phones)["index.html"]
+    t = re.sub(r" ([.,])", r"\1", text_of(h))   # text_of puts a space where an inline tag closes: "the EU ."
+    assert "What imported flagship phones really cost, delivered to your door." in t
+    assert ("DoorPrice compares 3 import stores several times a day and adds shipping, payment fees and import tax "
+            "for the EU. We don't sell phones.") in t
+    chips = re.findall(r'<a class="chip" href="stores/(\w+)">([^<]+)<b>★([\d.]+)</b>', h)
+    assert [c[1].strip() for c in chips] == ["The Mobile Marvel", "Wonda Mobile", "Giztop"]
+    assert f'<time datetime="{data.latest["updated"]}" data-ago>' in h
+    assert "Affiliate links never change the order" in t and 'href="about">How it works</a>' in h
+    assert "China version or Global?" not in t and 'data-for' not in h.split('id="list"')[0]
 
 
 def test_drops_page_is_in_the_sitemap_and_loads_its_module(site_build):
@@ -1051,7 +1068,7 @@ def test_home_drop_mark_and_teaser_on_made_up_drops():
     from pricechecker.site.pages import home
     data, phones, env, ctx, picks = _synthetic(2, 10, 1, (5, 2), (50, 20))
     h = home.render(env, data, ctx, phones)["index.html"]
-    assert re.search(r'<a class="teaser" href="drops">\s*<b>1 price drop this week</b>', h)
+    assert re.search(r'<a class="teaser" href="drops">\s*<b>↓ 1 price drop this week</b>', h)
     meta = json.loads(re.search(r'id="home-meta">(.*?)</script>', h, re.DOTALL).group(1))
     assert [m["id"] for m in meta if m.get("drop")] == [picks[0][0]["id"]]
     assert _home_row(h, picks[0][0]["id"]).endswith('</a><span class="marks"><span class="mark drop">↓ this week</span></span>')

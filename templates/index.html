@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "_d/blocks.html" as b %}
-{% import "_d/shell.html" as shell with context %}
+{% import "_d/top.html" as top with context %}
 {#- Spec §5.1. Every phone row is the home_row block rendered for the default settings from v.rows (pages/home.py);
     static/js/home.js filters, sorts and, for other settings or a storage size, re-renders the same block with
     blocks.js from the region's home files. #}
@@ -9,13 +9,10 @@
 {%- set s = v.s -%}
 {%- set L = {"china": "China", "global": "Global"} -%}
 <div class="wrap home" id="home" data-files='{{ v.files|tojson }}' data-tax="{{ v.tax_file }}">
-  <section class="hero">
-    <h1>China version or Global? <em>Both prices, delivered.</em></h1>
-    {{ shell.settings_line() }}
-  </section>
+  {{ top.home_intro(stores, updated, updated_label, root) }}
   {%- if v.n_drops %}
   <a class="teaser" href="drops">
-    <b>{{ v.n_drops }} price drop{{ "s" if v.n_drops != 1 }} this week</b><span>Stores that got cheaper by {{ v.min_pct }}% and {{ money(v.min_eur, "eur") }} or more</span><em>See all →</em></a>
+    <b>↓ {{ v.n_drops }} price drop{{ "s" if v.n_drops != 1 }} this week</b><em>See all →</em></a>
   {%- endif %}
   <div class="chips js-only" id="chips" role="group" aria-label="Filter">
     {%- for f, label in [("all", "All"), ("both", "Both versions"), ("china", "China"), ("global", "Global")] %}<button type="button" data-f="{{ f }}" aria-pressed="{{ 'true' if f == 'all' else 'false' }}">{{ label }}</button>{% endfor -%}

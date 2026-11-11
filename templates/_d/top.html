@@ -10,7 +10,8 @@
 <section class="hero intro">
   <h1>What imported flagship phones really cost, <em>delivered to your door.</em></h1>
   <p class="lede">DoorPrice compares <b>{{ shown|length }} import stores</b> several times a day and adds shipping, payment fees and import tax for <b data-place>the EU</b>. We don't sell phones.</p>
-  <div class="storechips" aria-label="Stores compared, with their Trustpilot score">
+  {#- a group, so screen readers announce its label (an aria-label on a role-less div is ignored) -#}
+  <div class="storechips" role="group" aria-label="Stores compared, with their Trustpilot score">
     {%- for st in shown %}
     {%- if st.name in v.store_pages %}<a class="chip" href="{{ root }}stores/{{ st.name }}">{{ st.label }}{% if st.score %} <b>★{{ "%.1f"|format(st.score) }}</b>{% endif %}</a>
     {%- else %}<span class="chip">{{ st.label }}{% if st.score %} <b>★{{ "%.1f"|format(st.score) }}</b>{% endif %}</span>{% endif %}
@@ -32,12 +33,14 @@
   <figure class="pphoto"><img src="{{ root }}{{ p.photo.m }}" width="150" height="186" alt="{{ p.name }}" loading="eager" decoding="async"><figcaption>Photo: {{ p.photo.credit }}</figcaption></figure>
   {%- endif %}
   <div class="ptext">
+    {%- if p.specs %}
     <ul class="pspecs">
       {%- for k, val in p.specs if k in ("Chip", "Screen") %}<li>{{ val ~ " screen" if k == "Screen" else val }}</li>{% endfor -%}
       {%- set bat = p.specs|selectattr(0, "equalto", "Battery")|map(attribute=1)|first -%}
       {%- set chg = p.specs|selectattr(0, "equalto", "Charging")|map(attribute=1)|first -%}
       {%- if bat or chg %}<li>{{ (bat ~ " · " ~ chg ~ " charging") if bat and chg else (bat or (chg ~ " charging")) }}</li>{% endif -%}
     </ul>
+    {%- endif %}
     {%- if v.spec_count or v.has_bands %}
     <p class="plinks">{% if v.spec_count %}<a href="{{ p.slug }}/specs">All specs</a>{% endif %}{% if v.spec_count and v.has_bands %} · {% endif %}{% if v.has_bands %}<a href="#carrier">Check your network</a>{% endif %}</p>
     {%- endif %}

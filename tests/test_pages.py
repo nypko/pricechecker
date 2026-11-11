@@ -368,6 +368,8 @@ def test_home_intro_says_what_doorprice_is():
             "for the EU. We don't sell phones.") in t
     chips = re.findall(r'<a class="chip" href="stores/(\w+)">([^<]+)<b>★([\d.]+)</b>', h)
     assert [c[1].strip() for c in chips] == ["The Mobile Marvel", "Wonda Mobile", "Giztop"]
+    # a labelled group: screen readers ignore an aria-label on a div without a role
+    assert '<div class="storechips" role="group" aria-label="Stores compared, with their Trustpilot score">' in h
     assert f'<time datetime="{data.latest["updated"]}" data-ago>' in h
     assert "Affiliate links never change the order" in t and 'href="about">How it works</a>' in h
     assert "China version or Global?" not in t and 'data-for' not in h.split('id="list"')[0]
@@ -1052,6 +1054,17 @@ def test_phone_card_without_photo_or_specs_or_bands(monkeypatch):
     data.spec_sheets[pid] = {**data.spec_sheets[pid], "bands": {}}
     q["specs"] = [("Chip", "X")]
     assert "Check your network" not in _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"])
+
+
+def test_phone_card_with_a_photo_and_no_key_specs_has_no_empty_spec_list(tmp_path, monkeypatch):
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    _photos(monkeypatch, tmp_path, pid)
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True)])
+    next(x for x in phones if x["id"] == pid)["specs"] = []
+    top = _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"])
+    assert 'class="pcard"' in top and f"static/phones/{pid}-m.webp" in top   # the photo still has its card
+    assert "pspecs" not in top and 'href="#carrier">Check your network</a>' in top
 
 
 def test_checked_line_counts_failed_stores_and_eu_warehouse_once():

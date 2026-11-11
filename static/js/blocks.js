@@ -103,11 +103,19 @@ const total = (r, s) => (r.approx ? "≈" : "") + money(r.total, s.cur) + (r.tai
 const memDiv = (st) => { const p = memParts(st); return `<div class="mem">${p ? `<b>${p[0]}</b> RAM · <b>${p[1]}</b> storage` : NOMEM}</div>`; };
 const edCls = (e) => (e === "china" ? "cn" : "gl");
 
+// a price box's network line, n = carriers.js boxLine(...): {tone, text}; tone "pick" asks for a country with a button that
+// opens the settings sheet (settings.js: any [data-prefs]); null: no line
+const netLine = (n) => (!n ? "" : n.tone === "pick"
+  ? '<p class="net pick">Networks: <button type="button" data-prefs>choose your country</button></p>'
+  : `<p class="net ${esc(n.tone)}">${esc(n.text)}</p>`);
+
 /** One version's best current price at the picked memory (storage): version, memory, price, store, settled mark or what is
  *  left out, store link; on the cheaper box of two settled prices, the "less" line. No ok row at that memory: the state
  *  text if the version has rows there, else "Not sold with <memory>" and a button to the nearest memory it is sold with.
- *  sw = false: the plain box for a page with no version switch (no toggle button, no "means" link; the nearest button stays). */
-export function priceBox(rows, edition, storage, s, labels, on = false, sw = true) {
+ *  sw = false: the plain box for a page with no version switch (no toggle button, no "means" link; the nearest button stays).
+ *  net: how this version does on the visitor's country's networks, right after the select button (and the nearest button),
+ *  before the "means" link. */
+export function priceBox(rows, edition, storage, s, labels, on = false, sw = true, net = null) {
   // storage "base" (an offer with no listed memory) names no memory the other version could lack: its box shows its own best current offer
   const b = bestOf(rows, edition, storage) || (storage === "base" ? bestOf(rows, edition) : null), other = bestOf(rows, edition === "china" ? "global" : "china", storage), cls = edCls(edition);
   const lab = `<div class="lab">${esc(labels[edition])} version</div>`;
@@ -122,18 +130,18 @@ export function priceBox(rows, edition, storage, s, labels, on = false, sw = tru
     if (!pool.length && !all.some((r) => r.state === "ok")) pool = all;
     const none = (txt, dash = true) => `${root} none" data-block="price_box" data-e="${edition}">${tabOpen}${lab}${dash ? '<div class="big num">–</div>' : ""}<p class="st">${txt}</p>${tabClose}`;
     // every listing sold out: other settings would not help, so say so
-    if (pool.length) return none(pool.every((r) => r.state === "soldout") ? "Sold out at every store we check" : "No current price for your settings") + "</div>";
-    if (!all.length) return none("No current price for your settings") + "</div>";
+    if (pool.length) return none(pool.every((r) => r.state === "soldout") ? "Sold out at every store we check" : "No current price for your settings") + netLine(net) + "</div>";
+    if (!all.length) return none("No current price for your settings") + netLine(net) + "</div>";
     const nm = nearestMemory(rows, edition, storage);
     const nb = nm && bestOf(rows, edition, nm);
     return none(`Not sold with ${memShort(storage)}`, false) +
-      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${nb.approx ? "≈" : ""}${money(nb.total, s.cur)}<span aria-hidden="true">&nbsp;→</span></button>` : "") + "</div>";
+      (nm ? `<button type="button" class="near" data-m="${esc(nm)}">Nearest: ${memShort(nm)} · ${nb.approx ? "≈" : ""}${money(nb.total, s.cur)}<span aria-hidden="true">&nbsp;→</span></button>` : "") + netLine(net) + "</div>";
   }
   return `${root}" data-block="price_box" data-e="${edition}">${tabOpen}` +
     lab + memDiv(b.storage) + `<div class="big num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}</div>` +
     (storage !== "base" && b.storage !== "base" && b.settled && other && other.settled && b.total < other.total ? `<p class="less">${b.approx || other.approx ? "≈" : ""}${money(other.total - b.total, s.cur)} less</p>` : "") +
     `<p class="st">at <b>${esc(b.store)}</b></p>` +
-    (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose +
+    (b.settled ? '<span class="ok">✓ delivered, tax settled</span>' : `<span class="unk">${esc(cap(b.left))} not included</span>`) + tabClose + netLine(net) +
     (sw && edition === "china" ? `<a class="means-link" href="#means-h">${esc(labels.means)}</a>` : "") + go(b, "go") + "</div>";
 }
 

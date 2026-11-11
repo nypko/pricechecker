@@ -103,4 +103,31 @@ assert.equal(curOwn(mem({ "pc-region": "UK", "pc-cur": "gbp", "pc-cur-own": "1" 
 assert.equal(curOwn(mem({ "pc-cur": "gbp", "pc-cur-pick": "0" })), false);
 assert.equal(curOwn(mem({ "pc-cur-pick": "1" })), true);
 const so = mem(); saveCurOwn(false, so); assert.equal(so.d["pc-cur-pick"], "0"); saveCurOwn(true, so); assert.equal(so.d["pc-cur-pick"], "1");
+
+// the page wiring on a minimal fake DOM: any [data-prefs] element opens the settings sheet, also one painted after
+// startup (a price box's "choose your country"), and a click opens it once
+{
+  let opened = 0;
+  const any = () => ({ hidden: false, value: "", checked: false, dataset: {}, querySelector: () => any(), querySelectorAll: () => [], addEventListener() {} });
+  const sheet = { ...any(), showModal: () => { opened += 1; } };
+  const on = (el) => ({ ...el, listeners: [], addEventListener(t, f) { this.listeners.push([t, f]); } });
+  const header = on({}), docListeners = [];   // header: the button that is there at startup
+  globalThis.window = { addEventListener() {} };
+  globalThis.document = { readyState: "complete", documentElement: { classList: { remove() {} } }, querySelector: () => null,
+    getElementById: (id) => (id === "prefs-sheet" ? sheet : null), querySelectorAll: (sel) => (sel === "[data-prefs]" ? [header] : []),
+    addEventListener: (t, f) => docListeners.push([t, f]) };
+  await import("../../static/js/settings.js?page");   // a fresh copy of the module: it wires this document
+  // a click on el (or inside it): its own listeners, then the document's (the event bubbles up)
+  const click = (el) => {
+    const ev = { target: { closest: (sel) => (sel === "[data-prefs]" ? el : null) } };
+    for (const [t, f] of [...(el ? el.listeners : []), ...docListeners]) if (t === "click") f(ev);
+  };
+  click(header);
+  assert.equal(opened, 1);
+  click(on({}));   // painted later
+  assert.equal(opened, 2);
+  click(null);     // anywhere else
+  assert.equal(opened, 2);
+  delete globalThis.document; delete globalThis.window;
+}
 console.log("settings ok");

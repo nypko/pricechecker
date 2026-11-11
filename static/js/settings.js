@@ -187,7 +187,8 @@ function wire() {
     const hint = () => { hq.placeholder = wide.matches ? hq.dataset.wide : narrow; };
     hint(); wide.addEventListener("change", hint);
   }
-  document.querySelectorAll("[data-prefs]").forEach((b) => b.addEventListener("click", openSheet));
+  // one listener for every [data-prefs] element, also those painted later (a price box's "choose your country")
+  document.addEventListener("click", (e) => { const t = e.target; if (t && t.closest && t.closest("[data-prefs]")) openSheet(); });
   if (d) {
     const form = d.querySelector("form");
     // changing the region shows its country / province list; every change is saved at once and the page repaints

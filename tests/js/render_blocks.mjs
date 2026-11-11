@@ -1,7 +1,7 @@
 // Renders the D blocks for one phone data file with static/js/blocks.js, for tests/test_blocks.py to compare with the
 // Jinja macros: node render_blocks.mjs --phone <v1 file> --tax <tax file> --edition <e> --storage <st>
 //   [--settings region,area,pay,cur] [--labels '{"global":..,"china":..}'] [--meta '{"id","name","announced","brand"}']
-//   [--now <ISO>] [--root <prefix>]
+//   [--now <ISO>] [--root <prefix>] [--net '{"tone","text"}' (both price boxes' network line; null: none)]
 // --trend '<price_trend json>' [--settings ..] [--hist <href>] prints {"price_trend": "<html>"}.
 // prints {"<snake name>": "<html>", "store_row": ["<html>", ...one per row], "ledger": [by rank, by total, by store price]}. Or --money '[[v, cur, dec], ...]' prints
 // the money() text of each.
@@ -33,10 +33,10 @@ if (arg("--carrier")) {
   const e = arg("--edition"), st = arg("--storage"), root = arg("--root", "");
   const rows = viewRows(doc.offers, tax, s);
   const pick = rows.filter((r) => r.edition === e && r.storage === st);
-  const best = bestOf(rows, e, st);
+  const best = bestOf(rows, e, st), net = JSON.parse(arg("--net", "null"));
   console.log(JSON.stringify({
-    price_box: B.priceBox(rows, e, st, s, labels, true),
-    price_box_plain: B.priceBox(rows, e, st, s, labels, false, false),
+    price_box: B.priceBox(rows, e, st, s, labels, true, true, net),
+    price_box_plain: B.priceBox(rows, e, st, s, labels, false, false, net),
     mem_chips: B.memChips(rows, st, s),
     verdict: B.verdict(best, pick, s, labels, now),
     receipt: B.receipt(best, s, labels),

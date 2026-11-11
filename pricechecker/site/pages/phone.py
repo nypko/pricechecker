@@ -157,6 +157,8 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "buyers_line": buyers_text(next((o.get("buyers") for o in p["offers"] if best and o["store_label"] == best["store"]), None),
                                    DEFAULT.region),
         "band_sets": bands_attr(sheet, eds), "carrier_files": {cc: rel(files.get(f"carriers/{cc}")) for cc in carriers.COUNTRIES},
+        # each price box's network line for the default settings, which name no country (phone.js starts from the same)
+        "nets": {e: carriers.box_line(b, None, carriers.band_table(), None) for e, b in bands_attr(sheet, eds).items()},
         "carrier": _carrier(sheet, eds), "carrier_doc": _carrier_doc(), "cc": country_for(DEFAULT),
         "has_bands": any(b for b in bands_attr(sheet, eds).values()),
         "now": ctx.get("updated") or None,

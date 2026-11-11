@@ -1048,6 +1048,28 @@ def test_default_pick_total_is_the_title_price_on_made_up_prices():
         assert total == title, pid
 
 
+def test_price_boxes_carry_the_network_line_for_the_default_settings():
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x10"   # bands published for both versions
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 800.0, True), ("giztop", pid, "global", "12/256", 1150.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    duel = h[h.index('id="duel"'):h.index('id="s-verdict"')]
+    assert duel.count('<p class="net pick">Networks: <button type="button" data-prefs>choose your country</button></p>') == 2
+    assert duel.index('class="net') > duel.index('</button>')   # after the box's select button (its price and settled mark)
+
+
+def test_price_boxes_network_line_when_the_bands_are_not_published():
+    from pricechecker import specs
+    from pricechecker.site.pages import phone
+    pid = "honor-magic-8-pro"
+    assert specs.load()[pid].get("bands") is None
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 800.0, True), ("giztop", pid, "global", "12/256", 1150.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    duel = h[h.index('id="duel"'):h.index('id="s-verdict"')]
+    assert duel.count('data-block="price_box"') == 2
+    assert duel.count('<p class="net muted">Bands not published for this version</p>') == 2 and "data-prefs" not in duel
+
+
 def test_phone_page_without_listed_memory_has_a_panel_and_no_chips():
     from pricechecker.site.pages import phone
     pid = "oneplus-16"

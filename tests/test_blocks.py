@@ -71,13 +71,13 @@ def macro(name: str, *args):
     return tpl.render(a=args)
 
 
-def render_py(rows, s, labels, edition, storage, meta, now, root="../", marks=()):
-    """The same set of blocks render_blocks.mjs prints, from the Jinja macros."""
+def render_py(rows, s, labels, edition, storage, meta, now, root="../", marks=(), net=None):
+    """The same set of blocks render_blocks.mjs prints, from the Jinja macros. net: both price boxes' network line."""
     pick = [r for r in rows if r["edition"] == edition and r["storage"] == storage]
     best = view.best_of(rows, edition, storage)
     return {
-        "price_box": macro("price_box", rows, edition, storage, s, labels, True),
-        "price_box_plain": macro("price_box", rows, edition, storage, s, labels, False, False),
+        "price_box": macro("price_box", rows, edition, storage, s, labels, True, True, net),
+        "price_box_plain": macro("price_box", rows, edition, storage, s, labels, False, False, net),
         "mem_chips": macro("mem_chips", rows, storage, s),
         "verdict": macro("verdict", best, pick, s, labels, now),
         "receipt": macro("receipt", best, s, labels),
@@ -89,10 +89,11 @@ def render_py(rows, s, labels, edition, storage, meta, now, root="../", marks=()
     }
 
 
-def render_js(phone_file, tax_file, s, labels, edition, storage, meta, now, root="../", marks=()):
+def render_js(phone_file, tax_file, s, labels, edition, storage, meta, now, root="../", marks=(), net=None):
     r = subprocess.run(["node", str(HARNESS), "--phone", str(phone_file), "--tax", str(tax_file), "--edition", edition,
                         "--storage", storage, "--settings", ",".join(s), "--labels", json.dumps(labels),
-                        "--meta", json.dumps(meta), "--now", now, "--root", root, "--marks", json.dumps(list(marks))],
+                        "--meta", json.dumps(meta), "--now", now, "--root", root, "--marks", json.dumps(list(marks)),
+                        "--net", json.dumps(net)],
                        check=False, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
     return json.loads(r.stdout)
@@ -204,6 +205,46 @@ def test_blocks_parity_fixture(fixture_doc, tax_file, tax, tmp_path):
         py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])
         assert_same(py, js, f"{f.name} {tuple(s)} {e} {st}")
+
+
+# the price box's network line (carriers.box_line, one per tone) and the markup both sides must write for it
+NETS = {
+    "good": ({"tone": "good", "text": "✓ works on all 3 networks in Bulgaria"},
+             '<p class="net good">✓ works on all 3 networks in Bulgaria</p>'),
+    "bad": ({"tone": "bad", "text": "No band 20 in Bulgaria: weaker coverage indoors and outside towns"},
+            '<p class="net bad">No band 20 in Bulgaria: weaker coverage indoors and outside towns</p>'),
+    "neutral": ({"tone": "neutral", "text": "No 5G on AT&T"}, '<p class="net neutral">No 5G on AT&amp;T</p>'),
+    "muted": ({"tone": "muted", "text": "Bands not published for this version"},
+              '<p class="net muted">Bands not published for this version</p>'),
+    "pick": ({"tone": "pick", "text": "Networks: choose your country"},
+             '<p class="net pick">Networks: <button type="button" data-prefs>choose your country</button></p>'),
+}
+
+
+@needs_node
+@pytest.mark.parametrize("tone", [None, *NETS])
+def test_price_box_network_line_parity(fixture_doc, tax_file, tax, tmp_path, tone):
+    """Every fixture state, Jinja and JS alike, in the switch box and the plain one: the line sits right after the select
+    button closes (after the nearest button in a box not sold with the memory), outside it, and only the "means" link
+    and the store link follow it. No net: no line."""
+    net, line = NETS[tone] if tone else (None, None)
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    for f, inputs, s, e, st in _fixture_cases(fixture_doc, tmp_path):
+        rows = view.rows(inputs, tax, s)
+        where = f"{f.name} {tuple(s)} {e} {st} {tone}"
+        py = render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"], net=net)
+        js = render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"], net=net)
+        assert_same(py, js, where)
+        for box, name in [(out[n], f"{side} {n}") for side, out in (("py", py), ("js", js)) for n in ("price_box", "price_box_plain")]:
+            if line is None:
+                assert 'class="net' not in box, f"{where} {name}"
+                continue
+            assert box.count(line) == 1 and box.count('class="net') == 1, f"{where} {name}"   # the same markup, escaped alike
+            before, after = box.split(line)
+            assert before.count("<button") == before.count("</button>"), f"{where} {name}"
+            if not name.endswith("_plain"):
+                assert 'class="pickbtn"' in before and before.endswith("</button>"), f"{where} {name}"
+            assert re.fullmatch(r'(<a class="means-link"[^>]*>[^<]*</a>)?(<a class="go"[^>]*>.*?</a>)?\s*</div>', after, re.DOTALL), f"{where} {name}"
 
 
 @needs_node

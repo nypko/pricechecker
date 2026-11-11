@@ -126,7 +126,7 @@ assert.equal(focusSelector(null), null);
   const DE = { v: 1, country: "DE", name: "Germany", networks: [net("de-a", "Anet", ["Cheapo"]), net("de-b", "Bnet")], bands: table };
   const bandSets = { china: { lte: [1, 3], nr: [] }, global: null };
   const L = { china: "China", global: "Global" };
-  const setup = ({ settings, saved = null, failFR = true }) => {
+  const setup = ({ settings, saved = null, failFR = true, onNets = undefined }) => {
     const el = (extra = {}) => ({ innerHTML: "", hidden: false, value: "", ...extra });
     const dom = { carrier: { ...el(), nets: el(), out: el(), country: el(), querySelector(q) { return q === ".cc-nets" ? this.nets : q === ".cc-country" ? this.country : this.out; } },
       "s-csum": el(), "s-eu": el(), "s-clink": el({ hidden: true }), "s-csums": el({ hidden: true }), "s-eulines": el(), "cc-net": el() };
@@ -137,7 +137,7 @@ assert.equal(focusSelector(null), null);
     const cv = wireCarrier({
       root: { addEventListener: (t, f) => { handler = f; } }, $: (id) => dom[id] || null, load: () => cur, storage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) },
       getJson: (u) => { calls.push(u); return u.includes("FR") && failFR ? Promise.reject(new Error(u)) : Promise.resolve(DE); },
-      bandSets, files: { DE: "carriers/DE.json", FR: "carriers/FR.json" }, eds: ["china", "global"], L });
+      bandSets, files: { DE: "carriers/DE.json", FR: "carriers/FR.json" }, eds: ["china", "global"], L, onNets });
     return { dom, cv, cur, calls, store, change: (id, value) => handler({ target: { id, value } }) };
   };
   const eu = (area) => ({ region: "EU", area, pay: "card", cur: "eur" });
@@ -214,6 +214,29 @@ assert.equal(focusSelector(null), null);
   await t.change("cc-country", "DE");
   await new Promise((r) => setTimeout(r, 0));
   assert.match(t.dom["s-csum"].innerHTML, /In Germany: /); assert.equal(t.dom["s-eu"].hidden, true);
+
+  // the price boxes' network lines (onNets): the settings' country on every draw; a failed load keeps the lines shown
+  const lines = [], keep = (n) => lines.push(n);
+  const PICK = { tone: "pick", text: "Networks: choose your country" }, NONE = { tone: "muted", text: "Bands not published for this version" };
+  t = setup({ settings: eu("DE"), onNets: keep });
+  await t.cv.paint();
+  assert.deepEqual(lines.splice(0), [{ china: { tone: "good", text: "✓ works on both networks in Germany" }, global: NONE }]);
+  t.cur.area = "FR";   // its file fails to load: no new lines
+  await t.cv.paint();
+  assert.deepEqual(lines, []);
+  t.cur.area = "";     // no country: the prompt
+  await t.cv.paint();
+  assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
+  // Global with the picker's own country: the picker checks Germany, the boxes still ask for the settings' country
+  t = setup({ settings: { region: "Global", area: "", pay: "card", cur: "eur" }, saved: { country: "DE", network: "de-b" }, onNets: keep });
+  t.dom["cc-country"] = { value: "" };
+  await t.cv.paint();
+  assert.equal(t.calls.length, 1); assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
+  // no carrier section (no version has bands): no lines, the server's stay
+  t = setup({ settings: eu("DE"), onNets: keep });
+  delete t.dom.carrier;
+  await t.cv.paint();
+  assert.deepEqual(lines, []);
 
   // malformed saved settings never reach an object lookup as a key: no throw, the neutral state
   for (const bad of ["constructor", "__proto__", "toString", "hasOwnProperty"]) {

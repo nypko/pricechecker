@@ -7,7 +7,7 @@ import { rows as viewRows, bestOf, defaultPick, pickForMemory, dailyBest, priceT
 import * as B from "./blocks.js";
 import { wireShare } from "./share.js";
 import { load, isDefault, watched, toggleWatch, PLACE } from "./settings.js";
-import { countryFor, resolvePick, summary as carrierSummary } from "./carriers.js";
+import { countryFor, resolvePick, summary as carrierSummary, boxLine } from "./carriers.js";
 
 /** The pick a shared link ("#16-512-china") opens: its memory for both boxes, on its version when that has a current price
  *  there, else the other version, else the default pick (view.js pickForMemory); null when the hash isn't a pick. */
@@ -75,8 +75,10 @@ const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { retur
  *  The country file is fetched on demand and kept; a failed fetch (or a country with no file) leaves the neutral state (the prompt,
  *  the EU lines, no verdicts) and the next paint tries again. The pick is saved in "pc-carrier" as {country, network}; a pick
  *  for another country or a network no longer listed is ignored, and until one is picked no verdict shows. The selects are
- *  never replaced while in use: only the country select (when the settings start or stop giving a country), the network options (on a new country) and the verdict area (a live region) are repainted. */
-export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, eds, L }) {
+ *  never replaced while in use: only the country select (when the settings start or stop giving a country), the network options (on a new country) and the verdict area (a live region) are repainted.
+ *  onNets({version: boxLine}): every draw, the price boxes' network lines for the settings' country (never the picker's own
+ *  country: the boxes follow the settings); not after a failed load, so the lines shown stay. */
+export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, eds, L, onNets = null }) {
   const docs = {};   // country -> its file's promise
   const loadCountry = (cc) => Object.hasOwn(docs, cc) ? docs[cc] : (docs[cc] = (Object.hasOwn(files, cc) ? getJson(files[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete docs[cc]; throw e; }));
   const readPick = () => { try { const v = JSON.parse(storage.getItem("pc-carrier")); return v && typeof v === "object" ? v : null; } catch (e) { return null; } };
@@ -86,7 +88,7 @@ export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, 
   function paint() {
     if (!$("carrier")) return Promise.resolve();
     const s = load(), fixed = countryFor(s), cc = fixed || (pick && typeof pick.country === "string" && Object.hasOwn(files, pick.country) ? pick.country : null), my = ++seq;
-    const draw = (doc) => {
+    const draw = (doc, failed = false) => {
       if (my !== seq) return;   // a newer paint is on its way
       shown = doc ? cc : null;
       const sums = doc ? Object.fromEntries(Object.entries(bandSets).map(([e, b]) => [e, carrierSummary(b, doc, doc.bands, doc.name)])) : null;
@@ -108,9 +110,10 @@ export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, 
       if (!!$("cc-country") === !!fixed) box.querySelector(".cc-country").innerHTML = B.carrierCountry(doc && cc ? doc : null, s);   // the settings now give (or no longer give) a country
       if ($("cc-country")) $("cc-country").value = cc || "";
       box.querySelector(".cc-out").innerHTML = B.carrierOut(doc, bandSets, picked, L);
+      if (onNets && !failed) onNets(Object.fromEntries(eds.map((e) => [e, boxLine(bandSets[e] ?? null, fixed ? doc : null, doc && doc.bands, doc && doc.name)])));
     };
     if (!cc) { draw(null); return Promise.resolve(); }
-    return loadCountry(cc).then(draw, () => draw(null));   // no data: the neutral state, and the next change retries
+    return loadCountry(cc).then(draw, () => draw(null, true));   // no data: the neutral state, and the next change retries
   }
   root.addEventListener("change", (ev) => {
     const t = ev.target;
@@ -147,12 +150,26 @@ function wire(root) {
     watchCta();
   }
 
+  // ---- each price box's network line (carriers.js boxLine): the server's lines are the default settings', which name no
+  // country; wireCarrier brings the settings' country's (onNets, below) ----
+  const bandSets = json(root.dataset.bands, {});
+  let nets = Object.fromEntries(eds.map((e) => [e, boxLine(bandSets[e] ?? null, null, null, null)]));
+
   // ---- paint every settings-dependent block from rows ----
+  // keyboard focus survives a repaint: the same control, found again in the new markup (focusSelector)
+  const holdFocus = () => {
+    const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;
+    return () => { const back = again && document.querySelector(again); if (back && back !== document.activeElement && !back.disabled) back.focus({ preventScroll: true }); };
+  };
+  // each box's select button repaints with aria-pressed, and the box with its network line
+  const boxes = (rows, s) => eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed, true, nets[e] || null)).join("");
+  let painted = null;   // the [rows, settings] the boxes show, once the files are in
   function paint(rows, s, doc, tax) {
     if (!$("duel")) return;
-    const a = document.activeElement, again = a && root.contains(a) ? focusSelector(a) : null;   // keyboard focus survives the repaint
+    const refocus = holdFocus();
+    painted = [rows, s];
     set($("s-mems"), B.memChips(rows, S.mem, s));
-    set($("duel"), eds.map((e) => B.priceBox(rows, e, S.mem, s, L, e === S.ed)).join(""));   // each box's select button repaints with aria-pressed
+    set($("duel"), boxes(rows, s));
     const best = bestOf(rows, S.ed, S.mem), pick = rows.filter((r) => r.edition === S.ed && r.storage === S.mem);
     set($("s-verdict"), B.verdict(best, pick, s, L, now));
     if ($("s-trend")) $("s-trend").dataset.ed = S.ed || "";
@@ -179,13 +196,19 @@ function wire(root) {
     $("hist").querySelectorAll(":scope > [data-e]").forEach((d) => { d.hidden = d.dataset.e !== S.ed; });
     set($("s-buybar"), B.buyBar(best, s, L));
     watchCta();
-    const back = again && document.querySelector(again);
-    if (back && back !== document.activeElement && !back.disabled) back.focus({ preventScroll: true });
+    refocus();
   }
 
   // ---- carrier check (spec §6): see wireCarrier ----
+  // new network lines repaint the boxes only (the details panel under them is a live region); before the first paint the
+  // server's boxes stay and that paint brings the lines
+  const onNets = (n) => {
+    if (JSON.stringify(n) === JSON.stringify(nets)) return;
+    nets = n;
+    if (painted) { const refocus = holdFocus(); set($("duel"), boxes(...painted)); refocus(); }
+  };
   const cv = wireCarrier({ root, $, load, getJson, storage: (() => { try { return localStorage; } catch (e) { return null; } })(),
-    bandSets: json(root.dataset.bands, {}), files: json(root.dataset.carriers, {}), eds, L });
+    bandSets, files: json(root.dataset.carriers, {}), eds, L, onNets });
 
   // ---- "More from <brand>": each phone's own file, only when the settings differ from the defaults ----
   let moreFor = "";

@@ -396,6 +396,13 @@ details.ledger .scroll { overflow-x: auto; border-top: 1px solid var(--rule); }
 .side .big { margin-top: 6px; }
 .side .st { font-size: .9rem; }
 .side .means-link { display: block; margin: -4px 0 10px; font-size: .8rem; color: var(--cn-ink); text-decoration: underline; text-underline-offset: 2px; }
+/* how the version does on the visitor's country's networks: a verdict in colour, no data or no country quieter */
+.side .net { margin: -4px 0 10px; font: 600 .8rem/1.35 var(--body); color: var(--ink-2); }
+.side.none .net { margin-top: 8px; }
+.side .net.good { color: var(--good); }
+.side .net.bad { color: var(--cn-ink); }
+.side .net.muted, .side .net.pick { font-weight: 400; }
+.side .net button { font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .verdict .what { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .verdict .vpill, .verdict .mpill { display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 999px; font: 700 .9rem var(--body); }
 .verdict .vpill.cn { background: var(--cn); color: var(--on-brand); } .verdict .vpill.gl { background: var(--gl); color: var(--on-brand); }

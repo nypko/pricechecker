@@ -155,7 +155,9 @@ browser repaints it.
 - Files are committed and served from doorprice.app (`img-src 'self'` unchanged); `/static/phones/*` cached 30 days,
   URLs carry `?v={hash}`.
 - Pages: `<img>` with width, height and alt = the phone's name; the phone-page photo loads eagerly, home-row photos
-  `loading="lazy" decoding="async"`. In dark mode the photo sits on a light tile with rounded corners.
+  `loading="lazy" decoding="async"`. In dark mode the photo sits on a light tile with rounded corners. A row photo
+  (home list, "More from …") has `alt=""` instead: it is decorative inside the row's link, whose text already names the
+  phone, so a screen reader doesn't read the name twice.
 - The About page adds: "Phone photos are each brand's own product images, credited on each phone's page. A brand that
   would like one removed can write to {contact}."
 - A phone without processed files shows no photo (§5, §6); the build log lists them ("photos: 3 of 80 phones have none:

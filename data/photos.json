@@ -1,0 +1,194 @@
+{
+ "huawei-mate-80": {
+  "files": {
+   "m": "157c53be89",
+   "s": "5de7ec8747"
+  },
+  "src_sha256": "22af93dbc314acdae32ba058ce792fa293bfee90dfd78cba7391e70dfecb8e79",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/vosa/phones/mate80.jpg"
+ },
+ "huawei-mate-80-pro": {
+  "files": {
+   "m": "0d2a251b39",
+   "s": "14fef01101"
+  },
+  "src_sha256": "93063b8f32510d73deb236f0a8dc27f5c291d126c0510afcc1cfb56ef2647981",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/vosa/phones/mate80-pro.png"
+ },
+ "huawei-mate-80-pro-max": {
+  "files": {
+   "m": "68e69252f8",
+   "s": "e80fe5b567"
+  },
+  "src_sha256": "4ab9fa29ac7112cc78f9aa0cfb82ecca324fad6c3e55ba80fcd1504cd1518726",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/vosa/phones/mate80-pro-max.png"
+ },
+ "huawei-mate-90": {
+  "files": {
+   "m": "04ff264d6f",
+   "s": "a279b7d604"
+  },
+  "src_sha256": "5b2cbba4586517602b001b90fa04195d17a0916a39f3ae6199cf8186986f444a",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260929/haco/phones/mate90.jpg"
+ },
+ "huawei-mate-90-pro": {
+  "files": {
+   "m": "4d62222cae",
+   "s": "baf11ec3f9"
+  },
+  "src_sha256": "5b4cefaf3961b95a5f6df71b65f18c514d56445703a388abde8968160d026b8b",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260929/haco/phones/mate90-pro.jpg"
+ },
+ "huawei-mate-90-pro-max": {
+  "files": {
+   "m": "5cead1583a",
+   "s": "0b1895582f"
+  },
+  "src_sha256": "4ffc477dbe8be6298a3cc2bbd9e9c17f1683807233b2c638d7b6e8db9f918d65",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260929/haco/phones/mate90-pro-max.jpg"
+ },
+ "huawei-mate-x7": {
+  "files": {
+   "m": "5a6194ed4d",
+   "s": "1159822c7e"
+  },
+  "src_sha256": "01c6b853ac52a8dc50f9e1c0a1eb85fc7f81d6a440c7120c020f5b56f56b76fc",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/delphi/phones/mate-x7.jpg"
+ },
+ "huawei-pura-80-ultra": {
+  "files": {
+   "m": "f37bf5537b",
+   "s": "484df9bc96"
+  },
+  "src_sha256": "7c49bc1bad306405e335779c82fe85e28bb2c0c07efb2831abece5bc6e3cc578",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/250611/lh/phones/all-pura80-ultra.png"
+ },
+ "huawei-pura-90": {
+  "files": {
+   "m": "00c6953eb1",
+   "s": "0cbdfa05c8"
+  },
+  "src_sha256": "8b116202c00dcfd78e729013d9c1133d524a4be249da07c1a01b3465599ceddc",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260420/confidential/phones/pura-series/pura90.jpg"
+ },
+ "huawei-pura-90-pro": {
+  "files": {
+   "m": "a15ebbfc20",
+   "s": "b840de5961"
+  },
+  "src_sha256": "cffd6003780ebd466975c8ac23110927e689a8ebdaba489450d27ad99f0a85cb",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260420/confidential/phones/pura-series/pura90-pro.jpg"
+ },
+ "huawei-pura-90-pro-max": {
+  "files": {
+   "m": "d49687b0b5",
+   "s": "7220f5df10"
+  },
+  "src_sha256": "94e9aca76f18165cc0dbc625b1226c186d0dc1eeb48b772b8304cc7e1fb5324a",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260420/confidential/phones/pura-series/pura90-pro-max.jpg"
+ },
+ "huawei-pura-x-max": {
+  "files": {
+   "m": "958fa5a279",
+   "s": "a5ed3768ea"
+  },
+  "src_sha256": "f0084f33bf19dc07c573ad64c0ab5e59d55ea05388506dd6aadf56e00badff79",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260907/normal/phones/pura-x-max.jpg"
+ },
+ "huawei-pura-x-view": {
+  "files": {
+   "m": "8e7e89759f",
+   "s": "3f5d282468"
+  },
+  "src_sha256": "0580175196141f67fdccac912fe7c519644361a951cfc4d6ae3d3a39d2ec8ac9",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260907/laputa/phones/pura-x-view.png"
+ },
+ "oppo-find-n5": {
+  "files": {
+   "m": "2565039333",
+   "s": "8c61956d98"
+  },
+  "src_sha256": "a842125b972257f2501314018777b8e6d805784a181ba887a19755fb354e9478",
+  "url": "https://www.oppo.com/content/dam/oppo/common/mkt/v2-2/oppo-find-n5-en/listpage/427-600-white.png"
+ },
+ "oppo-find-n6": {
+  "files": {
+   "m": "8f608a238e",
+   "s": "ceeb80a410"
+  },
+  "src_sha256": "b13378dab477abbd23db1ce4a624bb0e893bac1f7378bba5b28c0c0419187034",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-n6-en/list-page/442-600-orange.png"
+ },
+ "oppo-find-x10": {
+  "files": {
+   "m": "1d3638bc41",
+   "s": "239b061661"
+  },
+  "src_sha256": "6c8fa9684fb236f5d9e0c3668e1dc27182817604eddbad746999135f47aaa809",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x10-series-en/list-page/find-x10/480-600-blue.png"
+ },
+ "oppo-find-x10-pro-max": {
+  "files": {
+   "m": "b25d6998c5",
+   "s": "d50fd531c7"
+  },
+  "src_sha256": "220d0df3f953855aa2027708c67f368693121bdabc8de015b227875cff401b85",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x10-series-en/list-page/find-x10-pro-max/480-600-white.png"
+ },
+ "oppo-find-x9": {
+  "files": {
+   "m": "2a676d8faf",
+   "s": "0aabb6d88b"
+  },
+  "src_sha256": "9386d896fb0eb10ea395e9840219d2857eaa5b456a4588db9bef6d9f37c70200",
+  "url": "https://www.oppo.com/content/dam/oppo/common/mkt/v2-2/find-x9-series-en/listpage/find-x9/480-600-titanium-v2.png"
+ },
+ "oppo-find-x9-pro": {
+  "files": {
+   "m": "cf2eb1e220",
+   "s": "404db49aef"
+  },
+  "src_sha256": "dbc0cfe0f6b8d299797aed8d050de10a685b0969fc45b2cd329052e25a621c90",
+  "url": "https://www.oppo.com/content/dam/oppo/common/mkt/v2-2/find-x9-series-en/listpage/find-x9-pro/480-600-white-v2.png"
+ },
+ "oppo-find-x9-ultra": {
+  "files": {
+   "m": "597ff67d71",
+   "s": "cf5fa5a8d4"
+  },
+  "src_sha256": "3b502ffec7aa91a0c4d510fcc2c9c338ecba9d53b98e3c4a712fedccf342d3b0",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9-ultra-x9s-en/find-x9-ultra/list-page/480-600-brown.png"
+ },
+ "oppo-find-x9s-pro": {
+  "files": {
+   "m": "94a38065b7",
+   "s": "3c813c8a13"
+  },
+  "src_sha256": "e25ccc106cf06f006a4e6cf56db235862c185750afb7eff9112acb260073c4c4",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9s-pro-find-x9-ultra-cn/find-x9s-pro/listpage/480-600-cyan.png"
+ },
+ "xiaomi-17": {
+  "files": {
+   "m": "e8d74f067e",
+   "s": "b250f5d391"
+  },
+  "src_sha256": "8ca2479da927bf8c32aa22fa141fc16d6d58ab9aab4bbdea937fa95b801be0b9",
+  "url": "https://i02.appmifile.com/513_operatorx_operatorx_xm/14/02/2026/7e83548bfc090e9eeaa224dc4bdae063.png"
+ },
+ "xiaomi-17-ultra": {
+  "files": {
+   "m": "09d4157b27",
+   "s": "684363a1f3"
+  },
+  "src_sha256": "51ca39e829d43f0a232c2d24b6e71339d2eee2ed31c1aff2b29ed9a2437fb196",
+  "url": "https://i02.appmifile.com/645_operatorx_operatorx_xm/14/02/2026/df23386f3a67d3d5fdce72e4e1a18b96.png"
+ },
+ "xiaomi-17-ultra-leica-edition": {
+  "files": {
+   "m": "619d0cbb1d",
+   "s": "49e089c690"
+  },
+  "src_sha256": "d9cc220434f210ecf0f9b4954c729e453ed75e7b34e423b451cf90b648de0486",
+  "url": "https://i02.appmifile.com/429_operatorx_operatorx_xm/26/02/2026/ac17687739b6d36946d8808416bb0d62.png"
+ }
+}

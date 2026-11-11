@@ -14,3 +14,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 17, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66]
     nr: null
+photo: {url: "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/delphi/phones/mate-x7.jpg", page: "https://consumer.huawei.com/cn/phones/", checked: 2026-11-11}

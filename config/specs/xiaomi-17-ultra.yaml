@@ -13,3 +13,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71, 38, 39, 40, 41, 42, 48]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 38, 40, 41, 48, 66, 71, 75, 77, 78, 79]
+photo: {url: "https://i02.appmifile.com/645_operatorx_operatorx_xm/14/02/2026/df23386f3a67d3d5fdce72e4e1a18b96.png", page: "https://www.mi.com/global/product/xiaomi-17-ultra/specs/", checked: 2026-11-11}

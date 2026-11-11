@@ -13,3 +13,4 @@ bands:
   china:
     lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
     nr: [1, 2, 3, 5, 7, 8, 18, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78, 79]
+photo: {url: "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9s-pro-find-x9-ultra-cn/find-x9s-pro/listpage/480-600-cyan.png", page: "https://www.oppo.com/cn/smartphones/series-find-x/find-x9s-pro/", checked: 2026-11-11}

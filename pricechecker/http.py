@@ -66,10 +66,10 @@ class TooLarge(requests.RequestException):
     """The body passed MAX_BYTES: the download was stopped."""
 
 
-def capped_get(url: str, max_bytes: int = MAX_BYTES, **kw) -> requests.Response:
+def capped_get(url: str, max_bytes: int = MAX_BYTES, timeout: float = 30, **kw) -> requests.Response:
     """_session.get, streamed and stopped past max_bytes (a hostile or broken server can't stall or fill memory with
-    an endless body; the 30 s timeout is per read, not total). Returns the response with its body read, as usual."""
-    r = _session.get(url, timeout=30, stream=True, **kw)
+    an endless body; the timeout, 30 s by default, is per read, not total). Returns the response with its body read, as usual."""
+    r = _session.get(url, timeout=timeout, stream=True, **kw)
     try:
         if int(r.headers.get("Content-Length") or 0) > max_bytes:
             raise TooLarge(f"{urlparse(url).netloc}: body of {r.headers['Content-Length']} bytes is over the {max_bytes}-byte limit")

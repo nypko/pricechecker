@@ -112,7 +112,8 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
         shutil.rmtree(OUT)
     (OUT / "phones").mkdir(parents=True)
     (OUT / "history").mkdir()
-    shutil.copytree("static", OUT / "static", ignore=shutil.ignore_patterns("package.json"))  # package.json only makes node read pricing.js as a module
+    # package.json only makes node read pricing.js as a module; *.tmp: a photos.py write cut short, never to be published
+    shutil.copytree("static", OUT / "static", ignore=shutil.ignore_patterns("package.json", "*.tmp"))
     for name, (text, _) in assets.versioned_modules(Path("static/js")).items():   # imports between modules get ?v=<hash>
         (OUT / "static/js" / name).write_text(text)
     shutil.copy("static/favicon.ico", OUT / "favicon.ico")   # browsers ask for /favicon.ico at the root

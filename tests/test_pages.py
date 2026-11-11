@@ -1021,15 +1021,9 @@ def _top(h):
 
 
 def test_phone_top_has_product_card_and_checked_line(tmp_path, monkeypatch):
-    from PIL import Image
-
-    from pricechecker import photos
-    from pricechecker.site import common
     from pricechecker.site.pages import phone
     pid = "oppo-find-x9-ultra"
-    for k, (w, h) in photos.SIZES.items():
-        Image.new("RGBA", (w, h)).save(tmp_path / f"{pid}-{k}.webp")
-    monkeypatch.setattr(common, "PHOTOS_DIR", tmp_path)
+    _photos(monkeypatch, tmp_path, pid)
     data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "global", "12/256", 1300.0, True)])
     h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
     top = _top(h)
@@ -1082,13 +1076,24 @@ def test_checked_line_counts_failed_stores_and_eu_warehouse_once():
 
 def test_photo_of_hashes_files_and_needs_both(tmp_path):
     from pricechecker.site.common import photo_of
-    assert photo_of("a", None, "Oppo", tmp_path) is None
+    sheet = {"photo": {"url": "https://img.example/a.png", "credit": "Oppo Global"}}
+    assert photo_of("a", sheet, "Oppo", tmp_path) is None
     (tmp_path / "a-s.webp").write_bytes(b"s")
-    assert photo_of("a", None, "Oppo", tmp_path) is None
+    assert photo_of("a", sheet, "Oppo", tmp_path) is None
     (tmp_path / "a-m.webp").write_bytes(b"m")
-    got = photo_of("a", {"photo": {"credit": "Oppo Global"}}, "Oppo", tmp_path)
+    got = photo_of("a", sheet, "Oppo", tmp_path)
     assert got["credit"] == "Oppo Global" and re.fullmatch(r"static/phones/a-m\.webp\?v=[0-9a-f]{10}", got["m"])
-    assert photo_of("a", {}, "Oppo", tmp_path)["credit"] == "Oppo"
+    assert photo_of("a", {"photo": {"url": "https://img.example/a.png"}}, "Oppo", tmp_path)["credit"] == "Oppo"
+
+
+def test_photo_of_needs_a_photo_in_the_sheet(tmp_path):
+    """`photo:` taken out of a sheet (a brand asked for its photo to go) takes the photo off the site, even before
+    photos.py has deleted the files."""
+    from pricechecker.site.common import photo_of
+    for k in "sm":
+        (tmp_path / f"a-{k}.webp").write_bytes(k.encode())
+    for sheet in (None, {}, {"photo": None}, {"photo": {}}, {"photo": {"url": ""}}, {"photo": {"credit": "Oppo Global"}}):
+        assert photo_of("a", sheet, "Oppo", tmp_path) is None, sheet
 
 
 def test_photo_cache_rule_and_about_paragraph():
@@ -1237,14 +1242,8 @@ def test_more_from_brand_rows_are_home_rows_of_their_own_meta(tmp_path, monkeypa
 
 
 def test_home_rows_show_photo_specs_store_and_absent_version(tmp_path, monkeypatch):
-    from PIL import Image
-
-    from pricechecker import photos
-    from pricechecker.site import common
     from pricechecker.site.pages import home
-    for k, (w, h) in photos.SIZES.items():
-        Image.new("RGBA", (w, h)).save(tmp_path / f"oneplus-16-{k}.webp")
-    monkeypatch.setattr(common, "PHOTOS_DIR", tmp_path)
+    _photos(monkeypatch, tmp_path, "oneplus-16")
     data, phones, env, ctx = _made_up([("wonda", "oneplus-16", "china", "12/256", 900.0, True), ("giztop", "oneplus-16", "china", "16/512", 1000.0, True)])
     row = _home_row(home.render(env, data, ctx, phones)["index.html"], "oneplus-16")
     assert re.search(r'<img class="ph" src="static/phones/oneplus-16-s\.webp\?v=[0-9a-f]{10}" width="58" height="72" alt="" loading="lazy"', row)

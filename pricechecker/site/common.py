@@ -72,7 +72,11 @@ def spec_line(key: dict | None) -> str:
 
 
 def photo_of(pid: str, sheet: dict | None, brand: str, photos_dir: Path | None = None) -> dict | None:
-    """The phone's two processed photo files as site paths with a content hash (?v=), plus who to credit; None unless both exist."""
+    """The phone's two processed photo files as site paths with a content hash (?v=), plus who to credit; None unless its
+    sheet names a photo (photo.url) and both files exist, so taking `photo:` out of a sheet takes the photo off the site."""
+    photo = (sheet or {}).get("photo") or {}
+    if not photo.get("url"):
+        return None
     d = photos_dir or PHOTOS_DIR
     out = {}
     for k in ("s", "m"):
@@ -80,7 +84,7 @@ def photo_of(pid: str, sheet: dict | None, brand: str, photos_dir: Path | None =
         if not f.is_file():
             return None
         out[k] = f"static/phones/{pid}-{k}.webp?v={hashlib.sha256(f.read_bytes()).hexdigest()[:10]}"
-    out["credit"] = ((sheet or {}).get("photo") or {}).get("credit") or brand
+    out["credit"] = photo.get("credit") or brand
     return out
 
 

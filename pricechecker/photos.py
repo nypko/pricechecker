@@ -1,8 +1,9 @@
 """Product photos: the brand's own photo of each phone (picked by hand, recorded in the phone's spec sheet as
 `photo: {url, page, checked, credit?}`), processed once, locally, into two WebP files the site serves itself:
-static/phones/<id>-s.webp and -m.webp. data/photos.json remembers which source each phone's files came from.
+static/phones/<id>-s.webp and -m.webp. data/photos.json remembers which source each phone's files came from. A sheet
+without `photo:` has no files: taking it out of a sheet (a brand asked for the photo to go) and running this removes them.
 
-    python -m pricechecker.photos [ids…] [--force]
+    python -m pricechecker.photos [ids…] [--force]      (exit status 1 when a phone failed or an id has no sheet)
 
 Downloaded bytes are untrusted: they are only ever opened with Pillow, never executed."""
 import argparse
@@ -91,8 +92,11 @@ def process(pid: str, data: bytes, out_dir: Path = PHOTOS_DIR) -> dict[str, str]
 
 def _write_atomic(path: Path, data: bytes) -> None:
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_bytes(data)
-    os.replace(tmp, path)
+    try:
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)   # gone after the replace; after a failed write it must not stay (static/ is published)
 
 
 def fetch(url: str) -> bytes:
@@ -117,34 +121,46 @@ def _save_manifest(manifest: dict) -> None:
     _write_atomic(MANIFEST, (json.dumps(manifest, indent=1, sort_keys=True) + "\n").encode())
 
 
-def run(ids: list[str] | None = None, force: bool = False) -> list[str]:
+def _sync(pid: str, sheet: dict, manifest: dict, force: bool) -> str:
+    """Make one phone's files and manifest entry match its sheet; returns what was done (raises when that fails)."""
+    url = (sheet.get("photo") or {}).get("url")
+    paths = [PHOTOS_DIR / f"{pid}-{k}.webp" for k in SIZES]
+    if not url:   # no photo, or one taken out of the sheet: its files and manifest entry go too (the site shows none either)
+        if not any(p.exists() for p in paths) and pid not in manifest:
+            return "no photo in the sheet"
+        for p in paths:
+            p.unlink(missing_ok=True)
+        if manifest.pop(pid, None) is not None:
+            _save_manifest(manifest)
+        return "photo removed (no photo in the sheet)"
+    if not force and all(p.exists() for p in paths) and manifest.get(pid, {}).get("url") == url:
+        return "unchanged"
+    data = fetch(url)
+    files = process(pid, data, PHOTOS_DIR)
+    manifest[pid] = {"url": url, "src_sha256": hashlib.sha256(data).hexdigest(), "files": files}
+    _save_manifest(manifest)
+    return "ok (" + ", ".join(f"{k} {round(p.stat().st_size / 1024)} KB" for k, p in zip(SIZES, paths, strict=True)) + ")"
+
+
+def run(ids: list[str] | None = None, force: bool = False) -> tuple[list[str], list[str]]:
+    """Each phone's photo brought in line with its sheet (all sheets without ids): (one message per phone and a closing
+    count, the ids that failed - an id without a sheet included)."""
     sheets = specs.load()
     manifest = _load_manifest()
-    msgs = []
+    msgs, failed = [], []
     for pid in ids or sorted(sheets):
         if pid not in sheets:
             msgs.append(f"{pid}: no spec sheet")
+            failed.append(pid)
             continue
-        url = ((sheets[pid].get("photo") or {}).get("url"))
-        have = all((PHOTOS_DIR / f"{pid}-{k}.webp").exists() for k in SIZES)
-        if not url:
-            msgs.append(f"{pid}: no photo in the sheet")
-        elif not force and have and manifest.get(pid, {}).get("url") == url:
-            msgs.append(f"{pid}: unchanged")
-        else:
-            try:
-                data = fetch(url)
-                files = process(pid, data, PHOTOS_DIR)
-                manifest[pid] = {"url": url, "src_sha256": hashlib.sha256(data).hexdigest(), "files": files}
-                _save_manifest(manifest)
-            except Exception as e:   # noqa: BLE001  one phone's failure (PhotoError, a full disk, ...) never stops the others
-                msgs.append(f"{pid}: {e}" if isinstance(e, PhotoError) else f"{pid}: {type(e).__name__}: {e}")
-                continue
-            sizes = ", ".join(f"{k} {round((PHOTOS_DIR / f'{pid}-{k}.webp').stat().st_size / 1024)} KB" for k in SIZES)
-            msgs.append(f"{pid}: ok ({sizes})")
+        try:
+            msgs.append(f"{pid}: {_sync(pid, sheets[pid], manifest, force)}")
+        except Exception as e:   # noqa: BLE001  one phone's failure (PhotoError, a full disk, ...) never stops the others
+            msgs.append(f"{pid}: {e}" if isinstance(e, PhotoError) else f"{pid}: {type(e).__name__}: {e}")
+            failed.append(pid)
     none = [p for p in sorted(sheets) if not all((PHOTOS_DIR / f"{p}-{k}.webp").exists() for k in SIZES)]
     msgs.append(f"photos: {len(none)} of {len(sheets)} phones have none: {', '.join(none)}")
-    return msgs
+    return msgs, failed
 
 
 def main(argv=None) -> int:
@@ -152,8 +168,9 @@ def main(argv=None) -> int:
     ap.add_argument("ids", nargs="*", help="phone ids (default: every phone with a spec sheet)")
     ap.add_argument("--force", action="store_true", help="download and process again even when the photo url is unchanged")
     a = ap.parse_args(argv)
-    print("\n".join(run(a.ids or None, a.force)))
-    return 0
+    msgs, failed = run(a.ids or None, a.force)
+    print("\n".join(msgs))
+    return 1 if failed else 0   # skipped (unchanged, no photo) and removed photos are fine
 
 
 if __name__ == "__main__":

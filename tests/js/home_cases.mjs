@@ -87,16 +87,16 @@ assert.deepEqual(order("drop", withDrops), ["galaxy-s27", "pixel-11", "oppo-find
 const us = { region: "US", area: "", pay: "card", cur: "usd" };
 const pix = groupRows([offer("pixel-11", "global", "12/256", 800, { ship: { EU: zero, US: false }, store_label: "Gomibo" })], TAX, us).get("pixel-11");
 const html = listHtml([{ ...meta[3], rows: pix }], us, "");
-assert.match(html, /<span class="p none">Global<b>–<\/b><\/span>/);
-assert.match(html, /<span class="p none">China<b>–<\/b><\/span>/);
+assert.match(html, /<span class="p none"><span class="lab">Global<\/span><b>–<\/b><\/span>/);
+assert.match(html, /<span class="p none"><span class="lab">China<\/span><b>–<\/b><\/span>/);
 const eu = listHtml([{ ...meta[3], rows: by.get("pixel-11") }], s, "");
-assert.match(eu, /<span class="p gl">Global<b class="num">€/);
-assert.match(eu, /<span class="p none">China<b>–<\/b>/);
+assert.match(eu, /<span class="p gl"><span class="lab">Global<\/span><b class="num">€/);
+assert.match(eu, /<span class="p none"><span class="lab">China<\/span><b>–<\/b>/);
 // the Asia label for brands that use it
-assert.match(listHtml([{ ...meta[0], l: "Asia", rows: by.get("oppo-find-x9-ultra") }], s, ""), /<span class="p cn">Asia</);
+assert.match(listHtml([{ ...meta[0], l: "Asia", rows: by.get("oppo-find-x9-ultra") }], s, ""), /<span class="p cn"><span class="lab">Asia<\/span>/);
 assert.match(listHtml([{ ...meta[0], rows: [] }], s, "../"), /href="\.\.\/phones\/oppo-find-x9-ultra"/);
 // no price at all: both cells read "–" (the row stays; the server writes the same)
-assert.match(listHtml([{ ...meta[5], rows: [] }], s, ""), /<span class="p none">China<b>–<\/b><\/span><span class="p none">Global<b>–<\/b><\/span>/);
+assert.match(listHtml([{ ...meta[5], rows: [] }], s, ""), /<span class="p none"><span class="lab">China<\/span><b>–<\/b><\/span><span class="p none"><span class="lab">Global<\/span><b>–<\/b><\/span>/);
 
 // marks, inside the row's li after its link: "↓ this week" from the phone's drop (kept when rows are rebuilt), "Watched" for watched ids
 const mk = (id, drop) => listHtml([{ ...meta.find((m) => m.id === id), drop, rows: by.get(id) || [] }], s, "", new Set(["pixel-11"]));

@@ -252,11 +252,12 @@ export function buyBar(row, s, labels) {
     `<a class="bb-go" href="${esc(row.link)}" ${LINK} aria-label="View deal at ${esc(row.store)}">View deal<span aria-hidden="true"> ↗</span></a></div>`;
 }
 
+// one version's cell in a home row; the version label has a span of its own, the only text set in capitals
 const cell = (b, e, s, labels, has = true) => (!has
   ? `<span class="p none absent">No ${esc(labels[e])} version</span>`
   : b
-  ? `<span class="p ${edCls(e)}">${esc(labels[e])}<b class="num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}${b.tail ? `<small>${esc(b.tail)}</small>` : ""}</b>${memLabel(b.storage)}<span class="at">at ${esc(b.store)}</span></span>`
-  : `<span class="p none">${esc(labels[e])}<b>–</b></span>`);
+  ? `<span class="p ${edCls(e)}"><span class="lab">${esc(labels[e])}</span><b class="num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}${b.tail ? `<small>${esc(b.tail)}</small>` : ""}</b>${memLabel(b.storage)}<span class="at">at ${esc(b.store)}</span></span>`
+  : `<span class="p none"><span class="lab">${esc(labels[e])}</span><b>–</b></span>`);
 
 /** A phone on the home list: small photo, name, launch month, key specs, China (red) and Global (blue) best current price with the
  *  store behind it ("No ... version" for a version the phone doesn't have), the gap. phone: {id, name, announced, ph?, sp?, eds?}. */

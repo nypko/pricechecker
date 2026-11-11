@@ -223,13 +223,14 @@
 {%- endif -%}
 {%- endmacro -%}
 
+{#- one version's cell in a home row; the version label has a span of its own, the only text set in capitals -#}
 {%- macro _cell(b, e, s, labels, has=true) -%}
 {%- if not has -%}
 <span class="p none absent">No {{ labels[e] }} version</span>
 {%- elif b -%}
-<span class="p {{ 'cn' if e == 'china' else 'gl' }}">{{ labels[e] }}<b class="num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}{% if b.tail %}<small>{{ b.tail }}</small>{% endif %}</b>{{ mem_label(b.storage) }}<span class="at">at {{ b.store }}</span></span>
+<span class="p {{ 'cn' if e == 'china' else 'gl' }}"><span class="lab">{{ labels[e] }}</span><b class="num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}{% if b.tail %}<small>{{ b.tail }}</small>{% endif %}</b>{{ mem_label(b.storage) }}<span class="at">at {{ b.store }}</span></span>
 {%- else -%}
-<span class="p none">{{ labels[e] }}<b>–</b></span>
+<span class="p none"><span class="lab">{{ labels[e] }}</span><b>–</b></span>
 {%- endif -%}
 {%- endmacro -%}
 

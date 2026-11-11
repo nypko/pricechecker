@@ -300,6 +300,26 @@ def test_home_row_photo_specs_store_and_absent_version_parity(fixture_doc, tax_f
         assert ("No Global version" in h) == (meta.get("eds") == ["china"]) and (f"No {labels['china']} version" in h) == (meta.get("eds") == ["global"])
 
 
+@needs_node
+def test_home_row_sets_only_the_version_label_in_capitals(fixture_doc, tax_file, tax, tmp_path):
+    """Each home-row cell's version label is a span of its own (Jinja and JS alike), the only text d.css sets in capitals:
+    the memory line ("RAM/storage not listed" for an offer without one), the price and the store stay as written. A row
+    photo needs :has() to make room for it, so without :has() there is none."""
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    f, inputs, s, e, st = next(c for c in _fixture_cases(fixture_doc, tmp_path) if c[0].name == "oppo-base.json")
+    rows = view.rows(inputs, tax, s)
+    for side, h in (("py", render_py(rows, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])["home_row"]),
+                    ("js", render_js(f, tax_file, s, labels, e, st, fixture_doc["meta"], fixture_doc["now"])["home_row"])):
+        cells = re.findall(r'<span class="p (?:cn|gl)">(.*?)<span class="at">', h)
+        assert len(cells) == 2, side
+        for c, lab in zip(cells, (labels["china"], "Global"), strict=True):
+            assert c.startswith(f'<span class="lab">{lab}</span><b class="num">') and c.endswith("</b>RAM/storage not listed"), side
+    css = (ROOT / "static" / "d.css").read_text()
+    caps = [rule for rule in re.findall(r"([^{}]*)\{([^}]*)\}", css) if "uppercase" in rule[1] and ".pairs" in rule[0]]
+    assert [sel.strip() for sel, _ in caps] == [".pairs .p .lab"]
+    assert "@supports not selector(:has(*)) { .pairs .ph { display: none; } }" in css
+
+
 def _real_samples(phones):
     """One phone each: both versions, China only, Global only, with a sale, with a stale store."""
     def first(pred, taken):

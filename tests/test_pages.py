@@ -966,9 +966,10 @@ def test_store_hosts_cover_every_store_in_stores_yaml():
 
 # ---- made-up prices: what the live tests above check on the saved prices, on data that never changes (not live) ----
 
-def _made_up(listings, rows=()):
+def _made_up(listings, rows=(), failed=()):
     """The site's config with the saved prices swapped for `listings` [(store, phone id, edition, storage, EUR price,
-    available)], all checked at the saved `updated` time, and `rows` as the price history: (data, phones, env, ctx)."""
+    available)], all checked at the saved `updated` time, and `rows` as the price history; `failed` names stores whose
+    latest check failed: (data, phones, env, ctx)."""
     import dataclasses
 
     from pricechecker import fx, run, terms
@@ -976,10 +977,11 @@ def _made_up(listings, rows=()):
     stores, catalog = run.load_config()
     data = context.load(catalog, stores, fx.cached(), terms.saved_status())
     at = data.updated_at.strftime("%Y-%m-%dT%H:%M:%SZ")
-    host = {"wonda": "https://wondamobile.com", "giztop": "https://www.giztop.com", "mobilemarvel": "https://www.themobilemarvel.com"}
+    host = {"wonda": "https://wondamobile.com", "giztop": "https://www.giztop.com", "mobilemarvel": "https://www.themobilemarvel.com",
+            "tradingshenzhen": "https://tradingshenzhen.com", "tradingshenzhen_eu": "https://tradingshenzhen.com"}
     live_stores = {}
     for store, pid, ed, mem, eur, avail in listings:
-        st = live_stores.setdefault(store, {"ok": True, "checked": at, "offers": []})
+        st = live_stores.setdefault(store, {"ok": store not in failed, "checked": at, "offers": []})
         st["offers"].append({"store": store, "model_id": pid, "edition": ed, "storage": mem, "title": f"{pid} {mem}",
                              "price": eur, "currency": "EUR", "available": avail, "url": f"{host[store]}/products/{pid}-{ed}",
                              "prices": {"EUR": eur}})
@@ -999,6 +1001,87 @@ def test_phone_page_sections_on_made_up_prices():
     for blk in ("mem_chips", "verdict", "receipt", "store_list", "ledger", "buy_bar"):
         assert f'data-block="{blk}"' in h, blk
     assert "Oppo Find X9 Ultra price: <em>China vs Global</em>" in h and "Compare every offer (" in h
+
+
+def test_spec_line_reads_one_value_per_part():
+    from pricechecker.site.common import spec_line
+    assert spec_line({"chip": "Dimensity 9600M", "screen": 6.59, "battery": "8,000 mAh / 7,150 mAh (EU)", "charging": "80 W"}) == "Dimensity 9600M · 6.59″ · up to 8,000 mAh"
+    assert spec_line({"chip": "X", "battery": "7,200 mAh (China) / 7,100 mAh (Global) / 6,270 mAh (EU)"}) == "X · up to 7,200 mAh"
+    assert spec_line({"screen": 6.82, "battery": "large"}) == "6.82″ · large"
+    assert spec_line(None) == ""
+
+
+def _top(h):
+    return h[h.index("<h1"):h.index('id="duel"')]
+
+
+def test_phone_top_has_product_card_and_checked_line(tmp_path, monkeypatch):
+    from PIL import Image
+
+    from pricechecker import photos
+    from pricechecker.site import common
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    for k, (w, h) in photos.SIZES.items():
+        Image.new("RGBA", (w, h)).save(tmp_path / f"{pid}-{k}.webp")
+    monkeypatch.setattr(common, "PHOTOS_DIR", tmp_path)
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "global", "12/256", 1300.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    top = _top(h)
+    assert re.search(rf'<img src="\.\./static/phones/{pid}-m\.webp\?v=[0-9a-f]{{10}}" width="\d+" height="\d+" alt="Oppo Find X9 Ultra" loading="eager" decoding="async">', top)
+    assert "Photo: Oppo" in top and "Snapdragon 8 Elite Gen 5" in top and f'href="{pid}/specs">All specs</a>' in top and 'href="#carrier">Check your network</a>' in top
+    assert re.search(r"2 stores checked <time datetime=\"[^\"]+\" data-ago>", top)
+    assert 'data-for="lower">delivered to the EU by card</span> · we don\'t sell phones' in top
+    assert 'class="for"' not in top
+
+
+def test_phone_card_without_photo_or_specs_or_bands(monkeypatch):
+    from pricechecker.site import common
+    from pricechecker.site.pages import phone
+    monkeypatch.setattr(common, "PHOTOS_DIR", Path("/nonexistent"))
+    pid = "oppo-find-x9-ultra"
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True)])
+    top = _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"])
+    assert 'class="pcard"' in top and "<img" not in top   # key specs only
+    q = next(x for x in phones if x["id"] == pid)
+    q["specs"] = []
+    assert 'class="pcard"' not in _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"])
+    data.spec_sheets[pid] = {**data.spec_sheets[pid], "bands": {}}
+    q["specs"] = [("Chip", "X")]
+    assert "Check your network" not in _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"])
+
+
+def test_checked_line_counts_failed_stores_and_eu_warehouse_once():
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    listings = [("tradingshenzhen", pid, "china", "12/256", 1000.0, True), ("tradingshenzhen_eu", pid, "global", "12/256", 1300.0, True),
+                ("wonda", pid, "china", "12/256", 1010.0, True)]
+    data, phones, env, ctx = _made_up(listings, failed=("wonda",))
+    p = next(x for x in phones if x["id"] == pid)
+    assert phone.stores_checked(p, data.stores_cfg) == (1, 2)
+    assert re.search(r"1 of 2 stores checked <time", _top(phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]))
+    data, phones, env, ctx = _made_up(listings)
+    assert phone.stores_checked(next(x for x in phones if x["id"] == pid), data.stores_cfg) == (2, 2)
+
+
+def test_photo_of_hashes_files_and_needs_both(tmp_path):
+    from pricechecker.site.common import photo_of
+    assert photo_of("a", None, "Oppo", tmp_path) is None
+    (tmp_path / "a-s.webp").write_bytes(b"s")
+    assert photo_of("a", None, "Oppo", tmp_path) is None
+    (tmp_path / "a-m.webp").write_bytes(b"m")
+    got = photo_of("a", {"photo": {"credit": "Oppo Global"}}, "Oppo", tmp_path)
+    assert got["credit"] == "Oppo Global" and re.fullmatch(r"static/phones/a-m\.webp\?v=[0-9a-f]{10}", got["m"])
+    assert photo_of("a", {}, "Oppo", tmp_path)["credit"] == "Oppo"
+
+
+def test_photo_cache_rule_and_about_paragraph():
+    from pricechecker.site import headers
+    assert "/static/phones/*\n  Cache-Control: public, max-age=2592000" in headers.CACHE
+    from pricechecker.site.pages import static
+    data, phones, env, ctx = _made_up([("wonda", "oppo-find-x9-ultra", "china", "12/256", 1000.0, True)])
+    about = html.unescape(static.render(env, data, ctx, phones)["about.html"])
+    assert "Phone photos are each brand's own product images, credited on each phone's page. A brand that would like one removed can write to" in about
 
 
 def test_china_only_phone_on_made_up_prices():

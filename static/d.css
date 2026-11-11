@@ -435,7 +435,27 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
 
 /* ---- phone page (templates/phone.html) ---- */
 [hidden] { display: none !important; }
-.phone .for { margin-bottom: 16px; }
+/* the product card under the H1: photo left on a phone (92 x 112), on the right from 640 px (150 x 186) */
+.pcard { display: flex; gap: 14px; align-items: center; margin: 10px 0 0; padding: 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; }
+.pphoto { margin: 0; flex: none; width: 92px; text-align: center; }
+.pphoto img { display: block; width: 92px; height: 112px; object-fit: contain; border-radius: 10px; }
+.pphoto figcaption { margin-top: 4px; font-size: 12px; line-height: 1.25; color: var(--ink-2); }
+.ptext { min-width: 0; }
+.pspecs { list-style: none; margin: 0; padding: 0; font-size: 13px; line-height: 1.5; color: var(--ink); }
+.plinks { margin: 8px 0 0; font-size: 13px; }
+.plinks a { color: var(--ink); text-decoration: underline; }
+:root[data-theme="dark"] .pphoto img { background: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pphoto img { background: #fff; } }
+@media (min-width: 640px) {
+  .pcard { flex-direction: row-reverse; justify-content: space-between; margin-top: 14px; padding: 16px 18px; }
+  .pphoto, .pphoto img { width: 150px; }
+  .pphoto img { height: 186px; }
+  .ptext { flex: 1; }
+  .pspecs { display: flex; flex-wrap: wrap; font-size: 14px; }
+  .pspecs li + li::before { content: "·"; margin: 0 8px; color: var(--ink-2); }
+  .phone .checked { margin-top: 12px; }
+}
+.phone .checked { margin-top: 10px; }
 .phone .only { margin: -2px 0 12px; }
 .buyers { margin: 0 0 8px; font-size: .86rem; color: var(--ink-2); }
 .stores .offers + .soldout-h { margin-top: 16px; }

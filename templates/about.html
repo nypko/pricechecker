@@ -15,6 +15,7 @@
   <p>We track {{ phones|length }} current flagship phones at {{ connected|length }} stores, mostly specialist importers:
     {% for s in connected %}{{ s.label }}{{ ", " if not loop.last }}{% endfor %}.
     Many of these phones come in a Global and a China version, so we show both side by side at the same RAM and storage.</p>
+  <p>Phone photos are each brand's own product images, credited on each phone's page.{% if site.contact_email %} A brand that would like one removed can write to <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a>.{% endif %}</p>
 
   <h2>How prices are checked</h2>
   <ul>

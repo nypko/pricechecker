@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from urllib.parse import urlsplit
 
 from .. import affiliate, fx, normalize, promos, terms
-from .common import EDITIONS, _money, _specs, ed_labels
+from .common import EDITIONS, _money, _specs, ed_labels, photo_of, spec_line
 from .context import SiteData
 from .seo import _product_ld, _title_price
 
@@ -117,7 +117,8 @@ def assemble(data: SiteData) -> list[dict]:
                        "title_price": _title_price(offers, tax_cfg),
                        "title_offer": (_title_price(offers, tax_cfg, with_offer=True) or [None] * 4)[3],
                        "ld": _product_ld(m, in_stock, site_cfg),
-                       "specs": _specs(specs.get(m["id"])),
+                       "specs": _specs(specs.get(m["id"])), "spec_line": spec_line(specs.get(m["id"])),
+                       "photo": photo_of(m["id"], data.spec_sheets.get(m["id"]), m["brand"]),
                        "ed_label": ed_labels(m["brand"]),
                        "google": {"caveat": google["caveat"] if m["brand"].lower() != "huawei" else "",   # a brand's own caveat wins
                                   **google["brands"].get(m["brand"].lower(), google["brands"]["default"])}})

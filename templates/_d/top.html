@@ -23,3 +23,31 @@
 {%- macro home_checked(updated, updated_label, root) -%}
 <p class="checked"><span class="dot" aria-hidden="true">●</span> Prices checked {{ ago_time(updated, updated_label) }} · Affiliate links never change the order · <a href="{{ root }}about">How it works</a></p>
 {%- endmacro -%}
+
+{#- Under a phone's H1: the brand's photo, key specs and where to read more, as a white card; left out when there is neither -#}
+{%- macro product_card(p, v, root) -%}
+{%- if p.photo or p.specs %}
+<div class="pcard">
+  {%- if p.photo %}
+  <figure class="pphoto"><img src="{{ root }}{{ p.photo.m }}" width="150" height="186" alt="{{ p.name }}" loading="eager" decoding="async"><figcaption>Photo: {{ p.photo.credit }}</figcaption></figure>
+  {%- endif %}
+  <div class="ptext">
+    <ul class="pspecs">
+      {%- for k, val in p.specs if k in ("Chip", "Screen") %}<li>{{ val ~ " screen" if k == "Screen" else val }}</li>{% endfor -%}
+      {%- set bat = p.specs|selectattr(0, "equalto", "Battery")|map(attribute=1)|first -%}
+      {%- set chg = p.specs|selectattr(0, "equalto", "Charging")|map(attribute=1)|first -%}
+      {%- if bat or chg %}<li>{{ (bat ~ " · " ~ chg ~ " charging") if bat and chg else (bat or (chg ~ " charging")) }}</li>{% endif -%}
+    </ul>
+    {%- if v.spec_count or v.has_bands %}
+    <p class="plinks">{% if v.spec_count %}<a href="{{ p.slug }}/specs">All specs</a>{% endif %}{% if v.spec_count and v.has_bands %} · {% endif %}{% if v.has_bands %}<a href="#carrier">Check your network</a>{% endif %}</p>
+    {%- endif %}
+  </div>
+</div>
+{%- endif -%}
+{%- endmacro -%}
+
+{#- "2 stores checked 40 min ago · delivered to the EU by card · we don't sell phones"; settings.js paints the lower-case place line -#}
+{%- macro phone_checked(v, updated, updated_label) -%}
+{%- set fresh, total = v.checked -%}
+<p class="checked"><span class="dot" aria-hidden="true">●</span> {% if not total %}Checked{% else %}{% if fresh == total %}{{ total }}{% else %}{{ fresh }} of {{ total }}{% endif %} {{ "store" if total == 1 else "stores" }} checked{% endif %} {{ ago_time(updated, updated_label) }} · <span data-for="lower">delivered to the EU by card</span> · we don't sell phones</p>
+{%- endmacro -%}

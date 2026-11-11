@@ -118,6 +118,17 @@ def _trend(p: dict, data: SiteData, ctx: dict, best: dict | None, ed: str | None
     return price_trend(days, best, today)
 
 
+def stores_checked(p: dict, stores_cfg: dict) -> tuple[int, int]:
+    """(answered, total) over the stores with a current in-stock offer for this phone; an EU warehouse counts with its
+    store, and a store is unanswered when any of its offers is stale (its last check failed)."""
+    groups: dict[str, bool] = {}
+    for o in p["offers"]:
+        if o["available"] and not o.get("old"):
+            g = stores_cfg.get(o["store"], {}).get("part_of") or o["store"]
+            groups[g] = groups.get(g, True) and not o.get("stale")
+    return sum(groups.values()), len(groups)
+
+
 def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
     """The phone page's own context, `v`: the default-settings rows and the picks the blocks are rendered with."""
     labels = p["ed_label"]
@@ -161,7 +172,7 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "nets": {e: carriers.box_line(b, None, carriers.band_table(), None) for e, b in bands_attr(sheet, eds).items()},
         "carrier": _carrier(sheet, eds), "carrier_doc": _carrier_doc(), "cc": country_for(DEFAULT),
         "has_bands": any(b for b in bands_attr(sheet, eds).values()),
-        "now": ctx.get("updated") or None,
+        "now": ctx.get("updated") or None, "checked": stores_checked(p, data.stores_cfg),
         "trend": _trend(p, data, ctx, best, ed, mem),
     }
 

@@ -17,6 +17,7 @@ _INLINE = re.compile(r'<script(?![^>]*\ssrc=)(?![^>]*\stype="application/(?:ld\+
 CACHE = ("/static/d.css\n  Cache-Control: public, max-age=31536000, immutable\n"
          "/static/js/*\n  Cache-Control: public, max-age=31536000, immutable\n"
          "/static/fonts/*\n  Cache-Control: public, max-age=2592000\n"
+         "/static/phones/*\n  Cache-Control: public, max-age=2592000\n"
          "/static/icons/*\n  Cache-Control: public, max-age=2592000\n"
          "/data/v1/*\n  Cache-Control: public, max-age=31536000, immutable\n")   # names carry a content hash
 

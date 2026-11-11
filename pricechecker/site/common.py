@@ -1,11 +1,13 @@
 """Constants and small formatting helpers shared by the site modules: display currencies, edition labels, money in every
 site currency, RAM/storage and spec text."""
+import hashlib
 import re
 from pathlib import Path
 
 import yaml
 
 from .. import fx
+from ..photos import PHOTOS_DIR
 
 CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD"]   # CAD: always an ECB conversion (marked ≈)
 EDITIONS = ["global", "china"]
@@ -56,6 +58,30 @@ def _specs(sp: dict | None) -> list[tuple[str, str]]:
         screen = f"{size}″" + (f" {rest}" if rest else "")
     rows = [("Chip", sp.get("chip")), ("Screen", screen), ("Battery", sp.get("battery")), ("Charging", sp.get("charging"))]
     return [(k, str(v)) for k, v in rows if v]
+
+
+def spec_line(key: dict | None) -> str:
+    """A sheet's `key` block -> "Dimensity 9600M · 6.59″ · up to 8,000 mAh" (chip, screen, battery; blanks and their
+    separators dropped). A battery listing several values reads "up to" the largest; one without digits stays as is."""
+    rows = dict(_specs(key))
+    battery = rows.get("Battery")
+    found = re.findall(r"\d[\d,]*(?= mAh)", battery or "")
+    if len(found) > 1:
+        battery = f"up to {max(found, key=lambda n: int(n.replace(',', '')))} mAh"
+    return " · ".join(x for x in (rows.get("Chip"), rows.get("Screen"), battery) if x)
+
+
+def photo_of(pid: str, sheet: dict | None, brand: str, photos_dir: Path | None = None) -> dict | None:
+    """The phone's two processed photo files as site paths with a content hash (?v=), plus who to credit; None unless both exist."""
+    d = photos_dir or PHOTOS_DIR
+    out = {}
+    for k in ("s", "m"):
+        f = d / f"{pid}-{k}.webp"
+        if not f.is_file():
+            return None
+        out[k] = f"static/phones/{pid}-{k}.webp?v={hashlib.sha256(f.read_bytes()).hexdigest()[:10]}"
+    out["credit"] = ((sheet or {}).get("photo") or {}).get("credit") or brand
+    return out
 
 
 def _spec_parts(v: str) -> list[tuple[str, str]]:

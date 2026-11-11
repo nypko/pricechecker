@@ -2,6 +2,7 @@
 {% import "_d/blocks.html" as b %}
 {% import "_d/shell.html" as shell with context %}
 {% import "_d/history_svg.html" as hist %}
+{% import "_d/top.html" as top with context %}
 {% import "_explain.html" as explain %}
 {#- Spec §5.2. Every price below is a block from _d/blocks.html, rendered for the default settings from v.rows
     (pages/phone.py); static/js/phone.js re-renders the same blocks with blocks.js for other settings and wires the
@@ -27,7 +28,8 @@
   {%- if v.buyers %} data-buyers='{{ v.buyers|tojson }}'{% endif %}>
   <p class="kicker"><a href="../">All phones</a> · {{ p.brand }}{% if p.announced %} · announced {{ month_of(p.announced) }}{% endif %}</p>
   <h1>{{ p.name }} price{% if p.editions|length > 1 %}: <em>{{ L.china }} vs {{ L.global }}</em>{% elif "china" in p.editions %}: <em>{{ L.china }} version</em>{% endif %}</h1>
-  {{ shell.settings_line() }}
+  {{ top.product_card(p, v, root) }}
+  {{ top.phone_checked(v, updated, updated_label) }}
 
 {% if v.eds %}
   <div id="s-mems">{{ b.mem_chips(v.rows, v.mem, s) }}</div>

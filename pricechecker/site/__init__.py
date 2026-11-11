@@ -140,3 +140,6 @@ def build(catalog: list[dict], stores_cfg: dict, rates_info: dict, terms_status:
                           seo.lastmods(data.rows_all, phones, stores_cfg)))
     _write(seo._feeds(ctx["site"], phones, data.rows_all, stores_cfg, data.updated_at, drops.this_week(data, phones)))
     print(f"  site: {len(phones)} phone pages + price history pages -> {OUT}/")
+    bare = [q["id"] for q in phones if not q["photo"]]
+    if bare:
+        print(f"  photos: {len(bare)} of {len(phones)} phones have none: {', '.join(bare)}")

@@ -50,7 +50,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1217.3
+   "ref": 1143.95
   },
   "honor-magic-v6": {
    "left": "",
@@ -146,7 +146,7 @@
   },
   "motorola-razr-fold": {
    "left": "",
-   "ref": 1384.95
+   "ref": 1397.95
   },
   "oneplus-15": {
    "left": "",
@@ -294,6 +294,12 @@
     "eur": 757.0,
     "slug": "vivo-x300-pro",
     "was": 807.0
+   },
+   {
+    "at": "2026-11-11T07:23:51Z",
+    "eur": 1143.95,
+    "slug": "honor-magic-v5",
+    "was": 1217.3
    }
   ],
   "realme-gt-8-pro": {
@@ -421,5 +427,5 @@
    "ref": 910.86
   }
  },
- "updated": "2026-11-10T23:46:10Z"
+ "updated": "2026-11-11T07:23:51Z"
 }

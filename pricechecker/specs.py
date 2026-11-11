@@ -88,6 +88,28 @@ def _value_problems(where: str, v) -> list[str]:
     return [f"{where}: a value is text, null, {{china, global}} or {{value, from}}"]
 
 
+def _on_brand_site(url, brand: str) -> bool:
+    host = (urlparse(str(url or "")).hostname or "").lower()
+    return any(host == h or host.endswith("." + h) for h in BRAND_HOSTS.get(brand, ()))
+
+
+def _photo_problems(photo, brand: str) -> list[str]:
+    """photo: {url: https (any host: brand image CDNs differ from the site), page: on the brand's own sites, checked, credit?}"""
+    if not isinstance(photo, dict):
+        return ["photo: expected {url, page, checked}"]
+    out = [f"photo.{k}: unknown" for k in photo if k not in ("url", "page", "checked", "credit")]
+    u = urlparse(str(photo.get("url") or ""))
+    if u.scheme != "https" or not u.hostname:
+        out.append("photo.url must be an https URL")
+    if not _on_brand_site(photo.get("page"), brand):
+        out.append(f"photo.page: not one of {brand}'s own sites")
+    if not _is_date(photo.get("checked")):
+        out.append("photo.checked must be YYYY-MM-DD")
+    if "credit" in photo and not isinstance(photo["credit"], str):
+        out.append("photo.credit must be text")
+    return out
+
+
 def validate(sheet: dict, brand: str | None = None) -> list[str]:
     """Problems with one sheet (empty list = valid). The brand defaults to the catalog's brand for the sheet's id."""
     out: list[str] = []
@@ -98,7 +120,7 @@ def validate(sheet: dict, brand: str | None = None) -> list[str]:
     if brand not in BRAND_HOSTS:
         out.append(f"{pid}: not in the catalog (no brand)")
     for k in sheet:
-        if k not in ("id", "sources", "key", "groups", "bands"):
+        if k not in ("id", "sources", "key", "groups", "bands", "photo"):
             out.append(f"unknown top-level key {k}")
     for ver, s in (sheet.get("sources") or {}).items():
         if ver not in VERSIONS:
@@ -109,6 +131,8 @@ def validate(sheet: dict, brand: str | None = None) -> list[str]:
             out.append(f"sources.{ver}: {host or 'no url'} is not one of {brand}'s own sites")
         if not _is_date((s or {}).get("checked")):
             out.append(f"sources.{ver}.checked must be YYYY-MM-DD")
+    if "photo" in sheet:
+        out += _photo_problems(sheet["photo"], brand)
     key = sheet.get("key")
     if not isinstance(key, dict):
         out.append("key missing")

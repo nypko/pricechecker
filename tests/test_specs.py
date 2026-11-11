@@ -112,3 +112,22 @@ def test_band_check_reports_which_lists_are_unknown():
     assert specs.band_check(s, "china")["unknown"] == ["nr"]
     s["bands"]["china"].update(nr=[1], lte=None)
     assert specs.band_check(s, "china")["unknown"] == ["lte"]
+
+
+def test_validate_photo_block():
+    base = deepcopy(_sheets()["xiaomi-17-ultra"])
+    base["photo"] = {"url": "https://i02.appmifile.com/x.png", "page": "https://www.mi.com/global/product/xiaomi-17-ultra/",
+                     "checked": "2026-11-11"}
+    assert specs.validate(base, "xiaomi") == []
+    base["photo"]["credit"] = "Xiaomi"
+    assert specs.validate(base, "xiaomi") == []
+    for field, value in (("page", "https://www.gsmarena.com/x.php"), ("url", "http://i02.appmifile.com/x.png"), ("checked", None)):
+        bad = deepcopy(base)
+        bad["photo"][field] = value
+        assert len(specs.validate(bad, "xiaomi")) == 1, field
+    bad = deepcopy(base)
+    del bad["photo"]["checked"]
+    assert len(specs.validate(bad, "xiaomi")) == 1
+    bad = deepcopy(base)
+    bad["photo"]["extra"] = 1
+    assert len(specs.validate(bad, "xiaomi")) == 1

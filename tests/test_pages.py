@@ -1042,7 +1042,7 @@ def test_phone_top_wraps_kicker_h1_and_card_for_the_desktop_grid(tmp_path, monke
     h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
     m = re.search(
         r'<div class="ptop">\s*<p class="kicker">.*?</p>\s*<h1>.*?</h1>\s*<div class="pcard">.*?</div>\s*</div>\s*<p class="checked">',
-        h, re.S)
+        h, re.DOTALL)
     assert m and "<figure" in m.group(0) and h.count('class="ptop"') == 1   # the checked line stays under the block
 
 

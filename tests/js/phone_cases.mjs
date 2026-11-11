@@ -126,7 +126,8 @@ assert.equal(focusSelector(null), null);
   const DE = { v: 1, country: "DE", name: "Germany", networks: [net("de-a", "Anet", ["Cheapo"]), net("de-b", "Bnet")], bands: table };
   const bandSets = { china: { lte: [1, 3], nr: [] }, global: null };
   const L = { china: "China", global: "Global" };
-  const setup = ({ settings, saved = null, failFR = true, onNets = undefined }) => {
+  // respond(url): the file's promise, instead of DE for every file (France's refused unless failFR is false)
+  const setup = ({ settings, saved = null, failFR = true, onNets = undefined, respond = null }) => {
     const el = (extra = {}) => ({ innerHTML: "", hidden: false, value: "", ...extra });
     const dom = { carrier: { ...el(), nets: el(), out: el(), country: el(), querySelector(q) { return q === ".cc-nets" ? this.nets : q === ".cc-country" ? this.country : this.out; } },
       "s-csum": el(), "s-eu": el(), "s-clink": el({ hidden: true }), "s-csums": el({ hidden: true }), "s-eulines": el(), "cc-net": el() };
@@ -136,7 +137,7 @@ assert.equal(focusSelector(null), null);
     const cur = { ...settings };
     const cv = wireCarrier({
       root: { addEventListener: (t, f) => { handler = f; } }, $: (id) => dom[id] || null, load: () => cur, storage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) },
-      getJson: (u) => { calls.push(u); return u.includes("FR") && failFR ? Promise.reject(new Error(u)) : Promise.resolve(DE); },
+      getJson: (u) => { calls.push(u); return respond ? respond(u) : u.includes("FR") && failFR ? Promise.reject(new Error(u)) : Promise.resolve(DE); },
       bandSets, files: { DE: "carriers/DE.json", FR: "carriers/FR.json" }, eds: ["china", "global"], L, onNets });
     return { dom, cv, cur, calls, store, change: (id, value) => handler({ target: { id, value } }) };
   };
@@ -215,14 +216,17 @@ assert.equal(focusSelector(null), null);
   await new Promise((r) => setTimeout(r, 0));
   assert.match(t.dom["s-csum"].innerHTML, /In Germany: /); assert.equal(t.dom["s-eu"].hidden, true);
 
-  // the price boxes' network lines (onNets): the settings' country on every draw. When its file fails to load, the lines
-  // shown stay only if they are that country's; else the boxes show none (another country's lines would be wrong)
+  // the price boxes' network lines (onNets): the settings' country only. A paint for another country than the lines on the
+  // boxes are for first takes them away (none for a country until its file is in, the prompt without a country), then every
+  // draw with the country's file brings its lines; a failed load leaves none (another country's lines would be wrong)
   const lines = [], keep = (n) => lines.push(n);
   const PICK = { tone: "pick", text: "Networks: choose your country" }, NONE = { tone: "muted", text: "Bands not published for this version" };
-  const BLANK = { china: null, global: null };
+  const BLANK = { china: null, global: null }, DE_LINES = { china: { tone: "good", text: "✓ works on both networks in Germany" }, global: NONE };
   t = setup({ settings: eu("DE"), onNets: keep });
   await t.cv.paint();
-  assert.deepEqual(lines.splice(0), [{ china: { tone: "good", text: "✓ works on both networks in Germany" }, global: NONE }]);
+  assert.deepEqual(lines.splice(0), [BLANK, DE_LINES]);   // the server's prompt is for no country: none, then Germany's
+  await t.cv.paint();   // Germany again (another network picked, say): its lines, nothing taken away first
+  assert.deepEqual(lines.splice(0), [DE_LINES]);
   t.cur.area = "FR";   // France's file fails to load: not Germany's lines, none
   await t.cv.paint();
   assert.deepEqual(lines.splice(0), [BLANK]);
@@ -232,11 +236,12 @@ assert.equal(focusSelector(null), null);
   t.cur.area = "";     // no country: the prompt
   await t.cv.paint();
   assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
-  // Global with the picker's own country: the picker checks Germany, the boxes still ask for the settings' country
+  // Global with the picker's own country: the picker checks Germany, the boxes keep the server's prompt (nothing sent)
   t = setup({ settings: { region: "Global", area: "", pay: "card", cur: "eur" }, saved: { country: "DE", network: "de-b" }, onNets: keep });
   t.dom["cc-country"] = { value: "" };
   await t.cv.paint();
-  assert.equal(t.calls.length, 1); assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
+  assert.equal(t.calls.length, 1); assert.deepEqual(lines.splice(0), []);
+  assert.match(t.dom["s-csum"].innerHTML, /In Germany/);   // the picker did check Germany
   // ... and when the picker's country fails to load (after Germany's lines): still the prompt, which needs no file
   t = setup({ settings: eu("DE"), saved: { country: "FR", network: "" }, onNets: keep });
   await t.cv.paint();
@@ -249,6 +254,37 @@ assert.equal(focusSelector(null), null);
   delete t.dom.carrier;
   await t.cv.paint();
   assert.deepEqual(lines, []);
+
+  // a newly chosen country whose file is still on its way (or never comes): at once no line, not the previous country's
+  // under the new country's prices; its lines once the file is in. To no country: the prompt at once, never the picker's
+  const FR = { v: 1, country: "FR", name: "France", networks: [net("fr-a", "Fnet")], bands: table };
+  const later = {};   // file -> settle it (the load hangs until then)
+  const slow = (u) => u.includes("DE") ? Promise.resolve(DE) : new Promise((ok) => { later[u] = () => ok(FR); });
+  const tick = () => new Promise((r) => setTimeout(r, 0));
+  t = setup({ settings: eu("DE"), onNets: keep, respond: slow });
+  await t.cv.paint();
+  lines.splice(0);
+  t.cur.area = "FR";
+  const loading = t.cv.paint();
+  assert.deepEqual(lines.splice(0), [BLANK]);   // before the file, in the same call that repaints the prices
+  await tick();
+  assert.deepEqual(lines, []);                  // still loading: none, and Germany's never back
+  later["carriers/FR.json"]();
+  await loading;
+  assert.deepEqual(lines.splice(0), [{ china: { tone: "good", text: "✓ works on Fnet" }, global: NONE }]);
+  t.cur.area = "DE";   // back to Germany, its file kept: France's lines go at once, Germany's follow
+  await t.cv.paint();
+  assert.deepEqual(lines.splice(0), [BLANK, DE_LINES]);
+  t = setup({ settings: eu("DE"), saved: { country: "FR", network: "" }, onNets: keep, respond: slow });
+  await t.cv.paint();
+  lines.splice(0);
+  t.cur.region = "Global"; t.cur.area = "";   // no country now; the picker's own France loads
+  const picking = t.cv.paint();
+  assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
+  later["carriers/FR.json"]();
+  await picking;
+  assert.deepEqual(lines, []);   // France checked in the picker only
+  assert.match(t.dom["s-csum"].innerHTML, /In France/);
 
   // malformed saved settings never reach an object lookup as a key: no throw, the neutral state
   for (const bad of ["constructor", "__proto__", "toString", "hasOwnProperty"]) {

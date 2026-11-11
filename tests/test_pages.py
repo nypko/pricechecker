@@ -182,6 +182,9 @@ def test_phone_pages_within_budget(site_build):
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 def test_memory_first_pick_rules_in_the_page_module():
+    """tests/js/phone_cases.mjs: phone.js's pick rules and focus selectors, and its carrier wiring (wireCarrier): the
+    network check, and the price boxes' network lines, which never show another country's, even while a newly chosen
+    country's file loads."""
     r = subprocess.run(["node", str(ROOT / "tests/js/phone_cases.mjs")], check=False, capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stdout + r.stderr
 

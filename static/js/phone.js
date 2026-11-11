@@ -76,9 +76,11 @@ const json = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { retur
  *  the EU lines, no verdicts) and the next paint tries again. The pick is saved in "pc-carrier" as {country, network}; a pick
  *  for another country or a network no longer listed is ignored, and until one is picked no verdict shows. The selects are
  *  never replaced while in use: only the country select (when the settings start or stop giving a country), the network options (on a new country) and the verdict area (a live region) are repainted.
- *  onNets({version: boxLine}): every draw, the price boxes' network lines for the settings' country (never the picker's own
- *  country: the boxes follow the settings). When the settings' country's file fails to load, the lines shown stay if they
- *  are that country's, else {version: null}: no line rather than another country's. */
+ *  onNets({version: boxLine | null}): the price boxes' network lines, for the settings' country only (never the picker's
+ *  own country: the boxes follow the settings). When a paint starts for another settings' country than the lines on the
+ *  boxes were worked out for, at once no line ({version: null}; the "choose your country" prompt when the settings give no
+ *  country, which needs no file), then, every draw with that country's file, its lines; a failed load leaves no line. So
+ *  another country's lines never show, while a file loads or if it never comes. */
 export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, eds, L, onNets = null }) {
   const docs = {};   // country -> its file's promise
   const loadCountry = (cc) => Object.hasOwn(docs, cc) ? docs[cc] : (docs[cc] = (Object.hasOwn(files, cc) ? getJson(files[cc]) : Promise.reject(new Error(cc))).catch((e) => { delete docs[cc]; throw e; }));
@@ -90,6 +92,12 @@ export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, 
   function paint() {
     if (!$("carrier")) return Promise.resolve();
     const s = load(), fixed = countryFor(s), cc = fixed || (pick && typeof pick.country === "string" && Object.hasOwn(files, pick.country) ? pick.country : null), my = ++seq;
+    // the boxes' lines are another country's (or the prompt, and now there is a country): replaced before the load starts,
+    // so they never sit under this country's prices while its file loads
+    if (onNets && netsFor !== fixed) {
+      onNets(Object.fromEntries(eds.map((e) => [e, fixed ? null : boxLine(bandSets[e] ?? null, null, null, null)])));
+      netsFor = fixed;
+    }
     const draw = (doc, failed = false) => {
       if (my !== seq) return;   // a newer paint is on its way
       shown = doc ? cc : null;
@@ -112,12 +120,8 @@ export function wireCarrier({ root, $, load, getJson, storage, bandSets, files, 
       if (!!$("cc-country") === !!fixed) box.querySelector(".cc-country").innerHTML = B.carrierCountry(doc && cc ? doc : null, s);   // the settings now give (or no longer give) a country
       if ($("cc-country")) $("cc-country").value = cc || "";
       box.querySelector(".cc-out").innerHTML = B.carrierOut(doc, bandSets, picked, L);
-      // the boxes' lines need the settings' country's file (no country: the prompt, which needs none); after a failed load the
-      // lines shown stay when they are that country's, else none
-      if (onNets && (!failed || !fixed || netsFor !== fixed)) {
-        onNets(Object.fromEntries(eds.map((e) => [e, failed && fixed ? null : boxLine(bandSets[e] ?? null, fixed ? doc : null, doc && doc.bands, doc && doc.name)])));
-        netsFor = fixed;
-      }
+      // the settings' country's file is in: its lines (no country: the prompt is up already; a failed load leaves none)
+      if (onNets && fixed && !failed) onNets(Object.fromEntries(eds.map((e) => [e, boxLine(bandSets[e] ?? null, doc, doc && doc.bands, doc && doc.name)])));
     };
     if (!cc) { draw(null); return Promise.resolve(); }
     return loadCountry(cc).then(draw, () => draw(null, true));   // no data: the neutral state, and the next change retries

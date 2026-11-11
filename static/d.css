@@ -467,10 +467,16 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
 :root[data-theme="dark"] .pphoto img { background: #fff; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pphoto img { background: #fff; } }
 @media (min-width: 640px) {
-  .pcard { flex-direction: row-reverse; justify-content: space-between; margin-top: 14px; padding: 16px 18px; }
+  /* P1: kicker, H1 and specs in the left column, the photo spanning them on the right; the card's box dissolves */
+  .ptop { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; align-items: start; }
+  .ptop:has(.pphoto) { grid-template-columns: minmax(0, 1fr) 150px; column-gap: 28px; }
+  .ptop > .kicker { grid-column: 1; grid-row: 1; }
+  .ptop > h1 { grid-column: 1; grid-row: 2; }
+  .pcard { display: contents; }
+  .ptext { grid-column: 1; grid-row: 3; margin-top: 6px; }
+  .pphoto { grid-column: 2; grid-row: 1 / span 3; align-self: center; margin-top: 22px; }
   .pphoto, .pphoto img { width: 150px; }
   .pphoto img { height: 186px; }
-  .ptext { flex: 1; }
   .pspecs { display: flex; flex-wrap: wrap; font-size: 14px; }
   .pspecs li + li::before { content: "·"; margin: 0 8px; color: var(--ink-2); }
   .phone .checked { margin-top: 12px; }

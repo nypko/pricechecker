@@ -1034,6 +1034,18 @@ def test_phone_top_has_product_card_and_checked_line(tmp_path, monkeypatch):
     assert 'class="for"' not in top
 
 
+def test_phone_top_wraps_kicker_h1_and_card_for_the_desktop_grid(tmp_path, monkeypatch):
+    from pricechecker.site.pages import phone
+    pid = "oppo-find-x9-ultra"
+    _photos(monkeypatch, tmp_path, pid)
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    m = re.search(
+        r'<div class="ptop">\s*<p class="kicker">.*?</p>\s*<h1>.*?</h1>\s*<div class="pcard">.*?</div>\s*</div>\s*<p class="checked">',
+        h, re.S)
+    assert m and "<figure" in m.group(0) and h.count('class="ptop"') == 1   # the checked line stays under the block
+
+
 def test_phone_card_without_photo_or_specs_or_bands(monkeypatch):
     from pricechecker.site import common
     from pricechecker.site.pages import phone

@@ -26,9 +26,12 @@
   data-labels='{{ L|tojson }}' data-ed="{{ v.ed or '' }}" data-mem="{{ v.mem or '' }}" data-eds="{{ v.eds|join(',') }}"
   data-bands='{{ v.band_sets|tojson }}' data-carriers='{{ v.carrier_files|tojson }}'
   {%- if v.buyers %} data-buyers='{{ v.buyers|tojson }}'{% endif %}>
+  {#- .ptop: on desktop one grid, kicker + H1 + specs left and the photo right; on a phone the card stays under the H1 -#}
+  <div class="ptop">
   <p class="kicker"><a href="../">All phones</a> · {{ p.brand }}{% if p.announced %} · announced {{ month_of(p.announced) }}{% endif %}</p>
   <h1>{{ p.name }} price{% if p.editions|length > 1 %}: <em>{{ L.china }} vs {{ L.global }}</em>{% elif "china" in p.editions %}: <em>{{ L.china }} version</em>{% endif %}</h1>
   {{ top.product_card(p, v, root) }}
+  </div>
   {{ top.phone_checked(v, updated, updated_label) }}
 
 {% if v.eds %}

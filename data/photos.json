@@ -1,4 +1,76 @@
 {
+ "honor-magic-8": {
+  "files": {
+   "m": "2f45f2c358",
+   "s": "053ef94943"
+  },
+  "src_sha256": "3582cd1283a324f2eae3c8f9e89f258436d982447f444b385f06c3c84a97e9a8",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic8/magic8-id-gold-back.png"
+ },
+ "honor-magic-8-pro": {
+  "files": {
+   "m": "f8f04bb965",
+   "s": "facfa6ec25"
+  },
+  "src_sha256": "22d04c4df6b869d207fcbd91716d9bfac697e0667f4bea2514a4c1ed972de455",
+  "url": "https://www.honor.com/content/dam/honor/common/product-list/product-series/honor-magic8-pro/magic8-pro-list-gold.png"
+ },
+ "honor-magic-8-pro-air": {
+  "files": {
+   "m": "6315dec943",
+   "s": "05966f8acd"
+  },
+  "src_sha256": "4f2cfde7484f04471ebec270ce5edf56fff00c89f11d40d62a52bda133a91d6b",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic8-pro-air/honor-magic8-pro-air-id-orange-back.png"
+ },
+ "honor-magic-9": {
+  "files": {
+   "m": "504a664de1",
+   "s": "f51c679ac1"
+  },
+  "src_sha256": "f1e251211a51c1e750cf56e4e005695cd1369a8376ab72e43c66ed5767de9341",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic9/honor-magic9-id-yellow-back.png"
+ },
+ "honor-magic-9-pro-max": {
+  "files": {
+   "m": "cbe0b0b85e",
+   "s": "7f4bc5ead7"
+  },
+  "src_sha256": "7ba62fdc78872ecdc49c6b04eca84a50f7c17420c1555c8c8fe4fa7ba780efa6",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic9-pro-max/honor-magic9-pro-max-id-green-back.png"
+ },
+ "honor-magic-9-super": {
+  "files": {
+   "m": "b7601eb5fb",
+   "s": "ef0d2dccab"
+  },
+  "src_sha256": "f2d383a404419e678071b4af532cc4d784c92c6af7d7c9b42fc4e036001b5e0b",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic9-super-power/honor-magic9-pro-max-id-yellow-back.png"
+ },
+ "honor-magic-v5": {
+  "files": {
+   "m": "e5d4503f5d",
+   "s": "611167a2ea"
+  },
+  "src_sha256": "be538ca8364bfaf4ed8435e89362f9183620423927a8e83d6b5226f0fe0aaf8f",
+  "url": "https://www.honor.com/content/dam/honor/common/products/smartphone/honor-magic-v5/product/share.jpg"
+ },
+ "honor-magic-v6": {
+  "files": {
+   "m": "0e33b43341",
+   "s": "132680e875"
+  },
+  "src_sha256": "73b0a3d5c824d5999e813e27b0a323e355ee9334ce327b4ba93395aafa0cf38b",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-magic-v6/honor-magic-v5-id-red.png"
+ },
+ "honor-robot-phone": {
+  "files": {
+   "m": "a43aa699b0",
+   "s": "20f70b8d54"
+  },
+  "src_sha256": "edae988391da878a716b7cc9468fda27a740a4cc9a0e64b522309a5bd30b2810",
+  "url": "https://www-file.honor.com/content/dam/honor/common/product-list/product-series/honor-robot-phone/honor-robot-phone-silver-back.png"
+ },
  "huawei-mate-80": {
   "files": {
    "m": "157c53be89",

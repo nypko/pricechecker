@@ -294,7 +294,7 @@ def test_home_rows_carry_the_drop_mark(site_build):
     for pid in with_drop:
         assert row(pid).endswith('</a><span class="marks"><span class="mark drop">↓ this week</span></span>'), pid
     for pid in without:
-        assert "mark" not in row(pid), pid
+        assert "class=\"marks\"" not in row(pid), pid
     assert '<ul class="pairs" id="list" data-cap="20"><' not in h and re.search(r'<ul class="pairs" id="list"[^>]*>\s*<li class="pair"', h)
     assert h.count('class="mark drop"') == len(with_drop)
 
@@ -1164,6 +1164,22 @@ def test_phone_page_without_listed_memory_has_a_panel_and_no_chips():
 def _home_row(h, pid):
     i = h.index(f'<li class="pair" data-block="home_row" data-id="{pid}">')
     return h[i:h.index("</li>", i)]
+
+
+def test_home_rows_show_photo_specs_store_and_absent_version(tmp_path, monkeypatch):
+    from PIL import Image
+
+    from pricechecker import photos
+    from pricechecker.site import common
+    from pricechecker.site.pages import home
+    for k, (w, h) in photos.SIZES.items():
+        Image.new("RGBA", (w, h)).save(tmp_path / f"oneplus-16-{k}.webp")
+    monkeypatch.setattr(common, "PHOTOS_DIR", tmp_path)
+    data, phones, env, ctx = _made_up([("wonda", "oneplus-16", "china", "12/256", 900.0, True), ("giztop", "oneplus-16", "china", "16/512", 1000.0, True)])
+    row = _home_row(home.render(env, data, ctx, phones)["index.html"], "oneplus-16")
+    assert re.search(r'<img class="ph" src="static/phones/oneplus-16-s\.webp\?v=[0-9a-f]{10}" width="58" height="72" alt="" loading="lazy"', row)
+    assert "at Wonda Mobile" in row and "No Global version" in row and "2 stores compared" in row
+    assert '<span class="sp">' in row
 
 
 def test_home_drop_mark_and_teaser_on_made_up_drops():

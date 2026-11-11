@@ -252,17 +252,22 @@ export function buyBar(row, s, labels) {
     `<a class="bb-go" href="${esc(row.link)}" ${LINK} aria-label="View deal at ${esc(row.store)}">View deal<span aria-hidden="true"> ↗</span></a></div>`;
 }
 
-const cell = (b, e, s, labels) => (b
-  ? `<span class="p ${edCls(e)}">${esc(labels[e])}<b class="num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}${b.tail ? `<small>${esc(b.tail)}</small>` : ""}</b>${memLabel(b.storage)}</span>`
+const cell = (b, e, s, labels, has = true) => (!has
+  ? `<span class="p none absent">No ${esc(labels[e])} version</span>`
+  : b
+  ? `<span class="p ${edCls(e)}">${esc(labels[e])}<b class="num">${b.approx ? "≈" : ""}${money(b.total, s.cur)}${b.tail ? `<small>${esc(b.tail)}</small>` : ""}</b>${memLabel(b.storage)}<span class="at">at ${esc(b.store)}</span></span>`
   : `<span class="p none">${esc(labels[e])}<b>–</b></span>`);
 
-/** A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. */
+/** A phone on the home list: small photo, name, launch month, key specs, China (red) and Global (blue) best current price with the
+ *  store behind it ("No ... version" for a version the phone doesn't have), the gap. phone: {id, name, announced, ph?, sp?, eds?}. */
 export function homeRow(phone, rows, s, labels, root = "", marks = []) {
-  const g = gap(rows), n = new Set(rows.filter((r) => r.state === "ok").map((r) => r.store)).size;
-  return `<li class="pair" data-block="home_row" data-id="${esc(phone.id)}"><a href="${esc(root)}phones/${esc(phone.id)}"><span class="nm">${esc(phone.name)}<small>${month(phone.announced)}</small></span>` +
-    `<span class="two">${cell(bestOf(rows, "china"), "china", s, labels)}${cell(bestOf(rows, "global"), "global", s, labels)}</span>` +
+  const g = gap(rows), n = new Set(rows.filter((r) => r.state === "ok").map((r) => r.store)).size, eds = phone.eds || ["china", "global"];
+  return `<li class="pair" data-block="home_row" data-id="${esc(phone.id)}"><a href="${esc(root)}phones/${esc(phone.id)}">` +
+    (phone.ph ? `<img class="ph" src="${esc(root)}${esc(phone.ph)}" width="58" height="72" alt="" loading="lazy" decoding="async">` : "") +
+    `<span class="nm">${esc(phone.name)}<small>${month(phone.announced)}</small></span>` + (phone.sp ? `<span class="sp">${esc(phone.sp)}</span>` : "") +
+    `<span class="two">${cell(bestOf(rows, "china"), "china", s, labels, eds.includes("china"))}${cell(bestOf(rows, "global"), "global", s, labels, eds.includes("global"))}</span>` +
     (g ? `<span class="gap">${esc(g.diff >= 0 ? labels.china : labels.global)} ${money(Math.abs(g.diff), s.cur)} less at ${memTiny(g.storage)}</span>` : "") +
-    `<span class="meta">${n} ${n === 1 ? "store" : "stores"}</span></a>` +
+    `<span class="meta">${n} ${n === 1 ? "store" : "stores"} compared</span></a>` +
     (marks.length ? `<span class="marks">${marks.map((m) => `<span class="mark ${esc(m.kind)}">${esc(m.text)}</span>`).join("")}</span>` : "") + "</li>";
 }
 

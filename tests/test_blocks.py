@@ -282,6 +282,24 @@ def test_home_row_marks_parity(fixture_doc, tax_file, tax, tmp_path):
             assert "marks" not in h
 
 
+def test_home_row_photo_specs_store_and_absent_version_parity(fixture_doc, tax_file, tax, tmp_path):
+    """Photo, key specs, 'at {store}', 'No {Label} version' and 'n stores compared' are drawn the same in Jinja and JS."""
+    labels = ed_labels(fixture_doc["meta"]["brand"])
+    f, inputs, s, e, st = next(iter(_fixture_cases(fixture_doc, tmp_path)))
+    rows = view.rows(inputs, tax, s)
+    base = fixture_doc["meta"]
+    variants = [{**base, "ph": "static/phones/x-s.webp?v=0123456789", "sp": "Chip <X> \u00b7 6.8\u2033", "eds": ["china", "global"]},
+                {**base, "sp": "", "eds": ["china"]}, {**base, "eds": ["global"]}, base]
+    for i, meta in enumerate(variants):
+        py = render_py(rows, s, labels, e, st, meta, fixture_doc["now"])
+        js = render_js(f, tax_file, s, labels, e, st, meta, fixture_doc["now"])
+        assert_same(py, js, f"home meta {i}")
+        h = py["home_row"]
+        assert ("<img class=\"ph\"" in h) == ("ph" in meta) and ('<span class="sp">' in h) == bool(meta.get("sp"))
+        assert '<span class="at">at ' in h and " compared</span>" in h
+        assert ("No Global version" in h) == (meta.get("eds") == ["china"]) and (f"No {labels['china']} version" in h) == (meta.get("eds") == ["global"])
+
+
 def _real_samples(phones):
     """One phone each: both versions, China only, Global only, with a sale, with a stale store."""
     def first(pred, taken):

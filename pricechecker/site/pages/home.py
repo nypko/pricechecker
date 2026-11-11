@@ -57,6 +57,10 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     for p in ordered:
         rows[p["id"]] = view_rows([{k: v for k, v in o.items() if k != "id"} for o in home_offers(p, DEFAULT.region)], data.tax_cfg, DEFAULT)
         m = {"id": p["id"], "name": p["name"], "brand": p["brand"], "announced": p["announced"] or "", "s": summary(rows[p["id"]])}
+        if p["photo"]:
+            m["ph"] = p["photo"]["s"]
+        m["sp"] = p["spec_line"]
+        m["eds"] = p["editions"]
         if p["ed_label"]["china"] != "China":
             m["l"] = p["ed_label"]["china"]
         if p["id"] in big:
@@ -65,7 +69,7 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     count = Counter(r for m in meta for r in m["s"].get("roms", []))
     files = ctx.get("home_files") or {}
     pages = set(page_names(data.stores_cfg))
-    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "n_drops": len(drops), "min_pct": derive.MIN_PCT, "min_eur": derive.MIN_EUR, "drops": set(big), "first": FIRST,
+    return {"s": DEFAULT, "ordered": ordered, "rows": rows, "meta": meta, "meta_of": {m["id"]: m for m in meta}, "n_drops": len(drops), "min_pct": derive.MIN_PCT, "min_eur": derive.MIN_EUR, "drops": set(big), "first": FIRST,
             "roms": [(r, _label(r)) for r in sorted(count) if count[r] >= MIN_PHONES_PER_ROM],
             "brands": sorted({p["brand"] for p in phones}),
             "files": {r: [x.lstrip("/") for x in paths] for r, paths in files.items()},

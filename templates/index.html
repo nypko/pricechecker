@@ -33,7 +33,7 @@
   </div>
   <ul class="pairs" id="list" data-cap="{{ v.first }}">
   {%- for p in v.ordered %}
-    {{ b.home_row(p, v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}, "", [{"kind": "drop", "text": "↓ this week"}] if p.id in v.drops else []) }}
+    {{ b.home_row(v.meta_of[p.id], v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}, "", [{"kind": "drop", "text": "↓ this week"}] if p.id in v.drops else []) }}
   {%- endfor %}
   </ul>
   <button class="showall js-only" type="button" id="showall"{% if v.ordered|length <= v.first %} hidden{% endif %}>Show all {{ v.ordered|length }} phones</button>

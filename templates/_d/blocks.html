@@ -223,21 +223,28 @@
 {%- endif -%}
 {%- endmacro -%}
 
-{%- macro _cell(b, e, s, labels) -%}
-{%- if b -%}
-<span class="p {{ 'cn' if e == 'china' else 'gl' }}">{{ labels[e] }}<b class="num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}{% if b.tail %}<small>{{ b.tail }}</small>{% endif %}</b>{{ mem_label(b.storage) }}</span>
+{%- macro _cell(b, e, s, labels, has=true) -%}
+{%- if not has -%}
+<span class="p none absent">No {{ labels[e] }} version</span>
+{%- elif b -%}
+<span class="p {{ 'cn' if e == 'china' else 'gl' }}">{{ labels[e] }}<b class="num">{{ "≈" if b.approx }}{{ money(b.total, s.cur) }}{% if b.tail %}<small>{{ b.tail }}</small>{% endif %}</b>{{ mem_label(b.storage) }}<span class="at">at {{ b.store }}</span></span>
 {%- else -%}
 <span class="p none">{{ labels[e] }}<b>–</b></span>
 {%- endif -%}
 {%- endmacro -%}
 
-{#- A phone on the home list: name, launch month, China (red) and Global (blue) best current price, the gap. marks: [{kind: "drop"|"watch", text}] -> small
-    pills after the link, inside the li (nothing when empty). -#}
+{#- A phone on the home list: small photo, name, launch month, key specs, China (red) and Global (blue) best current price with the store behind it
+    ("No ... version" for a version the phone doesn't have), the gap. phone is the home meta entry {id, name, announced, ph?, sp?, eds?}.
+    marks: [{kind: "drop"|"watch", text}] -> small pills after the link, inside the li (nothing when empty). -#}
 {%- macro home_row(phone, rows, s, labels, root="", marks=[]) -%}
-{%- set g = gap_of(rows) -%}{%- set n = stores_n(rows) -%}
-<li class="pair" data-block="home_row" data-id="{{ phone.id }}"><a href="{{ root }}phones/{{ phone.id }}"><span class="nm">{{ phone.name }}<small>{{ month_of(phone.announced) }}</small></span><span class="two">{{ _cell(best_of(rows, "china"), "china", s, labels) }}{{ _cell(best_of(rows, "global"), "global", s, labels) }}</span>
+{%- set g = gap_of(rows) -%}{%- set n = stores_n(rows) -%}{%- set eds = phone.eds if phone.eds is defined else ["china", "global"] -%}
+<li class="pair" data-block="home_row" data-id="{{ phone.id }}"><a href="{{ root }}phones/{{ phone.id }}">
+{%- if phone.ph %}<img class="ph" src="{{ root }}{{ phone.ph }}" width="58" height="72" alt="" loading="lazy" decoding="async">{% endif -%}
+<span class="nm">{{ phone.name }}<small>{{ month_of(phone.announced) }}</small></span>
+{%- if phone.sp %}<span class="sp">{{ phone.sp }}</span>{% endif -%}
+<span class="two">{{ _cell(best_of(rows, "china"), "china", s, labels, "china" in eds) }}{{ _cell(best_of(rows, "global"), "global", s, labels, "global" in eds) }}</span>
 {%- if g %}<span class="gap">{{ labels.china if g.diff >= 0 else labels.global }} {{ money(g.diff|abs, s.cur) }} less at {{ mem_tiny(g.storage) }}</span>{% endif -%}
-<span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }}</span></a>
+<span class="meta">{{ n }} {{ "store" if n == 1 else "stores" }} compared</span></a>
 {%- if marks %}<span class="marks">{% for m in marks %}<span class="mark {{ m.kind }}">{{ m.text }}</span>{% endfor %}</span>{% endif -%}</li>
 {%- endmacro -%}
 

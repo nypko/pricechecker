@@ -170,9 +170,13 @@ function readSheet(d) {
   return { region, area: sel ? sel.value : "", pay: v("p") || DEFAULT.pay, cur: v("c") || DEFAULT.cur };
 }
 
-export function openSheet() {
+let opener = null;   // the element the sheet was opened from (see wire: where focus goes when it closes)
+
+/** Open the settings sheet; from: the element that opened it (default: the focused one). */
+export function openSheet(from = null) {
   const d = dialog();
   if (!d) return;
+  opener = from || document.activeElement;
   fillSheet(d, load());
   if (d.showModal) d.showModal(); else d.setAttribute("open", "");
 }
@@ -188,7 +192,7 @@ function wire() {
     hint(); wide.addEventListener("change", hint);
   }
   // one listener for every [data-prefs] element, also those painted later (a price box's "choose your country")
-  document.addEventListener("click", (e) => { const t = e.target; if (t && t.closest && t.closest("[data-prefs]")) openSheet(); });
+  document.addEventListener("click", (e) => { const t = e.target, b = t && t.closest ? t.closest("[data-prefs]") : null; if (b) openSheet(b); });
   if (d) {
     const form = d.querySelector("form");
     // changing the region shows its country / province list; every change is saved at once and the page repaints
@@ -206,6 +210,14 @@ function wire() {
     const match = form.querySelector("[data-cur-match]");
     if (match) match.addEventListener("click", (e) => { e.preventDefault(); commit("match"); });
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });   // tap outside the panel
+    // on closing, the browser gives focus back to the element the sheet was opened from; when a repaint replaced it while the
+    // sheet was open (a price box's "choose your country" became the country's line), the header's settings button takes it
+    d.addEventListener("close", () => {
+      const from = opener;
+      opener = null;
+      const head = from && !from.isConnected ? document.querySelector("header.top [data-prefs]") : null;
+      if (head) head.focus({ preventScroll: true });
+    });
   }
   window.addEventListener("dp:settings", refresh);
   window.addEventListener("storage", refresh);

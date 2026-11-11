@@ -215,15 +215,20 @@ assert.equal(focusSelector(null), null);
   await new Promise((r) => setTimeout(r, 0));
   assert.match(t.dom["s-csum"].innerHTML, /In Germany: /); assert.equal(t.dom["s-eu"].hidden, true);
 
-  // the price boxes' network lines (onNets): the settings' country on every draw; a failed load keeps the lines shown
+  // the price boxes' network lines (onNets): the settings' country on every draw. When its file fails to load, the lines
+  // shown stay only if they are that country's; else the boxes show none (another country's lines would be wrong)
   const lines = [], keep = (n) => lines.push(n);
   const PICK = { tone: "pick", text: "Networks: choose your country" }, NONE = { tone: "muted", text: "Bands not published for this version" };
+  const BLANK = { china: null, global: null };
   t = setup({ settings: eu("DE"), onNets: keep });
   await t.cv.paint();
   assert.deepEqual(lines.splice(0), [{ china: { tone: "good", text: "✓ works on both networks in Germany" }, global: NONE }]);
-  t.cur.area = "FR";   // its file fails to load: no new lines
+  t.cur.area = "FR";   // France's file fails to load: not Germany's lines, none
   await t.cv.paint();
+  assert.deepEqual(lines.splice(0), [BLANK]);
+  await t.cv.paint();  // France fails again: the lines shown are France's (none), kept
   assert.deepEqual(lines, []);
+  assert.equal(t.calls.filter((u) => u.includes("FR")).length, 2);
   t.cur.area = "";     // no country: the prompt
   await t.cv.paint();
   assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
@@ -232,6 +237,13 @@ assert.equal(focusSelector(null), null);
   t.dom["cc-country"] = { value: "" };
   await t.cv.paint();
   assert.equal(t.calls.length, 1); assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
+  // ... and when the picker's country fails to load (after Germany's lines): still the prompt, which needs no file
+  t = setup({ settings: eu("DE"), saved: { country: "FR", network: "" }, onNets: keep });
+  await t.cv.paint();
+  lines.splice(0);
+  t.cur.region = "Global"; t.cur.area = "";
+  await t.cv.paint();
+  assert.deepEqual(t.calls, ["carriers/DE.json", "carriers/FR.json"]); assert.deepEqual(lines.splice(0), [{ china: PICK, global: NONE }]);
   // no carrier section (no version has bands): no lines, the server's stay
   t = setup({ settings: eu("DE"), onNets: keep });
   delete t.dom.carrier;

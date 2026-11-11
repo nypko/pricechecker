@@ -105,29 +105,39 @@ assert.equal(curOwn(mem({ "pc-cur-pick": "1" })), true);
 const so = mem(); saveCurOwn(false, so); assert.equal(so.d["pc-cur-pick"], "0"); saveCurOwn(true, so); assert.equal(so.d["pc-cur-pick"], "1");
 
 // the page wiring on a minimal fake DOM: any [data-prefs] element opens the settings sheet, also one painted after
-// startup (a price box's "choose your country"), and a click opens it once
+// startup (a price box's "choose your country"), and a click opens it once. When the sheet closes, the browser gives focus
+// back to the element it was opened from; if a repaint replaced that element meanwhile, the header's button takes it
 {
   let opened = 0;
   const any = () => ({ hidden: false, value: "", checked: false, dataset: {}, querySelector: () => any(), querySelectorAll: () => [], addEventListener() {} });
-  const sheet = { ...any(), showModal: () => { opened += 1; } };
-  const on = (el) => ({ ...el, listeners: [], addEventListener(t, f) { this.listeners.push([t, f]); } });
-  const header = on({}), docListeners = [];   // header: the button that is there at startup
+  const on = (el) => ({ ...el, isConnected: true, focused: 0, listeners: [], addEventListener(t, f) { this.listeners.push([t, f]); }, focus() { this.focused += 1; } });
+  const sheet = on({ ...any(), showModal: () => { opened += 1; } });
+  const header = on({}), docListeners = [];   // header: the settings button in header.top, there at startup
   globalThis.window = { addEventListener() {} };
-  globalThis.document = { readyState: "complete", documentElement: { classList: { remove() {} } }, querySelector: () => null,
+  globalThis.document = { readyState: "complete", documentElement: { classList: { remove() {} } },
+    querySelector: (sel) => (sel === "header.top [data-prefs]" ? header : null),
     getElementById: (id) => (id === "prefs-sheet" ? sheet : null), querySelectorAll: (sel) => (sel === "[data-prefs]" ? [header] : []),
     addEventListener: (t, f) => docListeners.push([t, f]) };
   await import("../../static/js/settings.js?page");   // a fresh copy of the module: it wires this document
+  const fire = (listeners, type, ev) => { for (const [t, f] of listeners) if (t === type) f(ev); };
   // a click on el (or inside it): its own listeners, then the document's (the event bubbles up)
-  const click = (el) => {
-    const ev = { target: { closest: (sel) => (sel === "[data-prefs]" ? el : null) } };
-    for (const [t, f] of [...(el ? el.listeners : []), ...docListeners]) if (t === "click") f(ev);
-  };
+  const click = (el) => fire([...(el ? el.listeners : []), ...docListeners], "click", { target: { closest: (sel) => (sel === "[data-prefs]" ? el : null) } });
   click(header);
   assert.equal(opened, 1);
-  click(on({}));   // painted later
+  fire(sheet.listeners, "close", {});   // the opener is still there: the browser's own focus return, nothing from the page
+  assert.equal(header.focused, 0);
+  const box = on({});   // painted later
+  click(box);
   assert.equal(opened, 2);
+  box.isConnected = false;   // the boxes repainted while the sheet was open: the header's button takes focus
+  fire(sheet.listeners, "close", {});
+  assert.equal(header.focused, 1);
+  const kept = on({});
+  click(kept);
+  fire(sheet.listeners, "close", {});   // its box's button still there: left alone
+  assert.equal(header.focused, 1);
   click(null);     // anywhere else
-  assert.equal(opened, 2);
+  assert.equal(opened, 3);
   delete globalThis.document; delete globalThis.window;
 }
 console.log("settings ok");

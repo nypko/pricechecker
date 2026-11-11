@@ -428,8 +428,12 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
 .hsearch { margin-left: auto; flex: 1 1 0; max-width: 460px; min-width: 0; }
 .hsearch input { width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: 500 .86rem var(--body); }
 .hsearch input::placeholder { color: var(--ink-2); opacity: 1; }
-.hsearch input:focus { outline: none; border-color: var(--ink); }
-.top .prefs { margin-left: 0; white-space: nowrap; }
+.hsearch input:placeholder-shown::-webkit-search-cancel-button { display: none; }   /* its room goes to the placeholder until there is text to clear */
+.hsearch input:focus { border-color: var(--ink); }
+.hsearch input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* the settings label gives way (ellipsis) before the row wraps: logo, search and settings stay on one row down to 320 px */
+.top .prefs { margin-left: 0; white-space: nowrap; min-width: 0; }
+.top .prefs [data-prefs-label] { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .for { margin: -4px 0 14px; font-size: .92rem; color: var(--ink-2); }
 .foot-links a { white-space: nowrap; }
 @media (max-width: 420px) {
@@ -440,9 +444,12 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
   .top .wrap { flex-wrap: wrap; row-gap: 0; padding-top: 8px; }
   .topnav { order: 3; width: 100%; margin-left: 0; gap: 18px; }
   .topnav a { padding: 6px 0 8px; }
+  /* a wrapping row breaks on each item's full width, so the button's base width is 0 (row 1 never wraps); it then grows
+     to its label's width (max-width) before the search grows past its minimum, and on a short row it is the label that is cut */
+  .top .prefs { flex: 10 1 0; max-width: max-content; }
 }
 /* phones: the field takes the free width between the logo and the settings button */
-@media (max-width: 639px) { .hsearch { min-width: 90px; max-width: none; } .hsearch input { font-size: 16px; padding: 0 12px; } }   /* 16px: iOS zooms on focus below it */
+@media (max-width: 639px) { .hsearch { min-width: 60px; max-width: none; } .hsearch input { font-size: 16px; padding: 0 12px; } }   /* 16px: iOS zooms on focus below it */
 
 /* ---- phone page (templates/phone.html) ---- */
 [hidden] { display: none !important; }

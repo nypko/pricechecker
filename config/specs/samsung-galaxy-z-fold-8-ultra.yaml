@@ -13,3 +13,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 38, 39, 40, 41]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 66, 38, 40, 41, 77, 78, 75]
+photo: {url: "https://images.samsung.com/is/image/samsung/p6pim/uk/f2607/gallery/uk-galaxy-z-fold8-ultra-f976-598708-sm-f976bdgbeub-thumb-553683283?$1300_1038_PNG$", page: "https://www.samsung.com/uk/smartphones/all-smartphones/", checked: 2026-11-12}

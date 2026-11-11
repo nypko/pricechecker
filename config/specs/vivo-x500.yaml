@@ -18,3 +18,4 @@ bands:
   global:
     lte: [38, 39, 40, 41, 42, 43, 48, 1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 71]
     nr: [1, 2, 3, 5, 7, 8, 20, 25, 26, 28, 38, 40, 41, 66, 71, 75, 77, 78]
+photo: {url: "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10062330_8ac6bba734bd212e53f0ac59aa8a7660_750x750.png.webp", page: "https://shop.vivo.com.cn/product/10062330", checked: 2026-11-12}

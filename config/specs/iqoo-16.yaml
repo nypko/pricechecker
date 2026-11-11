@@ -14,3 +14,4 @@ bands:
   china:
     lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 20, 25, 26, 28, 32, 66, 34, 38, 39, 40, 41, 42, 43, 48]
     nr: [1, 2, 3, 5, 7, 8, 18, 20, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 75, 77, 78, 79, 80, 81, 83, 84, 89, 91, 92, 93, 94]
+photo: {url: "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10062020_2fff16082839431ccc843f621e9edaee_750x750.png.webp", page: "https://shop.vivo.com.cn/product/10062020", checked: 2026-11-12}

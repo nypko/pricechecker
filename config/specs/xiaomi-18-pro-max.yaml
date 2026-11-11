@@ -14,3 +14,4 @@ bands:
     # mi.com lists n3/n80/n81/n89 as enabled by software update once carriers launch them
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 14, 17, 18, 19, 20, 25, 26, 28, 29, 66, 71, 34, 38, 39, 40, 41, 42, 43, 48]
     nr: [1, 2, 3, 5, 7, 8, 12, 13, 14, 18, 20, 25, 26, 28, 29, 38, 40, 41, 48, 66, 70, 71, 77, 78, 79, 80, 81, 83, 84, 89]
+photo: {url: "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1789972716.06781130.jpg", page: "https://www.mi.com/shop/buy/detail?product_id=25526", checked: 2026-11-12}

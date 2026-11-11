@@ -175,6 +175,14 @@
   "src_sha256": "0580175196141f67fdccac912fe7c519644361a951cfc4d6ae3d3a39d2ec8ac9",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260907/laputa/phones/pura-x-view.png"
  },
+ "iqoo-16": {
+  "files": {
+   "m": "c0dcfadb40",
+   "s": "4e6b5d9e74"
+  },
+  "src_sha256": "c469e1534aa273ee759b82c8f04605adffb61c488bde1cd35272f69d8efb7f04",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10062020_2fff16082839431ccc843f621e9edaee_750x750.png.webp"
+ },
  "oppo-find-n5": {
   "files": {
    "m": "2565039333",
@@ -239,6 +247,54 @@
   "src_sha256": "e25ccc106cf06f006a4e6cf56db235862c185750afb7eff9112acb260073c4c4",
   "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9s-pro-find-x9-ultra-cn/find-x9s-pro/listpage/480-600-cyan.png"
  },
+ "redmi-k100-pro": {
+  "files": {
+   "m": "fb038e1d2d",
+   "s": "a8c09221c8"
+  },
+  "src_sha256": "918aa04c200b80ebe13efc8a03c4b4309665baccf47f965a38410c75ccc51a9b",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1786351895.98778686.png"
+ },
+ "redmi-k100-pro-max": {
+  "files": {
+   "m": "279e2bc3f5",
+   "s": "2152ecb405"
+  },
+  "src_sha256": "a1335b1b58965bada61151035b9de010ad3c599e5169f97a944510fc1b71742c",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1786351720.65563462.png"
+ },
+ "samsung-galaxy-z-fold-8-ultra": {
+  "files": {
+   "m": "0e2be958da",
+   "s": "e41ed13932"
+  },
+  "src_sha256": "a0a4a454594e8983f315b575facb366aacddcdcfb7ffa075cdd85d8bdeeda565",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/f2607/gallery/uk-galaxy-z-fold8-ultra-f976-598708-sm-f976bdgbeub-thumb-553683283?$1300_1038_PNG$"
+ },
+ "vivo-x500": {
+  "files": {
+   "m": "c36894e3a5",
+   "s": "dfd5df28de"
+  },
+  "src_sha256": "aab2c71670f03e236d3006c24a0702fe9efbc19a89d3c4b84c7b3ee6c28f38b8",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10062330_8ac6bba734bd212e53f0ac59aa8a7660_750x750.png.webp"
+ },
+ "vivo-x500-pro": {
+  "files": {
+   "m": "dfd93fcd81",
+   "s": "80d1f8d086"
+  },
+  "src_sha256": "f913e43f20b0ca3327298ac5d749af1261b0eb0fa9f5f6cf60d4b43d4e52c0b6",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10064609_cb977f3c48573fd1d9b60b2f41aa2654_750x750.png.webp"
+ },
+ "vivo-x500-pro-max": {
+  "files": {
+   "m": "cf8827b80d",
+   "s": "8e245d3122"
+  },
+  "src_sha256": "bab65e46cd12aabe01733d45e356c211537b9dab9059fc2bc7ce04fd466777bb",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10064611_f4a44017ce20348598a6fc4742054f38_750x750.png.webp"
+ },
  "xiaomi-17": {
   "files": {
    "m": "e8d74f067e",
@@ -246,6 +302,30 @@
   },
   "src_sha256": "8ca2479da927bf8c32aa22fa141fc16d6d58ab9aab4bbdea937fa95b801be0b9",
   "url": "https://i02.appmifile.com/513_operatorx_operatorx_xm/14/02/2026/7e83548bfc090e9eeaa224dc4bdae063.png"
+ },
+ "xiaomi-17-max": {
+  "files": {
+   "m": "df5a0aa841",
+   "s": "7f0beed24b"
+  },
+  "src_sha256": "a9d2231862668f34494324a61d1af0517a68612e21852391c393ea091318cc1d",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1779269741.9877691.png"
+ },
+ "xiaomi-17-pro": {
+  "files": {
+   "m": "2afd069335",
+   "s": "4e0ab5e501"
+  },
+  "src_sha256": "788d7e07a3c1ea0c96eb43d09dedd4fcd6b9be5eda4afeb509705d1b98a293f3",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1758612755.22539288.png"
+ },
+ "xiaomi-17-pro-max": {
+  "files": {
+   "m": "d44fb40864",
+   "s": "011f2f8ead"
+  },
+  "src_sha256": "e68c7abaf1c394a231183058178cf0ac6fefeb96553c1b829c5b6f1b01f673e3",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1758612893.85029794.png"
  },
  "xiaomi-17-ultra": {
   "files": {
@@ -262,5 +342,45 @@
   },
   "src_sha256": "d9cc220434f210ecf0f9b4954c729e453ed75e7b34e423b451cf90b648de0486",
   "url": "https://i02.appmifile.com/429_operatorx_operatorx_xm/26/02/2026/ac17687739b6d36946d8808416bb0d62.png"
+ },
+ "xiaomi-17t": {
+  "files": {
+   "m": "2b77043b13",
+   "s": "46a3fbc8e7"
+  },
+  "src_sha256": "2d3cff9c06c7490bc2e352b94ff32d9f5ade695f28d8f3618f222509588968ad",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1780661993.35983132.png"
+ },
+ "xiaomi-17t-pro": {
+  "files": {
+   "m": "47ac32a87e",
+   "s": "18709ec85e"
+  },
+  "src_sha256": "cf71b93c4c362cad8244d41db2609ca1e6f184a49f95c708683265aa82640e9d",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1780662073.41318215.png"
+ },
+ "xiaomi-18-fold": {
+  "files": {
+   "m": "ef1539d66f",
+   "s": "cea443592d"
+  },
+  "src_sha256": "f12e6bd7804ecd000084e36d5dc6d45bb650435023df332f7d75a1e0990feefe",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1788437148.71496475.png"
+ },
+ "xiaomi-18-pro": {
+  "files": {
+   "m": "c4f8a2c501",
+   "s": "89b191aa9f"
+  },
+  "src_sha256": "e3081d5539c8fc5b3a7e22ce40a0dd96ee3ffc514f9dfc0ac05706cd285e5ad4",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1790062605.65145810.png"
+ },
+ "xiaomi-18-pro-max": {
+  "files": {
+   "m": "d34f04bfa5",
+   "s": "3f9b02c8ca"
+  },
+  "src_sha256": "126c67d11e20487405b310a9c9d9d4f401109b7cba300b835a5a6935498a9ecb",
+  "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1789972716.06781130.jpg"
  }
 }

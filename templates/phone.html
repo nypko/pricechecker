@@ -127,8 +127,9 @@
 
 {% if v.more %}
   <h2>More from {{ p.brand }}</h2>
+  {#- each row is drawn from its home meta (pages/home.py row_meta), the same object phone.js redraws it from -#}
   <ul class="pairs" id="more" data-more='{{ v.more_meta|tojson }}'>
-    {%- for q, qrows in v.more %}{{ b.home_row(q, qrows, s, L, "../") }}{% endfor -%}
+    {%- for m, mrows in v.more %}{{ b.home_row(m, mrows, s, L, "../") }}{% endfor -%}
   </ul>
 {% endif %}
 

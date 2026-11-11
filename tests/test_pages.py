@@ -1166,6 +1166,60 @@ def _home_row(h, pid):
     return h[i:h.index("</li>", i)]
 
 
+def _photos(monkeypatch, tmp_path, *pids):
+    """Processed photo files for `pids` (only theirs) in tmp_path, and a photo entry in their spec sheets: a phone shows a
+    photo when it has both (common.photo_of), whatever the real config/specs and static/phones hold."""
+    from PIL import Image
+
+    from pricechecker import photos, specs
+    from pricechecker.site import common
+    for pid in pids:
+        for k, (w, h) in photos.SIZES.items():
+            Image.new("RGBA", (w, h)).save(tmp_path / f"{pid}-{k}.webp")
+    monkeypatch.setattr(common, "PHOTOS_DIR", tmp_path)
+    real = specs.load
+    monkeypatch.setattr(specs, "load", lambda *a, **kw: {i: {**s, "photo": {"url": f"https://img.example/{i}.png"}} if i in pids else s
+                                                          for i, s in real(*a, **kw).items()})
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_more_from_brand_rows_are_home_rows_of_their_own_meta(tmp_path, monkeypatch):
+    """"More from {brand}" on a phone page: each row is drawn from the phone's home meta (row_meta: its versions, photo
+    and key specs), the same object data-more hands phone.js, so both versions' prices show (they read "No China
+    version" and "No Global version" when the page passed the whole phone dict), a China-only phone has one "No Global
+    version" cell, and a phone with a photo has it. blocks.js draws the same row from data-more."""
+    from pricechecker.site import data_files
+    from pricechecker.site.pages import phone
+    pid, two, china = "oppo-find-x9-ultra", "oppo-find-x10", "oppo-find-x9s-pro"
+    _photos(monkeypatch, tmp_path, two)
+    data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "global", "12/256", 1300.0, True),
+                                       ("wonda", two, "china", "12/256", 800.0, True), ("giztop", two, "global", "12/256", 1150.0, True),
+                                       ("wonda", china, "china", "12/256", 900.0, True)])
+    h = phone.render(env, data, ctx, phones)[f"phones/{pid}.html"]
+    more = h[h.index('<ul class="pairs" id="more"'):]
+    more = more[:more.index("</ul>")]
+    meta = {m["id"]: m for m in json.loads(re.search(r"data-more='([^']*)'", more)[1])}
+    assert list(meta) == [two, "oppo-find-x10-pro-max", china]   # the brand's three newest other phones
+    r2, rc = _home_row(more, two), _home_row(more, china)
+    assert r2.count('<b class="num">') == 2 and "absent" not in r2 and "at Wonda Mobile" in r2 and "at Giztop" in r2
+    assert rc.count('<b class="num">') == 1 and rc.count("absent") == 1 and '<span class="p none absent">No Global version</span>' in rc
+    assert re.search(rf'<img class="ph" src="\.\./static/phones/{two}-s\.webp\?v=[0-9a-f]{{10}}" width="58" height="72" alt=""', r2)
+    assert "<img" not in rc and '<span class="sp">' in r2
+    # data-more: the meta the server drew each row from, plus the phone's data file (the build's; none here)
+    assert meta[two]["eds"] == ["global", "china"] and meta[china]["eds"] == ["china"] and "ph" not in meta[china]
+    assert meta[two]["ph"] in r2 and meta[two]["sp"] in html.unescape(r2)
+    assert all(set(m) == {"id", "name", "announced", "sp", "eds", "file"} | ({"ph"} if i == two else set()) for i, m in meta.items())
+    # phone.js paintMore: B.homeRow(meta, rows of the phone's file, s, labels, "../") draws the same row
+    p2 = next(q for q in phones if q["id"] == two)
+    (tmp_path / "two.json").write_text(json.dumps({"offers": [data_files.offer_inputs(o) for o in p2["offers"]]}))
+    (tmp_path / "tax.json").write_text(json.dumps(data.tax_cfg))
+    r = subprocess.run(["node", str(ROOT / "tests/js/render_blocks.mjs"), "--phone", str(tmp_path / "two.json"), "--tax", str(tmp_path / "tax.json"),
+                        "--edition", "china", "--storage", "12/256", "--labels", json.dumps(p2["ed_label"]), "--meta", json.dumps(meta[two]),
+                        "--root", "../"], check=False, capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert json.loads(r.stdout)["home_row"] == r2 + "</li>"
+
+
 def test_home_rows_show_photo_specs_store_and_absent_version(tmp_path, monkeypatch):
     from PIL import Image
 

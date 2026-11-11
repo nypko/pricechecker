@@ -46,6 +46,18 @@ def _label(n: int) -> str:
     return f"{n // 1024} TB" if n >= 1024 else f"{n} GB"
 
 
+def row_meta(p: dict) -> dict:
+    """What a home_row block draws a phone from besides its rows (blocks.html home_row, blocks.js homeRow): id, name,
+    launch day, small photo (only when it has one), key specs line and the versions it is made in. The home list and the
+    phone page's "More from {brand}" rows are both built on it, so the server and the browser draw them from one object."""
+    m = {"id": p["id"], "name": p["name"], "announced": p["announced"] or ""}
+    if p["photo"]:
+        m["ph"] = p["photo"]["s"]
+    m["sp"] = p["spec_line"]
+    m["eds"] = p["editions"]
+    return m
+
+
 def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     """The home page's own context, `v`."""
     drops = drops_page.this_week(data, phones)
@@ -56,11 +68,7 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
     meta, rows = [], {}
     for p in ordered:
         rows[p["id"]] = view_rows([{k: v for k, v in o.items() if k != "id"} for o in home_offers(p, DEFAULT.region)], data.tax_cfg, DEFAULT)
-        m = {"id": p["id"], "name": p["name"], "brand": p["brand"], "announced": p["announced"] or "", "s": summary(rows[p["id"]])}
-        if p["photo"]:
-            m["ph"] = p["photo"]["s"]
-        m["sp"] = p["spec_line"]
-        m["eds"] = p["editions"]
+        m = {**row_meta(p), "brand": p["brand"], "s": summary(rows[p["id"]])}
         if p["ed_label"]["china"] != "China":
             m["l"] = p["ed_label"]["china"]
         if p["id"] in big:

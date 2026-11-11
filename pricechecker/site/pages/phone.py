@@ -12,8 +12,9 @@ from ..context import SiteData
 from ..data_files import carrier_doc, offer_inputs, trend_series
 from ..view import DEFAULT, best_of, daily_best, default_pick, price_trend
 from ..view import rows as view_rows
+from .home import row_meta
 
-EDS = ("china", "global")   # box order: the China version (red) left, Global (blue) right
+EDS =("china", "global")   # box order: the China version (red) left, Global (blue) right
 W, H, PAD = 600, 130, 8     # history SVG viewBox
 
 # "Other stores" delivery filters: key, chip label, test on a view row (static/js/phone.js FILTERS: the same three)
@@ -152,6 +153,9 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
     more = [by_id[c["slug"]] for c in p["related"]["brand"][:3] if c["slug"] in by_id]
     files = ctx.get("data_files") or {}
     rel = lambda path: ctx["root_rel"] + path.lstrip("/") if path else ""
+    # "More from {brand}": each phone's home-row meta (its versions, photo and key specs) and its data file; the server's
+    # rows and phone.js, which redraws them for other settings, both draw from these same objects
+    more_meta = [{**row_meta(q), "file": rel(files.get(f"phone/{q['id']}"))} for q in more]
     return {
         "s": DEFAULT, "rows": rows, "eds": eds,
         "missing": [_missing(p, e, labels) for e in EDS if e not in eds] if eds else [],
@@ -160,9 +164,8 @@ def page(p: dict, data: SiteData, ctx: dict, by_id: dict[str, dict]) -> dict:
         "n_ledger": len(ledger_rows(rows)), "hist": hist,
         "bands": [_bands(sheet, e) for e in (eds or p["editions"])],
         "spec_count": specs.spec_count(sheet) if specs.has_page(sheet) else 0,
-        "more": [(q, _rows(q, data.tax_cfg)) for q in more],
-        "more_meta": [{"id": q["id"], "name": q["name"], "announced": q["announced"], "file": rel(files.get(f"phone/{q['id']}"))}
-                      for q in more],
+        "more": [(m, _rows(q, data.tax_cfg)) for m, q in zip(more_meta, more, strict=True)],
+        "more_meta": more_meta,
         "data_file": rel(files.get(f"phone/{p['id']}")), "tax_file": rel(ctx.get("tax_file")),
         "buyers": {o["store_label"]: o["buyers"] for o in p["offers"] if o.get("buyers")},
         "buyers_line": buyers_text(next((o.get("buyers") for o in p["offers"] if best and o["store_label"] == best["store"]), None),

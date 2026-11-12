@@ -319,6 +319,14 @@
   "src_sha256": "e25ccc106cf06f006a4e6cf56db235862c185750afb7eff9112acb260073c4c4",
   "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9s-pro-find-x9-ultra-cn/find-x9s-pro/listpage/480-600-cyan.png"
  },
+ "realme-gt-8-pro": {
+  "files": {
+   "m": "a71eb76a38",
+   "s": "7c53116861"
+  },
+  "src_sha256": "cf93dff1f261db0b7fc4467de8be52075557c0776d603b9b311fccefc0a35cd1",
+  "url": "https://image01.realme.net/general/20251208/17651820014239f040ddb0e2740488b90dc945944e91b.webp"
+ },
  "redmi-k100-pro": {
   "files": {
    "m": "fb038e1d2d",
@@ -342,6 +350,22 @@
   },
   "src_sha256": "a0a4a454594e8983f315b575facb366aacddcdcfb7ffa075cdd85d8bdeeda565",
   "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/f2607/gallery/uk-galaxy-z-fold8-ultra-f976-598708-sm-f976bdgbeub-thumb-553683283?$1300_1038_PNG$"
+ },
+ "sony-xperia-1-vii": {
+  "files": {
+   "m": "f3f4a94798",
+   "s": "c780333f1a"
+  },
+  "src_sha256": "c6f61068c73343e7981732f2f7dc1aad2b8bcc27a90c0d692607efdf16c62f7d",
+  "url": "https://sony.scene7.com/is/image/sonyglobalsolutions/5191_Primary_image_Green?wid=1200&hei=1200"
+ },
+ "sony-xperia-1-viii": {
+  "files": {
+   "m": "b208f98de4",
+   "s": "bc72ce5cf8"
+  },
+  "src_sha256": "bff91e0a3583893d1f57c68cc2a8c0ad15e78aee2411f789bce336ba52f97b70",
+  "url": "https://sony.scene7.com/is/image/sonyglobalsolutions/7085_Primary_image_Black?wid=1200&hei=1200"
  },
  "vivo-x500": {
   "files": {

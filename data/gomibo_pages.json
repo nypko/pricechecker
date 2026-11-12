@@ -890,17 +890,6 @@
 "ram_mb": 12288
 }
 },
-"https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-gold": {
-"lastmod": "",
-"fetched": "2026-11-11T23:14:13+00:00",
-"info": {
-"name": "Samsung Galaxy S26+ 512GB Gold",
-"price": 985.0,
-"currency": "EUR",
-"available": false,
-"ram_mb": 12288
-}
-},
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-silber": {
 "lastmod": "",
 "fetched": "2026-11-11T23:14:13+00:00",
@@ -1816,7 +1805,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-11T15:55:38+00:00",
+"fetched": "2026-11-12T04:10:13+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/256GB Schwarz",
 "price": 1504.0,

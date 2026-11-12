@@ -1,4 +1,52 @@
 {
+ "apple-iphone-duo": {
+  "files": {
+   "m": "aa470492a0",
+   "s": "fa5bb49418"
+  },
+  "src_sha256": "ce85ea82a5b7a49cca8094e29bafd92bbff21d622bfd99ace17954ea4d4b924b",
+  "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-duo-finish-select-night-sky-202609_GEO_EMEA?wid=2560&hei=1440&fmt=png-alpha"
+ },
+ "google-pixel-10-pro": {
+  "files": {
+   "m": "09d466e987",
+   "s": "2e246f78af"
+  },
+  "src_sha256": "205feae341236aa32e14f184abe62cc98408f6fcabddb4fe2e7cdd5b502d88eb",
+  "url": "https://lh3.googleusercontent.com/G3yc6fOHLgOE66UY9UmNUN9eUmxVrcvMhb_HNfi8PwijpeFD70y3VyykOGYcucUEE_0amTrtA22mX8RuOMZRDXGMBnnQoLZE-b0=s0"
+ },
+ "google-pixel-10-pro-xl": {
+  "files": {
+   "m": "64e9eaa793",
+   "s": "1565d32612"
+  },
+  "src_sha256": "47df2a5cf124ee9aec6979c7fc0da4fecda8a2320c76394eddf3c17b80f369c3",
+  "url": "https://lh3.googleusercontent.com/AgJBKUmqZktJOggUfrp5hNt00gUGvdid5-2W_BAV9WhMg6AilJIiGAwGfpfoZkDTlcYJdzOv0B_4c7DkfDLFYcRmBstkU4x-j7qW=s0"
+ },
+ "google-pixel-11": {
+  "files": {
+   "m": "f5c624fc4e",
+   "s": "3b84ce2ce9"
+  },
+  "src_sha256": "4f5dbb5adf60a2727e5266725a13db9029b24c5adbe2fbd34a4a3ddada6cdb86",
+  "url": "https://lh3.googleusercontent.com/ZTYdHmQQI1iD6-cnfVcHrkZrA2tAV9G61AFMzCtsRRF4beTOvNaQ4mDyhkYoBDE2sBfoEOwPtjfJ6B1QL6OuqOQpfSDl-mNv2w=s0"
+ },
+ "google-pixel-11-pro": {
+  "files": {
+   "m": "67ad0629fc",
+   "s": "1f536c4ea6"
+  },
+  "src_sha256": "dae3102956ac6bb96abb19c8f19690dc59c35ff51f77087a8a38a8d81848d2f2",
+  "url": "https://lh3.googleusercontent.com/unL7-Ysz3LLLnIapEdRPRXQTGxgXNzZwYVeuJbLh6Yt8AtBOjhLWqNQ8bTsFsPjf2Dgv5VSe4qYrcUFZiccN0ur-pMvpfm876A=s0"
+ },
+ "google-pixel-11-pro-xl": {
+  "files": {
+   "m": "2f3c83a285",
+   "s": "ede781f375"
+  },
+  "src_sha256": "10d75ef7852de5dd1d456777a877aa65ed354b945639f315ee31fbb6852005fb",
+  "url": "https://lh3.googleusercontent.com/n3tuFgZ8F9pCmMp-pQCLH3525vzEqdxAnZrEzqO1c70fuLh6Pn4oe8VdrldeJYE59UUgbS96rywuli0peWH3bcpsfvL4RuoZVP8=s0"
+ },
  "honor-magic-8": {
   "files": {
    "m": "2f45f2c358",
@@ -207,6 +255,22 @@
   "src_sha256": "0580175196141f67fdccac912fe7c519644361a951cfc4d6ae3d3a39d2ec8ac9",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260907/laputa/phones/pura-x-view.png"
  },
+ "iqoo-15": {
+  "files": {
+   "m": "3a0c0a6b0a",
+   "s": "b30de1ae48"
+  },
+  "src_sha256": "735bd2b71da7275b0a32f9635cb3a3bfa8c9ba1826ea54d4c64e8b145d81d66b",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011260_1767602209072_750x750.png"
+ },
+ "iqoo-15-ultra": {
+  "files": {
+   "m": "99af88b6b7",
+   "s": "1bfbe64c77"
+  },
+  "src_sha256": "f652afad522781b277686bc1e68298cb4dcabc02a506d47c8be2766febe7a8ab",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011638_17701908022950e4b026348e97b5d73e722ce01a38ca5_750x750.png"
+ },
  "iqoo-16": {
   "files": {
    "m": "c0dcfadb40",
@@ -343,13 +407,45 @@
   "src_sha256": "a1335b1b58965bada61151035b9de010ad3c599e5169f97a944510fc1b71742c",
   "url": "https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1786351720.65563462.png"
  },
+ "samsung-galaxy-s26": {
+  "files": {
+   "m": "0de99a0f1b",
+   "s": "63d7551fa4"
+  },
+  "src_sha256": "9157291896d70e71721d92340b74535f71032f4aa5bebdc6779b14cbcd490716",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/s2602/gallery/us-galaxy-s26-s942-sm-s942ulbexaa-550995217?$ORIGIN_PNG$"
+ },
+ "samsung-galaxy-s26-plus": {
+  "files": {
+   "m": "723a6562b9",
+   "s": "771315d4a3"
+  },
+  "src_sha256": "fa6f8ed34a0da2a9f395f7de95bd0e9c1ff700950052b02dddc15f94de459e12",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/s2602/gallery/us-galaxy-s26-s947-sm-s947uzkaxaa-550994732?$ORIGIN_PNG$"
+ },
+ "samsung-galaxy-s26-ultra": {
+  "files": {
+   "m": "06b86ec94a",
+   "s": "4b50e30465"
+  },
+  "src_sha256": "7405360285712983af97e1da187e734a87475a0fef1d08f1ce2a8f336c717c21",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/s2602/gallery/us-galaxy-s26-ultra-s948-sm-s948uzvexaa-550994053?$ORIGIN_PNG$"
+ },
+ "samsung-galaxy-z-fold-8": {
+  "files": {
+   "m": "daf4b2c93b",
+   "s": "918a58dcbe"
+  },
+  "src_sha256": "eacc0e101ba15c3b7d878e6e7154b165160301a8d5e20e46a4c82eb04c502240",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/f2607/gallery/us-galaxy-z-fold8-f971-600257-sm-f971uzkaxaa-553841308?$ORIGIN_PNG$"
+ },
  "samsung-galaxy-z-fold-8-ultra": {
   "files": {
-   "m": "0e2be958da",
-   "s": "e41ed13932"
+   "m": "a13e14f3f2",
+   "s": "fc261da207"
   },
-  "src_sha256": "a0a4a454594e8983f315b575facb366aacddcdcfb7ffa075cdd85d8bdeeda565",
-  "url": "https://images.samsung.com/is/image/samsung/p6pim/uk/f2607/gallery/uk-galaxy-z-fold8-ultra-f976-598708-sm-f976bdgbeub-thumb-553683283?$1300_1038_PNG$"
+  "src_sha256": "c14c9ede8e47d796b04afe0a59c3f234f0ad938ac386d1d5fd2b471bfc563e64",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/f2607/gallery/us-galaxy-z-fold8-ultra-f976-600251-sm-f976udgaxaa-553838537?$ORIGIN_PNG$"
  },
  "sony-xperia-1-vii": {
   "files": {
@@ -366,6 +462,54 @@
   },
   "src_sha256": "bff91e0a3583893d1f57c68cc2a8c0ad15e78aee2411f789bce336ba52f97b70",
   "url": "https://sony.scene7.com/is/image/sonyglobalsolutions/7085_Primary_image_Black?wid=1200&hei=1200"
+ },
+ "vivo-x-fold-6": {
+  "files": {
+   "m": "79f8698ea8",
+   "s": "da11326a73"
+  },
+  "src_sha256": "3f1f41fbc7cc45232ef80af05a3e5a6f0778797a2f64bc378c6c172548064c71",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10021074_1d6600262edbcd1e01f63e4a4a0abec0_750x750.png"
+ },
+ "vivo-x300": {
+  "files": {
+   "m": "b14fdbd2f0",
+   "s": "5ee6556165"
+  },
+  "src_sha256": "37770d507c790f06120f6d4439b9981882e196bd755cda545ae5f992a292f18c",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011289_1768870972124_750x750.png"
+ },
+ "vivo-x300-fe": {
+  "files": {
+   "m": "7a66a02427",
+   "s": "46a078ff27"
+  },
+  "src_sha256": "08f7ab0d5aa9707a46e53e3f922b9f7e1cb07ce2a721bac774257db6794f9602",
+  "url": "https://exstatic-in.vivo.com/Oz84QB3Wo0uns8j1/in/1786437131255/bf2160cf00bbe60eaa746ee7df3c5acf.png"
+ },
+ "vivo-x300-pro": {
+  "files": {
+   "m": "962de4acb8",
+   "s": "abbcfc3bdb"
+  },
+  "src_sha256": "e9375bf25a27ba3ce483af6efd8d40752bd274f03fb34262c88e17fd7d3f5d03",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011290_1767162383752_750x750.png"
+ },
+ "vivo-x300-ultra": {
+  "files": {
+   "m": "59c815b9cf",
+   "s": "4809e058c4"
+  },
+  "src_sha256": "f407c320c521516a4ab91feb61cb5f50a5e2836cccc952f1b80cff6bca3f6113",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011836_2af6d30d4d3888fba01488e54c3032a2_750x750.png"
+ },
+ "vivo-x300s": {
+  "files": {
+   "m": "3b44f6f0df",
+   "s": "7a5713e42f"
+  },
+  "src_sha256": "5c2592c859595eefbdf8c569275b737dbbc60407b3eb79c1066abf6f2f27d278",
+  "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10011842_7d9fca296ebc2391bde1f34dbf671c79_750x750.png"
  },
  "vivo-x500": {
   "files": {

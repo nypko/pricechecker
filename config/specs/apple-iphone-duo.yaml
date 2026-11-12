@@ -65,3 +65,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 106, 34, 38, 39, 40, 41, 42, 48, 53]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 30, 66, 70, 75, 38, 40, 41, 48, 53, 77, 78, 79]
+photo: {url: "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-duo-finish-select-night-sky-202609_GEO_EMEA?wid=2560&hei=1440&fmt=png-alpha", page: "https://www.apple.com/uk/shop/buy-iphone/iphone-duo", checked: 2026-11-12}

@@ -14,3 +14,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 14, 17, 18, 19, 20, 21, 25, 26, 28, 29, 30, 32, 38, 39, 40, 41, 42, 48, 66, 71, 75]
     nr: [1, 2, 3, 5, 7, 8, 12, 14, 20, 25, 26, 28, 30, 38, 40, 41, 66, 71, 75, 76, 77, 78, 79]
+photo: {url: "https://lh3.googleusercontent.com/AgJBKUmqZktJOggUfrp5hNt00gUGvdid5-2W_BAV9WhMg6AilJIiGAwGfpfoZkDTlcYJdzOv0B_4c7DkfDLFYcRmBstkU4x-j7qW=s0", page: "https://store.google.com/gb/config/pixel_10_pro", checked: 2026-11-12}

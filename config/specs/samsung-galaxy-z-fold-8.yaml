@@ -13,3 +13,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 38, 39, 40, 41]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 66, 38, 40, 41, 77, 78, 75]
+photo: {url: "https://images.samsung.com/is/image/samsung/p6pim/us/f2607/gallery/us-galaxy-z-fold8-f971-600257-sm-f971uzkaxaa-553841308?$ORIGIN_PNG$", page: "https://www.samsung.com/us/smartphones/galaxy-z-fold8/buy/", checked: 2026-11-12}

@@ -13,3 +13,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 32, 66, 38, 39, 40, 41]
     nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 66, 38, 40, 41, 77, 78, 75]
+photo: {url: "https://images.samsung.com/is/image/samsung/p6pim/us/s2602/gallery/us-galaxy-s26-ultra-s948-sm-s948uzvexaa-550994053?$ORIGIN_PNG$", page: "https://www.samsung.com/us/smartphones/galaxy-s26-ultra/buy/galaxy-s26-ultra-512gb-unlocked-sku-sm-s948uzvexaa/", checked: 2026-11-12}

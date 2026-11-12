@@ -17,3 +17,4 @@ bands:
   global:
     lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 71, 34, 38, 39, 40, 41, 42, 48]
     nr: [1, 2, 3, 5, 7, 8, 12, 13, 20, 25, 26, 28, 30, 38, 40, 41, 48, 66, 71, 75, 77, 78]
+photo: {url: "https://www.oneplus.com/content/dam/oneplus/2025/cn/Infiniti/15/assets/images-color-gold-phone-d23b98.png", page: "https://www.oneplus.com/cn/15", checked: 2026-11-12}

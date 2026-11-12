@@ -119,6 +119,14 @@
   "src_sha256": "4ffc477dbe8be6298a3cc2bbd9e9c17f1683807233b2c638d7b6e8db9f918d65",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260929/haco/phones/mate90-pro-max.jpg"
  },
+ "huawei-mate-90-rs": {
+  "files": {
+   "m": "8208a9bdba",
+   "s": "514d7bee7c"
+  },
+  "src_sha256": "70d23b25ccc5cb5f9a25ede0be2527cf05a92ddaa2e14e04a7255afbd45fb9aa",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260929/haco/phones/mate90-rs-ultimate-design.jpg"
+ },
  "huawei-mate-x7": {
   "files": {
    "m": "5a6194ed4d",
@@ -126,6 +134,14 @@
   },
   "src_sha256": "01c6b853ac52a8dc50f9e1c0a1eb85fc7f81d6a440c7120c020f5b56f56b76fc",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/delphi/phones/mate-x7.jpg"
+ },
+ "huawei-mate-xt-2-ultimate-design": {
+  "files": {
+   "m": "756c5329d2",
+   "s": "28832fbba2"
+  },
+  "src_sha256": "c8e1abb422c6a01e793146d73208cd383eb343a5bd3e759dd81c574f122a9fcc",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260907/laputa/phones/mate-xt-2-ultimate-design.png"
  },
  "huawei-pura-80-ultra": {
   "files": {
@@ -159,6 +175,22 @@
   "src_sha256": "94e9aca76f18165cc0dbc625b1226c186d0dc1eeb48b772b8304cc7e1fb5324a",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260420/confidential/phones/pura-series/pura90-pro-max.jpg"
  },
+ "huawei-pura-90s-pro": {
+  "files": {
+   "m": "4ae65941bf",
+   "s": "fb1f1f1460"
+  },
+  "src_sha256": "0ea6d81fbe770ae56e4607b8bed32f8d7435c3447af86e448083a91deec03393",
+  "url": "https://consumer.huawei.com/dam/content/dam/huawei-cbg-site/common/mkt/plp-x/phones-v5/0714-2026-huawei-flagship-product-launch/product-shelf-and-pop-up/pura-series/pura90s-pro.png"
+ },
+ "huawei-pura-90s-pro-max": {
+  "files": {
+   "m": "8958da8651",
+   "s": "3e190c747a"
+  },
+  "src_sha256": "34a2c614bcf18f6188635ee7a9fda75270d87df63e529723592c33ea9b4e8a3e",
+  "url": "https://consumer.huawei.com/dam/content/dam/huawei-cbg-site/common/mkt/plp-x/phones-v5/0714-2026-huawei-flagship-product-launch/product-shelf-and-pop-up/pura-series/pura90s-pro-max.png"
+ },
  "huawei-pura-x-max": {
   "files": {
    "m": "958fa5a279",
@@ -182,6 +214,46 @@
   },
   "src_sha256": "c469e1534aa273ee759b82c8f04605adffb61c488bde1cd35272f69d8efb7f04",
   "url": "https://shopstatic.vivo.com.cn/vivoshop/commodity/commodity/10062020_2fff16082839431ccc843f621e9edaee_750x750.png.webp"
+ },
+ "motorola-razr-70-ultra": {
+  "files": {
+   "m": "99da590d38",
+   "s": "3900caf779"
+  },
+  "src_sha256": "3efd5dd231b2115b46c9465d400ccf50799f5f53800fe7e377c6d215b80771d8",
+  "url": "https://p3-ofp.static.pub/fes/cms/2026/04/25/l6s5vz5e1k9arxopcixr9gqmmj949f344899.png"
+ },
+ "motorola-razr-fold": {
+  "files": {
+   "m": "6e2251276a",
+   "s": "0591d260c1"
+  },
+  "src_sha256": "42608834977a422b53a575fdcaa5896e94e7ebe2111a83bbee25fd28b8e146ff",
+  "url": "https://p4-ofp.static.pub/fes/cms/2026/03/01/9ernxl3f9r4mjvo18whx1clw2f7v01532895.png"
+ },
+ "oneplus-15": {
+  "files": {
+   "m": "b7f5976e81",
+   "s": "06c0ae759d"
+  },
+  "src_sha256": "35133b92030b0041ca2e82b06f931e18d31231518dababb620ae29c0f5fd5504",
+  "url": "https://www.oneplus.com/content/dam/oneplus/2025/cn/Infiniti/15/assets/images-color-gold-phone-d23b98.png"
+ },
+ "oneplus-15t": {
+  "files": {
+   "m": "8e5dd65bfd",
+   "s": "409949fce1"
+  },
+  "src_sha256": "44f03f35740b2ef6d4f9fb2fc1a99409a4a13acdfe992abdd3332ff470bfbd65",
+  "url": "https://www.oneplus.com/content/dam/oneplus/2026/product-station/15t/assets/images-kv-phone-1-1-64a058.png"
+ },
+ "oneplus-16": {
+  "files": {
+   "m": "d950eea63e",
+   "s": "630ae5577b"
+  },
+  "src_sha256": "ccc39ff69bb1f7c1b86d7df8e38424530ad5b4a67031f66dce7f2f6bbe9d169c",
+  "url": "https://www.oneplus.com/content/dam/oneplus/2026/cn/launch/oneplus-16/assets/images-kv-phones-1-32ca0d.png.webp"
  },
  "oppo-find-n5": {
   "files": {

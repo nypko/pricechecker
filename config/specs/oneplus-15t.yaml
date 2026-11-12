@@ -14,3 +14,4 @@ bands:
   china:
     lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
     nr: [1, 2, 3, 5, 7, 8, 18, 26, 28, 38, 40, 41, 66, 48, 77, 78]
+photo: {url: "https://www.oneplus.com/content/dam/oneplus/2026/product-station/15t/assets/images-kv-phone-1-1-64a058.png", page: "https://www.oneplus.com/cn/15t", checked: 2026-11-12}

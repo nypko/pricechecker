@@ -1912,5 +1912,27 @@
 "available": true,
 "ram_mb": 16384
 }
+},
+"https://www.gomibo.de/oppo-find-x9s/512gb-grau": {
+"lastmod": "",
+"fetched": "2026-11-13T09:19:19+00:00",
+"info": {
+"name": "OPPO Find X9s 512GB Grau",
+"price": 916.0,
+"currency": "EUR",
+"available": true,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/oppo-find-x9s/512gb-orange": {
+"lastmod": "",
+"fetched": "2026-11-13T09:19:19+00:00",
+"info": {
+"name": "OPPO Find X9s 512GB Orange",
+"price": 916.0,
+"currency": "EUR",
+"available": true,
+"ram_mb": 12288
+}
 }
 }

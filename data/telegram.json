@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2761.42
+   "ref": 2766.44
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -50,15 +50,15 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1112.95
+   "ref": 1150.95
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1436.46
+   "ref": 1438.54
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1747.12
+   "ref": 1750.18
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1182.64
+   "ref": 1184.72
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -82,23 +82,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1643.24
+   "ref": 1646.3
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2243.0
+   "ref": 2246.06
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1972.52
+   "ref": 1976.56
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3780.62
+   "ref": 3786.62
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1412.94
+   "ref": 1415.02
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,23 +110,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1114.04
+   "ref": 1116.12
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 942.54
+   "ref": 944.62
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1088.56
+   "ref": 1090.64
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1747.12
+   "ref": 1750.18
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1114.04
+   "ref": 1116.12
   },
   "iqoo-15": {
    "left": "",
@@ -146,7 +146,7 @@
   },
   "motorola-razr-fold": {
    "left": "",
-   "ref": 1397.95
+   "ref": 1337.95
   },
   "oneplus-15": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1101.3
+   "ref": 1103.38
   },
   "oppo-find-n5": {
    "left": "",
@@ -310,6 +310,12 @@
     "eur": 1112.95,
     "slug": "honor-magic-v5",
     "was": 1150.95
+   },
+   {
+    "at": "2026-11-13T18:32:54Z",
+    "eur": 1337.95,
+    "slug": "motorola-razr-fold",
+    "was": 1397.95
    }
   ],
   "realme-gt-8-pro": {
@@ -318,7 +324,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1202.24
+   "ref": 1205.3
   },
   "redmi-k100-pro": {
    "left": "",
@@ -334,7 +340,7 @@
   },
   "samsung-galaxy-s26": {
    "left": "",
-   "ref": 660.95
+   "ref": 680.95
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
@@ -366,7 +372,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1012.12
+   "ref": 1014.2
   },
   "vivo-x300-pro": {
    "left": "",
@@ -438,8 +444,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 917.06
+   "ref": 918.16
   }
  },
- "updated": "2026-11-13T10:07:29Z"
+ "updated": "2026-11-13T18:32:54Z"
 }

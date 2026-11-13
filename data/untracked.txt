@@ -12,6 +12,7 @@ mobilemarvel	honor-magic-7-rsr/china
 mobilemarvel	honor-magic-8-rsr-porsche-design/china
 mobilemarvel	honor-magic-pen/china
 mobilemarvel	honor-magic-v3/global
+mobilemarvel	honor-win-2-chinese-verison/china
 mobilemarvel	honor-win/china
 mobilemarvel	huawei-m-pen-3/china
 mobilemarvel	huawei-mate-70-air/china

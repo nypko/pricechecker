@@ -1223,7 +1223,7 @@ def test_more_from_brand_rows_are_home_rows_of_their_own_meta(tmp_path, monkeypa
     version" cell, and a phone with a photo has it. blocks.js draws the same row from data-more."""
     from pricechecker.site import data_files
     from pricechecker.site.pages import phone
-    pid, two, china = "oppo-find-x9-ultra", "oppo-find-x10", "oppo-find-x9s-pro"
+    pid, two, china = "oppo-find-x9-ultra", "oppo-find-x10", "oppo-find-x10-pro-max"
     _photos(monkeypatch, tmp_path, two)
     data, phones, env, ctx = _made_up([("wonda", pid, "china", "12/256", 1000.0, True), ("giztop", pid, "global", "12/256", 1300.0, True),
                                        ("wonda", two, "china", "12/256", 800.0, True), ("giztop", two, "global", "12/256", 1150.0, True),
@@ -1232,7 +1232,7 @@ def test_more_from_brand_rows_are_home_rows_of_their_own_meta(tmp_path, monkeypa
     more = h[h.index('<ul class="pairs" id="more"'):]
     more = more[:more.index("</ul>")]
     meta = {m["id"]: m for m in json.loads(re.search(r"data-more='([^']*)'", more)[1])}
-    assert list(meta) == [two, "oppo-find-x10-pro-max", china]   # the brand's three newest other phones
+    assert list(meta) == [two, china, "oppo-find-x9s"]   # the brand's three newest other phones (X9s: Global only, no offers here)
     r2, rc = _home_row(more, two), _home_row(more, china)
     assert r2.count('<b class="num">') == 2 and "absent" not in r2 and "at Wonda Mobile" in r2 and "at Giztop" in r2
     assert rc.count('<b class="num">') == 1 and rc.count("absent") == 1 and '<span class="p none absent">No Global version</span>' in rc

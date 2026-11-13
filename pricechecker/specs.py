@@ -52,6 +52,7 @@ BRAND_HOSTS: dict[str, tuple[str, ...]] = {
     "oneplus": ("oneplus.com",),
     "oppo": ("oppo.com",),
     "realme": ("realme.com",),
+    "redmagic": ("redmagic.gg", "redmagic.com"),   # Global store (global.redmagic.gg) and China shop (shop.redmagic.com)
     "redmi": ("mi.com", "xiaomi.com"),
     "samsung": ("samsung.com",),
     "sony": ("sony.com", "sony.co.uk"),

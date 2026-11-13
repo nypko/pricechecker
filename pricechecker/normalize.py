@@ -45,6 +45,10 @@ def model_id(title: str) -> str:
         words.insert(0, "apple")
     if words[:2] in (["vivo", "iqoo"], ["xiaomi", "redmi"]):   # sub-brands: "vivo iQOO 15" = "iQOO 15", "Xiaomi Redmi K90" = "Redmi K90"
         del words[0]
+    if words[:2] == ["nubia", "redmagic"] or words[:3] == ["nubia", "red", "magic"]:   # nubia's gaming brand: "Nubia Red Magic 12 Pro"
+        del words[0]
+    if words[:2] == ["red", "magic"]:              # "Red Magic 12 Pro+" = "RedMagic 12 Pro+"
+        words[:2] = ["redmagic"]
     if words[:1] == ["realme"]:                    # "Realme GT8 Pro" (Trading Shenzhen) = "Realme GT 8 Pro" (Giztop)
         words = [w2 for w in words for w2 in (re.match(r"(gt)(\d+)$", w).groups() if re.match(r"gt\d+$", w) else (w,))]
     if len(words) > 1 and words[0] == "samsung" and words[1] != "galaxy":

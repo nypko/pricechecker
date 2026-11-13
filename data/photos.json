@@ -375,6 +375,14 @@
   "src_sha256": "3b502ffec7aa91a0c4d510fcc2c9c338ecba9d53b98e3c4a712fedccf342d3b0",
   "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9-ultra-x9s-en/find-x9-ultra/list-page/480-600-brown.png"
  },
+ "oppo-find-x9s": {
+  "files": {
+   "m": "e105d5d7a0",
+   "s": "cfb45bfd3f"
+  },
+  "src_sha256": "62f087bdd432f2e60225ce4fcc8ccd0aab7031a77b62b3a4d239901589108b06",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x9-ultra-x9s-en/find-x9s/list-page/480-600-orange.png"
+ },
  "oppo-find-x9s-pro": {
   "files": {
    "m": "94a38065b7",
@@ -390,6 +398,14 @@
   },
   "src_sha256": "cf93dff1f261db0b7fc4467de8be52075557c0776d603b9b311fccefc0a35cd1",
   "url": "https://image01.realme.net/general/20251208/17651820014239f040ddb0e2740488b90dc945944e91b.webp"
+ },
+ "redmagic-12-pro-plus": {
+  "files": {
+   "m": "9a328bf210",
+   "s": "16a70aeb1d"
+  },
+  "src_sha256": "dfffe81d559728d5534e18c6ca968ab8396c9f3b942fa4a906e4894383597cbd",
+  "url": "https://cdn-shop.redmagic.com/active/6acdc3ecd08d378.png"
  },
  "redmi-k100-pro": {
   "files": {

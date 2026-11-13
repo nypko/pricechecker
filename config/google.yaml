@@ -65,6 +65,11 @@ brands:
   realme:   # China realme UI is built on Oppo's ColorOS; owners report the same Google services switch - not confirmed by realme
     short: "Google Play switched off at first (owners report a switch in Settings)"
     long: "Google Play is not set up. realme's China software is built on Oppo's ColorOS, and owners report the same switch: search Settings for \"Google\". realme doesn't document it, so ask the store if you need Google apps."
+  redmagic: # checked 2026-11-13: RedMagic's FAQ (global.redmagic.gg/blogs/news/redmagic-frequently-asked-questions-answered)
+            # promises Google Play services on units from its Global store; China units ship without them, and some
+            # import stores (Etoren, Giztop listings) install Google Play before shipping
+    short: "no Google Play from RedMagic (some stores install it before shipping)"
+    long: "RedMagic's China software comes without Google services; RedMagic promises Google Play only on units from its Global store. Some stores install Google Play before shipping, so ask the store if you need it."
   default:
     short: "no Google Play preinstalled"
     long: "Chinese software without Google Play. It can often be added, but some apps may not work fully."

@@ -1,0 +1,21 @@
+# Key specs shown on the phone page. Copied from the brand's own pages (see sources below), checked 2026-11-13.
+# A field the page does not give is left out rather than guessed. Battery is the typical (advertised) capacity.
+# One phone, two names: the China 12 Pro+ (shop.redmagic.com) and the Global 12 Pro (global.redmagic.gg) share the chip,
+# 6.85" screen, 8,400 mAh battery, size (163.03 x 75.96 x 8.55 mm) and weight (223 g). Wired charging differs: 120 W in
+# China, 80 W Global (both 80 W wireless).
+# China: the shop's "产品参数" panel is an image (chip, screen, battery and charging, size) with no band list, so the
+# China version has no bands here, and no snapshot is kept (the page text is mostly offers). The Global page is watched.
+id: redmagic-12-pro-plus
+sources:
+  china: {url: https://shop.redmagic.com/product/s/3330, checked: 2026-11-13, lang: Chinese}
+  global: {url: https://global.redmagic.gg/pages/redmagic-12-pro-specs, checked: 2026-11-13, lang: English}
+key:
+  chip: "Snapdragon 8 Elite Extreme Gen 6"
+  screen: 6.85
+  battery: "8,400 mAh"
+  charging: "120 W (China), 80 W (Global)"
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 17, 18, 19, 20, 26, 28, 66, 34, 38, 39, 40, 41, 42]
+    nr: [1, 2, 3, 5, 7, 8, 20, 26, 28, 38, 40, 41, 66, 77, 78]
+photo: {url: "https://cdn-shop.redmagic.com/active/6acdc3ecd08d378.png", page: "https://shop.redmagic.com/product/s/3330", checked: 2026-11-13}

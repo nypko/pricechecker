@@ -118,6 +118,14 @@ def test_sub_brands_and_realme_gt_match_across_stores():
     assert model_id("Realme GT8 Pro") == model_id("Realme GT 8 Pro") == "realme-gt-8-pro"
 
 
+def test_redmagic_titles_match_across_stores():
+    # The Mobile Marvel writes "RedMagic 12 Pro+"; other stores use nubia's name in front, or "Red Magic" in two words
+    assert (model_id("RedMagic 12 Pro+ 16GB+512GB") == model_id("Nubia Red Magic 12 Pro Plus") == model_id("nubia REDMAGIC 12 Pro+")
+            == model_id("Red Magic 12 Pro+") == "redmagic-12-pro-plus")
+    assert model_id("REDMAGIC 12 Pro (Global Version)") == "redmagic-12-pro"
+    assert model_id("Nubia Z80 Ultra") == "nubia-z80-ultra"        # nubia's own phones keep their brand
+
+
 def test_gomibo_urls():
     import re
     from pathlib import Path

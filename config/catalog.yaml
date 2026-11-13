@@ -52,6 +52,9 @@ phones:
   - {id: oppo-find-x9-ultra, edition: china, name: "Oppo Find X9 Ultra", announced: 2026-04-21}
   - {id: oppo-find-x9-ultra, edition: global, name: "Oppo Find X9 Ultra", announced: 2026-04-21}
   - {id: oppo-find-x9s-pro, edition: china, name: "Oppo Find X9s Pro", announced: 2026-04-21}
+  # added 2026-11-13: Global only, launched with the Find X9 Ultra Global; oppo.com/cn has no Find X9s (China got the
+  # Find X9s Pro, a different phone: 6.32", Dimensity 9500). The Mobile Marvel lists it.
+  - {id: oppo-find-x9s, edition: global, name: "Oppo Find X9s", announced: 2026-04-21}
   - {id: samsung-galaxy-s26, edition: china, name: "Samsung Galaxy S26", announced: 2026-02-25}
   - {id: samsung-galaxy-s26-plus, edition: china, name: "Samsung Galaxy S26+", announced: 2026-02-25}
   - {id: samsung-galaxy-s26-ultra, edition: china, name: "Samsung Galaxy S26 Ultra", announced: 2026-02-25}
@@ -101,6 +104,13 @@ phones:
   - {id: iqoo-15-ultra, edition: china, name: "iQOO 15 Ultra", announced: 2026-02-04, brand: iQOO}
   - {id: iqoo-16, edition: china, name: "iQOO 16", announced: 2026-09-29, brand: iQOO}
   - {id: realme-gt-8-pro, edition: china, name: "Realme GT 8 Pro", announced: 2025-10-21}
+  # RedMagic (nubia's gaming brand): added 2026-11-13. One phone, two names: RedMagic's China shop sells it as the 12 Pro+
+  # (no China 12 Pro listed, checked 2026-11-13) and its Global store as the 12 Pro (no 12 Pro+). Same chip, screen,
+  # battery, size (163.03 x 75.96 x 8.55 mm) and weight (223 g); the Global version charges at 80 W instead of 120 W.
+  # Launched in China 15 Oct 2026 (IT之家). The Mobile Marvel lists the China 12 Pro+ and the Global 12 Pro.
+  # If RedMagic later launches a separate China 12 Pro, `also` must move to that phone.
+  - {id: redmagic-12-pro-plus, edition: china, name: "RedMagic 12 Pro+", announced: 2026-10-15}
+  - {id: redmagic-12-pro-plus, edition: global, name: "RedMagic 12 Pro+", announced: 2026-10-15, also: [redmagic-12-pro]}
   - {id: redmi-k90-pro-max, edition: china, name: "Redmi K90 Pro Max", announced: 2025-10-23}
   - {id: redmi-k100-pro-max, edition: china, name: "Redmi K100 Pro Max", announced: 2026-08-11}
   # added 2026-11-09: launched with the K100 Pro Max; Giztop lists it (specs from mi.com/prod/redmi-k100-pro/specs)

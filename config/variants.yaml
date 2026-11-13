@@ -34,6 +34,10 @@ oppo-find-x9-pro:
   global: {made: [16/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-pro/specs/"}
 oppo-find-x9-ultra:
   global: {made: [12/512, 16/1024], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9-ultra/specs/"}
+oppo-find-x9s:   # added 2026-11-13
+  global: {made: [12/256, 12/512], source: "https://www.oppo.com/en/smartphones/series-find-x/find-x9s/specs/"}
+redmagic-12-pro-plus:   # added 2026-11-13: the Global version, sold as the RedMagic 12 Pro
+  global: {made: [12/256, 16/512, 16/1024], source: "https://global.redmagic.gg/pages/redmagic-12-pro-specs"}
 vivo-x300-pro:
   global: {made: [16/512], source: "https://www.vivo.com/en/products/param/x300-pro"}
 vivo-x300-ultra:

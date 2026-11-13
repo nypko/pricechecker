@@ -188,6 +188,10 @@
    "left": "",
    "ref": 1097.0
   },
+  "oppo-find-x9s": {
+   "left": "",
+   "ref": 917.95
+  },
   "oppo-find-x9s-pro": {
    "left": "",
    "ref": 707.0
@@ -312,6 +316,10 @@
    "left": "",
    "ref": 670.95
   },
+  "redmagic-12-pro-plus": {
+   "left": "",
+   "ref": 1202.24
+  },
   "redmi-k100-pro": {
    "left": "",
    "ref": 607.0
@@ -433,5 +441,5 @@
    "ref": 917.06
   }
  },
- "updated": "2026-11-13T02:24:44Z"
+ "updated": "2026-11-13T09:19:54Z"
 }

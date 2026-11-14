@@ -33,8 +33,8 @@
    "ref": 927.5
   },
   "honor-magic-8-pro-air": {
-   "left": "",
-   "ref": 657.0
+   "left": "import tax",
+   "ref": 753.87
   },
   "honor-magic-9": {
    "left": "",
@@ -62,11 +62,11 @@
   },
   "huawei-mate-80": {
    "left": "import tax",
-   "ref": 819.27
+   "ref": 820.84
   },
   "huawei-mate-80-pro": {
    "left": "import tax",
-   "ref": 972.83
+   "ref": 974.69
   },
   "huawei-mate-80-pro-max": {
    "left": "",
@@ -102,11 +102,11 @@
   },
   "huawei-pura-90": {
    "left": "import tax",
-   "ref": 747.01
+   "ref": 748.44
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
-   "ref": 837.33
+   "ref": 840.75
   },
   "huawei-pura-90-pro-max": {
    "left": "",
@@ -447,5 +447,5 @@
    "ref": 919.14
   }
  },
- "updated": "2026-11-13T23:57:47Z"
+ "updated": "2026-11-14T15:07:33Z"
 }

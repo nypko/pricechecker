@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1184.72
+   "ref": 1185.7
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -86,15 +86,15 @@
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2248.02
+   "ref": 2249.0
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1977.54
+   "ref": 1978.52
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3789.56
+   "ref": 3790.54
   },
   "huawei-pura-80-ultra": {
    "left": "",
@@ -324,7 +324,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1205.3
+   "ref": 1206.28
   },
   "redmi-k100-pro": {
    "left": "",
@@ -447,5 +447,5 @@
    "ref": 919.14
   }
  },
- "updated": "2026-11-15T20:51:44Z"
+ "updated": "2026-11-16T01:42:46Z"
 }

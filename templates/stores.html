@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {#- Spec §5.7. One row per store, every fact in the HTML; static/js/store.js adds the delivery chips (a filter over the rows, no prices). -#}
 {% set crumbs = [("Stores", "stores")] %}
-{% block title %}Import phone stores compared: shipping, import tax, warranty – DoorPrice{% endblock %}
-{% block description %}{% for sp in store_pages %}{{ sp.label }}{{ (" and " if loop.revindex == 2 else ", ") if not loop.last }}{% endfor %} compared: shipping, import tax, payment fees, warranty, returns and the cheapest store for each phone.{% endblock %}
+{% block title %}Import phone stores compared: shipping, import tax, warranty{% endblock %}
+{% block description %}{{ store_pages|length }} import phone stores compared on shipping, import tax, payment fees, warranty and returns, with the cheapest store for each phone delivered to you.{% endblock %}
 {% block main %}
 <div class="wrap spage" id="stores">
   <p class="kicker"><a href="{{ root }}">All phones</a></p>

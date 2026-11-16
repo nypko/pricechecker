@@ -5,6 +5,9 @@ import re
 from datetime import datetime
 from xml.sax.saxutils import escape
 
+from markupsafe import Markup
+from markupsafe import escape as html_escape
+
 from .. import pricing
 from .common import spec
 
@@ -108,8 +111,12 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), 
     # AI crawlers that collect pages to train models (and send no visitors) are asked to stay out; search engines,
     # AI search assistants that link their sources (OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot...)
     # and link-preview fetchers (Telegram, Reddit, WhatsApp, Facebook) keep full access under "*".
-    training = ["GPTBot", "ClaudeBot", "anthropic-ai", "CCBot", "Google-Extended", "Applebot-Extended", "Bytespider",
-                "meta-externalagent", "cohere-training-data-crawler", "Diffbot", "Omgilibot", "ImagesiftBot"]
+    # The list should name every known training-only crawler: blocking some and not others reads as an inconsistent
+    # policy to site audits (and lets the rest in).
+    training = ["GPTBot", "ClaudeBot", "anthropic-ai", "Claude-Web", "CCBot", "Google-Extended", "Applebot-Extended",
+                "Bytespider", "TikTokSpider", "meta-externalagent", "FacebookBot", "cohere-ai", "cohere-training-data-crawler",
+                "AI2Bot", "Ai2Bot-Dolma", "Diffbot", "Omgilibot", "omgili", "Webzio-Extended", "ImagesiftBot", "img2dataset",
+                "PanguBot", "Timpibot", "Kangaroo Bot", "SBIntuitionsBot"]
     robots = ("".join(f"User-agent: {b}\n" for b in training) + "Disallow: /\n\n"
               "User-agent: *\nAllow: /\n" + (f"\nSitemap: {base}/sitemap.xml\n" if live else ""))
     out = {"robots.txt": robots}
@@ -124,6 +131,31 @@ def _seo_files(site_cfg: dict, phones: list[dict], store_names: list[str] = (), 
     out["sitemap.xml"] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                           f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
     return out
+
+
+# What search results show before cutting off (site audits flag longer ones): a <title> past ~70 characters, a meta
+# description past ~160.
+TITLE_MAX, DESCRIPTION_MAX = 70, 160
+
+
+def ld_json(data) -> Markup:
+    """schema.org data for a <script type="application/ld+json">, compact (no spaces) and safe inside the tag."""
+    return Markup(json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
+
+
+def fit(text: str, limit: int, *optional: str) -> str:
+    """text shortened to at most `limit` characters by leaving out the `optional` parts, in the order given, until it
+    fits: e.g. a title drops " – DoorPrice" first, then " [November 2026]". The parts that matter (name and price) are
+    never in `optional`, so a very long phone name can still leave it over the limit. Jinja filter `fit`: the text from
+    an autoescaped block is Markup, measured as the reader sees it (&amp; counts as one character)."""
+    markup = isinstance(text, Markup)
+    plain = lambda t: Markup(t).unescape() if markup else str(t)
+    for part in optional:
+        if len(plain(text)) <= limit:
+            break
+        if part:
+            text = text.replace(html_escape(part) if markup else part, Markup("") if markup else "", 1)
+    return text
 
 
 def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:

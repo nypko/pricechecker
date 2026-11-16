@@ -5,7 +5,7 @@
 {% set crumbs = [(p.name, "phones/" ~ p.slug), ("Price history", "history/" ~ p.slug)] + ([(v.month_label, "history/" ~ p.slug ~ "/" ~ v.month)] if v.month else []) %}
 {% block title %}{{ p.name }} price history{% if v.month %}, {{ v.month_label }}{% endif %} – DoorPrice{% endblock %}
 {% block description %}{% if v.month %}Every store price change for the {{ p.name }} in {{ v.month_label }}.{% else %}How the {{ p.name }}'s price has changed at each store over the last {{ v.window }} days, checked several times a day.{% endif %}{% endblock %}
-{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="{{ root }}feeds/{{ p.slug }}.xml">{% endblock %}
+{% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="{{ root }}feeds/{{ p.slug }}.xml">{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
 {% block og_alt %}{{ p.name }} on DoorPrice: price history{% endblock %}
 {% macro monthnav(v, p, root) %}
@@ -19,7 +19,7 @@
 {% endmacro %}
 {% block main %}
 <div class="wrap hpage" id="history" data-default="{{ v.default }}">
-  <p class="kicker"><a href="{{ root }}phones/{{ p.slug }}">{{ p.name }} prices</a></p>
+  <p class="kicker"><a href="{{ root }}phones/{{ p.slug }}">{{ p.name }} prices</a>{% if links.specs %} · <a href="{{ root }}phones/{{ p.slug }}/specs">{{ p.name }} specs</a>{% endif %}</p>
   <h1>{{ p.name }} <em>{% if v.month %}{{ v.month_label }}{% else %}price history{% endif %}</em></h1>
   <p class="lead">
     {%- if v.month %}Every price and stock change in {{ v.month_label }}, as the store listed it, converted to euro.
@@ -63,6 +63,12 @@
   <h2>Earlier months</h2>
   <ul class="months">
     {%- for m, label in v.earlier %}<li><a href="{{ root }}history/{{ p.slug }}/{{ m }}">{{ label }}</a></li>{% endfor %}
+  </ul>
+  {%- endif %}
+  {%- if not v.month and links.more %}
+  <h2>More price histories</h2>
+  <ul class="months">
+    {%- for q in links.more %}<li><a href="{{ root }}history/{{ q.slug }}">{{ q.name }}</a></li>{% endfor %}
   </ul>
   {%- endif %}
   <p class="fine">Times are UTC. A "first seen" line is the first time we saw that listing, not a price change. A listing that sells out drops off the chart until it is back in stock.</p>

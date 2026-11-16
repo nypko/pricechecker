@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from jinja2 import Environment
 
-from ... import derive
+from ... import derive, specs
 from ..blocks import mem_tiny, money
 from ..common import ed_labels
 from ..context import SiteData
@@ -159,10 +159,15 @@ def render(env: Environment, data: SiteData, ctx: dict, phones: list[dict]) -> d
         slug = p["slug"]
         rows = sorted((r for r in by_model.get(p["id"], []) if r["edition"] in p["editions"]), key=lambda r: r["time"])
         months = sorted({r["time"][:7] for r in rows})
+        # links on: the phone's spec page, every other phone of the brand and the nearest in price (a history page
+        # would otherwise be reached from its phone page only)
+        more = [q for q in phones if q["brand"] == p["brand"] and q is not p]
+        more += [q for q in p["related"]["near"] if q["slug"] not in {m["slug"] for m in more}]
+        links = {"specs": specs.has_page(data.spec_sheets.get(p["id"]) or {}), "more": more}
         out[f"history/{slug}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, None, today),
-                                               root="../", path=f"history/{slug}", **ctx)
+                                               links=links, root="../", path=f"history/{slug}", **ctx)
         for m in months:
             out[f"history/{slug}/{m}.html"] = t.render(p=p, v=_page(p, rows, months, names, data.rates, start, m, today),
-                                                       root="../../", path=f"history/{slug}/{m}", **ctx)
+                                                       links=links, root="../../", path=f"history/{slug}/{m}", **ctx)
     return out
 

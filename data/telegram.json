@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2768.4
+   "ref": 2769.38
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -34,7 +34,7 @@
   },
   "honor-magic-8-pro-air": {
    "left": "import tax",
-   "ref": 753.87
+   "ref": 760.17
   },
   "honor-magic-9": {
    "left": "",
@@ -54,19 +54,19 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1439.52
+   "ref": 1440.5
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1751.16
+   "ref": 1752.14
   },
   "huawei-mate-80": {
    "left": "import tax",
-   "ref": 820.84
+   "ref": 827.7
   },
   "huawei-mate-80-pro": {
    "left": "import tax",
-   "ref": 974.69
+   "ref": 982.84
   },
   "huawei-mate-80-pro-max": {
    "left": "",
@@ -82,7 +82,7 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1647.28
+   "ref": 1648.26
   },
   "huawei-mate-90-rs": {
    "left": "",
@@ -94,19 +94,19 @@
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3790.54
+   "ref": 3791.52
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1416.0
+   "ref": 1416.98
   },
   "huawei-pura-90": {
    "left": "import tax",
-   "ref": 748.44
+   "ref": 754.7
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
-   "ref": 840.75
+   "ref": 847.78
   },
   "huawei-pura-90-pro-max": {
    "left": "",
@@ -114,7 +114,7 @@
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 944.62
+   "ref": 945.6
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
@@ -122,7 +122,7 @@
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1751.16
+   "ref": 1752.14
   },
   "huawei-pura-x-view": {
    "left": "",
@@ -447,5 +447,5 @@
    "ref": 919.14
   }
  },
- "updated": "2026-11-16T01:42:46Z"
+ "updated": "2026-11-16T08:34:37Z"
 }

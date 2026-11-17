@@ -46,7 +46,7 @@
   },
   "honor-magic-9-super": {
    "left": "import tax",
-   "ref": 761.46
+   "ref": 736.44
   },
   "honor-magic-v5": {
    "left": "",
@@ -54,7 +54,7 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1443.62
+   "ref": 1444.6
   },
   "honor-robot-phone": {
    "left": "",
@@ -86,7 +86,7 @@
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2254.08
+   "ref": 2255.06
   },
   "huawei-mate-x7": {
    "left": "",
@@ -94,7 +94,7 @@
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3800.52
+   "ref": 3801.5
   },
   "huawei-pura-80-ultra": {
    "left": "",
@@ -322,6 +322,24 @@
     "eur": 881.95,
     "slug": "oppo-find-x9s",
     "was": 917.95
+   },
+   {
+    "at": "2026-11-17T12:46:52Z",
+    "eur": 897.0,
+    "slug": "xiaomi-18-pro-max",
+    "was": 947.0
+   },
+   {
+    "at": "2026-11-17T12:46:52Z",
+    "eur": 767.0,
+    "slug": "xiaomi-18-pro",
+    "was": 807.0
+   },
+   {
+    "at": "2026-11-17T12:46:52Z",
+    "eur": 736.44,
+    "slug": "honor-magic-9-super",
+    "was": 761.46
    }
   ],
   "realme-gt-8-pro": {
@@ -442,16 +460,16 @@
   },
   "xiaomi-18-pro": {
    "left": "",
-   "ref": 807.0
+   "ref": 767.0
   },
   "xiaomi-18-pro-max": {
    "left": "",
-   "ref": 947.0
+   "ref": 897.0
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 921.28
+   "ref": 922.26
   }
  },
- "updated": "2026-11-17T02:57:55Z"
+ "updated": "2026-11-17T12:46:54Z"
 }

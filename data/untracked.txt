@@ -1,5 +1,4 @@
 wonda	honor-600-pro/global
-wonda	honor-win/china
 wonda	oppo-reno-16-pro/china
 wonda	sony-xperia-10-vii/china
 wonda	sony-xperia-10-viii/china
@@ -70,7 +69,6 @@ averagedad	huawei-m-pen-3/china
 averagedad	huawei-m-pencil-3rd-generation/china
 averagedad	huawei-m-pencil-pro/china
 averagedad	huawei-mate-70-air/china
-averagedad	huawei-mate-80-rs-ultimate-design/china
 averagedad	huawei-mate-xt-ultimate-design/global
 averagedad	huawei-mate-xt2/china
 averagedad	huawei-mate-xts/china

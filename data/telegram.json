@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2773.48
+   "ref": 2776.42
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -54,11 +54,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1442.64
+   "ref": 1443.62
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1754.28
+   "ref": 1756.24
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1186.86
+   "ref": 1188.82
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -82,23 +82,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1650.4
+   "ref": 1652.36
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2252.12
+   "ref": 2254.08
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1981.64
+   "ref": 1983.6
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3796.6
+   "ref": 3800.52
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1418.14
+   "ref": 1420.1
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,23 +110,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1119.24
+   "ref": 1120.22
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 946.76
+   "ref": 947.74
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1093.76
+   "ref": 1094.74
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1754.28
+   "ref": 1756.24
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1119.24
+   "ref": 1120.22
   },
   "iqoo-15": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1106.5
+   "ref": 1107.48
   },
   "oppo-find-n5": {
    "left": "",
@@ -330,7 +330,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1207.44
+   "ref": 1209.4
   },
   "redmi-k100-pro": {
    "left": "",
@@ -378,7 +378,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1017.32
+   "ref": 1018.3
   },
   "vivo-x300-pro": {
    "left": "",
@@ -453,5 +453,5 @@
    "ref": 921.28
   }
  },
- "updated": "2026-11-16T19:27:54Z"
+ "updated": "2026-11-17T02:57:55Z"
 }

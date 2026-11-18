@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2781.44
+   "ref": 2783.5
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -54,11 +54,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1446.68
+   "ref": 1447.76
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1759.3
+   "ref": 1760.38
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1190.9
+   "ref": 1191.98
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -82,23 +82,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1655.42
+   "ref": 1656.5
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2259.1
+   "ref": 2260.18
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1987.64
+   "ref": 1988.72
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3807.5
+   "ref": 3810.54
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1423.16
+   "ref": 1424.24
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,23 +110,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1122.3
+   "ref": 1123.38
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 949.82
+   "ref": 949.92
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1096.82
+   "ref": 1097.9
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1759.3
+   "ref": 1760.38
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1122.3
+   "ref": 1123.38
   },
   "iqoo-15": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1109.56
+   "ref": 1109.66
   },
   "oppo-find-n5": {
    "left": "",
@@ -348,7 +348,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1211.48
+   "ref": 1212.56
   },
   "redmi-k100-pro": {
    "left": "",
@@ -396,7 +396,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1020.38
+   "ref": 1020.48
   },
   "vivo-x300-pro": {
    "left": "",
@@ -468,8 +468,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 923.36
+   "ref": 924.44
   }
  },
- "updated": "2026-11-18T12:22:40Z"
+ "updated": "2026-11-18T21:29:00Z"
 }

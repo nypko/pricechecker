@@ -50,7 +50,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1150.95
+   "ref": 1114.95
   },
   "honor-magic-v6": {
    "left": "",
@@ -58,7 +58,7 @@
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1756.24
+   "ref": 1756.36
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1188.82
+   "ref": 1188.94
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -90,7 +90,7 @@
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1983.6
+   "ref": 1983.72
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
@@ -98,7 +98,7 @@
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1420.1
+   "ref": 1420.22
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,23 +110,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1120.22
+   "ref": 1120.34
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 947.74
+   "ref": 947.86
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1094.74
+   "ref": 1094.86
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1756.24
+   "ref": 1756.36
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1120.22
+   "ref": 1120.34
   },
   "iqoo-15": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1107.48
+   "ref": 1107.6
   },
   "oppo-find-n5": {
    "left": "",
@@ -334,6 +334,12 @@
     "eur": 736.44,
     "slug": "honor-magic-9-super",
     "was": 761.46
+   },
+   {
+    "at": "2026-11-18T03:22:31Z",
+    "eur": 1114.95,
+    "slug": "honor-magic-v5",
+    "was": 1150.95
    }
   ],
   "realme-gt-8-pro": {
@@ -342,7 +348,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1209.4
+   "ref": 1209.52
   },
   "redmi-k100-pro": {
    "left": "",
@@ -390,7 +396,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1018.3
+   "ref": 1018.42
   },
   "vivo-x300-pro": {
    "left": "",
@@ -465,5 +471,5 @@
    "ref": 922.26
   }
  },
- "updated": "2026-11-17T21:43:47Z"
+ "updated": "2026-11-18T03:22:32Z"
 }

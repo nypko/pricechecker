@@ -1088,17 +1088,6 @@
 "ram_mb": 16384
 }
 },
-"https://www.gomibo.de/vivo-x300-ultra/1tb-gruen": {
-"lastmod": "",
-"fetched": "2026-11-18T21:09:46+00:00",
-"info": {
-"name": "vivo X300 Ultra 1TB Gr\u00fcn",
-"price": 1649.0,
-"currency": "EUR",
-"available": false,
-"ram_mb": 16384
-}
-},
 "https://www.gomibo.de/vivo-x300-ultra/512gb-gruen": {
 "lastmod": "",
 "fetched": "2026-11-18T21:09:46+00:00",
@@ -2108,6 +2097,17 @@
 "price": 1799.0,
 "currency": "EUR",
 "available": true,
+"ram_mb": 12288
+}
+},
+"https://www.gomibo.de/vivo-x500/512gb-grau": {
+"lastmod": "",
+"fetched": "2026-11-19T02:57:27+00:00",
+"info": {
+"name": "vivo X500 12GB/512GB Grau",
+"price": 1307.0,
+"currency": "EUR",
+"available": false,
 "ram_mb": 12288
 }
 }

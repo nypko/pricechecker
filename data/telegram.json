@@ -14,7 +14,7 @@
   },
   "google-pixel-11": {
    "left": "",
-   "ref": 822.95
+   "ref": 786.95
   },
   "google-pixel-11-pro": {
    "left": "",
@@ -46,7 +46,7 @@
   },
   "honor-magic-9-super": {
    "left": "import tax",
-   "ref": 736.44
+   "ref": 739.91
   },
   "honor-magic-v5": {
    "left": "",
@@ -62,11 +62,11 @@
   },
   "huawei-mate-80": {
    "left": "import tax",
-   "ref": 827.7
+   "ref": 831.6
   },
   "huawei-mate-80-pro": {
    "left": "import tax",
-   "ref": 982.84
+   "ref": 987.46
   },
   "huawei-mate-80-pro-max": {
    "left": "",
@@ -102,11 +102,11 @@
   },
   "huawei-pura-90": {
    "left": "import tax",
-   "ref": 754.7
+   "ref": 758.25
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
-   "ref": 847.78
+   "ref": 851.77
   },
   "huawei-pura-90-pro-max": {
    "left": "",
@@ -334,6 +334,12 @@
     "eur": 1114.95,
     "slug": "honor-magic-v5",
     "was": 1150.95
+   },
+   {
+    "at": "2026-11-19T12:29:58Z",
+    "eur": 786.95,
+    "slug": "google-pixel-11",
+    "was": 822.95
    }
   ],
   "realme-gt-8-pro": {
@@ -465,5 +471,5 @@
    "ref": 924.44
   }
  },
- "updated": "2026-11-19T02:58:00Z"
+ "updated": "2026-11-19T12:29:58Z"
 }

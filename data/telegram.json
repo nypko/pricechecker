@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2783.5
+   "ref": 2784.37
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -22,7 +22,7 @@
   },
   "google-pixel-11-pro-xl": {
    "left": "",
-   "ref": 1198.95
+   "ref": 1158.95
   },
   "honor-magic-8": {
    "left": "shipping and import tax",
@@ -54,11 +54,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1447.76
+   "ref": 1448.63
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1760.38
+   "ref": 1761.25
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -86,15 +86,15 @@
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2260.18
+   "ref": 2261.05
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1988.72
+   "ref": 1989.59
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3810.54
+   "ref": 3812.39
   },
   "huawei-pura-80-ultra": {
    "left": "",
@@ -114,7 +114,7 @@
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 949.92
+   "ref": 950.79
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
@@ -122,7 +122,7 @@
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1760.38
+   "ref": 1761.25
   },
   "huawei-pura-x-view": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1109.66
+   "ref": 1110.53
   },
   "oppo-find-n5": {
    "left": "",
@@ -334,6 +334,12 @@
     "eur": 786.95,
     "slug": "google-pixel-11",
     "was": 822.95
+   },
+   {
+    "at": "2026-11-20T02:49:41Z",
+    "eur": 1158.95,
+    "slug": "google-pixel-11-pro-xl",
+    "was": 1198.95
    }
   ],
   "realme-gt-8-pro": {
@@ -390,7 +396,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1020.48
+   "ref": 1021.35
   },
   "vivo-x300-pro": {
    "left": "",
@@ -465,5 +471,5 @@
    "ref": 924.44
   }
  },
- "updated": "2026-11-19T21:24:09Z"
+ "updated": "2026-11-20T02:49:41Z"
 }

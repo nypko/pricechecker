@@ -2,7 +2,7 @@
  "phones": {
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2784.37
+   "ref": 2786.33
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -54,11 +54,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1448.63
+   "ref": 1449.61
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1761.25
+   "ref": 1762.23
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -70,7 +70,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1191.98
+   "ref": 1192.85
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -82,23 +82,23 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1656.5
+   "ref": 1658.35
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2261.05
+   "ref": 2263.01
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1989.59
+   "ref": 1990.57
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3812.39
+   "ref": 3814.35
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1424.24
+   "ref": 1425.11
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -110,7 +110,7 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1123.38
+   "ref": 1124.25
   },
   "huawei-pura-90s-pro": {
    "left": "",
@@ -118,15 +118,15 @@
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1097.9
+   "ref": 1098.77
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1761.25
+   "ref": 1762.23
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1123.38
+   "ref": 1124.25
   },
   "iqoo-15": {
    "left": "",
@@ -158,7 +158,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1110.53
+   "ref": 1111.51
   },
   "oppo-find-n5": {
    "left": "",
@@ -348,7 +348,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1212.56
+   "ref": 1213.43
   },
   "redmi-k100-pro": {
    "left": "",
@@ -468,8 +468,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 924.44
+   "ref": 925.31
   }
  },
- "updated": "2026-11-20T02:49:41Z"
+ "updated": "2026-11-20T12:23:42Z"
 }

@@ -114,7 +114,7 @@
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 950.79
+   "ref": 950.84
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
@@ -340,6 +340,12 @@
     "eur": 1158.95,
     "slug": "google-pixel-11-pro-xl",
     "was": 1198.95
+   },
+   {
+    "at": "2026-11-20T21:16:59Z",
+    "eur": 899.95,
+    "slug": "samsung-galaxy-s26-plus",
+    "was": 928.95
    }
   ],
   "realme-gt-8-pro": {
@@ -368,7 +374,7 @@
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
-   "ref": 928.95
+   "ref": 899.95
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
@@ -396,7 +402,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1021.35
+   "ref": 1021.4
   },
   "vivo-x300-pro": {
    "left": "",
@@ -471,5 +477,5 @@
    "ref": 925.31
   }
  },
- "updated": "2026-11-20T12:23:42Z"
+ "updated": "2026-11-20T21:17:00Z"
 }

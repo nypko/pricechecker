@@ -1,4 +1,5 @@
 wonda	honor-600-pro/global
+wonda	huawei-pura-90-plus/china
 wonda	oppo-reno-16-pro/china
 wonda	sony-xperia-10-vii/china
 wonda	sony-xperia-10-viii/china

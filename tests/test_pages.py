@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from pricechecker.site.seo import fit
+
 # reads the saved prices or the real build: excluded from the hourly production run (pytest -m "not live")
 live = pytest.mark.live
 # page sizes of the real build: checked in the newsite/testing workflows (DOORPRICE_CHECK_BUDGETS=1), never hourly
@@ -119,11 +121,11 @@ def _title_rules(p, month):
     kind = f"{L['china']} version price" if eds == ["china"] else "price"
     frm = (f": from €{tp[0]:,.0f}" + (" delivered" if tp[1] else "")) if tp else ""
     versus = f", {L['china']} vs Global" if len(eds) > 1 else ""
-    title = f"{p['name']} {kind}{frm}{versus} [{month}] – DoorPrice"
+    title = fit(f"{p['name']} {kind}{frm}{versus} [{month}] – DoorPrice", 70, " – DoorPrice", f" [{month}]", versus)
     n = p["n_stores"]
-    desc = (f"{p['name']}" + ((f" from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
-            + f": compare {n} store{'s' if n != 1 else ''}" + (", Global and China versions side by side" if len(eds) > 1 else "")
-            + ", with payment fees, shipping and import tax worked in. Updated several times a day.")
+    desc = fit(f"{p['name']}" + ((f" from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
+               + f": compare {n} store{'s' if n != 1 else ''}" + (", Global vs China versions" if len(eds) > 1 else "")
+               + ", with fees, shipping and import tax included. Updated several times a day.", 160, " Updated several times a day.")
     alt = f"{p['name']} on DoorPrice" + ((f": from €{tp[0]:,.0f}" + (" delivered to the EU" if tp[1] else "")) if tp else "")
     return title, desc, alt
 
@@ -1622,3 +1624,35 @@ def test_telegram_intro_and_cards_say_several_times_a_day():
     for mod in (telegram, cards):
         src = inspect.getsource(mod)
         assert "every hour" not in src and "several times a day" in src
+
+
+def test_fit_leaves_out_optional_parts_in_order():
+    t = "Phone price: from €900 delivered, China vs Global [November 2026] – DoorPrice"
+    assert fit(t, 100, " – DoorPrice") == t
+    assert fit(t, 70, " – DoorPrice", " [November 2026]", ", China vs Global") == "Phone price: from €900 delivered, China vs Global [November 2026]"
+    assert fit(t, 40, " – DoorPrice", " [November 2026]", ", China vs Global") == "Phone price: from €900 delivered"
+
+
+def _ld(h):
+    return [json.loads(m) for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', h, re.DOTALL)]
+
+
+@live
+def test_site_audit_rules(site_build):
+    """What site audits check on every page in the sitemap: a meta description of 100-160 characters, and schema.org
+    data by kind of page (Organization and ItemList on the home page, Article on the text pages, Product on a phone's
+    history and spec pages whenever its phone page has one)."""
+    paths = re.findall(r"<loc>https://doorprice\.app/?([^<]*)</loc>", (site_build / "sitemap.xml").read_text())
+    for p in paths:
+        h = (site_build / f"{p or 'index'}.html").read_text()
+        d = html.unescape(re.search(r'<meta name="description" content="([^"]*)"', h)[1])
+        assert 100 <= len(d) <= 160, (p, d)
+    home = [x["@type"] for x in _ld((site_build / "index.html").read_text())[0]["@graph"]]
+    assert home == ["WebSite", "Organization", "ItemList"]
+    for p in ("about", "methodology", "privacy"):
+        assert [x["@type"] for x in _ld((site_build / f"{p}.html").read_text())] == ["Article"], p
+    for f in (site_build / "phones").glob("*.html"):
+        product = [x for x in _ld(f.read_text()) if x["@type"] == "Product"]
+        for other in [site_build / "history" / f.name, site_build / "phones" / f.stem / "specs.html"]:
+            if other.exists():
+                assert [x for x in _ld(other.read_text()) if x["@type"] == "Product"] == product, other

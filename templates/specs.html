@@ -3,7 +3,8 @@
 {% set crumbs = [(p.name, "phones/" ~ p.slug), ("Specs", "phones/" ~ p.slug ~ "/specs")] %}
 {% set L = v.labels %}
 {% block title %}{{ p.name }} specs{% if p.editions|length > 1 %}: {{ L.china }} vs {{ L.global }} version{% endif %} – DoorPrice{% endblock %}
-{% block description %}{{ p.name }} full specs from {{ p.brand }}'s own spec page{% if v.sources|length > 1 %}s{% endif %}{% if v.diffs %}, with the {{ v.diffs }} that differ between the {{ L.china }} and {{ L.global }} versions{% endif %}, and which EU network bands each version has.{% endblock %}
+{% block description %}{% filter fit(160, " chip, screen, cameras and battery,") %}{{ p.name }} full specs from {{ p.brand }}'s own spec page{% if v.sources|length > 1 %}s{% endif %}:{% if v.diffs %} the {{ v.diffs }} {{ "spec that differs" if v.diffs == 1 else "specs that differ" }} between {{ L.china }} and {{ L.global }},{% endif %} chip, screen, cameras and battery, and the EU network bands each version has.{% endfilter %}{% endblock %}
+{% block head %}{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% macro half(e, text) -%}
 <div class="half {{ 'cn' if e == 'china' else 'gl' }}"><span class="htag">{{ L[e] }}</span>{% if text is none %}<span class="na">Not listed</span>{% else %}{{ text }}{% endif %}</div>
 {%- endmacro %}

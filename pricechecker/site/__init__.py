@@ -58,6 +58,8 @@ def _env() -> Environment:
     env = Environment(loader=FileSystemLoader("templates"), autoescape=select_autoescape())
     env.filters["spec"] = spec
     env.filters["spec_parts"] = _spec_parts
+    env.filters["fit"] = seo.fit
+    env.filters["ld"] = seo.ld_json
     env.filters["month"] = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%b %Y") if d else ""
     blocks.register(env)
     return env

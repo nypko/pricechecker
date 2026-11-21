@@ -58,7 +58,7 @@
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1762.23
+   "ref": 1762.28
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -98,7 +98,7 @@
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1425.11
+   "ref": 1425.16
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -122,7 +122,7 @@
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1762.23
+   "ref": 1762.28
   },
   "huawei-pura-x-view": {
    "left": "",
@@ -197,84 +197,6 @@
    "ref": 707.0
   },
   "posted": [
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 657.0,
-    "slug": "honor-magic-8-pro-air",
-    "was": 757.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 627.0,
-    "slug": "redmi-k100-pro-max",
-    "was": 687.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 807.0,
-    "slug": "xiaomi-18-pro",
-    "was": 867.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 807.0,
-    "slug": "oppo-find-x10",
-    "was": 867.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 977.0,
-    "slug": "vivo-x500-pro",
-    "was": 1037.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 817.0,
-    "slug": "vivo-x500",
-    "was": 867.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 670.95,
-    "slug": "realme-gt-8-pro",
-    "was": 709.95
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 727.0,
-    "slug": "xiaomi-17-pro",
-    "was": 767.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 947.0,
-    "slug": "xiaomi-18-pro-max",
-    "was": 997.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 787.0,
-    "slug": "honor-magic-9",
-    "was": 817.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 1607.0,
-    "slug": "xiaomi-18-fold",
-    "was": 1667.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 807.0,
-    "slug": "iqoo-15-ultra",
-    "was": 837.0
-   },
-   {
-    "at": "2026-11-07T06:53:51Z",
-    "eur": 847.0,
-    "slug": "iqoo-16",
-    "was": 877.0
-   },
    {
     "at": "2026-11-10T10:42:05Z",
     "eur": 757.0,
@@ -354,7 +276,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1213.43
+   "ref": 1213.48
   },
   "redmi-k100-pro": {
    "left": "",
@@ -470,12 +392,12 @@
   },
   "xiaomi-18-pro-max": {
    "left": "",
-   "ref": 897.0
+   "ref": 927.0
   },
   "xiaomi-mix-flip-2": {
    "left": "",
    "ref": 925.31
   }
  },
- "updated": "2026-11-21T02:45:28Z"
+ "updated": "2026-11-21T12:11:30Z"
 }

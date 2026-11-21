@@ -84,6 +84,5 @@ averagedad	oppo-pen-for-find-n5/china
 averagedad	poco-f8-pro/global
 averagedad	poco-f8-ultra/global
 averagedad	poco-f9-ultra/china
-averagedad	redmagic-11s-pro/global
 averagedad	samsung-galaxy-w26-fold/china
 averagedad	samsung-galaxy-z-trifold/china

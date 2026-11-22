@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-22T08:35:28Z",
+ "updated": "2026-11-22T17:00:52Z",
  "stores": {
   "wonda": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": [
     {
@@ -3153,7 +3153,7 @@
    ]
   },
   "mobilemarvel": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": [
     {
@@ -6355,7 +6355,7 @@
    ]
   },
   "averagedad": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": [
     {
@@ -8792,7 +8792,7 @@
    ]
   },
   "tradingshenzhen": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": [
     {
@@ -10702,12 +10702,12 @@
    ]
   },
   "tradingshenzhen_eu": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": []
   },
   "gomibo": {
-   "checked": "2026-11-22T08:35:28Z",
+   "checked": "2026-11-22T17:00:52Z",
    "ok": true,
    "offers": [
     {
@@ -10730,12 +10730,12 @@
      "edition": "global",
      "storage": "16/128",
      "title": "Google Pixel 10 Pro 128GB Schwarz",
-     "price": 688.0,
+     "price": 690.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/google-pixel-10-pro-eu/128gb-schwarz",
      "prices": {
-      "EUR": 688.0
+      "EUR": 690.0
      }
     },
     {
@@ -11304,12 +11304,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "Samsung Galaxy Z Fold 8 Ultra 512GB Dunkelviolett",
-     "price": 1625.0,
+     "price": 1630.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-dunkelviolett",
      "prices": {
-      "EUR": 1625.0
+      "EUR": 1630.0
      }
     },
     {
@@ -11332,12 +11332,12 @@
      "edition": "global",
      "storage": "16/1024",
      "title": "Samsung Galaxy Z Fold 8 Ultra 1TB Wei\u00df",
-     "price": 1822.0,
+     "price": 1824.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-weiss",
      "prices": {
-      "EUR": 1822.0
+      "EUR": 1824.0
      }
     },
     {
@@ -11388,12 +11388,12 @@
      "edition": "global",
      "storage": "12/256",
      "title": "Google Pixel 11 Pro 256GB Schwarz",
-     "price": 1044.0,
+     "price": 1045.0,
      "currency": "EUR",
      "available": true,
      "url": "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-schwarz",
      "prices": {
-      "EUR": 1044.0
+      "EUR": 1045.0
      }
     },
     {
@@ -11430,12 +11430,12 @@
      "edition": "global",
      "storage": "16/512",
      "title": "Google Pixel 11 Pro XL 512GB Hellgr\u00fcn",
-     "price": 1450.0,
+     "price": 1453.0,
      "currency": "EUR",
      "available": false,
      "url": "https://www.gomibo.de/google-pixel-11-pro-xl-eu/512gb-hellgrun",
      "prices": {
-      "EUR": 1450.0
+      "EUR": 1453.0
      }
     },
     {
@@ -15481,7 +15481,7 @@
     }
    ],
    "error": "Blocked: 403 from www.giztop.com - the site refuses or rate-limits automated access; use its affiliate feed/API",
-   "last_attempt": "2026-11-22T08:35:28Z"
+   "last_attempt": "2026-11-22T17:00:52Z"
   }
  }
 }

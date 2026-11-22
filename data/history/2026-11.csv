@@ -10335,3 +10335,8 @@ time,store,model_id,edition,storage,price,currency,available
 2026-11-22T08:35:28Z,mobilemarvel,xiaomi-mix-flip-2,china,12/512,1054.0,USD,1
 2026-11-22T08:35:28Z,mobilemarvel,xiaomi-mix-flip-2,china,16/1024,1158.0,USD,1
 2026-11-22T08:35:28Z,mobilemarvel,huawei-pura-80-ultra,china,16/1024,1841.0,USD,1
+2026-11-22T17:00:52Z,gomibo,google-pixel-10-pro,global,16/128,690.0,EUR,1
+2026-11-22T17:00:52Z,gomibo,samsung-galaxy-z-fold-8-ultra,global,16/512,1630.0,EUR,1
+2026-11-22T17:00:52Z,gomibo,samsung-galaxy-z-fold-8-ultra,global,16/1024,1824.0,EUR,1
+2026-11-22T17:00:52Z,gomibo,google-pixel-11-pro,global,12/256,1045.0,EUR,1
+2026-11-22T17:00:52Z,gomibo,google-pixel-11-pro-xl,global,16/512,1453.0,EUR,0

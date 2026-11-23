@@ -1,10 +1,10 @@
 {
 "https://www.gomibo.de/google-pixel-10-pro-eu/128gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 10 Pro 128GB Schwarz",
-"price": 690.0,
+"price": 688.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -12,7 +12,7 @@
 },
 "https://www.gomibo.de/google-pixel-10-pro-xl-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 10 Pro XL 256GB Schwarz",
 "price": 950.0,
@@ -23,7 +23,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/512gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 512GB Gr\u00fcn",
 "price": 880.0,
@@ -34,7 +34,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/256gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 256GB Gr\u00fcn",
 "price": 785.0,
@@ -45,10 +45,10 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/256gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 256GB Hellblau",
-"price": 785.0,
+"price": 773.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -56,7 +56,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/256gb-rosa": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 256GB Rosa",
 "price": 773.0,
@@ -67,10 +67,10 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 256GB Schwarz",
-"price": 848.0,
+"price": 846.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -78,7 +78,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/512gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 512GB Hellblau",
 "price": 892.0,
@@ -89,7 +89,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/512gb-rosa": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 512GB Rosa",
 "price": 880.0,
@@ -100,7 +100,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 512GB Schwarz",
 "price": 868.0,
@@ -111,18 +111,18 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro 256GB Gr\u00fcn",
 "price": 1049.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/google-pixel-11-pro-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro 512GB Schwarz ",
 "price": 1259.0,
@@ -133,10 +133,10 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-hellgrun": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro 256GB Hellgr\u00fcn",
-"price": 1065.0,
+"price": 955.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288
@@ -144,10 +144,10 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-rosa": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro 256GB Rosa",
-"price": 1057.0,
+"price": 972.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -155,7 +155,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro 256GB Schwarz",
 "price": 1045.0,
@@ -166,10 +166,10 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-xl-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro XL 256GB Schwarz",
-"price": 1145.0,
+"price": 1133.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -177,7 +177,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-xl-eu/256gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro XL 256GB Gr\u00fcn",
 "price": 1179.0,
@@ -188,7 +188,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-xl-eu/256gb-hellgrun": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro XL 256GB Hellgr\u00fcn",
 "price": 1225.0,
@@ -199,7 +199,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-xl-eu/512gb-hellgrun": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro XL 512GB Hellgr\u00fcn",
 "price": 1453.0,
@@ -210,7 +210,7 @@
 },
 "https://www.gomibo.de/google-pixel-11-pro-xl-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Google Pixel 11 Pro XL 512GB Schwarz",
 "price": 1453.0,
@@ -221,7 +221,7 @@
 },
 "https://www.gomibo.de/oppo-find-n5/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find N5 512GB Schwarz",
 "price": 1179.0,
@@ -232,7 +232,7 @@
 },
 "https://www.gomibo.de/oppo-find-n5/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find N5 512GB Wei\u00df",
 "price": 1169.0,
@@ -243,7 +243,7 @@
 },
 "https://www.gomibo.de/honor-magic-v5/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V5 16GB/512GB Schwarz",
 "price": 1113.0,
@@ -254,7 +254,7 @@
 },
 "https://www.gomibo.de/honor-magic-v5/512gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V5 16GB/512GB Gold",
 "price": 1123.0,
@@ -265,7 +265,7 @@
 },
 "https://www.gomibo.de/vivo-x300-pro/512gb-braun": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X300 Pro 16GB/512GB Braun",
 "price": 1065.0,
@@ -276,7 +276,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-pro/512gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Pro 16GB/512GB Grau",
 "price": 1208.0,
@@ -287,7 +287,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-pro/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Pro 16GB/512GB Wei\u00df",
 "price": 1178.0,
@@ -298,7 +298,7 @@
 },
 "https://www.gomibo.de/realme-gt-8-pro/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Realme GT 8 Pro 12GB/256GB Wei\u00df",
 "price": 708.0,
@@ -309,7 +309,7 @@
 },
 "https://www.gomibo.de/realme-gt-8-pro/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Realme GT 8 Pro 12GB/256GB Blau",
 "price": 669.0,
@@ -320,7 +320,7 @@
 },
 "https://www.gomibo.de/realme-gt-8-pro/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Realme GT 8 Pro 16GB/512GB Blau",
 "price": 729.0,
@@ -331,10 +331,10 @@
 },
 "https://www.gomibo.de/oneplus-15/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OnePlus 15 256GB Schwarz",
-"price": 1488.0,
+"price": 1444.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -342,10 +342,10 @@
 },
 "https://www.gomibo.de/oneplus-15/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OnePlus 15 512GB Schwarz",
-"price": 1319.0,
+"price": 1317.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -353,10 +353,10 @@
 },
 "https://www.gomibo.de/oneplus-15/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OnePlus 15 512GB Lila",
-"price": 1282.0,
+"price": 1279.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -364,10 +364,10 @@
 },
 "https://www.gomibo.de/oneplus-15/512gb-beige": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OnePlus 15 512GB Beige",
-"price": 1319.0,
+"price": 1317.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -375,7 +375,7 @@
 },
 "https://www.gomibo.de/honor-magic8-pro/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic8 Pro 512GB Schwarz",
 "price": 984.0,
@@ -386,7 +386,7 @@
 },
 "https://www.gomibo.de/honor-magic8-pro/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic8 Pro 512GB Blau",
 "price": 921.0,
@@ -397,10 +397,10 @@
 },
 "https://www.gomibo.de/honor-magic8-pro/512gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic8 Pro 512GB Gold",
-"price": 958.0,
+"price": 949.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -408,7 +408,7 @@
 },
 "https://www.gomibo.de/honor-magic8-pro/1tb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic8 Pro 1TB Gold",
 "price": 1051.0,
@@ -419,7 +419,7 @@
 },
 "https://www.gomibo.de/honor-magic8-pro/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic8 Pro 1TB Schwarz",
 "price": 1049.0,
@@ -430,7 +430,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Schwarz",
 "price": 699.0,
@@ -441,7 +441,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Hellblau",
 "price": 699.0,
@@ -452,7 +452,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Lila",
 "price": 709.0,
@@ -463,7 +463,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Hellblau",
 "price": 809.0,
@@ -474,18 +474,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Lila",
 "price": 825.0,
 "currency": "EUR",
-"available": false,
+"available": true,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Wei\u00df",
 "price": 814.0,
@@ -496,7 +496,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Schwarz",
 "price": 809.0,
@@ -507,7 +507,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Wei\u00df",
 "price": 699.0,
@@ -518,18 +518,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Gold",
 "price": 775.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/256gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 256GB Silber",
 "price": 749.0,
@@ -540,10 +540,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Gold",
-"price": 867.0,
+"price": 864.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288
@@ -551,10 +551,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/512gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 512GB Silber",
-"price": 850.0,
+"price": 848.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288
@@ -562,7 +562,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/128gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 128GB Schwarz",
 "price": 710.0,
@@ -573,7 +573,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-eu/128gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 128GB Lila",
 "price": 679.0,
@@ -584,10 +584,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Schwarz",
-"price": 1037.0,
+"price": 1048.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -595,7 +595,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Hellblau",
 "price": 1429.0,
@@ -606,18 +606,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Lila",
 "price": 1486.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Wei\u00df",
 "price": 1449.0,
@@ -628,7 +628,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Schwarz",
 "price": 1529.0,
@@ -639,10 +639,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Hellblau",
-"price": 997.0,
+"price": 1034.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -650,18 +650,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Lila",
 "price": 1067.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Wei\u00df",
 "price": 1031.0,
@@ -672,10 +672,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Hellblau",
-"price": 1149.0,
+"price": 1153.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -683,10 +683,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Lila",
-"price": 1158.0,
+"price": 1164.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -694,10 +694,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Wei\u00df",
-"price": 1149.0,
+"price": 1161.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -705,10 +705,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Schwarz",
-"price": 1149.0,
+"price": 1155.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -716,10 +716,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Gold",
-"price": 1118.0,
+"price": 1117.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -727,7 +727,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/256gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 256GB Silber",
 "price": 1058.0,
@@ -738,7 +738,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Gold",
 "price": 1249.0,
@@ -749,7 +749,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/512gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 512GB Silber",
 "price": 1160.0,
@@ -760,29 +760,29 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Silber",
 "price": 1443.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-ultra-eu/1tb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26 Ultra 1TB Gold",
 "price": 1435.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Schwarz",
 "price": 919.0,
@@ -793,7 +793,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Hellblau",
 "price": 898.0,
@@ -804,7 +804,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Lila",
 "price": 919.0,
@@ -815,10 +815,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Wei\u00df",
-"price": 919.0,
+"price": 908.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -826,7 +826,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-hellblau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 512GB Hellblau",
 "price": 1075.0,
@@ -837,10 +837,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 512GB Lila",
-"price": 1029.0,
+"price": 997.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -848,10 +848,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 512GB Schwarz",
-"price": 1049.0,
+"price": 1072.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -859,10 +859,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 512GB Wei\u00df",
-"price": 1019.0,
+"price": 995.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -870,7 +870,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Gold",
 "price": 929.0,
@@ -881,10 +881,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/256gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 256GB Silber",
-"price": 944.0,
+"price": 935.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288
@@ -892,21 +892,21 @@
 },
 "https://www.gomibo.de/samsung-galaxy-s26-plus-eu/512gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy S26+ 512GB Silber",
 "price": 997.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/xiaomi-17/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 512GB Schwarz",
-"price": 866.0,
+"price": 888.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -914,10 +914,10 @@
 },
 "https://www.gomibo.de/xiaomi-17/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 256GB Schwarz",
-"price": 776.0,
+"price": 778.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -925,7 +925,7 @@
 },
 "https://www.gomibo.de/xiaomi-17/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 512GB Blau",
 "price": 869.0,
@@ -936,10 +936,10 @@
 },
 "https://www.gomibo.de/xiaomi-17-ultra/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 Ultra 512GB Schwarz",
-"price": 1125.0,
+"price": 1126.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -947,7 +947,7 @@
 },
 "https://www.gomibo.de/xiaomi-17-ultra/512gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 Ultra 512GB Gr\u00fcn",
 "price": 1110.0,
@@ -958,7 +958,7 @@
 },
 "https://www.gomibo.de/xiaomi-17-ultra/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 Ultra 512GB Wei\u00df",
 "price": 1116.0,
@@ -969,7 +969,7 @@
 },
 "https://www.gomibo.de/xiaomi-17-ultra/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 Ultra 1TB Wei\u00df",
 "price": 1283.0,
@@ -980,7 +980,7 @@
 },
 "https://www.gomibo.de/xiaomi-17-ultra/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 Ultra 1TB Schwarz",
 "price": 1253.0,
@@ -991,10 +991,10 @@
 },
 "https://www.gomibo.de/oppo-find-n6/512gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find N6 512GB Silber",
-"price": 1710.0,
+"price": 1706.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1002,7 +1002,7 @@
 },
 "https://www.gomibo.de/oppo-find-n6/512gb-orange": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find N6 512GB Orange",
 "price": 1842.0,
@@ -1013,10 +1013,10 @@
 },
 "https://www.gomibo.de/motorola-razr-fold/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Motorola Razr Fold 512GB Schwarz",
-"price": 1336.0,
+"price": 1319.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1024,10 +1024,10 @@
 },
 "https://www.gomibo.de/motorola-razr-fold/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Motorola Razr Fold 512GB Wei\u00df",
-"price": 1478.0,
+"price": 1379.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1035,7 +1035,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-ultra/512gb-orange": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Ultra 512GB Orange",
 "price": 1479.0,
@@ -1046,7 +1046,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-ultra/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Ultra 512GB Schwarz",
 "price": 1478.0,
@@ -1057,7 +1057,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-ultra/1tb-orange": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Ultra 1TB Orange",
 "price": 1679.0,
@@ -1068,7 +1068,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9-ultra/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9 Ultra 1TB Schwarz",
 "price": 1739.0,
@@ -1079,10 +1079,10 @@
 },
 "https://www.gomibo.de/vivo-x300-ultra/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X300 Ultra 1TB Schwarz",
-"price": 1679.0,
+"price": 1656.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1090,7 +1090,7 @@
 },
 "https://www.gomibo.de/vivo-x300-ultra/512gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X300 Ultra 512GB Gr\u00fcn",
 "price": 1502.0,
@@ -1101,7 +1101,7 @@
 },
 "https://www.gomibo.de/vivo-x300-ultra/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X300 Ultra 512GB Schwarz",
 "price": 1517.0,
@@ -1112,7 +1112,7 @@
 },
 "https://www.gomibo.de/vivo-x300-ultra/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X300 Ultra 512GB Wei\u00df",
 "price": 1517.0,
@@ -1123,7 +1123,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-pro-de/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T Pro 512GB Blau",
 "price": 700.0,
@@ -1134,7 +1134,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-pro-de/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T Pro 512GB Lila",
 "price": 714.0,
@@ -1145,18 +1145,18 @@
 },
 "https://www.gomibo.de/xiaomi-17t-pro-de/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T Pro 512GB Schwarz",
 "price": 699.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/xiaomi-17t-pro-de/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T Pro 1TB Schwarz",
 "price": 875.0,
@@ -1167,10 +1167,10 @@
 },
 "https://www.gomibo.de/xiaomi-17t-de/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T 256GB Blau",
-"price": 516.0,
+"price": 524.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1178,7 +1178,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-de/256gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T 256GB Lila",
 "price": 503.0,
@@ -1189,7 +1189,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-de/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T 256GB Schwarz",
 "price": 525.0,
@@ -1200,7 +1200,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 512GB Schwarz",
 "price": 1499.0,
@@ -1211,7 +1211,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/512gb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 512GB Gold",
 "price": 1499.0,
@@ -1222,18 +1222,18 @@
 },
 "https://www.gomibo.de/honor-magic-v6/512gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 512GB Rot",
-"price": 1499.0,
+"price": 1537.0,
 "currency": "EUR",
-"available": false,
+"available": true,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/honor-magic-v6/1tb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 1TB Rot",
 "price": 1659.0,
@@ -1244,7 +1244,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/1tb-gold": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 1TB Gold",
 "price": 1674.0,
@@ -1255,7 +1255,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 1TB Wei\u00df",
 "price": 1664.0,
@@ -1266,7 +1266,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 512GB Wei\u00df",
 "price": 1536.0,
@@ -1277,10 +1277,10 @@
 },
 "https://www.gomibo.de/sony-xperia-1-viii/256gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Sony Xperia 1 VIII 256GB Rot",
-"price": 1569.0,
+"price": 1565.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1288,7 +1288,7 @@
 },
 "https://www.gomibo.de/sony-xperia-1-viii/256gb-silber": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Sony Xperia 1 VIII 256GB Silber",
 "price": 1560.0,
@@ -1299,10 +1299,10 @@
 },
 "https://www.gomibo.de/sony-xperia-1-viii/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Sony Xperia 1 VIII 256GB Schwarz",
-"price": 1580.0,
+"price": 1572.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1310,7 +1310,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/256gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 256GB Lila",
 "price": 1391.0,
@@ -1321,7 +1321,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 256GB Wei\u00df",
 "price": 1351.0,
@@ -1332,7 +1332,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 512GB Lila",
 "price": 1505.0,
@@ -1343,7 +1343,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 512GB Wei\u00df",
 "price": 1474.0,
@@ -1354,10 +1354,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 512GB Schwarz",
-"price": 1474.0,
+"price": 1521.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1365,7 +1365,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 256GB Schwarz",
 "price": 1372.0,
@@ -1376,7 +1376,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 1TB Schwarz",
 "price": 1779.0,
@@ -1387,18 +1387,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 1TB Gr\u00fcn",
 "price": 1859.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 1TB Lila",
 "price": 1719.0,
@@ -1409,7 +1409,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 1TB Wei\u00df",
 "price": 1719.0,
@@ -1420,7 +1420,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/256gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 256GB Gr\u00fcn",
 "price": 1483.0,
@@ -1431,18 +1431,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-eu/512gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 512GB Gr\u00fcn",
 "price": 1636.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 256GB Schwarz",
 "price": 1450.0,
@@ -1453,10 +1453,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-dunkelviolett": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 512GB Dunkelviolett",
-"price": 1630.0,
+"price": 1624.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1464,7 +1464,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/256gb-dunkelviolett": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 256GB Dunkelviolett",
 "price": 1407.0,
@@ -1475,7 +1475,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 256GB Wei\u00df",
 "price": 1375.0,
@@ -1486,7 +1486,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 512GB Wei\u00df",
 "price": 1636.0,
@@ -1497,10 +1497,10 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 512GB Schwarz",
-"price": 1662.0,
+"price": 1614.0,
 "currency": "EUR",
 "available": false,
 "ram_mb": 12288
@@ -1508,7 +1508,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 1TB Schwarz",
 "price": 1881.0,
@@ -1519,18 +1519,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 1TB Wei\u00df",
 "price": 1824.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 16384
 }
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 1TB Dunkelviolett",
 "price": 1879.0,
@@ -1541,7 +1541,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/1tb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 1TB Gr\u00fcn",
 "price": 1899.0,
@@ -1552,7 +1552,7 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/256gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 256GB Gr\u00fcn",
 "price": 1529.0,
@@ -1563,18 +1563,18 @@
 },
 "https://www.gomibo.de/samsung-galaxy-z-fold-8-ultra-eu/512gb-gruen": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Samsung Galaxy Z Fold 8 Ultra 512GB Gr\u00fcn",
 "price": 1639.0,
 "currency": "EUR",
-"available": true,
+"available": false,
 "ram_mb": 12288
 }
 },
 "https://www.gomibo.de/vivo-x-fold6/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X Fold6 12GB/512GB Schwarz",
 "price": 1904.0,
@@ -1585,10 +1585,10 @@
 },
 "https://www.gomibo.de/vivo-x-fold6/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X Fold6 12GB/512GB Blau",
-"price": 2029.0,
+"price": 1999.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1596,10 +1596,10 @@
 },
 "https://www.gomibo.de/motorola-razr-70-ultra/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Motorola Razr 70 Ultra 512GB Lila",
-"price": 1240.0,
+"price": 1174.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 16384
@@ -1607,7 +1607,7 @@
 },
 "https://www.gomibo.de/oppo-find-x10/256gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X10 12GB/256GB Grau",
 "price": 1181.0,
@@ -1618,7 +1618,7 @@
 },
 "https://www.gomibo.de/oppo-find-x10/512gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X10 12GB/512GB Grau",
 "price": 1379.0,
@@ -1629,7 +1629,7 @@
 },
 "https://www.gomibo.de/oppo-find-x10/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X10 12GB/512GB Blau",
 "price": 1379.0,
@@ -1640,7 +1640,7 @@
 },
 "https://www.gomibo.de/oppo-find-x10/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X10 12GB/256GB Blau",
 "price": 1169.0,
@@ -1651,7 +1651,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 256GB Wei\u00df",
 "price": 2299.0,
@@ -1662,7 +1662,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/2tb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 2TB Blau",
 "price": 3799.0,
@@ -1673,7 +1673,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/2tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 2TB Wei\u00df",
 "price": 3775.0,
@@ -1684,7 +1684,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/1tb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 1TB Blau",
 "price": 3049.0,
@@ -1695,7 +1695,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/1tb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 1TB Wei\u00df",
 "price": 3049.0,
@@ -1706,7 +1706,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 256GB Blau",
 "price": 2299.0,
@@ -1717,7 +1717,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 512GB Blau",
 "price": 2549.0,
@@ -1728,7 +1728,7 @@
 },
 "https://www.gomibo.de/apple-iphone-duo-eu/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Apple iPhone Duo 512GB Wei\u00df",
 "price": 2549.0,
@@ -1739,7 +1739,7 @@
 },
 "https://www.gomibo.de/xiaomi-17/512gb-rosa": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17 512GB Rosa",
 "price": 849.0,
@@ -1750,7 +1750,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro 12GB/256GB Schwarz",
 "price": 1326.0,
@@ -1761,10 +1761,10 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/512GB Schwarz",
-"price": 1611.0,
+"price": 1599.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1772,7 +1772,7 @@
 },
 "https://www.gomibo.de/honor-magic-v5/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V5 16GB/512GB Wei\u00df",
 "price": 1149.0,
@@ -1783,7 +1783,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/256gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/256GB Grau",
 "price": 1496.0,
@@ -1794,7 +1794,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/256GB Schwarz",
 "price": 1479.0,
@@ -1805,7 +1805,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-de/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T 512GB Schwarz ",
 "price": 584.0,
@@ -1816,7 +1816,7 @@
 },
 "https://www.gomibo.de/xiaomi-17t-de/512gb-lila": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 17T 512GB Lila",
 "price": 589.0,
@@ -1827,7 +1827,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro 12GB/256GB Wei\u00df",
 "price": 1326.0,
@@ -1838,10 +1838,10 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/512gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/512GB Grau",
-"price": 1654.0,
+"price": 1629.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1849,7 +1849,7 @@
 },
 "https://www.gomibo.de/vivo-x500-pro-max/512gb-orange": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 Pro Max 12GB/512GB Orange",
 "price": 1654.0,
@@ -1860,10 +1860,10 @@
 },
 "https://www.gomibo.de/vivo-x500/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 12GB/512GB Schwarz",
-"price": 1316.0,
+"price": 1299.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1871,10 +1871,10 @@
 },
 "https://www.gomibo.de/vivo-x500/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 12GB/512GB Wei\u00df",
-"price": 1316.0,
+"price": 1299.0,
 "currency": "EUR",
 "available": true,
 "ram_mb": 12288
@@ -1882,7 +1882,7 @@
 },
 "https://www.gomibo.de/honor-magic-v6/1tb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Honor Magic V6 1TB Schwarz",
 "price": 1669.0,
@@ -1893,7 +1893,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9s/512gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9s 512GB Grau",
 "price": 880.0,
@@ -1904,7 +1904,7 @@
 },
 "https://www.gomibo.de/oppo-find-x9s/512gb-orange": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "OPPO Find X9s 512GB Orange",
 "price": 880.0,
@@ -1915,7 +1915,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 256GB Blau",
 "price": 1399.0,
@@ -1926,7 +1926,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/512gb-bla": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 512GB Blau",
 "price": 1599.0,
@@ -1937,7 +1937,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/256gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 256GB Rot",
 "price": 1399.0,
@@ -1948,7 +1948,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/512gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 512GB Rot",
 "price": 1599.0,
@@ -1959,7 +1959,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 256GB Wei\u00df",
 "price": 1399.0,
@@ -1970,7 +1970,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 512GB Wei\u00df",
 "price": 1599.0,
@@ -1981,7 +1981,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 256GB Schwarz",
 "price": 1399.0,
@@ -1992,7 +1992,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-de/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro 512GB Schwarz",
 "price": 1599.0,
@@ -2003,7 +2003,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/256gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 256GB Schwarz",
 "price": 1599.0,
@@ -2014,7 +2014,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/256gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 256GB Blau",
 "price": 1599.0,
@@ -2025,7 +2025,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/256gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 256GB Rot",
 "price": 1599.0,
@@ -2036,7 +2036,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/256gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 256GB Wei\u00df",
 "price": 1599.0,
@@ -2047,7 +2047,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/512gb-schwarz": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 512GB Schwarz",
 "price": 1799.0,
@@ -2058,7 +2058,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/512gb-blau": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 512GB Blau",
 "price": 1799.0,
@@ -2069,7 +2069,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/512gb-weiss": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 512GB Wei\u00df",
 "price": 1799.0,
@@ -2080,7 +2080,7 @@
 },
 "https://www.gomibo.de/xiaomi-18-pro-max-de/512gb-rot": {
 "lastmod": "",
-"fetched": "2026-11-22T16:51:21+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "Xiaomi 18 Pro Max 512GB Rot",
 "price": 1799.0,
@@ -2091,7 +2091,7 @@
 },
 "https://www.gomibo.de/vivo-x500/512gb-grau": {
 "lastmod": "",
-"fetched": "2026-11-22T23:01:28+00:00",
+"fetched": "2026-11-23T15:26:50+00:00",
 "info": {
 "name": "vivo X500 12GB/512GB Grau",
 "price": 1307.0,

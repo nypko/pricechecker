@@ -14,7 +14,7 @@
    "Enjoy 4.5% discount by using local bank transfer payment. New!!! United Arab Emirates, New Zealand",
    "24% off"
   ],
-  "checked": "2026-11-22T17:00:52+00:00",
+  "checked": "2026-11-23T15:36:24+00:00",
   "errors": []
  },
  "mobilemarvel": {
@@ -29,7 +29,7 @@
    "2% summer sale at checkout - Auto Applied",
    "Bank Transfer 4.75% Off"
   ],
-  "checked": "2026-11-22T17:00:52+00:00",
+  "checked": "2026-11-23T15:36:24+00:00",
   "errors": [],
   "promo_active": true
  },
@@ -51,11 +51,13 @@
    "Purchased Honor Magic8 Pro Air with an amazing discount, i was just checking spontaneously model and",
    "Your voucher is active"
   ],
-  "checked": "2026-11-22T17:00:52+00:00",
+  "checked": "2026-11-23T15:36:24+00:00",
   "errors": []
  },
  "giztop": {
   "seen": [
+   "Black Friday Sale",
+   "Black Friday Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the b...",
    "Flash Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the big deals.",
    "Honor WIN RT-Black-12GB - 512GB ( Brand New, 35% Off )",
    "Realme Neo 8-Purple-12GB - 256GB (Brand New, Clearance, 30% off, )",
@@ -66,32 +68,29 @@
   ],
   "current": [
    "Save up with this Black Friday coupon code: BF2026 , save for the latest smartphones, tablets, earbuds, Hi-Fi, smart devices, etc. It's valid until November ...",
-   "Flash Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the big deals.",
+   "Black Friday Sale",
+   "Black Friday Sale at Giztop for the best Smartphones, Tablets, Laptops, Smart Home, Gaming gadgets at unbeatable prices. Limited quantity, never missed the b...",
    "SIGN UP & GET 5% OFF."
   ],
-  "checked": "2026-11-22T17:00:52+00:00",
-  "errors": [
-   "https://www.giztop.com/: Blocked"
-  ],
+  "checked": "2026-11-23T15:36:24+00:00",
+  "errors": [],
   "coupons": {
    "H2026": false
   }
  },
- "_checked": "2026-11-22T17:00:52+00:00",
+ "_checked": "2026-11-23T15:36:24+00:00",
  "averagedad": {
   "seen": [],
   "current": [],
-  "checked": "2026-11-22T17:00:52+00:00",
+  "checked": "2026-11-23T15:36:24+00:00",
   "errors": []
  },
  "gomibo": {
   "seen": [
    "Schnapp Dir Deinen Black Friday Deal"
   ],
-  "current": [
-   "Schnapp Dir Deinen Black Friday Deal"
-  ],
-  "checked": "2026-11-22T17:00:52+00:00",
+  "current": [],
+  "checked": "2026-11-23T15:36:24+00:00",
   "errors": []
  }
 }

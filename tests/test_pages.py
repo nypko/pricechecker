@@ -260,7 +260,10 @@ def test_home_sections(site_build):
     sorts = h[h.index('id="sorts"'):h.index('id="count"')]
     for label in (">Newest<", ">Biggest China saving<", ">Lowest price<", ">Dropped this week<"):
         assert label in sorts, label
-    n = h.count('data-block="home_row"')   # every phone is linked from the page; the first 20 show, then "Show all N"
+    # every phone is linked from the page: the first 20 as full rows, the rest as plain links home.js swaps for the
+    # full rows from the home-rows files; then "Show all N"
+    n = h.count('data-block="home_row"') + h.count('<li class="pair lite"')
+    assert h.count('data-block="home_row"') == 20
     assert n > 50 and 'id="list" data-cap="20"' in h and f">Show all {n} phones<" in h and f"{n} phones · lowest" in h
     assert "The stores, and what they cover" in h
     assert re.search(r'<div class="no-results" id="no-results" role="status" hidden>\s*<p id="nr-text">No phones match these filters\.</p>\s*<button[^>]*>Clear filters</button>', h)
@@ -308,16 +311,18 @@ def test_home_rows_carry_the_drop_mark(site_build):
     without = [m["id"] for m in meta if not m.get("drop")]
     assert with_drop and without
 
+    rows = h + _home_rest(site_build)
+
     def row(pid):
-        i = h.index(f'<li class="pair" data-block="home_row" data-id="{pid}">')
-        return h[i:h.index("</li>", i)]
+        i = rows.index(f'<li class="pair" data-block="home_row" data-id="{pid}">')
+        return rows[i:rows.index("</li>", i)]
 
     for pid in with_drop:
         assert row(pid).endswith('</a><span class="marks"><span class="mark drop">↓ this week</span></span>'), pid
     for pid in without:
         assert "class=\"marks\"" not in row(pid), pid
     assert '<ul class="pairs" id="list" data-cap="20"><' not in h and re.search(r'<ul class="pairs" id="list"[^>]*>\s*<li class="pair"', h)
-    assert h.count('class="mark drop"') == len(with_drop)
+    assert rows.count('class="mark drop"') == len(with_drop)
 
 
 # --- Task 7: specs pages ---
@@ -1217,6 +1222,31 @@ def _home_row(h, pid):
     return h[i:h.index("</li>", i)]
 
 
+def _home_rest(site_build):
+    """The full home rows past the first 20, from the home-rows files the page names in data-rest."""
+    h = _home(site_build)
+    files = json.loads(html.unescape(re.search(r"data-rest='([^']*)'", h).group(1)))
+    return "".join(json.loads((site_build / f).read_text())["html"] for f in files)
+
+
+def test_home_page_has_20_full_rows_and_a_link_for_every_other_phone(site_build):
+    """Budget: the page doesn't grow a full row (~1 KB) per phone. Rows past the first 20 are plain links on the page
+    (search engines and no-JavaScript visitors still reach every phone) and full rows in home-rows files of at most
+    data_files.BUDGET bytes each, drawn by the same macro as the page's, in the page's order."""
+    from pricechecker.site.data_files import BUDGET
+    h = _home(site_build)
+    ul = h[h.index('<ul class="pairs" id="list"'):]
+    ul = ul[:ul.index("</ul>")]
+    full = re.findall(r'<li class="pair" data-block="home_row" data-id="([^"]+)">', ul)
+    lite = re.findall(r'<li class="pair lite" data-id="([^"]+)"><a href="phones/\1">[^<]+</a></li>', ul)
+    assert len(full) == 20 and len(lite) > 30 and not set(full) & set(lite)
+    files = json.loads(html.unescape(re.search(r"data-rest='([^']*)'", h).group(1)))
+    assert files and all(re.fullmatch(r"data/v1/home-rows-\d+\.[0-9a-f]{10}\.json", f) for f in files)
+    assert all((site_build / f).stat().st_size <= BUDGET for f in files)
+    rest = _home_rest(site_build)
+    assert re.findall(r'<li class="pair" data-block="home_row" data-id="([^"]+)">', rest) == lite
+
+
 def _photos(monkeypatch, tmp_path, *pids):
     """Processed photo files for `pids` (only theirs) in tmp_path, and a photo entry in their spec sheets: a phone shows a
     photo when it has both (common.photo_of), whatever the real config/specs and static/phones hold."""
@@ -1300,10 +1330,12 @@ def test_home_drop_mark_and_teaser_on_made_up_drops():
 def test_home_in_a_week_without_drops_has_no_teaser_and_no_marks():
     from pricechecker.site.pages import drops, home
     data, phones, env, ctx, _ = _synthetic(2, 40, 14, (10, 10), (100, 100))   # drops 14 days ago: none this week
-    h = home.render(env, data, ctx, phones)["index.html"]
-    assert 'class="teaser"' not in h and 'class="mark drop"' not in h and "price drops this week" not in h
+    out = home.render(env, data, ctx, phones)
+    h = out["index.html"]
+    rows = h + "".join(json.loads(t)["html"] for k, t in out.items() if "/home-rows-" in k)
+    assert 'class="teaser"' not in h and 'class="mark drop"' not in rows and "price drops this week" not in h
     d = drops.render(env, data, ctx, phones)["drops.html"]
-    assert "No drops this week" in d and h.count('data-block="home_row"') > 50
+    assert "No drops this week" in d and rows.count('data-block="home_row"') > 50
 
 
 def test_settings_button_name_starts_with_its_visible_text(site_build):

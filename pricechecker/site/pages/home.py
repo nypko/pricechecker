@@ -2,13 +2,14 @@
 the default settings from the same rows the browser loads (data_files.home_offers, EU); static/js/home.js filters, sorts
 and, for other settings or a storage size, re-renders the rows from the region's home files with blocks.js. The page
 also embeds a small summary per phone (what the chips, sorts and storage list need) so they work without fetching."""
+import hashlib
 from collections import Counter
 
 from jinja2 import Environment
 
 from ... import derive
 from ..context import SiteData
-from ..data_files import home_offers
+from ..data_files import BUDGET, VERSION, _dump, home_offers
 from ..view import DEFAULT, best_of, gap
 from ..view import rows as view_rows
 from . import drops as drops_page
@@ -87,9 +88,29 @@ def page(data: SiteData, ctx: dict, phones: list[dict]) -> dict:
             "store_pages": {s["name"] for s in ctx["stores"] if (s["part_of"] or s["name"]) in pages}}
 
 
+def rest_files(env: Environment, v: dict) -> dict[str, str]:
+    """The rows after the first v["first"], drawn as on the page, in data/v1/home-rows-<n>.<hash>.json files of at most
+    BUDGET bytes each ({"html": rows}): home.js loads them when the browser is idle, or at once for "Show all", a
+    search or a sort. Keeps the page from growing a full row (~1 KB) per phone."""
+    macro = env.from_string('{% import "_d/home_rows.html" as hr %}{{ hr.rows(v, ps, s) }}')
+    parts: list[str] = [""]
+    for p in v["ordered"][v["first"]:]:
+        row = macro.render(v=v, ps=[p], s=v["s"])
+        if parts[-1] and len(_dump({"html": parts[-1] + row})) > BUDGET:
+            parts.append("")
+        parts[-1] += row
+    out = {}
+    for n, html in enumerate((x for x in parts if x), 1):
+        body = _dump({"html": html})
+        out[f"data/{VERSION}/home-rows-{n}.{hashlib.sha256(body).hexdigest()[:10]}.json"] = body.decode()
+    return out
+
+
 def render(env: Environment, data: SiteData, ctx: dict, phones: list[dict]) -> dict[str, str]:
     v = page(data, ctx, phones)
-    return {"index.html": env.get_template("index.html").render(v=v, root="", path="", **ctx),
+    rest = rest_files(env, v)
+    v["rest"] = list(rest)
+    return {**rest, "index.html": env.get_template("index.html").render(v=v, root="", path="", **ctx),
             # a real 404 (Cloudflare Pages serves /404.html with status 404), so a mistyped address isn't indexed as a page
             "404.html": env.get_template("404.html").render(root="/", path="404", **ctx)}
 

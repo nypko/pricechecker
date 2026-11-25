@@ -1,0 +1,9 @@
+{#- The home list's rows for the default settings (pages/home.py): the first v.first are in index.html, the rest in the
+    home-rows data files home.js loads (so the page doesn't grow by a full row per phone). One macro for both, so a row
+    reads the same wherever it was drawn. -#}
+{%- import "_d/blocks.html" as b -%}
+{%- macro rows(v, ps, s) -%}
+{%- for p in ps %}
+    {{ b.home_row(v.meta_of[p.id], v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}, "", [{"kind": "drop", "text": "↓ this week"}] if p.id in v.drops else []) }}
+{%- endfor %}
+{%- endmacro -%}

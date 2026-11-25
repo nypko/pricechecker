@@ -103,6 +103,16 @@ function wire(root) {
   const stock = new Map(phones.map((p) => [p.id, p.s || {}]));   // the server's default-settings summaries
   const dflt = new Map([...list.children].map((li) => [li.dataset.id, li]));   // and its rows
   let els = dflt, seq = 0, note = "";
+
+  // ---- past the first rows the page has plain links (li.lite); the full rows come from the home-rows files ----
+  const rest = json(root.dataset.rest, []);
+  let restP = null;
+  const loadRest = () => restP || (restP = Promise.all(rest.map(getJson)).then((docs) => {
+    const tpl = document.createElement("template");
+    tpl.innerHTML = docs.map((d) => d.html).join("");
+    tpl.content.querySelectorAll("li[data-id]").forEach((li) => dflt.set(li.dataset.id, li));
+  }).catch((e) => { restP = null; throw e; }));
+  const lite = (ids) => els === dflt && ids.some((id) => dflt.get(id)?.classList.contains("lite"));
   const S = { chip: "all", brand: "", sort: "new", rom: "", q: "", all: false };
 
   // ---- the region's home parts (all of them, in parallel) and the tax file; a failed load is forgotten so the next try fetches again ----
@@ -133,6 +143,9 @@ function wire(root) {
     const keep = new Set(filterRows(phones, { chip: S.chip, brand: S.brand, storage: S.rom, q: S.q, watched: watched() }));
     const ids = order.filter((id) => keep.has(id));
     const vis = S.all || S.q ? ids : ids.slice(0, FIRST);
+    // a plain-link row asked for (Show all, a search, a sort): draw again once the full rows are in; offline, the
+    // links stay, which still lead to every phone
+    if (lite(vis)) loadRest().then(render, () => {});
     list.removeAttribute("data-cap");
     const w = watched();
     list.replaceChildren(...vis.map((id) => els.get(id)).filter(Boolean));
@@ -220,6 +233,9 @@ function wire(root) {
   if (qp) { q.value = qp; setQ(qp); } else render();
   if (qp || params.has("q") || location.hash === "#search") q.focus({ preventScroll: !!qp });
   if (!isDefault(load())) apply();
+  // the rest of the rows once the page is idle (a few KB gzipped), so Show all, a search or a sort draws at once
+  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
+  if (rest.length) idle(() => { loadRest().catch(() => {}); });
 }
 
 if (typeof document !== "undefined") {

@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% import "_d/blocks.html" as b %}
 {% import "_d/top.html" as top with context %}
-{#- Spec §5.1. Every phone row is the home_row block rendered for the default settings from v.rows (pages/home.py);
-    static/js/home.js filters, sorts and, for other settings or a storage size, re-renders the same block with
+{% import "_d/home_rows.html" as hr %}
+{#- Spec §5.1. Every phone row is the home_row block rendered for the default settings from v.rows (pages/home.py):
+    the first v.first here, the rest as plain links that home.js swaps for the full rows from the home-rows files
+    (v.rest). home.js filters, sorts and, for other settings or a storage size, re-renders the same block with
     blocks.js from the region's home files. #}
 {% block main %}
 {%- set connected = stores|rejectattr("ok", "none")|list -%}
 {%- set s = v.s -%}
 {%- set L = {"china": "China", "global": "Global"} -%}
-<div class="wrap home" id="home" data-files='{{ v.files|tojson }}' data-tax="{{ v.tax_file }}">
+<div class="wrap home" id="home" data-files='{{ v.files|tojson }}' data-tax="{{ v.tax_file }}" data-rest='{{ v.rest|tojson }}'>
   {{ top.home_intro(stores, updated, updated_label, root) }}
   {%- if v.n_drops %}
   <a class="teaser" href="drops">
@@ -32,8 +34,11 @@
     <button type="button" id="nr-clear" data-clear="filters">Clear filters</button>
   </div>
   <ul class="pairs" id="list" data-cap="{{ v.first }}">
-  {%- for p in v.ordered %}
-    {{ b.home_row(v.meta_of[p.id], v.rows[p.id], s, {"china": p.ed_label.china, "global": p.ed_label.global}, "", [{"kind": "drop", "text": "↓ this week"}] if p.id in v.drops else []) }}
+  {{- hr.rows(v, v.ordered[:v.first], s) }}
+  {#- past the first rows, a plain link per phone (what search engines and visitors without JavaScript get); home.js
+      puts the full rows from v.rest in their place -#}
+  {%- for p in v.ordered[v.first:] %}
+    <li class="pair lite" data-id="{{ p.id }}"><a href="phones/{{ p.slug }}">{{ p.name }}</a></li>
   {%- endfor %}
   </ul>
   <button class="showall js-only" type="button" id="showall"{% if v.ordered|length <= v.first %} hidden{% endif %}>Show all {{ v.ordered|length }} phones</button>

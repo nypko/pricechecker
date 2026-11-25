@@ -535,6 +535,7 @@ details.explain summary { cursor: pointer; min-height: 48px; display: flex; alig
 /* home page (templates/index.html, static/js/home.js) */
 .no-js .js-only { display: none; }
 html:not(.no-js) .pairs[data-cap] li:nth-child(n+21) { display: none; }   /* until home.js has run: the first rows only */
+.pairs .lite a { font: 600 1.05rem/1.2 var(--serif); }   /* past the first rows, a plain link until home.js swaps in the full row */
 .home .for { margin: 2px 0 6px; }
 .home .opts { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; margin-bottom: 6px; }
 .home .opts .sorts { margin: 0; }

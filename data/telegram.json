@@ -10,7 +10,7 @@
   },
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2797.39
+   "ref": 2620.45
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -38,7 +38,7 @@
   },
   "honor-magic-8-pro": {
    "left": "",
-   "ref": 945.07
+   "ref": 888.61
   },
   "honor-magic-8-pro-air": {
    "left": "import tax",
@@ -62,11 +62,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1454.79
+   "ref": 1364.77
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1769.37
+   "ref": 1658.53
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -78,7 +78,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1198.03
+   "ref": 1123.81
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -90,15 +90,15 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1664.51
+   "ref": 1560.61
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2272.11
+   "ref": 2128.93
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1998.69
+   "ref": 1872.61
   },
   "huawei-mate-x8": {
    "left": "shipping and import tax",
@@ -106,11 +106,11 @@
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3830.31
+   "ref": 3586.21
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1431.27
+   "ref": 1341.73
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -126,23 +126,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1128.45
+   "ref": 1059.49
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 954.99
+   "ref": 896.29
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1102.97
+   "ref": 1035.49
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1769.37
+   "ref": 1658.53
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1128.45
+   "ref": 1059.49
   },
   "iqoo-15": {
    "left": "",
@@ -174,7 +174,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1115.71
+   "ref": 1047.01
   },
   "oppo-find-n5": {
    "left": "",
@@ -296,6 +296,126 @@
     "eur": 1480.45,
     "slug": "sony-xperia-1-viii",
     "was": 1563.95
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 3586.21,
+    "slug": "huawei-mate-xt-2-ultimate-design",
+    "was": 3830.31
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 2620.45,
+    "slug": "apple-iphone-duo",
+    "was": 2797.39
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1872.61,
+    "slug": "huawei-mate-x7",
+    "was": 1998.69
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 2128.93,
+    "slug": "huawei-mate-90-rs",
+    "was": 2272.11
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1658.53,
+    "slug": "honor-robot-phone",
+    "was": 1769.37
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1658.53,
+    "slug": "huawei-pura-x-max",
+    "was": 1769.37
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1341.73,
+    "slug": "huawei-pura-80-ultra",
+    "was": 1431.27
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1560.61,
+    "slug": "huawei-mate-90-pro-max",
+    "was": 1664.51
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1143.01,
+    "slug": "redmagic-12-pro-plus",
+    "was": 1218.61
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1123.81,
+    "slug": "huawei-mate-80-pro-max",
+    "was": 1198.03
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1364.77,
+    "slug": "honor-magic-v6",
+    "was": 1454.79
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1047.01,
+    "slug": "oneplus-16",
+    "was": 1115.71
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 896.29,
+    "slug": "huawei-pura-90s-pro",
+    "was": 954.99
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 962.53,
+    "slug": "vivo-x300-fe",
+    "was": 1025.55
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1035.49,
+    "slug": "huawei-pura-90s-pro-max",
+    "was": 1102.97
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1059.49,
+    "slug": "huawei-pura-x-view",
+    "was": 1128.45
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1059.49,
+    "slug": "huawei-pura-90-pro-max",
+    "was": 1128.45
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 872.29,
+    "slug": "xiaomi-mix-flip-2",
+    "was": 928.53
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 888.61,
+    "slug": "honor-magic-8-pro",
+    "was": 945.07
+   },
+   {
+    "at": "2026-11-25T22:30:54Z",
+    "eur": 1423.33,
+    "slug": "sony-xperia-1-viii",
+    "was": 1480.45
    }
   ],
   "realme-gt-8-pro": {
@@ -304,7 +424,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1218.61
+   "ref": 1143.01
   },
   "redmi-k100-pro": {
    "left": "",
@@ -344,7 +464,7 @@
   },
   "sony-xperia-1-viii": {
    "left": "",
-   "ref": 1480.45
+   "ref": 1423.33
   },
   "vivo-x-fold-6": {
    "left": "",
@@ -356,7 +476,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 1025.55
+   "ref": 962.53
   },
   "vivo-x300-pro": {
    "left": "",
@@ -428,8 +548,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 928.53
+   "ref": 872.29
   }
  },
- "updated": "2026-11-25T22:02:52Z"
+ "updated": "2026-11-25T22:31:00Z"
 }

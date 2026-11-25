@@ -30,7 +30,7 @@
   },
   "honor-magic-8-pro": {
    "left": "",
-   "ref": 942.25
+   "ref": 945.07
   },
   "honor-magic-8-pro-air": {
    "left": "import tax",
@@ -50,7 +50,7 @@
   },
   "honor-magic-v5": {
    "left": "",
-   "ref": 1114.95
+   "ref": 1124.95
   },
   "honor-magic-v6": {
    "left": "",
@@ -198,12 +198,6 @@
   },
   "posted": [
    {
-    "at": "2026-11-11T07:23:51Z",
-    "eur": 1143.95,
-    "slug": "honor-magic-v5",
-    "was": 1217.3
-   },
-   {
     "at": "2026-11-13T02:24:44Z",
     "eur": 1112.95,
     "slug": "honor-magic-v5",
@@ -274,6 +268,12 @@
     "eur": 1175.95,
     "slug": "motorola-razr-70-ultra",
     "was": 1277.95
+   },
+   {
+    "at": "2026-11-25T09:29:02Z",
+    "eur": 670.95,
+    "slug": "samsung-galaxy-s26",
+    "was": 700.95
    }
   ],
   "realme-gt-8-pro": {
@@ -298,11 +298,11 @@
   },
   "samsung-galaxy-s26": {
    "left": "",
-   "ref": 700.95
+   "ref": 670.95
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
-   "ref": 899.95
+   "ref": 904.95
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
@@ -405,5 +405,5 @@
    "ref": 928.53
   }
  },
- "updated": "2026-11-25T00:05:55Z"
+ "updated": "2026-11-25T09:29:02Z"
 }

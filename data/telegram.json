@@ -1,5 +1,13 @@
 {
  "phones": {
+  "apple-iphone-18-pro": {
+   "left": "",
+   "ref": 1420.95
+  },
+  "apple-iphone-18-pro-max": {
+   "left": "",
+   "ref": 1550.95
+  },
   "apple-iphone-duo": {
    "left": "",
    "ref": 2797.39
@@ -45,8 +53,8 @@
    "ref": 987.0
   },
   "honor-magic-9-super": {
-   "left": "import tax",
-   "ref": 744.45
+   "left": "",
+   "ref": 707.0
   },
   "honor-magic-v5": {
    "left": "",
@@ -92,6 +100,10 @@
    "left": "",
    "ref": 1998.69
   },
+  "huawei-mate-x8": {
+   "left": "shipping and import tax",
+   "ref": 2279.59
+  },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
    "ref": 3830.31
@@ -103,6 +115,10 @@
   "huawei-pura-90": {
    "left": "import tax",
    "ref": 762.9
+  },
+  "huawei-pura-90-plus": {
+   "left": "import tax",
+   "ref": 993.52
   },
   "huawei-pura-90-pro": {
    "left": "import tax",
@@ -274,6 +290,12 @@
     "eur": 670.95,
     "slug": "samsung-galaxy-s26",
     "was": 700.95
+   },
+   {
+    "at": "2026-11-25T22:02:46Z",
+    "eur": 1480.45,
+    "slug": "sony-xperia-1-viii",
+    "was": 1563.95
    }
   ],
   "realme-gt-8-pro": {
@@ -302,11 +324,15 @@
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
-   "ref": 904.95
+   "ref": 909.95
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
    "ref": 1032.95
+  },
+  "samsung-galaxy-z-flip-8": {
+   "left": "",
+   "ref": 868.95
   },
   "samsung-galaxy-z-fold-8": {
    "left": "",
@@ -314,11 +340,11 @@
   },
   "samsung-galaxy-z-fold-8-ultra": {
    "left": "",
-   "ref": 1388.95
+   "ref": 1400.95
   },
   "sony-xperia-1-viii": {
    "left": "",
-   "ref": 1563.95
+   "ref": 1480.45
   },
   "vivo-x-fold-6": {
    "left": "",
@@ -405,5 +431,5 @@
    "ref": 928.53
   }
  },
- "updated": "2026-11-25T20:00:29Z"
+ "updated": "2026-11-25T22:02:52Z"
 }

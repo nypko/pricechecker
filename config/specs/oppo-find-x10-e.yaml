@@ -1,0 +1,16 @@
+# Key specs shown on the phone page. Copied from Oppo's China spec page (see sources below), checked 2026-11-25.
+# A field the page does not give is left out rather than guessed. Battery is the typical capacity (rated 6,840 mAh);
+# 50 W wireless. China model PNA110; oppo.com/en has no Find X10 E page.
+id: oppo-find-x10-e
+sources:
+  china: {url: https://www.oppo.com/cn/smartphones/series-find-x/find-x10-e/specs/, checked: 2026-11-25, lang: Chinese}
+key:
+  chip: "Dimensity 9500s"
+  screen: 6.59
+  battery: "7,025 mAh"
+  charging: "80 W"
+bands:
+  china:
+    lte: [1, 2, 3, 4, 5, 7, 8, 18, 19, 25, 26, 28, 66, 34, 38, 39, 40, 41, 42, 43, 48]
+    nr: [1, 2, 3, 5, 7, 8, 18, 25, 26, 28, 34, 38, 39, 40, 41, 48, 66, 77, 78]
+photo: {url: "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x10-series-cn/find-x10-e/listpage/480-600-white.png", page: "https://www.oppo.com/cn/smartphones/", checked: 2026-11-25}

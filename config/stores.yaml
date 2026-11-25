@@ -30,7 +30,7 @@ stores:
         paypal: {fee_pct: 0}
         card: {fee_pct: 0, note: "No handling fee; your bank may charge foreign-transaction fees"}
       shipping:
-        EU: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
+        EU: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026). Returns: 14 days for EU buyers (7 elsewhere), per Wonda's EU returns page."}
         UK: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties/VAT not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
         US: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days; duties not stated. Buyers report: Global Priority usually arrives with no customs or VAT, DHL deliveries often do get charged (XDA forums, Trustpilot, 2026)"}
         CA: {days: [12, 15], cost: 0, note: "Free basic shipping, 12-15 business days (policy names no countries); duties and GST/HST not stated - you may pay them on delivery. Bank transfer isn't offered in CAD"}
@@ -39,10 +39,11 @@ stores:
       watch:   # re-checked daily; if the text disappears the site flags the terms as "needs review"
         - {url: "https://wondamobile.com/pages/billing-information", expect: "4\\.5% discount"}
         - {url: "https://wondamobile.com/policies/shipping-policy", expect: "free basic shipping"}
+        - {url: "https://wondamobile.com/pages/return-and-exchange-eu", expect: "14 days \\(EU only\\)"}   # EU returns (2026-11-25)
     affiliate_link: "{url}{sep}ref={id}"   # referral link from the dashboard: https://www.wondamobile.com?ref=ivaylo_kirov
     affiliate_id: ivaylo_kirov
     google_play: "Installs Google Play, Gmail and Contacts before shipping"   # wondamobile.com/pages/about-us-wonda-mobile, checked 2026-10-20
-    trust: {reviews: {score: 4.8, count: 3377, source: Trustpilot, url: "https://www.trustpilot.com/review/wondamobile.com"}, warranty_months: 12, returns_days: 7, checked: 2026-10-19}   # "up to 12 months warranty" (warranty policy); 7 days from arrival (refund policy)
+    trust: {reviews: {score: 4.8, count: 3377, source: Trustpilot, url: "https://www.trustpilot.com/review/wondamobile.com"}, warranty_months: 12, returns_days: 7, checked: 2026-10-19}   # "up to 12 months warranty" (warranty policy); 7 days from arrival (refund policy); 14 days for EU buyers (/pages/return-and-exchange-eu, 2026-11-25: in the EU shipping note)
 
   mobilemarvel:
     label: The Mobile Marvel
@@ -212,9 +213,10 @@ stores:
   giztop:
     label: Giztop
     mentions: ["giztop"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
-    type: magento         # walks the phone category, then reads variant prices from each tracked phone's page
+    type: magento         # the phone category's first page + tracked phones' pages from the sitemap; variant prices from each page
     base_url: https://www.giztop.com
-    categories: [/phones.html]
+    categories: [/phones.html]   # first page only: robots.txt disallows /*?p= (checked 2026-11-25)
+    sitemap_url: https://www.giztop.com/sitemap.xml   # read once a day (four ~10 MB files); data/giztop_sitemap.json keeps the phone pages
     exclude_title: "almost new|used|refurbished|open box"
     aliases: {xiaomi-17-ultra-by-leica: xiaomi-17-ultra-leica-edition,
               honor-magic-9-super-power-edition: honor-magic-9-super}   # Honor sells the Super as "Power Edition" in China (11,000 mAh)

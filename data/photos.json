@@ -375,6 +375,14 @@
   "src_sha256": "6c8fa9684fb236f5d9e0c3668e1dc27182817604eddbad746999135f47aaa809",
   "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x10-series-en/list-page/find-x10/480-600-blue.png"
  },
+ "oppo-find-x10-e": {
+  "files": {
+   "m": "2468732e26",
+   "s": "e50459b513"
+  },
+  "src_sha256": "d734c76b4e91087b92b6ae17444fcef401a43a23baa8ce2bf3e61d4f73b55293",
+  "url": "https://www.oppo.com/content/dam/oppo_com/common/mkt/v2-2/find-x10-series-cn/find-x10-e/listpage/480-600-white.png"
+ },
  "oppo-find-x10-pro-max": {
   "files": {
    "m": "b25d6998c5",

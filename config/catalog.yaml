@@ -58,6 +58,9 @@ phones:
   - {id: oppo-find-n6, edition: global, name: "Oppo Find N6", announced: 2026-03-17}
   - {id: oppo-find-x10, edition: china, name: "Oppo Find X10", announced: 2026-09-22}
   - {id: oppo-find-x10-pro-max, edition: china, name: "Oppo Find X10 Pro Max", announced: 2026-09-22}
+  # added 2026-11-25: the third Find X10, launched with it on 22 Sep 2026 (GSMArena, PhoneArena): Dimensity 9500s, a tier
+  # below the Find X10. China model PNA110; Giztop ("Find X10 E") and Average Dad ("Find X10E") list it.
+  - {id: oppo-find-x10-e, edition: china, name: "Oppo Find X10 E", announced: 2026-09-22, also: [oppo-find-x10e]}
   - {id: oppo-find-x9-pro, edition: china, name: "Oppo Find X9 Pro", announced: 2025-10-16}
   - {id: oppo-find-x9-ultra, edition: china, name: "Oppo Find X9 Ultra", announced: 2026-04-21}
   - {id: oppo-find-x9-ultra, edition: global, name: "Oppo Find X9 Ultra", announced: 2026-04-21}

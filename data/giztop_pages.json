@@ -1,7 +1,9 @@
 {
 "https://www.giztop.com/xiaomi-18-pro-max.html": {
+"name": "Xiaomi 18 Pro Max",
+"lastmod": "2026-11-24T02:13:57+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -75,8 +77,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-9-pro-max.html": {
+"name": "Honor Magic 9 Pro Max",
+"lastmod": "2026-10-20T01:34:32+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -130,8 +134,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x500-pro-max.html": {
+"name": "Vivo X500 Pro Max",
+"lastmod": "2026-10-22T16:53:50+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -229,8 +235,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x10-pro-max.html": {
+"name": "OPPO Find X10 Pro Max",
+"lastmod": "2026-10-22T15:59:07+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -284,8 +292,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-fold.html": {
+"name": "Xiaomi 18 Fold",
+"lastmod": "2026-11-24T07:00:46+00:00",
 "low": 1799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -339,8 +349,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9-ultra-global.html": {
+"name": "OPPO Find X9 Ultra Global",
+"lastmod": "2026-11-19T08:20:56+00:00",
 "low": 1599.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -358,8 +370,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-90.html": {
+"name": "Huawei Mate 90",
+"lastmod": "2026-10-02T03:08:49+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -413,8 +427,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-90-pro.html": {
+"name": "Huawei Mate 90 Pro",
+"lastmod": "2026-10-02T03:35:48+00:00",
 "low": 1299.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -472,8 +488,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-90-pro-max.html": {
+"name": "Huawei Mate 90 Pro Max",
+"lastmod": "2026-10-02T02:06:08+00:00",
 "low": 1399.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -511,8 +529,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-9.html": {
+"name": "Honor Magic 9",
+"lastmod": "2026-09-28T21:26:26+00:00",
 "low": 939.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -582,8 +602,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-pro-max-transparent-16gb-1tb.html": {
+"name": "Xiaomi 18 Pro Max-Transparent-16GB - 1TB",
+"lastmod": "2026-11-02T07:24:40+00:00",
 "low": 1799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/1024",
@@ -593,8 +615,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x500.html": {
+"name": "Vivo X500",
+"lastmod": "2026-09-22T01:51:21+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -648,8 +672,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x10.html": {
+"name": "OPPO Find X10",
+"lastmod": "2026-09-28T06:33:26+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -699,8 +725,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-x-view.html": {
+"name": "HUAWEI Pura X View",
+"lastmod": "2026-10-13T02:56:22+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -746,8 +774,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-pro.html": {
+"name": "Xiaomi 18 Pro",
+"lastmod": "2026-11-24T02:35:17+00:00",
 "low": 849.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -771,7 +801,7 @@
 ],
 [
 "16/1024",
-1279.0
+1199.0
 ],
 [
 "12/256",
@@ -817,8 +847,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x-fold-6.html": {
+"name": "Vivo X Fold 6",
+"lastmod": "2026-09-18T07:38:11+00:00",
 "low": 1299.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -876,8 +908,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-max.html": {
+"name": "Xiaomi 17 Max",
+"lastmod": "2026-05-22T02:10:29+00:00",
 "low": 749.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -931,8 +965,10 @@
 "available": true
 },
 "https://www.giztop.com/motorola-moto-razr-fold.html": {
+"name": "Motorola Moto Razr Fold",
+"lastmod": "2026-05-20T06:46:48+00:00",
 "low": 1799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -962,8 +998,10 @@
 "available": true
 },
 "https://www.giztop.com/motorola-moto-razr-70-ultra.html": {
+"name": "Motorola Moto Razr 70 Ultra",
+"lastmod": "2026-05-28T09:20:22+00:00",
 "low": 1359.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -993,8 +1031,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x500-pro.html": {
+"name": "Vivo X500 Pro",
+"lastmod": "2026-09-22T12:36:14+00:00",
 "low": 1199.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1080,8 +1120,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-x-max.html": {
+"name": "HUAWEI Pura X Max",
+"lastmod": "2026-09-22T10:17:00+00:00",
 "low": 1999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1127,8 +1169,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-90-pro-max.html": {
+"name": "Huawei Pura 90 Pro Max",
+"lastmod": "2026-07-30T08:57:51+00:00",
 "low": 1199.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1214,8 +1258,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-90-pro.html": {
+"name": "Huawei Pura 90 Pro",
+"lastmod": "2026-07-30T09:03:10+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1269,8 +1315,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9-ultra-global-black-16gb-1tb.html": {
+"name": "OPPO Find X9 Ultra Global-Black-16GB - 1TB",
+"lastmod": "2026-11-12T06:17:12+00:00",
 "low": 1799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/1024",
@@ -1280,8 +1328,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9-ultra-black-12gb-256gb.html": {
+"name": "OPPO Find X9 Ultra-Black-12GB - 256GB",
+"lastmod": "2026-07-02T21:41:27+00:00",
 "low": 1149.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1291,8 +1341,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9s-pro.html": {
+"name": "OPPO Find X9s Pro",
+"lastmod": "2026-06-26T06:45:55+00:00",
 "low": 799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1362,8 +1414,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9-ultra.html": {
+"name": "OPPO Find X9 Ultra",
+"lastmod": "2026-07-30T03:22:08+00:00",
 "low": 1149.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -1413,8 +1467,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-n6-black-16gb-512gb.html": {
+"name": "OPPO Find N6-Black-16GB - 512GB (Brand New, Clearance, 15% off, )",
+"lastmod": "2026-11-05T09:13:55+00:00",
 "low": 1499.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -1424,8 +1480,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-ultra-by-leica-edition-black-silver.html": {
+"name": "Xiaomi 17 Ultra By Leica",
+"lastmod": "2026-08-27T06:05:20+00:00",
 "low": 1249.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "base",
@@ -1435,8 +1493,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-v6.html": {
+"name": "Honor Magic V6",
+"lastmod": "2026-04-15T03:28:14+00:00",
 "low": 1499.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1490,8 +1550,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-n6.html": {
+"name": "OPPO Find N6",
+"lastmod": "2026-10-12T23:41:34+00:00",
 "low": 1399.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1533,8 +1595,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300-ultra.html": {
+"name": "Vivo X300 Ultra",
+"lastmod": "2026-08-03T06:57:52+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1584,8 +1648,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-8-pro-air.html": {
+"name": "Honor Magic 8 Pro Air",
+"lastmod": "2026-02-04T08:39:08+00:00",
 "low": 729.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -1623,8 +1689,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-80-pro-max.html": {
+"name": "Huawei Mate 80 Pro Max",
+"lastmod": "2026-10-01T08:03:27+00:00",
 "low": 1499.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -1662,8 +1730,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-80-pro.html": {
+"name": "Huawei Mate 80 Pro",
+"lastmod": "2026-01-29T05:29:08+00:00",
 "low": 1099.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1733,8 +1803,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-80.html": {
+"name": "Huawei Mate 80",
+"lastmod": "2026-08-17T01:42:10+00:00",
 "low": 839.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -1772,8 +1844,10 @@
 "available": true
 },
 "https://www.giztop.com/oneplus-15-titanium-16gb-1tb.html": {
+"name": "OnePlus 15-Titanium-16GB - 1TB",
+"lastmod": "2026-09-25T01:46:08+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/1024",
@@ -1783,8 +1857,10 @@
 "available": true
 },
 "https://www.giztop.com/oneplus-15-titanium-12gb-256gb.html": {
+"name": "OnePlus 15-Titanium-12GB - 256GB",
+"lastmod": "2026-11-11T00:54:47+00:00",
 "low": 799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1794,8 +1870,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-8-pro-white-12gb-512gb.html": {
+"name": "Honor Magic 8 Pro-White-12GB - 512GB",
+"lastmod": "2026-09-15T01:15:54+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -1805,8 +1883,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-pro-max.html": {
+"name": "Xiaomi 17 Pro Max",
+"lastmod": "2026-10-13T14:49:59+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -1864,8 +1944,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9-pro.html": {
+"name": "OPPO Find X9 Pro",
+"lastmod": "2026-08-24T04:08:48+00:00",
 "low": 879.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1915,8 +1997,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-pro.html": {
+"name": "Xiaomi 17 Pro",
+"lastmod": "2026-08-05T04:26:36+00:00",
 "low": 849.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -1986,8 +2070,10 @@
 "available": true
 },
 "https://www.giztop.com/oneplus-15.html": {
+"name": "OnePlus 15 Global",
+"lastmod": "2026-11-10T22:44:43+00:00",
 "low": 799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2041,8 +2127,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-ultra.html": {
+"name": "Xiaomi 17 Ultra",
+"lastmod": "2026-04-24T06:57:09+00:00",
 "low": 999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -2108,8 +2196,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300-pro.html": {
+"name": "Vivo X300 Pro",
+"lastmod": "2026-11-12T07:44:56+00:00",
 "low": 849.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2163,8 +2253,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-80-ultra.html": {
+"name": "Huawei Pura 80 Ultra",
+"lastmod": "2025-07-30T11:07:25+00:00",
 "low": 1999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -2186,8 +2278,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-n5-global-edition-black-16gb-512gb.html": {
+"name": "OPPO Find N5 Global Edition-Black-16GB - 512GB",
+"lastmod": "2026-09-28T07:04:26+00:00",
 "low": 1199.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -2197,8 +2291,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-n5-global-edition.html": {
+"name": "OPPO Find N5 Global Edition",
+"lastmod": "2026-09-28T07:05:36+00:00",
 "low": 1199.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -2212,8 +2308,10 @@
 "available": true
 },
 "https://www.giztop.com/oneplus-16.html": {
+"name": "OnePlus 16",
+"lastmod": "2026-11-24T07:56:26+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2259,8 +2357,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x10-pro-max-global.html": {
+"name": "OPPO Find X10 Pro Max Global",
+"lastmod": "2026-11-01T13:44:31+00:00",
 "low": 1549.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -2274,8 +2374,10 @@
 "available": true
 },
 "https://www.giztop.com/iqoo-16.html": {
+"name": "vivo iQOO 16",
+"lastmod": "2026-10-13T06:34:36+00:00",
 "low": 949.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2329,8 +2431,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-xt-2-ultimate-design.html": {
+"name": "Huawei Mate XT 2 Ultimate Design",
+"lastmod": "2026-10-13T02:58:07+00:00",
 "low": 3999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/256",
@@ -2364,8 +2468,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-90-rs.html": {
+"name": "Huawei Mate 90 RS",
+"lastmod": "2026-10-01T08:29:49+00:00",
 "low": 2999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -2391,8 +2497,10 @@
 "available": true
 },
 "https://www.giztop.com/redmi-k100-pro-max.html": {
+"name": "Redmi K100 Pro Max",
+"lastmod": "2026-10-25T06:38:24+00:00",
 "low": 649.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2462,8 +2570,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17t-pro.html": {
+"name": "Xiaomi 17T Pro",
+"lastmod": "2026-07-27T07:00:08+00:00",
 "low": 679.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2505,8 +2615,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17t.html": {
+"name": "Xiaomi 17T",
+"lastmod": "2026-06-08T16:29:30+00:00",
 "low": 539.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2536,8 +2648,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-pura-90.html": {
+"name": "Huawei Pura 90",
+"lastmod": "2026-07-30T09:05:58+00:00",
 "low": 859.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2567,8 +2681,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300s.html": {
+"name": "Vivo X300s",
+"lastmod": "2026-04-06T09:37:08+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2638,8 +2754,10 @@
 "available": true
 },
 "https://www.giztop.com/oneplus-15t.html": {
+"name": "OnePlus 15T",
+"lastmod": "2026-04-15T03:35:22+00:00",
 "low": 699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2693,8 +2811,10 @@
 "available": true
 },
 "https://www.giztop.com/iqoo-15-ultra.html": {
+"name": "iQOO 15 Ultra",
+"lastmod": "2026-09-16T02:18:57+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/256",
@@ -2732,8 +2852,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-x7.html": {
+"name": "Huawei Mate X7",
+"lastmod": "2026-05-21T12:18:31+00:00",
 "low": 2999.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -2759,8 +2881,10 @@
 "available": true
 },
 "https://www.giztop.com/realme-gt-8-pro-blue-12gb-256gb.html": {
+"name": "Realme GT 8 Pro-Blue-12GB - 256GB",
+"lastmod": "2026-09-18T02:37:00+00:00",
 "low": 679.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2770,8 +2894,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-8.html": {
+"name": "Honor Magic 8",
+"lastmod": "2026-01-26T03:19:59+00:00",
 "low": 759.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -2781,8 +2907,10 @@
 "available": true
 },
 "https://www.giztop.com/iqoo-15-black-12gb-256gb.html": {
+"name": "iQOO 15-Black-12GB - 256GB",
+"lastmod": "2026-06-25T05:59:05+00:00",
 "low": 739.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2792,8 +2920,10 @@
 "available": true
 },
 "https://www.giztop.com/realme-gt-8-pro.html": {
+"name": "Realme GT 8 Pro",
+"lastmod": "2025-11-22T05:48:56+00:00",
 "low": 659.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2823,8 +2953,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300.html": {
+"name": "Vivo X300",
+"lastmod": "2026-11-12T07:43:34+00:00",
 "low": 699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2918,8 +3050,10 @@
 "available": true
 },
 "https://www.giztop.com/oppo-find-x9.html": {
+"name": "OPPO Find X9",
+"lastmod": "2026-01-28T04:14:38+00:00",
 "low": 699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -2997,8 +3131,10 @@
 "available": true
 },
 "https://www.giztop.com/redmi-k90-pro-max.html": {
+"name": "Redmi K90 Pro Max",
+"lastmod": "2026-09-25T01:51:18+00:00",
 "low": 569.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3044,8 +3180,10 @@
 "available": true
 },
 "https://www.giztop.com/iqoo-15.html": {
+"name": "vivo iQOO 15",
+"lastmod": "2025-11-06T03:24:09+00:00",
 "low": 739.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3131,8 +3269,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-phone.html": {
+"name": "Xiaomi 17",
+"lastmod": "2026-09-04T07:42:30+00:00",
 "low": 849.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3186,8 +3326,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-v5.html": {
+"name": "Honor Magic V5",
+"lastmod": "2026-01-15T02:38:59+00:00",
 "low": 1429.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3241,8 +3383,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-mix-flip-2.html": {
+"name": "Xiaomi Mix Flip 2",
+"lastmod": "2026-03-05T23:50:39+00:00",
 "low": 799.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3292,8 +3436,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x500-pro-max-global.html": {
+"name": "Vivo X500 Pro Max Global",
+"lastmod": "2026-11-25T01:44:34+00:00",
 "low": 1599.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -3311,8 +3457,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-robot-phone-grey-12gb-512gb.html": {
+"name": "Honor Robot Phone-Grey-12GB - 512GB",
+"lastmod": "2026-09-28T06:56:16+00:00",
 "low": 1699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -3322,8 +3470,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-robot-phone.html": {
+"name": "Honor Robot Phone",
+"lastmod": "2026-09-20T07:06:39+00:00",
 "low": 1699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -3345,8 +3495,10 @@
 "available": true
 },
 "https://www.giztop.com/redmi-k100-pro.html": {
+"name": "Redmi K100 Pro",
+"lastmod": "2026-08-12T03:12:47+00:00",
 "low": 649.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3416,8 +3568,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300-ultra-black-16gb-1tb.html": {
+"name": "Vivo X300 Ultra-Black-16GB - 1TB (Brand New, Clearance, 15% off, )",
+"lastmod": "2026-11-24T06:17:23+00:00",
 "low": 1349.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/1024",
@@ -3427,8 +3581,10 @@
 "available": true
 },
 "https://www.giztop.com/red-magic-12-pro-plus.html": {
+"name": "Red Magic 12 Pro Plus",
+"lastmod": "2026-11-04T00:20:52+00:00",
 "low": 1199.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3454,8 +3610,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-17-ultra-leica.html": {
+"name": "Xiaomi 17 Ultra By Leica",
+"lastmod": "2026-03-16T06:32:22+00:00",
 "low": 1249.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/512",
@@ -3477,8 +3635,10 @@
 "available": true
 },
 "https://www.giztop.com/vivo-x300-ultra-global-black-16gb-1tb.html": {
+"name": "Vivo X300 Ultra Global-Black-16GB - 1TB",
+"lastmod": "2026-10-07T02:18:19+00:00",
 "low": 1699.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "16/1024",
@@ -3488,8 +3648,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-8-pro.html": {
+"name": "Honor Magic 8 Pro",
+"lastmod": "2026-01-26T03:19:35+00:00",
 "low": 899.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3559,8 +3721,10 @@
 "available": true
 },
 "https://www.giztop.com/huawei-mate-90-pro-max-black-12gb-512gb.html": {
+"name": "Huawei Mate 90 Pro Max-Black-12GB - 512GB (Brand New, Clearance, 15% off, )",
+"lastmod": "2026-11-24T06:15:07+00:00",
 "low": 1399.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/512",
@@ -3570,8 +3734,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-pro-max-global.html": {
+"name": "Xiaomi 18 Pro Max Global",
+"lastmod": "2026-11-24T01:42:47+00:00",
 "low": 1599.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3601,8 +3767,10 @@
 "available": true
 },
 "https://www.giztop.com/xiaomi-18-pro-global.html": {
+"name": "Xiaomi 18 Pro Global",
+"lastmod": "2026-11-24T02:54:58+00:00",
 "low": 1399.0,
-"fetched": "2026-11-25T19:51:53+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3631,9 +3799,24 @@
 ],
 "available": true
 },
+"https://www.giztop.com/xiaomi-18-pro-blue-16gb-1tb.html": {
+"name": "Xiaomi 18 Pro-Blue-16GB - 1TB  (Brand New, Clearance, 15% off)",
+"lastmod": "2026-11-25T07:13:39+00:00",
+"low": 1199.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"16/1024",
+1199.0
+]
+],
+"available": true
+},
 "https://www.giztop.com/huawei-mate-x8.html": {
+"name": "Huawei Mate X8",
+"lastmod": "2026-11-25T05:46:37+00:00",
 "low": 2499.0,
-"fetched": "2026-11-25T21:40:56+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3647,8 +3830,10 @@
 "available": true
 },
 "https://www.giztop.com/honor-magic-9-super-power-edition.html": {
+"name": "Honor Magic 9 Super Power Edition",
+"lastmod": "2026-09-28T21:25:17+00:00",
 "low": 799.0,
-"fetched": "2026-11-25T21:40:56+00:00",
+"fetched": "2026-11-25T22:22:31+00:00",
 "variants": [
 [
 "12/256",
@@ -3700,5 +3885,546 @@
 ]
 ],
 "available": true
+},
+"https://www.giztop.com/case/oppo-find-x9-ultra.html": {
+"name": "",
+"lastmod": "2026-10-27T18:26:34+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/vivo-x300-ultra.html": {
+"name": "",
+"lastmod": "2026-10-22T14:38:16+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/oneplus-15.html": {
+"name": "",
+"lastmod": "2026-10-27T18:02:28+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/iphone-18-pro.html": {
+"name": "",
+"lastmod": "2026-10-24T08:15:11+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/iphone-18-pro-max.html": {
+"name": "",
+"lastmod": "2026-10-24T08:15:33+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/xiaomi-18-pro.html": {
+"name": "",
+"lastmod": "2026-10-23T17:47:16+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/xiaomi-18-pro-max.html": {
+"name": "",
+"lastmod": "2026-10-23T17:47:37+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/xiaomi-18-fold.html": {
+"name": "",
+"lastmod": "2026-10-06T15:04:57+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/oppo-find-x10-pro.html": {
+"name": "",
+"lastmod": "2026-09-23T15:01:31+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/oppo-find-x10-pro-max.html": {
+"name": "",
+"lastmod": "2026-10-24T07:45:42+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/vivo-x500-pro.html": {
+"name": "",
+"lastmod": "2026-10-10T16:50:06+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/vivo-x500-pro-max.html": {
+"name": "",
+"lastmod": "2026-09-29T16:47:07+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/oneplus-16.html": {
+"name": "",
+"lastmod": "2026-10-27T18:02:50+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/case/iphone-duo.html": {
+"name": "",
+"lastmod": "2026-10-04T14:09:00+00:00",
+"low": null,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-n5.html": {
+"name": "OPPO Find N5",
+"lastmod": "2026-06-24T19:27:55+00:00",
+"low": 1399.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+1399.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/oppo-find-n5-satellite-communication-edition.html": {
+"name": "OPPO Find N5 Satellite Communication Edition",
+"lastmod": "2025-03-11T04:52:19+00:00",
+"low": 0.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/xiaomi-mix-flip-2-gold-12gb-256gb.html": {
+"name": "Xiaomi Mix Flip 2-Gold-12GB - 256GB",
+"lastmod": "2026-01-16T05:11:03+00:00",
+"low": 799.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+799.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-mix-flip-2-diamond-limited-version.html": {
+"name": "Xiaomi Mix Flip 2 Diamond Limited Version",
+"lastmod": "2026-02-24T00:21:50+00:00",
+"low": 999.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/xiaomi-17-pro-black-12gb-256gb.html": {
+"name": "Xiaomi 17 Pro-Black-12GB - 256GB",
+"lastmod": "2026-08-05T04:02:10+00:00",
+"low": 869.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+869.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-x300-black-12gb-256gb.html": {
+"name": "Vivo X300-Black-12GB - 256GB",
+"lastmod": "2026-03-24T04:20:32+00:00",
+"low": 699.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+699.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-pro-max-black-16gb-1tb.html": {
+"name": "Xiaomi 17 Pro Max-Black-16GB - 1TB",
+"lastmod": "2026-10-12T07:02:47+00:00",
+"low": 1299.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"16/1024",
+1299.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/oneplus-15-black-12gb-256gb.html": {
+"name": "OnePlus 15-Black-12GB - 256GB",
+"lastmod": "2026-09-25T01:43:53+00:00",
+"low": 799.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+799.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-pro-max-green-16gb-1tb.html": {
+"name": "Xiaomi 17 Pro Max-Green-16GB - 1TB",
+"lastmod": "2026-10-12T07:03:24+00:00",
+"low": 1299.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"16/1024",
+1299.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-white-12gb-256gb.html": {
+"name": "Xiaomi 17-White-12GB - 256GB",
+"lastmod": "2026-09-04T07:41:54+00:00",
+"low": 849.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+849.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-pro-max-black-12gb-512gb.html": {
+"name": "Xiaomi 17 Pro Max-Black-12GB - 512GB",
+"lastmod": "2026-10-12T07:02:26+00:00",
+"low": 1049.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/512",
+1049.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-17-pro-max-green-12gb-512gb.html": {
+"name": "Xiaomi 17 Pro Max-Green-12GB - 512GB",
+"lastmod": "2026-10-12T07:03:04+00:00",
+"low": 1099.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/512",
+1099.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/oppo-find-x9-pro-titanium-12gb-256gb.html": {
+"name": "OPPO Find X9 Pro-Titanium-12GB - 256GB",
+"lastmod": "2026-08-24T04:07:28+00:00",
+"low": 879.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+879.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/vivo-iqoo-15-red-12gb-512gb.html": {
+"name": "vivo iQOO 15-Red-12GB - 512GB",
+"lastmod": "2026-06-27T00:02:02+00:00",
+"low": 799.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/512",
+799.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/redmi-k90-pro-max-champion-edition.html": {
+"name": "Redmi K90 Pro Max Champion Edition",
+"lastmod": "2026-02-24T00:23:58+00:00",
+"low": 999.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/vivo-iqoo-15-honor-of-kings-10th-anniversary-collector-s-edition.html": {
+"name": "vivo iQOO 15 Honor of Kings 10th Anniversary Collector's Edition",
+"lastmod": "2025-10-24T02:45:15+00:00",
+"low": 999.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/realme-gt-8-pro-aston-martin-f1-limited-edition.html": {
+"name": "Realme GT 8 Pro Aston Martin F1 Limited Edition",
+"lastmod": "2026-09-09T09:29:20+00:00",
+"low": 999.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/huawei-mate-80-rs-ultimate-design.html": {
+"name": "Huawei Mate 80 RS Ultimate Design",
+"lastmod": "2025-11-26T02:19:58+00:00",
+"low": 2299.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/huawei-mate-x7-collector-s-edition.html": {
+"name": "Huawei Mate X7 Collector's Edition",
+"lastmod": "2025-11-26T04:22:22+00:00",
+"low": 3399.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/xiaomi-17-ultra-white-12gb-512gb.html": {
+"name": "Xiaomi 17 Ultra-White-12GB - 512GB",
+"lastmod": "2026-03-27T02:44:04+00:00",
+"low": 1049.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/512",
+1049.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/honor-magic-8-rsr-porsche-design-edition.html": {
+"name": "Honor Magic 8 RSR Porsche Design Edition",
+"lastmod": "2026-01-26T03:09:05+00:00",
+"low": 1399.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-x10-pro.html": {
+"name": "OPPO Find X10 Pro",
+"lastmod": "2026-07-23T04:59:54+00:00",
+"low": 0.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/redmi-k90-pro-max-champion-edition-1.html": {
+"name": "Redmi K90 Pro Max Champion Edition ( Almost New )",
+"lastmod": "2026-07-13T07:59:39+00:00",
+"low": 739.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-n6-orange-12gb-256gb.html": {
+"name": "OPPO Find N6-Orange-12GB - 256GB",
+"lastmod": "2026-05-04T00:40:37+00:00",
+"low": 1499.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+1499.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/oppo-find-n6-global.html": {
+"name": "OPPO Find N6 Global Stellar Titanium \uff08 Only US Warehouses\uff09",
+"lastmod": "2026-08-25T04:31:33+00:00",
+"low": 1799.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-n6-global-orange-16gb-512gb.html": {
+"name": "OPPO Find N6 Global Orange",
+"lastmod": "2026-09-11T22:14:53+00:00",
+"low": 1799.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-x9s.html": {
+"name": "OPPO Find X9s",
+"lastmod": "2026-04-10T02:30:50+00:00",
+"low": 749.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+749.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/huawei-pura-x-max-collector-s-edition.html": {
+"name": "HUAWEI Pura X Max Collector's Edition",
+"lastmod": "2026-09-14T04:38:11+00:00",
+"low": 2299.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-x9-ultra-hasselblad-earth-explorer-master-set.html": {
+"name": "OPPO Find X9 Ultra Hasselblad Earth Explorer Master Set ",
+"lastmod": "2026-08-27T03:19:21+00:00",
+"low": 1899.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/vivo-x300-ultra-global.html": {
+"name": "Vivo X300 Ultra Global",
+"lastmod": "2026-11-17T01:59:04+00:00",
+"low": 1699.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+1699.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/vivo-x300-ultra-global-black-16gb-512gb.html": {
+"name": "Vivo X300 Ultra Global-Black-16GB - 512GB",
+"lastmod": "2026-11-04T04:03:37+00:00",
+"low": 1499.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"16/512",
+1499.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/xiaomi-17-max-black-12gb-256gb.html": {
+"name": "Xiaomi 17 Max-Black-12GB - 256GB",
+"lastmod": "2026-06-24T19:32:15+00:00",
+"low": 749.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+749.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/motorola-moto-razr-fold-2026-fifa-world-cuptm-gilded-limited-edition.html": {
+"name": "Motorola Moto Razr Fold 2026 FIFA World Cup\u2122 Gilded Limited Edition",
+"lastmod": "2026-05-28T00:21:32+00:00",
+"low": 2799.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/vivo-x300-fe-global.html": {
+"name": "Vivo X300 FE Global",
+"lastmod": "2026-06-10T09:33:45+00:00",
+"low": 899.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+899.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/xiaomi-17t-pro-global.html": {
+"name": "Xiaomi 17T Pro Global",
+"lastmod": "2026-06-08T08:11:39+00:00",
+"low": 899.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+899.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/xiaomi-17t-global.html": {
+"name": "Xiaomi 17T Global ",
+"lastmod": "2026-06-08T08:14:30+00:00",
+"low": 799.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+799.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/vivo-x300-e.html": {
+"name": "Vivo X300 E",
+"lastmod": "2026-08-01T00:52:03+00:00",
+"low": 849.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/redmi-k100-pro-max-black-12gb-256gb.html": {
+"name": "Redmi K100 Pro Max-Black-12GB - 256GB",
+"lastmod": "2026-11-13T23:27:09+00:00",
+"low": 649.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+649.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-18-fold-ceramic-special-edition.html": {
+"name": "Xiaomi 18 Fold Ceramic Special Edition",
+"lastmod": "2026-09-08T12:15:31+00:00",
+"low": 3299.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/huawei-mate-xt-2-ultimate-design-privacy-screen.html": {
+"name": "Huawei Mate XT 2 Ultimate Design Lingdun Privacy Screen",
+"lastmod": "2026-09-22T02:43:46+00:00",
+"low": 5249.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/oppo-find-x10-e.html": {
+"name": "OPPO Find X10 E",
+"lastmod": "2026-09-23T02:24:15+00:00",
+"low": 919.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+919.0
+],
+[
+"16/512",
+1019.0
+],
+[
+"12/256",
+919.0
+],
+[
+"16/512",
+1019.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/xiaomi-18-pro-max-black-12gb-256gb.html": {
+"name": "Xiaomi 18 Pro Max-Black-12GB - 256GB",
+"lastmod": "2026-11-13T23:22:53+00:00",
+"low": 999.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"12/256",
+999.0
+]
+],
+"available": true
+},
+"https://www.giztop.com/huawei-mate-90-pro-max-collector-s-edition.html": {
+"name": "Huawei Mate 90 Pro Max Collector's Edition",
+"lastmod": "2026-10-02T07:35:56+00:00",
+"low": 2499.0,
+"fetched": "2026-11-25T22:22:31+00:00"
+},
+"https://www.giztop.com/red-magic-12-pro.html": {
+"name": "Red Magic 12 Pro",
+"lastmod": "2026-10-15T07:47:12+00:00",
+"low": 1099.0,
+"fetched": "2026-11-25T22:22:31+00:00",
+"variants": [
+[
+"base",
+1099.0
+]
+],
+"available": false
+},
+"https://www.giztop.com/huawei-mate-x8-collector.html": {
+"name": "Huawei Mate X8 Collector Edition",
+"lastmod": "2026-11-25T05:54:39+00:00",
+"low": 2999.0,
+"fetched": "2026-11-25T22:22:31+00:00"
 }
 }

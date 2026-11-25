@@ -1248,7 +1248,8 @@ def test_more_from_brand_rows_are_home_rows_of_their_own_meta(tmp_path, monkeypa
     more = h[h.index('<ul class="pairs" id="more"'):]
     more = more[:more.index("</ul>")]
     meta = {m["id"]: m for m in json.loads(re.search(r"data-more='([^']*)'", more)[1])}
-    assert list(meta) == [two, china, "oppo-find-x9s"]   # the brand's three newest other phones (X9s: Global only, no offers here)
+    # the brand's three newest other phones: the three Find X10s, all announced 22 Sep 2026 (X10 E: no offers here)
+    assert list(meta) == [two, "oppo-find-x10-e", china]
     r2, rc = _home_row(more, two), _home_row(more, china)
     assert r2.count('<b class="num">') == 2 and "absent" not in r2 and "at Wonda Mobile" in r2 and "at Giztop" in r2
     assert rc.count('<b class="num">') == 1 and rc.count("absent") == 1 and '<span class="p none absent">No Global version</span>' in rc

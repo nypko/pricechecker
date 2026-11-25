@@ -1,7 +1,7 @@
 """Polite HTTP: honest user agent, robots.txt check, per-host delay, retries."""
 import json
+import re
 import time
-import urllib.robotparser
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
@@ -11,7 +11,7 @@ import requests
 USER_AGENT = "PriceCheckerBot/0.1 (hourly price comparison; affiliate partner)"
 _session = requests.Session()
 _session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "en"})
-_robots: dict[str, urllib.robotparser.RobotFileParser] = {}
+_robots: dict[str, list[tuple[bool, str]]] = {}   # host -> its robots.txt rules for us
 _last_hit: dict[str, float] = {}
 MIN_DELAY_SEC = 3.0
 MAX_BYTES = 20 * 1024 * 1024   # no product page, sitemap or feed is near this: a bigger body is an error, not data
@@ -45,13 +45,49 @@ def _robots_text(host: str) -> str:
     return text
 
 
+def robots_rules(text: str, agent: str = USER_AGENT) -> list[tuple[bool, str]]:
+    """(allow, path pattern) rules that apply to us: the groups naming our product token ("pricecheckerbot"), else
+    the `*` group. Read as search engines do (RFC 9309): Python's urllib.robotparser takes `*` literally, so a rule
+    like Giztop's `Disallow: /*?p=` never matched."""
+    groups: list[tuple[list[str], list[tuple[bool, str]]]] = []
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if ":" not in line:
+            continue
+        key, value = (x.strip() for x in line.split(":", 1))
+        key = key.lower()
+        if key == "user-agent":
+            if not groups or groups[-1][1]:   # a user-agent line after rules starts a new group
+                groups.append(([], []))
+            groups[-1][0].append(value.lower())
+        elif key in ("allow", "disallow") and groups:
+            groups[-1][1].append((key == "allow", value))
+    token = agent.split("/")[0].lower()
+    mine = [g for g in groups if any(a != "*" and a in token for a in g[0])]
+    return [r for g in (mine or [g for g in groups if "*" in g[0]]) for r in g[1]]
+
+
+def _pattern(path: str) -> re.Pattern:
+    """A robots.txt path: `*` = any characters, a final `$` = end of the URL, everything else literal."""
+    end = path.endswith("$")
+    return re.compile("".join(".*" if c == "*" else re.escape(c) for c in path.rstrip("$")) + ("$" if end else ""))
+
+
+def robots_allow(rules: list[tuple[bool, str]], path: str) -> bool:
+    """The longest matching rule decides; Allow wins a tie; an empty `Disallow:` matches nothing."""
+    best, ok = -1, True
+    for allow, pat in rules:
+        if pat and _pattern(pat).match(path) and (len(pat) > best or (len(pat) == best and allow)):
+            best, ok = len(pat), allow
+    return ok
+
+
 def allowed(url: str) -> bool:
-    host = urlparse(url).scheme + "://" + urlparse(url).netloc
+    u = urlparse(url)
+    host = u.scheme + "://" + u.netloc
     if host not in _robots:
-        rp = urllib.robotparser.RobotFileParser()
-        rp.parse(_robots_text(host).splitlines())
-        _robots[host] = rp
-    return _robots[host].can_fetch(USER_AGENT, url)
+        _robots[host] = robots_rules(_robots_text(host))
+    return robots_allow(_robots[host], (u.path or "/") + (f"?{u.query}" if u.query else ""))
 
 
 def _wait(host: str) -> None:
@@ -86,8 +122,10 @@ def capped_get(url: str, max_bytes: int = MAX_BYTES, timeout: float = 30, **kw) 
 
 
 def get(url: str, *, retries: int = 2, respect_robots: bool = True, **kw) -> requests.Response:
-    if respect_robots and not allowed(url):
-        raise Blocked(f"robots.txt disallows {url}")
+    if respect_robots:   # judged on the URL as requested, query (`params`) included
+        full = requests.Request("GET", url, params=kw["params"]).prepare().url if kw.get("params") else url
+        if not allowed(full):
+            raise Blocked(f"robots.txt disallows {full}")
     host = urlparse(url).netloc
     for attempt in range(retries + 1):
         _wait(host)

@@ -1,7 +1,9 @@
-"""Magento 2 stores (e.g. Giztop): walk the phone category pages (allowed by robots.txt via ?p=), then read the
-per-variant prices (storage x color) from each tracked phone's product page.
-Product pages are cached and only re-read when the category's "as low as" price changes, or every few hours."""
+"""Magento 2 stores (e.g. Giztop): the phone category's first page (its newest products), plus every product page of a
+tracked phone found in the store's sitemap; the per-variant prices (storage x color) come from each product page.
+Giztop's robots.txt disallows the category's further pages (`Disallow: /*?p=`), so the sitemap stands in for them.
+Product pages are cached and re-read when their sitemap date or listing price changes, or every few hours."""
 import base64
+import hashlib
 import html
 import json
 import re
@@ -15,17 +17,20 @@ from .. import http
 from ..models import Offer
 from ..normalize import edition_of, model_id, storage_of
 from .shopify import cheapest_per_config
+from .sitemap import _URL
 from .webpage import parse
 
 _ITEM = re.compile(r'class="product-item-link"\s+href="([^"]+)">\s*([^<]+?)\s*</a>.*?data-price-amount="([0-9.]+)"', re.DOTALL)
-_COUNT = re.compile(r'toolbar-number">(\d+)</span>')
 _SP_CONFIG = re.compile(r'"spConfig":\s*(\{.*?\})\s*,\s*"gallerySwitchStrategy"', re.DOTALL)
 # single-variant listings: "OPPO Find X9 Ultra-Black-12GB - 256GB"
 # "Model-Colour-12GB - 256GB", optionally followed by a note: "(Brand New, Clearance, 30% off, )" on clearance units
 _SIMPLE = re.compile(r"^(?P<base>.+?)-(?P<color>[^-]+)-(?P<storage>\d+\s*GB\s*-\s*\d+\s*(?:GB|TB))(?:\s*\([^()]*\))?$",
                      re.IGNORECASE)
-PER_PAGE = 24
 REFRESH = timedelta(hours=6)
+SITEMAP_TTL = timedelta(hours=20)   # the sitemap lists every product (Giztop: ~24,000 pages in four ~10 MB files): once a day
+# sitemap addresses that are no phone for sale, whatever phone name they start with
+_SLUG_SKIP = re.compile(r"\b(?:used|refurbished|almost new|open box|case|cover|protector|tempered|glass|film|charger|cable|"
+                        r"strap|holder|stand|skin|adapter|stylus|keyboard|lens|kit|accessories)\b")
 SITE_CURRENCIES = ["EUR", "GBP", "AUD"]
 RATES_CACHE = Path("data/shop_rates.json")   # shared with the Shopify stores
 
@@ -69,18 +74,47 @@ def market_rates(base: str, sample_url: str, base_cur: str = "USD") -> dict:
 
 
 def listing(base: str, path: str) -> list[tuple[str, str, float]]:
-    """(url, name, 'as low as' price) for every product in a category, across all its pages."""
-    items, page, total = [], 1, None
-    while True:
-        s = http.get(f"{base}{path}" + (f"?p={page}" if page > 1 else "")).text
-        found = [(u, html.unescape(n), float(p)) for u, n, p in _ITEM.findall(s)]
-        items += found
-        if total is None:
-            counts = _COUNT.findall(s)
-            total = int(counts[2]) if len(counts) > 2 else len(found)
-        if not found or len(items) >= total or page >= 50:
-            return items
-        page += 1
+    """(url, name, 'as low as' price) on the category's first page: its newest products. Its further pages (?p=2 ...)
+    are disallowed by Giztop's robots.txt; sitemap_pages() finds the rest."""
+    return [(u, html.unescape(n), float(p)) for u, n, p in _ITEM.findall(http.get(f"{base}{path}").text)]
+
+
+def slug_key(url: str) -> str:
+    """A product address read like a title: '.../motorola-moto-razr-70-ultra-black-16gb-512gb.html' ->
+    'motorola-razr-70-ultra-black' (storage dropped, brand spellings unified), so it can be matched to phone ids."""
+    return model_id(url.rstrip("/").rsplit("/", 1)[-1].removesuffix(".html").replace("-", " "))
+
+
+def candidates(entries: list[tuple[str, str]], prefixes: set[str]) -> dict[str, str]:
+    """{url: lastmod} of the product pages whose address starts with a tracked phone's id or other name and names no
+    accessory or used unit: the pages worth reading. Which phone a page sells is then read from its title."""
+    out = {}
+    for url, lastmod in entries:
+        key = slug_key(url) if url.endswith(".html") else ""
+        if key and not _SLUG_SKIP.search(key.replace("-", " ")) and any(key == p or key.startswith(p + "-") for p in prefixes):
+            out[url] = lastmod or ""
+    return out
+
+
+def sitemap_pages(store: str, cfg: dict, prefixes: set[str]) -> dict[str, str]:
+    """candidates() from the store's sitemap (an index of sitemaps or one), read once a day and when the tracked phones
+    change, kept in data/<store>_sitemap.json. If it can't be read, the last list is used."""
+    f = Path(f"data/{store}_sitemap.json")
+    saved = json.loads(f.read_text()) if f.exists() else {}
+    key = hashlib.sha1("\n".join(sorted(prefixes)).encode()).hexdigest()[:12]
+    if saved.get("key") == key and datetime.now(UTC) - datetime.fromisoformat(saved["fetched"]) < SITEMAP_TTL:
+        return saved["urls"]
+    try:
+        top = http.get(cfg["sitemap_url"]).text
+        subs = [html.unescape(u) for u in re.findall(r"<sitemap>\s*<loc>([^<]+)</loc>", top)]
+        entries = [e for u in subs for e in _URL.findall(http.get(u).text)] if subs else _URL.findall(top)
+    except Exception as e:  # noqa: BLE001 - a failed sitemap shouldn't drop the store: the last list still works
+        print(f"  [{store}] warning: sitemap not read ({type(e).__name__}: {e}); using the list from {saved.get('fetched', 'no earlier run')}")
+        return saved.get("urls", {})
+    urls = candidates(entries, prefixes)
+    f.write_text(json.dumps({"fetched": datetime.now(UTC).isoformat(timespec="seconds"), "key": key, "urls": urls},
+                            indent=0, sort_keys=True))
+    return urls
 
 
 def split_title(name: str) -> tuple[str, str | None]:
@@ -114,35 +148,71 @@ def fetch(store: str, cfg: dict, catalog: list[dict]) -> list[Offer]:
     cache_file = Path(f"data/{store}_pages.json")
     cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}
     now = datetime.now(UTC)
-    seen, offers, untracked = set(), [], []
-    rates = None
+
+    def phone(name: str) -> tuple[str | None, str | None]:
+        """(tracked model id or None, storage the title fixes) for a listing or page title."""
+        title, fixed = split_title(name)
+        mid = model_id(title)
+        mid = aliases.get(mid, mid)
+        return (mid if mid in tracked and not (exclude and exclude.search(name)) else None), fixed
+
+    # 1. the newest listings: their names and "as low as" prices; untracked ones go to data/untracked.txt
+    todo: dict[str, tuple[str | None, float | None, str | None]] = {}   # url -> (listing name, listing price, sitemap date)
+    untracked = []
     for path in cfg.get("categories", ["/phones.html"]):
         for url, name, low in listing(base, path):
-            if url in seen or (exclude and exclude.search(name)):
+            if url in todo or (exclude and exclude.search(name)):
                 continue
-            seen.add(url)
-            title, fixed_storage = split_title(name)
-            mid = model_id(title)
-            mid = aliases.get(mid, mid)
-            if mid not in tracked:
-                untracked.append(Offer(store=store, model_id=mid, edition=edition_of(name), storage=fixed_storage or "base",
+            if phone(name)[0]:
+                todo[url] = (name, low, None)
+            else:
+                mid = aliases.get(model_id(split_title(name)[0]), model_id(split_title(name)[0]))
+                untracked.append(Offer(store=store, model_id=mid, edition=edition_of(name), storage=split_title(name)[1] or "base",
                                        title=name, price=low, currency=cfg.get("currency", "USD"), available=True, url=url))
-                continue
-            hit = cache.get(url)
-            if not hit or hit["low"] != low or now - datetime.fromisoformat(hit["fetched"]) > REFRESH:
+    # 2. every other page of a tracked phone, from the sitemap; without any list yet, the pages read before
+    pages = sitemap_pages(store, cfg, tracked | {a for a, t in aliases.items() if t in tracked}) if cfg.get("sitemap_url") else {}
+    for url, lastmod in pages.items():
+        name, low, _ = todo.get(url, (None, None, None))
+        todo[url] = (name, low, lastmod)
+    if not pages:
+        for url in cache:
+            todo.setdefault(url, (None, None, None))
+    offers, keep, rates = [], set(), None
+    for url, (lname, low, lastmod) in todo.items():
+        hit = cache.get(url)
+        stale = (not hit or "name" not in hit or (lastmod and hit.get("lastmod") != lastmod)
+                 or (low is not None and hit.get("low") != low))
+        if not stale and phone(hit["name"])[0]:   # a tracked phone's prices: at least every REFRESH
+            stale = "variants" not in hit or now - datetime.fromisoformat(hit["fetched"]) > REFRESH
+        if stale:
+            try:
                 page = http.get(url).text
+            except http.Blocked:
+                raise
+            except Exception as e:  # noqa: BLE001 - one broken page shouldn't drop the whole store
+                print(f"  [{store}] warning: {url}: {type(e).__name__}: {e}")
+                if not hit or "name" not in hit:
+                    continue
+            else:
                 info = parse(page) or {}
-                vs = variants(page) or [(fixed_storage or storage_of(title), info.get("price", low))]
-                in_stock = 'class="stock unavailable"' not in page and info.get("available", True)
-                hit = cache[url] = {"low": low, "fetched": now.isoformat(timespec="seconds"),
-                                    "variants": vs, "available": in_stock}
-            if rates is None:
-                rates = market_rates(base, url, cfg.get("currency", "USD"))
-            for storage, price in hit["variants"]:
-                offers.append(Offer(store=store, model_id=mid, edition=edition_of(name),
-                                    storage=fixed_storage or storage, title=name, price=price,
-                                    currency=cfg.get("currency", "USD"), available=hit["available"], url=url,
-                                    prices={c: round(price * r, 2) for c, r in rates.items()}))
-    cache_file.write_text(json.dumps({u: v for u, v in cache.items() if u in seen}, indent=0))
+                name = html.unescape(info.get("name") or lname or "")
+                hit = cache[url] = {"name": name, "lastmod": lastmod, "low": low if low is not None else info.get("price"),
+                                    "fetched": now.isoformat(timespec="seconds")}
+                mid, fixed = phone(name)
+                if mid:   # only tracked phones' variants are kept; other pages are just remembered by title
+                    hit["variants"] = variants(page) or [(fixed or storage_of(split_title(name)[0]), info.get("price", low))]
+                    hit["available"] = 'class="stock unavailable"' not in page and info.get("available", True)
+        keep.add(url)
+        mid, fixed = phone(hit["name"])
+        if not mid or "variants" not in hit:
+            continue
+        if rates is None:
+            rates = market_rates(base, url, cfg.get("currency", "USD"))
+        for storage, price in hit["variants"]:
+            offers.append(Offer(store=store, model_id=mid, edition=edition_of(hit["name"]),
+                                storage=fixed or storage, title=hit["name"], price=price,
+                                currency=cfg.get("currency", "USD"), available=hit["available"], url=url,
+                                prices={c: round(price * r, 2) for c, r in rates.items()}))
+    cache_file.write_text(json.dumps({u: v for u, v in cache.items() if u in keep}, indent=0))
     # untracked models go back too, so run.py can list them in data/untracked.txt
     return cheapest_per_config(offers) + untracked

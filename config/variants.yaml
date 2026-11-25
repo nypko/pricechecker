@@ -52,3 +52,5 @@ redmi-k100-pro:   # added 2026-11-25: the Global version, sold as the POCO F9 Pr
   global: {made: [12/256, 12/512], source: "https://www.mi.com/global/product/poco-f9-pro/specs/"}
 samsung-galaxy-z-flip-8:   # added 2026-11-25: UK/EU model SM-F776B (12 GB RAM; 256 GB or 512 GB)
   global: {made: [12/256, 12/512], source: "https://www.samsung.com/uk/business/smartphones/galaxy-z/galaxy-z-flip8-graphite-256gb-sm-f776bzkgeub/"}
+oppo-find-x10-e:   # added 2026-11-25
+  china: {made: [12/256, 16/512], source: "https://www.oppo.com/cn/smartphones/series-find-x/find-x10-e/specs/"}

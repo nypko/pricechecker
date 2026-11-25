@@ -307,6 +307,14 @@
 1399.0,
 1
 ],
+"aduk|oppo-find-x10-e|china|12/256": [
+689.0,
+1
+],
+"aduk|oppo-find-x10-e|china|16/512": [
+759.0,
+1
+],
 "aduk|oppo-find-x10-pro-max|china|12/256": [
 949.0,
 1
@@ -957,6 +965,14 @@
 ],
 "averagedad|oppo-find-n6|global|16/512": [
 1872.0,
+1
+],
+"averagedad|oppo-find-x10-e|china|12/256": [
+922.0,
+1
+],
+"averagedad|oppo-find-x10-e|china|16/512": [
+1016.0,
 1
 ],
 "averagedad|oppo-find-x10-pro-max|china|12/256": [
@@ -1771,6 +1787,10 @@
 1099.0,
 1
 ],
+"giztop|oppo-find-n5|china|base": [
+1399.0,
+0
+],
 "giztop|oppo-find-n5|global|16/512": [
 1199.0,
 1
@@ -1785,6 +1805,14 @@
 ],
 "giztop|oppo-find-n6|china|16/512": [
 1499.0,
+1
+],
+"giztop|oppo-find-x10-e|china|12/256": [
+919.0,
+1
+],
+"giztop|oppo-find-x10-e|china|16/512": [
+1019.0,
 1
 ],
 "giztop|oppo-find-x10-pro-max|china|12/256": [
@@ -1879,6 +1907,10 @@
 959.0,
 1
 ],
+"giztop|oppo-find-x9s|china|base": [
+749.0,
+0
+],
 "giztop|oppo-find-x9|china|12/256": [
 699.0,
 1
@@ -1918,6 +1950,10 @@
 "giztop|redmagic-12-pro-plus|china|16/512": [
 1399.0,
 1
+],
+"giztop|redmagic-12-pro-plus|china|base": [
+1099.0,
+0
 ],
 "giztop|redmi-k100-pro-max|china|12/256": [
 649.0,
@@ -1987,6 +2023,10 @@
 1599.0,
 1
 ],
+"giztop|vivo-x300-fe|global|base": [
+899.0,
+0
+],
 "giztop|vivo-x300-pro|china|12/256": [
 849.0,
 1
@@ -2021,7 +2061,11 @@
 ],
 "giztop|vivo-x300-ultra|global|16/512": [
 1499.0,
-1
+0
+],
+"giztop|vivo-x300-ultra|global|base": [
+1699.0,
+0
 ],
 "giztop|vivo-x300s|china|12/256": [
 899.0,
@@ -2211,6 +2255,10 @@
 879.0,
 1
 ],
+"giztop|xiaomi-17t-pro|global|base": [
+899.0,
+0
+],
 "giztop|xiaomi-17t|china|12/256": [
 539.0,
 1
@@ -2218,6 +2266,10 @@
 "giztop|xiaomi-17t|china|12/512": [
 659.0,
 1
+],
+"giztop|xiaomi-17t|global|base": [
+799.0,
+0
 ],
 "giztop|xiaomi-17|china|12/256": [
 849.0,
@@ -2280,7 +2332,7 @@
 1
 ],
 "giztop|xiaomi-18-pro|china|16/1024": [
-1279.0,
+1199.0,
 1
 ],
 "giztop|xiaomi-18-pro|china|16/512": [

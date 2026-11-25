@@ -31,6 +31,14 @@ def test_active_uses_last_scan_and_until():
     assert promos.active("s", {"terms": {}}, {}) is False
 
 
+def test_a_promotion_edited_since_the_last_scan_trusts_the_config():
+    """The verdict belongs to the banner text it was judged on (`promo_watch`): when stores.yaml's promotion changes
+    (Mobile Marvel's "2% summer sale" -> "4% Black Friday sale"), the old verdict doesn't apply until the next scan."""
+    cfg = {"terms": {"promo": {"pct": 4, "watch": "4% Black Friday sale"}}}
+    assert promos.active("s", cfg, {"s": {"promo_active": False, "promo_watch": "2% summer sale"}}) is True
+    assert promos.active("s", cfg, {"s": {"promo_active": False, "promo_watch": "4% Black Friday sale"}}) is False
+
+
 def test_coupon_hints_expire():
     cfg = {"coupons": [{"code": "H2026", "text": "up to 30%", "until": "2999-01-01", "watch": "H2026"}]}
     assert [c["code"] for c in promos.coupons("g", cfg, {})] == ["H2026"]

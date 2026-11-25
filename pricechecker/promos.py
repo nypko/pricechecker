@@ -102,8 +102,11 @@ def scan(stores_cfg: dict, force: bool = False) -> dict:
             active = promo_active(promo, "\n".join(texts) if texts else None, now.date())
             if errors and active is False:   # a page didn't load: the banner may be on it, so keep the last answer
                 active = None
-            was = prev.get("promo_active")
+            # a verdict belongs to the banner text it was judged on: after an edit in stores.yaml it no longer applies
+            same = prev.get("promo_watch", promo.get("watch")) == promo.get("watch")
+            was = prev.get("promo_active") if same else None
             rec["promo_active"] = was if active is None else active
+            rec["promo_watch"] = promo.get("watch")
             if was is not None and active is not None and was != active:
                 (started if active else ended).append(f"{cfg.get('label', name)}: {promo.get('label', 'promotion')} "
                                                       f"({promo.get('pct')}%) {'is back' if active else 'has ended'}")
@@ -152,13 +155,17 @@ def write_report(new_found: dict, ended: list, started: list, stores_cfg: dict, 
 
 def active(name: str, cfg: dict, state: dict | None = None) -> bool:
     """Should this store's configured promotion count in totals right now? Past its `until` date: no.
-    Otherwise the last scan's answer; never scanned yet: trust the config."""
+    Otherwise the last scan's answer; never scanned yet, or the promotion was edited since (another `watch`): trust
+    the config until the next scan."""
     promo = (cfg.get("terms") or {}).get("promo")
     if not promo or promo_active({**promo, "watch": None}, None, date.today()) is False:
         return False
     if state is None:
         state = json.loads(STATE.read_text()) if STATE.exists() else {}
-    known = (state.get(name) or {}).get("promo_active")
+    saved = state.get(name) or {}
+    known = saved.get("promo_active")
+    if saved.get("promo_watch", promo.get("watch")) != promo.get("watch"):
+        known = None
     return True if known is None else bool(known)
 
 

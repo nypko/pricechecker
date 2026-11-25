@@ -12,6 +12,10 @@ phones:
   # Our stores list only the China model (A3721). ram: Apple doesn't publish RAM; Average Dad lists every unit as 12GB and
   # The Mobile Marvel lists storage only, so its "256GB" is read as 12/256 to compare like for like.
   - {id: apple-iphone-duo, edition: china, name: "Apple iPhone Duo", announced: 2026-09-09, ram: 12}
+  # added 2026-11-25: announced with the iPhone Duo on 9 Sep 2026 (Apple Newsroom "Apple debuts iPhone 18 Pro and iPhone 18
+  # Pro Max"). Gomibo sells the EU models (A3714, A3717); none of our import stores lists a China unit yet.
+  - {id: apple-iphone-18-pro, edition: global, name: "Apple iPhone 18 Pro", announced: 2026-09-09}
+  - {id: apple-iphone-18-pro-max, edition: global, name: "Apple iPhone 18 Pro Max", announced: 2026-09-09}
   # Google Pixel: added 2026-10-22 with Gomibo, the first tracked store that sells them (EU units; Pixels have no China version)
   - {id: google-pixel-10-pro, edition: global, name: "Google Pixel 10 Pro", announced: 2025-08-20}
   - {id: google-pixel-10-pro-xl, edition: global, name: "Google Pixel 10 Pro XL", announced: 2025-08-20}
@@ -39,6 +43,12 @@ phones:
   - {id: huawei-pura-90s-pro-max, edition: global, name: "Huawei Pura 90s Pro Max", announced: 2026-07-14}
   - {id: huawei-pura-x-max, edition: china, name: "Huawei Pura X Max", announced: 2026-04-20}
   - {id: huawei-pura-x-view, edition: china, name: "Huawei Pura X View", announced: 2026-08-28}
+  # added 2026-11-25: the fourth Pura 90, between the Pura 90 and 90 Pro; launched in China 28 Oct 2026 (Gizmochina,
+  # Beebom; on sale 31 Oct). Wonda lists it.
+  - {id: huawei-pura-90-plus, edition: china, name: "Huawei Pura 90 Plus", announced: 2026-10-28}
+  # added 2026-11-25: launched in China 24 Nov 2026 (Huawei Weibo, Huawei Central, Gizmochina). Giztop lists it; its
+  # Collector's Edition is a separate, dearer model and stays out, like the Mate X7's.
+  - {id: huawei-mate-x8, edition: china, name: "Huawei Mate X8", announced: 2026-11-24}
   - {id: motorola-razr-70-ultra, edition: china, name: "Motorola Razr 70 Ultra", announced: 2026-04-29}
   - {id: motorola-razr-fold, edition: china, name: "Motorola Razr Fold", announced: 2026-01-07}
   - {id: oneplus-15, edition: global, name: "OnePlus 15", announced: 2025-10-27}
@@ -60,6 +70,10 @@ phones:
   - {id: samsung-galaxy-s26-ultra, edition: china, name: "Samsung Galaxy S26 Ultra", announced: 2026-02-25}
   - {id: samsung-galaxy-z-fold-8, edition: china, name: "Samsung Galaxy Z Fold 8", announced: 2026-07-22}
   - {id: samsung-galaxy-z-fold-8-ultra, edition: china, name: "Samsung Galaxy Z Fold 8 Ultra", announced: 2026-07-22}
+  # added 2026-11-25: launched with the Fold 8 on 22 Jul 2026 (Samsung Newsroom). Europe gets the Exynos 2600 (Gomibo);
+  # China and North America the Snapdragon 8 Elite Gen 5 for Galaxy (The Mobile Marvel: "Global Snapdragon version").
+  - {id: samsung-galaxy-z-flip-8, edition: global, name: "Samsung Galaxy Z Flip 8", announced: 2026-07-22,
+     also: [samsung-galaxy-z-flip-8-snapdragon-version]}
   - {id: sony-xperia-1-vii, edition: china, name: "Sony Xperia 1 VII", announced: 2025-05-13}
   - {id: sony-xperia-1-viii, edition: china, name: "Sony Xperia 1 VIII", announced: 2026-05-13, also: [sony-1-viii]}   # Mobile Marvel: "Sony 1 VIII" (2026-11-25)
   - {id: vivo-x-fold-6, edition: china, name: "Vivo X Fold 6", announced: 2026-10-01}
@@ -81,7 +95,7 @@ phones:
   # Global version, sold as "Leica Leitzphone powered by Xiaomi" (unveiled 28 Feb 2026; GSMArena news 71762, TechRadar).
   # Mobile Marvel lists it as "Leica Leitzphone (Xiaomi 17 Ultra Leica Edition)". Added 2026-11-09.
   - {id: xiaomi-17-ultra-leica-edition, edition: global, name: "Xiaomi 17 Ultra (Leica Edition)", announced: 2025-12-25,
-     also: [leica-leitzphone-xiaomi-17-ultra-leica-edition, leica-leitzphone-powered-by-xiaomi, leica-leitzphone, xiaomi-leica-leitzphone]}
+     sold_as: "Leica Leitzphone powered by Xiaomi", also: [leica-leitzphone-xiaomi-17-ultra-leica-edition, leica-leitzphone-powered-by-xiaomi, leica-leitzphone, xiaomi-leica-leitzphone]}
   - {id: xiaomi-18-fold, edition: china, name: "Xiaomi 18 Fold", announced: 2026-09-07}
   - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro", announced: 2026-09-23}
   - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max", announced: 2026-09-23}
@@ -110,10 +124,16 @@ phones:
   # Launched in China 15 Oct 2026 (IT之家). The Mobile Marvel lists the China 12 Pro+ and the Global 12 Pro.
   # If RedMagic later launches a separate China 12 Pro, `also` must move to that phone.
   - {id: redmagic-12-pro-plus, edition: china, name: "RedMagic 12 Pro+", announced: 2026-10-15}
-  - {id: redmagic-12-pro-plus, edition: global, name: "RedMagic 12 Pro+", announced: 2026-10-15, also: [redmagic-12-pro]}
+  - {id: redmagic-12-pro-plus, edition: global, name: "RedMagic 12 Pro+", announced: 2026-10-15, sold_as: "RedMagic 12 Pro", also: [redmagic-12-pro]}
   - {id: redmi-k90-pro-max, edition: china, name: "Redmi K90 Pro Max", announced: 2025-10-23}
   - {id: redmi-k100-pro-max, edition: china, name: "Redmi K100 Pro Max", announced: 2026-08-11}
+  # added 2026-11-25: the Global version is sold as the POCO F9 Ultra (global launch 1 Sep 2026; Gizmochina: rebrands
+  # of the K100 Pro Max / Pro). Same chip and screen; the Global battery is smaller. Gomibo, The Mobile Marvel and
+  # Average Dad list it.
+  - {id: redmi-k100-pro-max, edition: global, name: "Redmi K100 Pro Max", announced: 2026-08-11, sold_as: "POCO F9 Ultra", also: [poco-f9-ultra]}
   # added 2026-11-09: launched with the K100 Pro Max; Giztop lists it (specs from mi.com/prod/redmi-k100-pro/specs)
   - {id: redmi-k100-pro, edition: china, name: "Redmi K100 Pro", announced: 2026-08-11}
+  # added 2026-11-25: the Global version is sold as the POCO F9 Pro (same launch as the F9 Ultra). Gomibo lists it.
+  - {id: redmi-k100-pro, edition: global, name: "Redmi K100 Pro", announced: 2026-08-11, sold_as: "POCO F9 Pro", also: [poco-f9-pro]}
   - {id: xiaomi-17t, edition: china, name: "Xiaomi 17T", announced: 2026-05-28}
   - {id: xiaomi-17t-pro, edition: china, name: "Xiaomi 17T Pro", announced: 2026-05-28}

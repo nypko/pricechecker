@@ -1,0 +1,12 @@
+# Key specs shown on the phone page. Copied from Huawei's China spec page (see sources below), checked 2026-11-25.
+# A field the page does not give is left out rather than guessed. Battery is the typical (advertised) capacity
+# (rated 5,580 mAh); 80 W wireless. Huawei's China page lists no network bands, so the China version has none here.
+id: huawei-pura-90-plus
+sources:
+  china: {url: https://consumer.huawei.com/cn/phones/pura90-plus/specs/, checked: 2026-11-25, lang: Chinese}
+key:
+  chip: "Kirin 9025"
+  screen: 6.8
+  battery: "5,700 mAh"
+  charging: "100 W"
+photo: {url: "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/261028/phones/pura90-plus.jpg", page: "https://consumer.huawei.com/cn/phones/", checked: 2026-11-25}

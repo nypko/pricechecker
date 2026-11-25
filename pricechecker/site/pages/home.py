@@ -55,6 +55,8 @@ def row_meta(p: dict) -> dict:
         m["ph"] = p["photo"]["s"]
     m["sp"] = p["spec_line"]
     m["eds"] = p["editions"]
+    if p.get("sold_as"):   # other names the search finds it by ("POCO F9 Ultra" for the Global K100 Pro Max)
+        m["aka"] = " ".join(p["sold_as"].values())
     return m
 
 

@@ -93,6 +93,22 @@ def _phone(site_build, pid):
 
 
 @live
+def test_a_version_sold_under_another_name_says_so(site_build):
+    """catalog `sold_as`: RedMagic sells the Global 12 Pro+ as the "RedMagic 12 Pro". The phone page names it under the
+    H1, the Product data lists it as alternateName, and the home search data carries it (home.js matches `aka`)."""
+    import json
+    h = _phone(site_build, "redmagic-12-pro-plus")
+    assert re.search(r'<p class="aka">Global version sold as <strong>RedMagic 12 Pro</strong></p>', h)
+    ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">(.*?)</script>', h, re.DOTALL)]
+    prod = [x for x in ld if x.get("@type") == "Product"]
+    assert not prod or prod[0].get("alternateName") == "RedMagic 12 Pro"
+    meta = json.loads(html.unescape(re.search(r'id="home-meta">(.*?)</script>', _home(site_build), re.DOTALL).group(1)))
+    by_id = {m["id"]: m for m in meta}
+    assert by_id["redmagic-12-pro-plus"]["aka"] == "RedMagic 12 Pro"
+    assert "aka" not in by_id["oppo-find-x9-ultra"]
+    assert '<p class="aka">' not in _phone(site_build, "oppo-find-x9-ultra")
+
+
 def test_phone_page_sections(site_build):
     h = _phone(site_build, "oppo-find-x9-ultra")
     assert h.count('data-block="price_box"') == 2

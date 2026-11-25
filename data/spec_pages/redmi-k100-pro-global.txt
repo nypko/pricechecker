@@ -1,0 +1,183 @@
+POCO F9 Pro Specs
+POCO F9 Pro
+Specs
+Overview
+Specs
+Black
+White
+Aurora Green
+Processor
+Snapdragon® 8 Elite Gen 5 V Series
+*The full official name is Snapdragon® 8 Elite Gen 5, V series (SM8850-1-AB)
+3nm manufacturing process
+Octa-core CPU 2 x Prime Core, up to 4.6GHz 6 x Performance Core, up to 3.62GHz
+Adreno™ GPU
+Qualcomm AI engine
+Dedicated Graphics Boost Chipset
+VisionBoost D8 Chipset
+12nm manufacturing process
+Super resolution + Smart frame rate + Game HDR at the same time
+*Super resolution, Smart frame rate and Game HDR effect are supported on games, including but not limited to all games covered under the game category of the GetApps/Mi App Mall. Features may vary depending on the software version, please refer to the actual experience.
+Dual-core Visuals
+*Dual-core Visuals is only available in YouTube and Netflix and effects on certain scenarios, please refer to the actual experience.
+Storage & RAM
+12GB+256GB
+12GB+512GB
+*Available storage and RAM are less than the total memory due to storage of the operating system and software pre-installed on the device.
+Ultrafast LPDDR5X_9600Mbps memory
+UFS 4.1
+*UFS 4.1 refers to enhanced firmware capabilities compared with previous versions, offering improved data security and exception handling performance.
+Dimensions
+Height : 157.49mm
+Width : 75.25mm
+Thickness : 8.79mm
+Weight : 206g
+*Data tested by POCO Internal Labs, actual results may vary.
+Display
+6.59" 185Hz ultra-bright AMOLED display
+*The screen supports a maximum refresh rate of 185Hz. The screen refresh rate may be slightly different under different application interfaces and game image qualities. Please refer to the actual experience.
+Resolution: 2510 x 1156 POCO HyperRGB
+Contrast ratio: 5,000,000:1
+Refresh rate: Up to 185Hz
+*The screen supports a maximum refresh rate of 185Hz. The screen refresh rate may be slightly different under different application interfaces and game image qualities. Please refer to the actual experience.
+Peak brightness: 10000 nits covering 1% display area | 4500 nits covering 25% display area
+HBM brightness: 2200 nits
+Typical brightness: 850 nits
+Minimum brightness: 1 nit
+Touch sampling rate: Up to 480Hz
+*To activate, go to Game Turbo -> Performance -> Enhanced Touch Control and set "Gesture Tracking" to "High". This enables the maximum multi-finger touch sampling rate of up to 480Hz. Actual performance may vary slightly depending on the specific testing environment and software versions. Please refer to the actual experience.
+Instant touch sampling rate: Up to 4800Hz
+*4800Hz instant touch sampling rate is activated under Game Turbo Mode. Actual performance may be slightly different under different application interfaces and game image qualities. Please refer to the actual experience.
+12 bit color depth, 68 billion colors
+DCI-P3 wide color gamut
+DC dimming
+Original color PRO
+Pro HDR display
+Wet Touch display 2.0
+Xiaomi Vision Care
+*This product is not a medical device. Its features are not intended for medical use and are not intended to predict, diagnose, prevent, or cure any disease.
+HDR10+, Dolby Vision® TÜV Rheinland Low Blue Light (Hardware Solution) Certified TÜV Rheinland Flicker Free Certified TÜV Rheinland Circadian Friendly Certified TÜV Rheinland Intelligent Eye Care Certified
+Corning® Gorilla® Glass 7i
+Rear camera
+200MP main camera
+OIS
+2μm 16-in-1 Super Pixel
+6P lens
+50MP floating telephoto camera
+60mm equivalent focal length
+1/2.75" sensor size
+f/2.0
+OIS
+8MP ultra-wide camera
+f/2.25
+Rear camera photography features
+Live moment
+Motion capture
+Documents mode
+Motion tracking focus
+Portrait mode
+Pro mode
+200MP mode
+Burst shot mode 2.0
+Adaptive telephoto
+Voice shutter
+Supermoon (Auto)
+HDR
+Panorama
+Long exposure
+Rear camera video recording
+4K (3840x2160) video recording at 30 fps, 60 fps
+1080p (1920x1080) HD video recording at 30 fps, 60 fps
+720p (1280x720) HD video recording at 30 fps
+Log video: 4K at 30fps, 60 fps
+Slow motion video: 1080p at 120fps, 240fps, 480fps, 960fps, 1920fps 720p at 120fps, 240fps, 480fps, 960fps, 1920fps
+Time-lapse video: 4K at 30 fps 1080p at 30fps 720p at 30fps
+ShootSteady video: 2.8K at 30fps 1080P at 30fps
+Rear camera video features
+Live cinematography
+Slow motion
+Video teleprompter
+Time-lapse
+ShootSteady
+Source tracking
+Motion tracking focus
+Front camera
+32MP front camera
+Front camera photography features
+Portrait mode
+Smart aperture for group photos
+HDR
+Palm Shutter
+Voice Shutter
+Live moment
+Selfie timer
+Front camera video recording
+4K (3840x2160) video recording at 30 fps
+1080p (1920x1080) HD video recording at 30 fps, or 60 fps
+720p (1280x720) HD video recording at 30 fps
+Slow motion video:720p (1280x720) at 120fps
+Front camera video features
+Video teleprompter
+Time-lapse
+Slow motion selfie
+Battery & Charging
+6330mAh (typ)
+100W wired HyperCharge
+50W wireless HyperCharge
+Up to 27W wired reverse charging
+Up to 22.5W wireless reverse charging
+USB Type-C charging port
+Supports PD3.0 / PD2.0/ 100W PPS
+*100W wired HyperCharge means the adapter output power is 100W. Actual power output may vary depending on the environment.
+*Please consult the local seller on the availability of the power adapter in the box.
+*Wireless chargers sold separately. Availability may vary by country/region. Please check your local website or consult retailer for more information.
+*Supports up to 27W wired reverse charging and up to 22.5W wireless reverse charging, compatible with devices verified through POCO Internal Labs. Actual performance may vary depending on battery condition and other factors. Ensure your phone has sufficient charge and that the receiving device is compatible.
+*The USB-C port is designed for digital devices only; using it with non-digital devices may cause incompatibility.
+Security & Authentication
+Ultrasonic in-display fingerprint sensor
+AI Face Unlock
+NFC
+Support
+*Functions may vary in some markets.
+Network & Connectivity
+Dual SIM (nano SIM + nano SIM or nano SIM + eSIM or eSIM + eSIM)
+*Use of eSIM requires a wireless service plan. This service plan may be subject to certain restrictions of use on switching service providers and roaming (even after contract expiration). eSIM availability may vary depending on country/region and carrier. For more details, please contact your carrier for more information.
+Network bands:
+Supports 5G* / 4G / 3G / 2G
+5G SA: n1/2/3/5/7/8/20/28/38/40/41/66(70M)*/77/78/26/48
+5G NSA: n1/3/5/7/8/20/28/38/40/41/66(70M)*/77/78
+4G LTE TDD: 38/40/41/42/48
+4G LTE FDD: 1/2/3/4/5/7/8/18/19/20/26/28/66(70M)*
+3G WCDMA: 1/2/4/5
+2G GSM: 2/3/5/8
+Supports 4x4 MIMO
+*5G SA/NSA N66(70M) and 4G B66(70M): UL 1710MHz～1780MHz, DL 2110MHz～2180MHz
+*5G connectivity may vary based on region availability and local operator support.
+Wireless Networks
+Wi-Fi Protocol: Wi-Fi 7/ Wi-Fi 6/ Wi-Fi 5/ Wi-Fi 4 and 802.11a/b/g/n/ac/ax/be
+*Wi-Fi 7/Wi-Fi 6 capability may vary based on regional availability and local network support. Wi-Fi connectivity (including Wi-Fi frequency bands, Wi-Fi standards and other features as ratified in IEEE Standard 802.11 specifications) may vary based on regional availability and local network support. The function may be added via OTA when and where applicable.
+WLAN frequency: 2.4G Wi-Fi | 5G Wi-Fi
+Supports Multi-Link Operation, 2x2 MIMO, 8x8 Sounding for MU-MIMO, Wi-Fi Direct, Miracast
+Bluetooth 6.0, Dual-Bluetooth
+Supports SBC / AAC / AptX / AptX HD / AptX Adaptive / LDAC / LHDC 5.0 / LC3 / ASHA / Auracast
+Splash, Water and Dust Resistant
+IP68 dust and water resistance
+*The device has been tested and certified to be resistant to splash, water, and dust in the presence of specific laboratory conditions with the classification IP68 ingress protection based on IEC 60529:1989+A1:1999+A2:2013. Please be noted that the test conditions of water resistance include: submersion in static freshwater up to a depth of 1.5 meters, up to 30 minutes, with a temperature delta between the water and product being 5°C or less. Such water resistance features only pertain to specific conditions tested in a laboratory environment, which do not correspond to the normal conditions of use by consumers. Therefore, ingress protection is not assured if the product is subjected to environments beyond the test conditions. We recommend that you do not test it by yourself. Not advised for beach or pool use. Ingress protection might deteriorate from daily wear and tear, physical damage and/or disassembly needed in case of repair. Avoid charging the product, operating the physical buttons, or removing the SIM tray when product is exposed to moisture. Please carefully refer to user's manual for other safety instructions. The warranty will not cover the liquid damage caused in the environments beyond the IP68 test condition.
+Navigation and Location
+Beidou: B1I+B1C+B2a | GPS: L1+L5 | Galileo: E1+E5a | GLONASS: G1 | QZSS: L1+L5 | NavIC: L5
+AGNSS | Data network | Wireless network | Sensor Assisted Positioning
+Audio playback
+Symmetrical stereo speakers ｜3-Mic array
+Hi-Res & Hi-Res Audio Wireless certification, Dolby Atmos, Sound by Bose
+Supports audio formats such as MP3，FLAC，AAC，OGG，WAV，AMR，AWB
+Video playback
+Supports video formats such as MP4, MKV, AVI, WMV, WEBM, 3GP, ASF
+Supports HDR display when playing HDR10, HDR10+, Dolby Vision video content
+Sensors
+Proximity sensor | Ambient light sensor | Accelerometer | Electronic compass | Gyroscope | IR blaster | Flicker sensor | X-axis linear vibration motor | Color Temperature Sensor
+Operating System
+Powered by Xiaomi HyperOS 3
+*Availability of Xiaomi HyperOS 3 features, apps and services may vary depending on regions, software version and phone model.
+Package Contents
+Mobile Phone / Adapter / USB Type-C Cable /SIM Eject Tool / Protective Case /Safety Information / Quick Start Guide and Warranty Card / Desicant
+*Contents in the package may differ across different regions.

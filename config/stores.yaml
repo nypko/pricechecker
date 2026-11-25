@@ -101,6 +101,39 @@ stores:
         - {url: "https://averagedadofficial.com/policies/shipping-policy", expect: "39\\.99"}
         - {url: "https://averagedadofficial.com/policies/refund-policy", expect: "14 day"}
 
+  aduk:   # added 2026-11-25: Average Dad's UK store; averagedadofficial.com's banner sends UK buyers here ("UK CUSTOMERS CLICK HERE")
+    label: Average Dad Tech UK
+    mentions: ["adukofficial", "ad uk tech"]   # names buyers use for it, searched through Reddit's API (buyer_reports.py)
+    type: shopify         # robots.txt (2026-11-25) allows /products, /pages and meta.json; no bot challenge
+    base_url: https://adukofficial.com
+    rates_page: /pages/shipping-customs   # the shop has no /policies/terms-of-service (404), which Shopify stores are read from by default
+    currency: GBP         # sells in GBP only (UK, Channel Islands, Isle of Man, UAE in its country list); phones ship from China
+    exclude_title: "used|kit|demo|refurb|lens|case|cover|screen|charger|cable|watch|buds|pad|tablet|protector|strap|accessor"
+    # most phones have a third option "Paying by Bank Transfer?" No/Yes; Yes is ~4% cheaper (567 of 615 pairs at 4%,
+    # 2026-11-25). The "No" price is the listed one; the discount is entered as bank_transfer below.
+    skip_option: {"Paying by Bank Transfer?": "Yes"}
+    # reviews: Average Dad Tech's Trustpilot page (same team: its returns page names support@averagedadofficial.com);
+    # /pages/warranty: 12 months, buyer ships in; /pages/returns: 14 days unused and sealed, 20% restocking fee once opened
+    trust: {reviews: {score: 4.7, count: 268, source: Trustpilot, url: "https://www.trustpilot.com/review/averagedadofficial.com"}, warranty_months: 12, returns_days: 14, checked: 2026-11-25}
+    terms:   # verified 2026-11-25 from /pages/shipping-customs, /pages/returns, /pages/warranty
+      payment:   # card/PayPal fees aren't published (shown at checkout); a UAE-registered company, so the UK card-surcharge ban doesn't apply
+        card: {fee_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
+        paypal: {fee_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
+        bank_transfer: {discount_pct: 4, note: "About 4% off when you choose \"Paying by Bank Transfer? Yes\" on the product page (3-5% on a few phones)"}
+      shipping:   # "Shipping costs are set to £39.99, this includes the UK and the channel islands." DHL Express and FedEx, 5-8 business days.
+        # Import VAT: "While rare, you may receive an invoice from FedEx/DHL with a VAT fee. These are not covered by the AD Tech
+        # Store as we are a UAE registered company and you are importing the phone from China." Not included, but usually not
+        # charged, so left unstated (like Average Dad's main store) rather than added to every total.
+        UK: {days: [5, 8], cost: 39.99, note: "£39.99 to the UK and the Channel Islands from China (DHL Express or FedEx), 5-8 business days. The store doesn't expect import charges, but if DHL or FedEx bills import VAT you pay it: it's a UAE company and you are importing the phone."}
+        EU: {ships: false, note: "Average Dad's UK store ships only to the UK and the Channel Islands; its main store sells to the EU"}
+        US: {ships: false, note: "Average Dad's UK store ships only to the UK and the Channel Islands; its main store sells to the US"}
+        CA: {ships: false, note: "Average Dad's UK store ships only to the UK and the Channel Islands"}
+        AU: {ships: false, note: "Average Dad's UK store ships only to the UK and the Channel Islands"}
+        Global: {ships: false, note: "Average Dad's UK store ships only to the UK and the Channel Islands"}
+      watch:
+        - {url: "https://adukofficial.com/pages/shipping-customs", expect: "39\\.99"}
+        - {url: "https://adukofficial.com/pages/returns", expect: "14 day"}
+
   etoren:
     label: Etoren
     type: sitemap

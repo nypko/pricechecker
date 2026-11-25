@@ -1,4 +1,20 @@
 {
+ "apple-iphone-18-pro": {
+  "files": {
+   "m": "27e43fb7b0",
+   "s": "5f5bf2a15d"
+  },
+  "src_sha256": "1beddf16a23bd78bd8bbe2b583d0ff399bf78f0a3de4deb6570d94213e832c95",
+  "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-18-pro-finish-select-black-202609?wid=940&hei=1112&fmt=png-alpha"
+ },
+ "apple-iphone-18-pro-max": {
+  "files": {
+   "m": "e66c225ca1",
+   "s": "f4966c9ceb"
+  },
+  "src_sha256": "4afb49fa8da8cbe3bd37de35d9c2eb4549c133fea9703a805dcf36567ad3e2c9",
+  "url": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-18-pro-max-finish-select-black-202609?wid=940&hei=1112&fmt=png-alpha"
+ },
  "apple-iphone-duo": {
   "files": {
    "m": "aa470492a0",
@@ -183,6 +199,14 @@
   "src_sha256": "01c6b853ac52a8dc50f9e1c0a1eb85fc7f81d6a440c7120c020f5b56f56b76fc",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/251118/delphi/phones/mate-x7.jpg"
  },
+ "huawei-mate-x8": {
+  "files": {
+   "m": "76e635a29e",
+   "s": "e58e0cfe12"
+  },
+  "src_sha256": "e7df7ae8b4552f8fbd8db5f3188a5186188251097b37fd434d97f746254e9d4a",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/261124/skyrim/phones/mate-x8.png"
+ },
  "huawei-mate-xt-2-ultimate-design": {
   "files": {
    "m": "756c5329d2",
@@ -206,6 +230,14 @@
   },
   "src_sha256": "8b116202c00dcfd78e729013d9c1133d524a4be249da07c1a01b3465599ceddc",
   "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/260420/confidential/phones/pura-series/pura90.jpg"
+ },
+ "huawei-pura-90-plus": {
+  "files": {
+   "m": "489e632b60",
+   "s": "b71444d46a"
+  },
+  "src_sha256": "d6c07c8e67093440b60345ea168d1cdd9a88cf099b1ea5ea86640cb5738c7d7e",
+  "url": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/261028/phones/pura90-plus.jpg"
  },
  "huawei-pura-90-pro": {
   "files": {
@@ -446,6 +478,14 @@
   },
   "src_sha256": "7405360285712983af97e1da187e734a87475a0fef1d08f1ce2a8f336c717c21",
   "url": "https://images.samsung.com/is/image/samsung/p6pim/us/s2602/gallery/us-galaxy-s26-ultra-s948-sm-s948uzvexaa-550994053?$ORIGIN_PNG$"
+ },
+ "samsung-galaxy-z-flip-8": {
+  "files": {
+   "m": "b4c047e723",
+   "s": "507fb9a21b"
+  },
+  "src_sha256": "bff51eecc230637426bd60700d84eca8b9d0cb85bafcf28c994820179998753d",
+  "url": "https://images.samsung.com/is/image/samsung/p6pim/us/f2607/gallery/us-galaxy-zflip8-f776-sm-f776ulgaxaa-553842868?$ORIGIN_PNG$"
  },
  "samsung-galaxy-z-fold-8": {
   "files": {

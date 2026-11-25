@@ -1,0 +1,14 @@
+# Key specs shown on the phone page. Copied from apple.com/uk/iphone-18-pro/specs (both Pro models on one page; UK/EU
+# model A3717, the one Gomibo sells), checked 2026-11-25. A field the page does not give is left out rather than guessed:
+# Apple states no battery capacity, no RAM and no maximum wired charging power (50% in about 15 min with a 60 W adapter).
+id: apple-iphone-18-pro-max
+sources:
+  global: {url: https://www.apple.com/uk/iphone-18-pro/specs/, checked: 2026-11-25}
+key:
+  chip: "Apple A20 Pro"
+  screen: 6.9
+bands:
+  global:
+    lte: [1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 66, 106, 34, 38, 39, 40, 41, 42, 48, 53]
+    nr: [1, 2, 3, 5, 7, 8, 12, 20, 25, 26, 28, 30, 66, 70, 75, 38, 40, 41, 48, 53, 77, 78, 79]
+photo: {url: "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-18-pro-max-finish-select-black-202609?wid=940&hei=1112&fmt=png-alpha", page: "https://www.apple.com/uk/shop/buy-iphone/iphone-18-pro", checked: 2026-11-25}

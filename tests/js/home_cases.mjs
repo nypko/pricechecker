@@ -53,6 +53,10 @@ assert.deepEqual(ids({ q: "google" }), ["pixel-11"]);
 assert.deepEqual(ids({ q: "no such phone" }), []);
 assert.ok(matches(phones[0], "  find   x9 "));
 assert.ok(!matches(phones[0], "x"), "a lone letter is a whole word only");
+// a version sold under another name (catalog `sold_as`, row meta `aka`) is found by that name too
+const k100 = { id: "redmi-k100-pro-max", name: "Redmi K100 Pro Max", brand: "Redmi", aka: "POCO F9 Ultra" };
+assert.ok(matches(k100, "poco f9 ultra") && matches(k100, "f9 ult") && matches(k100, "k100"));
+assert.ok(!matches({ ...k100, aka: undefined }, "poco"));
 
 // chips
 assert.deepEqual(ids({ chip: "both" }), ["oppo-find-x9-ultra", "galaxy-s27"]);

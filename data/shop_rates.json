@@ -60,5 +60,19 @@
    "AUD"
   ],
   "fetched": "2026-11-24T14:11:21+00:00"
+ },
+ "https://adukofficial.com": {
+  "currency": "GBP",
+  "rates": {
+   "GBP": 1.0
+  },
+  "checked": [
+   "GBP",
+   "USD",
+   "EUR",
+   "GBP",
+   "AUD"
+  ],
+  "fetched": "2026-11-25T21:10:13+00:00"
  }
 }

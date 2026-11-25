@@ -63,6 +63,8 @@ def _models(catalog: list[dict], offers: list[dict] = ()) -> list[dict]:
                                          "announced": str(ph.get("announced") or "")})   # first official launch, YYYY-MM-DD
         if ph["edition"] not in m["editions"]:
             m["editions"].append(ph["edition"])
+        if ph.get("sold_as"):   # a version the brand sells under another name: {"global": "POCO F9 Ultra"}
+            m.setdefault("sold_as", {})[ph["edition"]] = ph["sold_as"]
     for o in offers:
         m = models.get(o["model_id"])
         if m and o["edition"] not in m["editions"]:

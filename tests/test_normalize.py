@@ -115,6 +115,14 @@ def test_pixels_are_never_china_editions():
     assert edition_of("Xiaomi 17 Ultra 16GB 512GB") == "china"          # unchanged for brands with China editions
 
 
+def test_poco_phones_are_global_and_lose_the_xiaomi_prefix():
+    # POCO is Xiaomi's brand outside China (the China twins are Redmi): Average Dad writes just "POCO F9 Ultra"
+    from pricechecker.normalize import edition_of, model_id
+    assert edition_of("POCO F9 Ultra") == "global"
+    assert edition_of("Poco F9 Ultra Global version") == "global"
+    assert model_id("Xiaomi POCO F9 Ultra 16GB+512GB") == model_id("POCO F9 Ultra") == "poco-f9-ultra"
+
+
 def test_sub_brands_and_realme_gt_match_across_stores():
     from pricechecker.normalize import model_id
     assert model_id("vivo iQOO 15") == model_id("iQOO 15") == "iqoo-15"
@@ -182,10 +190,48 @@ def test_shopify_storage_only_variants_use_the_catalog_ram(monkeypatch):
     prod = {"title": "iPhone Duo", "handle": "iphone-duo", "options": [{"name": "Color"}, {"name": "Storage"}],
             "variants": [{"id": i, "title": f"White / {st}", "option1": "White", "option2": st, "price": str(p), "available": True}
                          for i, (st, p) in enumerate([("256GB", 23500), ("512GB", 26500), ("1TB", 29500), ("2TB", 33500)])]}
-    monkeypatch.setattr(shopify, "market_rates", lambda base: ("HKD", {"HKD": 1.0}))
+    monkeypatch.setattr(shopify, "market_rates", lambda base, *page: ("HKD", {"HKD": 1.0}))
     monkeypatch.setattr(shopify, "_feed", lambda base, cur: [prod])
     cfg = {"base_url": "https://shop.example"}
     got = shopify.fetch("mobilemarvel", cfg, [{"id": "apple-iphone-duo", "ram": 12}])
     assert sorted((o.model_id, o.edition, o.storage) for o in got) == [
         ("apple-iphone-duo", "china", s) for s in ("12/1024", "12/2048", "12/256", "12/512")]
     assert [o.storage for o in shopify.fetch("mobilemarvel", cfg)] == ["base"]
+
+
+def test_shopify_currencies_can_be_read_from_another_page(monkeypatch, tmp_path):
+    """Average Dad's UK store has no /policies/terms-of-service (404): `rates_page` names another storefront page,
+    which carries the same Shopify.currency marker."""
+    from pricechecker import http
+    from pricechecker.stores import shopify
+    seen = []
+
+    class Resp:
+        text = 'Shopify.currency = {"active":"GBP","rate":"1.0"}'
+
+        def json(self):
+            return {"currency": "GBP"}
+
+    def get(url, params=None, **kw):
+        seen.append(url)
+        return Resp()
+    monkeypatch.setattr(http, "get", get)
+    monkeypatch.setattr(shopify, "RATES_CACHE", tmp_path / "rates.json")
+    assert shopify.market_rates("https://uk.example", "/pages/shipping-customs") == ("GBP", {"GBP": 1.0})
+    assert "https://uk.example/pages/shipping-customs" in seen and not any("terms-of-service" in u for u in seen)
+
+
+def test_shopify_skip_option_drops_bank_transfer_priced_variants(monkeypatch):
+    """Average Dad's UK store prices bank transfer as a variant option ("Paying by Bank Transfer?" Yes = about 4% less).
+    The listed price is the "No" variant; the discount is a payment term (bank_transfer discount_pct), so "Yes" variants
+    are skipped instead of winning as the cheapest offer."""
+    from pricechecker.stores import shopify
+    prod = {"title": "Poco F9 Ultra", "handle": "poco-f9-ultra",
+            "options": [{"name": "Color"}, {"name": "Size"}, {"name": "Paying by Bank Transfer?"}],
+            "variants": [{"id": i, "title": f"Black / 12GB/256GB / {yn}", "option1": "Black", "option2": "12GB/256GB",
+                          "option3": yn, "price": p, "available": True} for i, (yn, p) in enumerate([("No", "679.00"), ("Yes", "651.00")])]}
+    monkeypatch.setattr(shopify, "market_rates", lambda base, *page: ("GBP", {"GBP": 1.0}))
+    monkeypatch.setattr(shopify, "_feed", lambda base, cur: [prod])
+    cfg = {"base_url": "https://uk.example", "skip_option": {"Paying by Bank Transfer?": "Yes"}}
+    assert [(o.model_id, o.edition, o.storage, o.price) for o in shopify.fetch("aduk", cfg)] == [("poco-f9-ultra", "global", "12/256", 679.0)]
+    assert [o.price for o in shopify.fetch("aduk", {"base_url": "https://uk.example"})] == [651.0]   # without it, the bank price wins

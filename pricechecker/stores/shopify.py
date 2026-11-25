@@ -23,7 +23,7 @@ def _space_requests(base: str) -> None:
     http.HOST_GROUP[host] = "shopify"
 
 
-def market_rates(base: str) -> tuple[str, dict]:
+def market_rates(base: str, page: str = "/policies/terms-of-service") -> tuple[str, dict]:
     """The shop's base currency (meta.json) and its OWN conversion rate for each site currency, read the same way
     a shopper's browser gets it (?currency=XXX). e.g. ('USD', {'USD': 1.0, 'EUR': 0.903254, 'GBP': 0.762941}).
     Cached for 7 days: shown prices come from the per-currency feeds; these rates only say which currencies the
@@ -38,7 +38,7 @@ def market_rates(base: str) -> tuple[str, dict]:
     for cur in SITE_CURRENCIES:
         if cur in rates:
             continue
-        m = _ACTIVE.search(http.get(f"{base}/policies/terms-of-service", params={"currency": cur}).text)
+        m = _ACTIVE.search(http.get(f"{base}{page}", params={"currency": cur}).text)
         if m and m.group(1) == cur:  # the shop really offers this currency (otherwise the site converts via ECB)
             rates[cur] = float(m.group(2))
     cache[base] = {"currency": shop_cur, "rates": rates, "checked": [shop_cur] + SITE_CURRENCIES,
@@ -63,7 +63,8 @@ def fetch(store: str, cfg: dict, catalog: list[dict] = ()) -> list[Offer]:
     base = cfg["base_url"].rstrip("/")
     ram = {p["id"]: p["ram"] for p in catalog if p.get("ram")}   # catalog `ram`: for variants that give storage only ("256GB")
     _space_requests(base)
-    shop_cur, rates = market_rates(base)
+    # any storefront page carries the Shopify.currency marker; `rates_page` for a shop without the default one
+    shop_cur, rates = market_rates(base, cfg["rates_page"]) if cfg.get("rates_page") else market_rates(base)
     if cfg.get("currency") and cfg["currency"] != shop_cur:
         print(f"  [{store}] NOTE: config says {cfg['currency']} but the shop's base currency is {shop_cur} - using {shop_cur}")
     # the shop's own price in every site currency it sells in (exact, incl. its .95-style rounding);
@@ -85,7 +86,13 @@ def fetch(store: str, cfg: dict, catalog: list[dict] = ()) -> list[Offer]:
         # the storage option is "Size" at Wonda (1st), "Ram+Storage" at Mobile Marvel (2nd)
         names = [o["name"].lower() for o in p.get("options", [])]
         opt = next((i + 1 for i, n in enumerate(names) if re.search(r"size|storage|ram|capacity|memory", n)), 1)
+        # `skip_option`: variants that aren't another price of the phone itself, e.g. Average Dad UK's
+        # "Paying by Bank Transfer?" = Yes (the bank discount is a payment term, not the listed price)
+        skip = [(i + 1, str(val).strip().lower()) for i, n in enumerate(names)
+                for name, val in (cfg.get("skip_option") or {}).items() if n.strip() == name.strip().lower()]
         for v in p["variants"]:
+            if any(str(v.get(f"option{i}") or "").strip().lower() == val for i, val in skip):
+                continue
             price = float(v["price"])
             # a variant can say more than the product: "(GLOBAL)" product, "16GB/1TB (China Version)" variant
             v_ed = edition_of(f'{p["title"]} - {v.get("title", "")}') if ed == "global" else ed

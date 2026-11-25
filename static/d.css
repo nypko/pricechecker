@@ -475,6 +475,11 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
   .pcard { display: contents; }
   .ptext { grid-column: 1; grid-row: 3; margin-top: 6px; }
   .pphoto { grid-column: 2; grid-row: 1 / span 3; align-self: center; margin-top: 22px; }
+  /* "Global version sold as …" under the H1 takes a row of its own */
+  .ptop:has(> .aka) { grid-template-rows: auto auto auto 1fr; }
+  .ptop > .aka { grid-column: 1; grid-row: 3; }
+  .ptop:has(> .aka) .ptext { grid-row: 4; }
+  .ptop:has(> .aka) .pphoto { grid-row: 1 / span 4; }
   .pphoto, .pphoto img { width: 150px; }
   .pphoto img { height: 186px; }
   .pspecs { display: flex; flex-wrap: wrap; font-size: 14px; }
@@ -483,6 +488,8 @@ header.top.is-away:not(:focus-within) { transform: translateY(-100%); }
 }
 .phone .checked { margin-top: 10px; }
 .phone .only { margin: -2px 0 12px; }
+.aka { margin: 4px 0 0; font-size: .92rem; color: var(--ink-2); }
+.aka strong { color: var(--ink); font-weight: 600; }
 .buyers { margin: 0 0 8px; font-size: .86rem; color: var(--ink-2); }
 .stores .offers + .soldout-h { margin-top: 16px; }
 .nomatch, .empty { margin: 10px 0 0; padding: 14px 16px; background: var(--paper); border: 1px dashed var(--rule); border-radius: 16px; font-size: .92rem; color: var(--ink-2); }

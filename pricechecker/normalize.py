@@ -15,8 +15,9 @@ _STORAGE = re.compile(r"(\d{1,2})\s*(?:gb\s*(?:ram)?\s*[+/,\s-]|\+|/)\s*-?\s*(\d
 
 
 # Brands with no China edition: their phones are "global" even when a listing doesn't say so
-# (Pixels are sold as US/JP/EU models, never as a China version).
-_NO_CHINA_EDITION = re.compile(r"\b(?:google|pixel)\b", re.IGNORECASE)
+# (Pixels are sold as US/JP/EU models, never as a China version; POCO is Xiaomi's brand outside China, where the
+# same phones are Redmis).
+_NO_CHINA_EDITION = re.compile(r"\b(?:google|pixel|poco)\b", re.IGNORECASE)
 
 
 # Not the Global version, even though the title says "global": China hardware with global software flashed on it
@@ -45,7 +46,7 @@ def model_id(title: str) -> str:
         del words[1]
     if words[:1] == ["iphone"]:                    # "iPhone Duo" (Mobile Marvel) = "Apple iPhone Duo"
         words.insert(0, "apple")
-    if words[:2] in (["vivo", "iqoo"], ["xiaomi", "redmi"]):   # sub-brands: "vivo iQOO 15" = "iQOO 15", "Xiaomi Redmi K90" = "Redmi K90"
+    if words[:2] in (["vivo", "iqoo"], ["xiaomi", "redmi"], ["xiaomi", "poco"]):   # sub-brands: "vivo iQOO 15" = "iQOO 15", "Xiaomi Redmi K90" = "Redmi K90"
         del words[0]
     if words[:2] == ["nubia", "redmagic"] or words[:3] == ["nubia", "red", "magic"]:   # nubia's gaming brand: "Nubia Red Magic 12 Pro"
         del words[0]

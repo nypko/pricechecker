@@ -1,0 +1,12 @@
+# Key specs shown on the phone page. Copied from Huawei's China spec page (see sources below), checked 2026-11-25.
+# A field the page does not give is left out rather than guessed. Battery is the typical (advertised) capacity
+# (rated 6,025 mAh). Huawei's China page lists no network bands, so the China version has none here.
+id: huawei-mate-x8
+sources:
+  china: {url: https://consumer.huawei.com/cn/phones/mate-x8/specs/, checked: 2026-11-25, lang: Chinese}
+key:
+  chip: "Kirin 9050 Pro"
+  screen: "8.2 inside"
+  battery: "6,200 mAh"
+  charging: "66 W"
+photo: {url: "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/launch/261124/skyrim/phones/mate-x8.png", page: "https://consumer.huawei.com/cn/phones/", checked: 2026-11-25}

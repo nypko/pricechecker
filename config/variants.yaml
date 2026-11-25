@@ -42,3 +42,13 @@ vivo-x300-pro:
   global: {made: [16/512], source: "https://www.vivo.com/en/products/param/x300-pro"}
 vivo-x300-ultra:
   global: {made: [16/512, 16/1024], source: "https://www.vivo.com/en/products/param/x300-ultra"}
+huawei-mate-x8:   # added 2026-11-25
+  china: {made: [12/256, 12/512, 16/512, 16/1024, 16/2048], source: "https://consumer.huawei.com/cn/phones/mate-x8/specs/"}
+huawei-pura-90-plus:   # added 2026-11-25
+  china: {made: [12/256, 12/512, 12/1024], source: "https://consumer.huawei.com/cn/phones/pura90-plus/specs/"}
+redmi-k100-pro-max:   # added 2026-11-25: the Global version, sold as the POCO F9 Ultra
+  global: {made: [12/256, 16/512, 16/1024], source: "https://www.mi.com/global/product/poco-f9-ultra/specs/"}
+redmi-k100-pro:   # added 2026-11-25: the Global version, sold as the POCO F9 Pro
+  global: {made: [12/256, 12/512], source: "https://www.mi.com/global/product/poco-f9-pro/specs/"}
+samsung-galaxy-z-flip-8:   # added 2026-11-25: UK/EU model SM-F776B (12 GB RAM; 256 GB or 512 GB)
+  global: {made: [12/256, 12/512], source: "https://www.samsung.com/uk/business/smartphones/galaxy-z/galaxy-z-flip8-graphite-256gb-sm-f776bzkgeub/"}

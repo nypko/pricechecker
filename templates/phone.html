@@ -30,6 +30,9 @@
   <div class="ptop">
   <p class="kicker"><a href="../">All phones</a> · {{ p.brand }}{% if p.announced %} · announced {{ month_of(p.announced) }}{% endif %}</p>
   <h1>{{ p.name }} price{% if p.editions|length > 1 %}: <em>{{ L.china }} vs {{ L.global }}</em>{% elif "china" in p.editions %}: <em>{{ L.china }} version</em>{% endif %}</h1>
+  {%- if p.sold_as %}
+  <p class="aka">{% for e, n in p.sold_as.items() %}{% if not loop.first %} · {% endif %}{{ L[e] }} version sold as <strong>{{ n }}</strong>{% endfor %}</p>
+  {%- endif %}
   {{ top.product_card(p, v, root) }}
   </div>
   {{ top.phone_checked(v, updated, updated_label) }}

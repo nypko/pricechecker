@@ -135,6 +135,9 @@ def _product_ld(model: dict, in_stock: list[dict], site_cfg: dict) -> str:
     ld = {"@context": "https://schema.org", "@type": "Product", "name": model["name"], "brand": {"@type": "Brand", "name": model["brand"]},
           "offers": {"@type": "AggregateOffer", "priceCurrency": "EUR", "lowPrice": f"{min(eur):.2f}", "highPrice": f"{max(eur):.2f}",
                      "offerCount": len(in_stock)}}
+    if model.get("sold_as"):   # the name a version is sold under ("POCO F9 Ultra"), so searches for it find the page
+        names = list(dict.fromkeys(model["sold_as"].values()))
+        ld["alternateName"] = names[0] if len(names) == 1 else names
     base = (site_cfg.get("base_url") or "").rstrip("/")
     if site_cfg.get("domain_live") and base:
         ld["url"] = f"{base}/phones/{model['id']}"

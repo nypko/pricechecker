@@ -39,12 +39,13 @@ export function groupRows(offers, tax, s) {
 
 const tokens = (str) => String(str || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 
-/** Search: every word of the query is a whole word of the brand or name, in any order; the last word, once it is 3+
- *  letters, may be the start of one (so typing "x9 ult" already finds the Ultra, but "x9" doesn't find the X90). */
+/** Search: every word of the query is a whole word of the brand, name or other name (`aka`: a version sold under
+ *  another name), in any order; the last word, once it is 3+ letters, may be the start of one (so typing "x9 ult"
+ *  already finds the Ultra, but "x9" doesn't find the X90). */
 export function matches(p, q) {
   const w = tokens(q);
   if (!w.length) return true;
-  const hay = tokens(`${p.brand} ${p.name}`);
+  const hay = tokens(`${p.brand} ${p.name} ${p.aka || ""}`);
   return w.every((x, i) => hay.some((t) => t === x || (i === w.length - 1 && x.length >= 3 && t.startsWith(x))));
 }
 

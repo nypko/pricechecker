@@ -5,7 +5,9 @@ BRAND_ALIASES = {"hw": "huawei", "moto": "motorola"}
 _NOISE = [
     r"\b5g\b", r"\b4g\b", r"\bdual[\s-]*sim\b", r"\bsmart\s*phone\b", r"\bsmartphone\b",
     r"\b(sm|xq)-[a-z0-9]+\b",                     # Samsung / Sony model numbers
-    r"\bglobal\s*(version|rom|edition)\b", r"\b(china|chinese)\s*(version|rom|edition)\b", r"\bcn\s*version\b",
+    # "Chinese version/ROM" (Mobile Marvel): the second word goes too, or it is read as part of the model
+    r"\bglobal\s*(version|rom|edition)(\s*/\s*(version|rom|edition))?\b",
+    r"\b(china|chinese)\s*(version|rom|edition)(\s*/\s*(version|rom|edition))?\b", r"\bcn\s*version\b",
     r"\bglobal\b",                               # Giztop: "Vivo X300 Ultra Global"
 ]
 # "12GB+256GB", "16GB 1TB", "12+512GB" (Wonda), "16GB RAM / 512GB", "12GB - 256GB" (Giztop)

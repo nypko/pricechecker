@@ -59,10 +59,11 @@ stores:
         bank_transfer: {discount_pct: 4.75, note: "Bank transfers 4.75% off all orders (manual confirmation)"}
         paypal: {fee_pct: 0}
         card: {fee_pct: 0}
-      # store-wide promotion applied automatically at checkout (2026-10-19, homepage banner: "2% summer sale at checkout - Auto Applied").
-      # Counts only while `watch` text is on the store's homepage (pricechecker/promos.py) and before `until`, if set.
+      # store-wide promotion applied automatically at checkout (2026-11-25, homepage banner: "4% Black Friday sale at checkout - Auto Applied";
+      # the 2% summer sale before it ended in November). No end date given: it counts only while `watch` text is on the store's
+      # homepage (pricechecker/promos.py) and before `until`, if set.
       # Not stated whether it combines with the bank-transfer discount, so with bank transfer only the larger 4.75% is counted.
-      promo: {pct: 2, label: "Summer sale", watch: "2% summer sale", stacks_with_bank: false, note: "2% summer sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
+      promo: {pct: 4, label: "Black Friday sale", watch: "4% Black Friday sale", stacks_with_bank: false, note: "4% Black Friday sale, applied automatically at checkout. The store doesn't say whether it combines with the bank-transfer discount, so with bank transfer we count only the 4.75%."}
       shipping:
         EU: {days: [6, 12], duties_included: true, cost: 450, currency: HKD, note: "EU tax-included (DDP) via UPS, 6-12 business days"}
         UK: {days: [null, 8], duties_included: true, cost: 300, currency: HKD, note: "Standard (DHL/FedEx/UPS), duties & VAT included"}
@@ -82,22 +83,22 @@ stores:
     currency: GBP         # UK business (Trustpilot contact details); phones ship from China / Hong Kong
     exclude_title: "used|kit|demo|refurb|lens|case|cover|screen|charger|cable|watch|buds|pad|tablet|protector|strap|accessor"
     trust: {reviews: {score: 4.7, count: 268, source: Trustpilot, url: "https://www.trustpilot.com/review/averagedadofficial.com"}, warranty_months: 12, returns_days: 14, checked: 2026-10-20}   # /pages/warranty: 12 months, buyer ships in; /policies/refund-policy: 14 days unused and sealed, buyer pays return shipping, 20% restocking fee once opened
-    terms:   # verified 2026-10-20 from /policies/shipping-policy, /policies/refund-policy, /pages/warranty
+    terms:   # verified 2026-10-20 (shipping cost re-checked 2026-11-25) from /policies/shipping-policy, /policies/refund-policy, /pages/warranty
       payment:
         card: {fee_pct: 0, note: "UK store: card surcharges on consumer cards are banned in the UK (Payment Surcharges Regulations)"}
         paypal: {fee_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
         bank_transfer: {discount_pct: null, note: "Payment methods and fees aren't published; shown at checkout"}
-      shipping:   # "Global shipping costs are set to £29.99" (incl. UK and EU); USA flat $59.99. DHL Express, UPS or FedEx, phones 5-8 business days.
+      shipping:   # "Global shipping costs are set to £39.99" (was £29.99 until about 19 Nov 2026) (incl. UK and EU); USA flat $59.99. DHL Express, UPS or FedEx, phones 5-8 business days.
         # Import tax: the store "will do our best to mitigate and remove all customs/VAT fees ... not always possible in countries
         # such as Greece, Hungary and Ireland" and for high fees "typically split the bill 50/50" - not stated as included, so omitted.
-        EU: {days: [5, 8], cost: 29.99, note: "£29.99 to the EU from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, but not always (it names Greece, Hungary and Ireland) and may split high fees 50/50."}
-        UK: {days: [5, 8], cost: 29.99, note: "£29.99 from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, and may split high fees 50/50."}
+        EU: {days: [5, 8], cost: 39.99, note: "£39.99 to the EU from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, but not always (it names Greece, Hungary and Ireland) and may split high fees 50/50."}
+        UK: {days: [5, 8], cost: 39.99, note: "£39.99 from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import VAT isn't stated as included: the store says most parcels arrive with no fees and it tries to avoid them, and may split high fees 50/50."}
         US: {days: [5, 8], cost: 59.99, currency: USD, note: "Flat $59.99 to the US, and you must give a FedEx account number at checkout, so duties and brokerage are billed to your FedEx account. 5-8 business days."}
-        CA: {days: [5, 8], cost: 29.99, note: "£29.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. GST/HST isn't stated as included (the shipping policy doesn't name Canada)."}
-        AU: {days: [5, 8], cost: 29.99, note: "£29.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. GST isn't stated as included."}
-        Global: {days: [5, 8], cost: 29.99, note: "£29.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import tax isn't stated as included."}
+        CA: {days: [5, 8], cost: 39.99, note: "£39.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. GST/HST isn't stated as included (the shipping policy doesn't name Canada)."}
+        AU: {days: [5, 8], cost: 39.99, note: "£39.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. GST isn't stated as included."}
+        Global: {days: [5, 8], cost: 39.99, note: "£39.99 global shipping from China/Hong Kong (DHL Express, UPS or FedEx), 5-8 business days. Import tax isn't stated as included."}
       watch:
-        - {url: "https://averagedadofficial.com/policies/shipping-policy", expect: "29\\.99"}
+        - {url: "https://averagedadofficial.com/policies/shipping-policy", expect: "39\\.99"}
         - {url: "https://averagedadofficial.com/policies/refund-policy", expect: "14 day"}
 
   etoren:
@@ -129,13 +130,16 @@ stores:
     exclude_title: "used|refurb|demo|case|cover"
     request_spacing_sec: 5   # gentle: Cloudflare-protected PrestaShop with ~600 KB pages
     sub_stores: {tradingshenzhen_eu: "eu warehouse"}   # listings shipped from their EU warehouse
+    # URL slugs that don't name the phone (the page title does): .../copy-of-redmi-k100-pro-16gb512gb is "Redmi K100 Pro - 12GB/512GB";
+    # "Honor Magic 9 Power Edition" is the Magic 9 Super (11,000 mAh; checked 2026-11-25)
+    aliases: {copy-of-redmi-k100-pro: redmi-k100-pro, honor-magic-9-power-edition: honor-magic-9-super}
     # if they block scripts again: switch to `type: feed` with the affiliate product feed
     #   feed_url_env: TSZ_FEED_URL, feed_format: xml|csv,
     #   feed_fields: {title: title, link: link, price: price, availability: availability}
     currency: EUR
     affiliate_link: "{url}{sep}affp={id}"   # from the affiliate dashboard: .../gift-coupon/10-voucher?affp=313618
     affiliate_id: "313618"
-    trust: {reviews: {score: 4.7, count: 11216, source: Trustpilot, url: "https://www.trustpilot.com/review/tradingshenzhen.com"}, checked: 2026-10-19}   # warranty and returns pages are behind a bot check: not stated here
+    trust: {reviews: {score: 4.7, count: 11216, source: Trustpilot, url: "https://www.trustpilot.com/review/tradingshenzhen.com"}, warranty_months: 12, returns_days: 14, checked: 2026-11-25}   # reviews checked 2026-10-19; /en/content/warranty-regulations: one year from the day you receive it, TS pays all costs of an accepted claim (label within Europe); /right-of-revocation: 14 days from receipt, free if faulty or wrong, otherwise ~€40-80 return fee
     terms:   # verified 2026-10-16 from /en/content/payment-regulations, /customs-and-duties, /transportation-regulation
       payment:
         bank_transfer: {discount_pct: 0, note: "Only via EPS (AT), iDEAL (NL), P24 (PL), Giropay, Bancontact; no discount"}
@@ -179,7 +183,8 @@ stores:
     base_url: https://www.giztop.com
     categories: [/phones.html]
     exclude_title: "almost new|used|refurbished|open box"
-    aliases: {xiaomi-17-ultra-by-leica: xiaomi-17-ultra-leica-edition}
+    aliases: {xiaomi-17-ultra-by-leica: xiaomi-17-ultra-leica-edition,
+              honor-magic-9-super-power-edition: honor-magic-9-super}   # Honor sells the Super as "Power Edition" in China (11,000 mAh)
     currency: USD
     affiliate_link: "{url}{sep}ref={id}"
     affiliate_id: YOUR_GIZTOP_ID
@@ -190,8 +195,8 @@ stores:
         paypal: {fee_pct: 0, note: "Charged in USD"}
         card: {fee_pct: 0, note: "Cards via PayPal"}
       # codes the shopper types: shown as a hint, never in totals; hidden after `until` or once `watch` leaves the homepage
-      coupons:
-        - {code: H2026, text: "store doesn't say how much it takes off", until: 2026-12-31, watch: "H2026"}   # 2026-10-22: banner dropped "up to 30%", extended to 31 Dec
+      coupons:   # 2026-11-25: H2026 gone from the homepage; Black Friday banner: "coupon code: BF2026 ... valid until November 30th, 2026"
+        - {code: BF2026, text: "Black Friday code; store doesn't say how much it takes off", until: 2026-11-30, watch: "BF2026"}
       shipping:
         EU: {duties_included: null, cost: null, note: "Weight-based, shown in cart. Giztop says it pays EU duties/VAT through IOSS, but IOSS only covers parcels up to EUR 150 and its own customs page says customs may charge the buyer for smartphones; buyers report paying on delivery (Trustpilot, 2026)"}
         UK: {duties_included: false, cost: null, note: "Weight-based, shown in cart; buyer pays UK VAT. Giztop says it usually declares a lower value on the parcel - customs can reassess and charge on the real price"}
@@ -216,7 +221,8 @@ stores:
     exclude_url: "enterprise"
     refresh_hours: 12     # the sitemap has no <lastmod>: ~150 pages, re-read twice a day
     request_spacing_sec: 3
-    aliases: {honor-magic8-pro: honor-magic-8-pro, vivo-x-fold6: vivo-x-fold-6}
+    aliases: {honor-magic8-pro: honor-magic-8-pro, vivo-x-fold6: vivo-x-fold-6,
+              oppo-find-x10-pro-max-16gb: oppo-find-x10-pro-max, oppo-find-x10-pro-max-12gb: oppo-find-x10-pro-max}   # RAM in the URL (2026-11-25)
     promo_pages: ["https://www.gomibo.de/"]
     currency: EUR
     affiliate_link: "{url}{sep}partner={id}"   # format unconfirmed: Gomibo's partner programme is by email (german.growth@gomibo.com)

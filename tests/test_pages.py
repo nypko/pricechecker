@@ -682,7 +682,7 @@ def test_stores_list_row_shows_regions_shipping_tax_fees_trust_and_checked(site_
     h = (site_build / "stores.html").read_text()
     tsz = re.search(r'<li class="st" data-store="tradingshenzhen".*?</li>\s*(?=<li class="st"|</ul>)', h, re.DOTALL).group(0)
     for t in ("Delivers to", "EU", "Australia", "Rest of world", "tax included", "PayPal", "4% fee", "Card", "no fee",
-              "4.7", "Trustpilot", "11,216 reviews", "Terms checked", "2026-10-19"):
+              "4.7", "Trustpilot", "11,216 reviews", "Terms checked", "2026-11-25"):
         assert t in tsz, t
     assert 'data-f-tax="1"' in tsz and 'data-f-paypal="1"' in tsz
     # a store that bills import tax on delivery is flagged out of the tax chip but still listed

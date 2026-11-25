@@ -61,7 +61,7 @@ phones:
   - {id: samsung-galaxy-z-fold-8, edition: china, name: "Samsung Galaxy Z Fold 8", announced: 2026-07-22}
   - {id: samsung-galaxy-z-fold-8-ultra, edition: china, name: "Samsung Galaxy Z Fold 8 Ultra", announced: 2026-07-22}
   - {id: sony-xperia-1-vii, edition: china, name: "Sony Xperia 1 VII", announced: 2025-05-13}
-  - {id: sony-xperia-1-viii, edition: china, name: "Sony Xperia 1 VIII", announced: 2026-05-13}
+  - {id: sony-xperia-1-viii, edition: china, name: "Sony Xperia 1 VIII", announced: 2026-05-13, also: [sony-1-viii]}   # Mobile Marvel: "Sony 1 VIII" (2026-11-25)
   - {id: vivo-x-fold-6, edition: china, name: "Vivo X Fold 6", announced: 2026-10-01}
   - {id: vivo-x-fold-6, edition: global, name: "Vivo X Fold 6", announced: 2026-10-01}
   - {id: vivo-x300-fe, edition: global, name: "Vivo X300 FE", announced: 2026-04-16}
@@ -81,7 +81,7 @@ phones:
   # Global version, sold as "Leica Leitzphone powered by Xiaomi" (unveiled 28 Feb 2026; GSMArena news 71762, TechRadar).
   # Mobile Marvel lists it as "Leica Leitzphone (Xiaomi 17 Ultra Leica Edition)". Added 2026-11-09.
   - {id: xiaomi-17-ultra-leica-edition, edition: global, name: "Xiaomi 17 Ultra (Leica Edition)", announced: 2025-12-25,
-     also: [leica-leitzphone-xiaomi-17-ultra-leica-edition, leica-leitzphone-powered-by-xiaomi, leica-leitzphone]}
+     also: [leica-leitzphone-xiaomi-17-ultra-leica-edition, leica-leitzphone-powered-by-xiaomi, leica-leitzphone, xiaomi-leica-leitzphone]}
   - {id: xiaomi-18-fold, edition: china, name: "Xiaomi 18 Fold", announced: 2026-09-07}
   - {id: xiaomi-18-pro, edition: china, name: "Xiaomi 18 Pro", announced: 2026-09-23}
   - {id: xiaomi-18-pro-max, edition: china, name: "Xiaomi 18 Pro Max", announced: 2026-09-23}
@@ -96,7 +96,7 @@ phones:
   - {id: honor-magic-8, edition: china, name: "Honor Magic 8", announced: 2025-10-15}
   - {id: huawei-pura-90, edition: china, name: "Huawei Pura 90", announced: 2026-04-20}
   - {id: huawei-mate-x7, edition: china, name: "Huawei Mate X7", announced: 2025-11-25}
-  - {id: huawei-mate-xt-2-ultimate-design, edition: china, name: "Huawei Mate XT 2 Ultimate Design", announced: 2026-09-07, also: [huawei-mate-xt-2]}
+  - {id: huawei-mate-xt-2-ultimate-design, edition: china, name: "Huawei Mate XT 2 Ultimate Design", announced: 2026-09-07, also: [huawei-mate-xt-2, huawei-mate-xt2]}   # Average Dad: "Huawei Mate XT2" (2026-11-25)
   - {id: huawei-mate-90-rs, edition: china, name: "Huawei Mate 90 RS", announced: 2026-10-01, also: [huawei-mate-90-rs-ultimate, huawei-mate-90-rs-ultimate-design]}
   - {id: xiaomi-mix-flip-2, edition: china, name: "Xiaomi Mix Flip 2", announced: 2025-06-26}
   - {id: honor-magic-v5, edition: china, name: "Honor Magic V5", announced: 2025-07-02}

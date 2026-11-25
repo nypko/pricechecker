@@ -17,6 +17,10 @@ def test_mobile_marvel_titles():
     assert model_id("Honor Magic 9 Pro Max Chinese Version") == "honor-magic-9-pro-max"
     assert model_id("OPPO FIND X10 PRO MAX GLOBAL EDITION") == "oppo-find-x10-pro-max"
     assert edition_of("Honor Magic 9 Chinese Version") == "china"
+    # 2026-11-25: "Vivo X300 Ultra Chinese version/ROM" was read as a model "vivo-x300-ultra-rom"
+    assert model_id("Vivo X300 Ultra Chinese version/ROM") == "vivo-x300-ultra"
+    assert edition_of("Vivo X300 Ultra Chinese version/ROM") == "china"
+    assert model_id("Xiaomi 18 Pro Global version / ROM") == "xiaomi-18-pro"
 
 
 def test_edition():

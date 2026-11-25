@@ -14,8 +14,9 @@
     so they survive the ~60 characters a search result shows; a China-only phone keeps "China version" ahead of its price -#}
 {% set price_kind = (p.ed_label.china ~ " version price") if p.editions|length == 1 and "china" in p.editions else "price" %}
 {% set versus = (", " ~ p.ed_label.china ~ " vs Global") if p.editions|length > 1 else "" %}
-{% block title %}{{ p.name }} {{ price_kind }}{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %}{{ versus }} [{{ month }}] – DoorPrice{% endblock %}
-{% block description %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global and China versions side by side{% endif %}, with payment fees, shipping and import tax worked in. Updated several times a day.{% endblock %}
+{#- past 70 characters (seo.fit) the site name goes first, then the month, then "China vs Global"; name and price stay -#}
+{% block title %}{% filter fit(70, " – DoorPrice", " [" ~ month ~ "]", versus) %}{{ p.name }} {{ price_kind }}{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered{% endif %}{% endif %}{{ versus }} [{{ month }}] – DoorPrice{% endfilter %}{% endblock %}
+{% block description %}{% filter fit(160, " Updated several times a day.") %}{{ p.name }}{% if tp %} from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}: compare {{ p.n_stores }} store{{ "s" if p.n_stores != 1 }}{% if p.editions|length > 1 %}, Global vs China versions{% endif %}, with fees, shipping and import tax included. Updated several times a day.{% endfilter %}{% endblock %}
 {% block head %}<link rel="alternate" type="application/atom+xml" title="{{ p.name }} price changes" href="../feeds/{{ p.slug }}.xml">{% if p.ld %}<script type="application/ld+json">{{ p.ld|safe }}</script>{% endif %}{% endblock %}
 {% block og_image %}cards/{{ p.slug }}.png?v={{ p.card_v }}{% endblock %}
 {% block og_alt %}{{ p.name }} on DoorPrice{% if tp %}: from €{{ "{:,.0f}".format(tp[0]) }}{% if tp[1] %} delivered to the EU{% endif %}{% endif %}{% endblock %}

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161b22" media="(prefers-color-scheme: dark)">
-<title>{% block title %}DoorPrice – what flagship phones really cost, delivered to your door{% endblock %}</title>
+<title>{% filter fit(70, " – DoorPrice") %}{% block title %}DoorPrice – what flagship phones really cost, delivered to your door{% endblock %}{% endfilter %}</title>
 <link rel="icon" href="{{ root }}static/icons/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="{{ root }}static/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="{{ root }}static/icons/apple-touch-icon.png">
@@ -16,7 +16,19 @@
 {% if site.testing %}<meta name="robots" content="noindex, nofollow">{% else %}<script>if (/\.pages\.dev$/.test(location.hostname)) location.replace({{ site.base_url.rstrip('/')|tojson }} + location.pathname + location.search + location.hash);</script>{% endif %}
 {#- search results: the site's name on the home page, and a breadcrumb trail ("DoorPrice › Stores › Giztop") from each page's `crumbs` -#}
 {% set base = site.base_url.rstrip('/') %}
-{% if path == "" %}<script type="application/ld+json">{{ {"@context": "https://schema.org", "@type": "WebSite", "name": "DoorPrice", "alternateName": "doorprice.app", "url": base ~ "/"}|tojson }}</script>
+{#- who runs the site (the home page's Organization; the About, Methodology and Privacy pages are Articles by it) -#}
+{% set org = {"@type": "Organization", "@id": base ~ "/#org", "name": "DoorPrice", "url": base ~ "/", "logo": base ~ "/static/icons/icon-512.png"} %}
+{% if path == "" %}
+{%- set same_as = ([("https://t.me/" ~ site.telegram)] if site.telegram else []) + ([("https://www.reddit.com/r/" ~ site.reddit ~ "/")] if site.reddit else []) %}
+{%- set org_full = dict(org, description="Independent price comparison for flagship phones from import stores: what each costs delivered to your door.", sameAs=same_as, **({"email": site.contact_email} if site.contact_email else {})) %}
+{#- the phone list (ItemList) as first shown: the rows before "Show all", in the page's own order (position and address
+    only - all ~80 rows would push the page past its size budget) -#}
+{%- set items = [] %}{% for q in (v.ordered[:v.first] if v is defined else []) %}{% set _ = items.append({"@type": "ListItem", "position": loop.index, "url": base ~ "/phones/" ~ q.slug}) %}{% endfor %}
+<script type="application/ld+json">{{ {"@context": "https://schema.org", "@graph": [
+  {"@type": "WebSite", "@id": base ~ "/#website", "name": "DoorPrice", "alternateName": "doorprice.app", "url": base ~ "/", "publisher": {"@id": base ~ "/#org"}},
+  org_full,
+  {"@type": "ItemList", "name": "Flagship phones compared", "itemListElement": items}]}|ld }}</script>
+{% elif path in ("about", "methodology", "privacy") %}<script type="application/ld+json">{{ {"@context": "https://schema.org", "@type": "Article", "headline": self.title()|striptags|replace(" – DoorPrice", ""), "description": self.description()|striptags, "url": base ~ "/" ~ path, "mainEntityOfPage": base ~ "/" ~ path, "inLanguage": "en", "author": org, "publisher": org}|tojson }}</script>
 {% elif crumbs is defined %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"DoorPrice","item":{{ (base ~ "/")|tojson }}}
   {%- for name, href in crumbs %},{"@type":"ListItem","position":{{ loop.index + 1 }},"name":{{ name|tojson }},"item":{{ (base ~ "/" ~ href)|tojson }}}{% endfor %}]}</script>
 {% endif %}

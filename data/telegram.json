@@ -10,7 +10,7 @@
   },
   "apple-iphone-duo": {
    "left": "",
-   "ref": 2620.45
+   "ref": 2623.33
   },
   "google-pixel-10-pro": {
    "left": "",
@@ -38,7 +38,7 @@
   },
   "honor-magic-8-pro": {
    "left": "",
-   "ref": 888.61
+   "ref": 889.57
   },
   "honor-magic-8-pro-air": {
    "left": "import tax",
@@ -62,11 +62,11 @@
   },
   "honor-magic-v6": {
    "left": "",
-   "ref": 1364.77
+   "ref": 1365.73
   },
   "honor-robot-phone": {
    "left": "",
-   "ref": 1658.53
+   "ref": 1660.45
   },
   "huawei-mate-80": {
    "left": "import tax",
@@ -78,7 +78,7 @@
   },
   "huawei-mate-80-pro-max": {
    "left": "",
-   "ref": 1123.81
+   "ref": 1124.77
   },
   "huawei-mate-90": {
    "left": "import tax",
@@ -90,15 +90,15 @@
   },
   "huawei-mate-90-pro-max": {
    "left": "",
-   "ref": 1560.61
+   "ref": 1562.53
   },
   "huawei-mate-90-rs": {
    "left": "",
-   "ref": 2128.93
+   "ref": 2130.85
   },
   "huawei-mate-x7": {
    "left": "",
-   "ref": 1872.61
+   "ref": 1875.49
   },
   "huawei-mate-x8": {
    "left": "shipping and import tax",
@@ -106,11 +106,11 @@
   },
   "huawei-mate-xt-2-ultimate-design": {
    "left": "",
-   "ref": 3586.21
+   "ref": 3590.05
   },
   "huawei-pura-80-ultra": {
    "left": "",
-   "ref": 1341.73
+   "ref": 1343.65
   },
   "huawei-pura-90": {
    "left": "import tax",
@@ -126,23 +126,23 @@
   },
   "huawei-pura-90-pro-max": {
    "left": "",
-   "ref": 1059.49
+   "ref": 1060.45
   },
   "huawei-pura-90s-pro": {
    "left": "",
-   "ref": 896.29
+   "ref": 897.25
   },
   "huawei-pura-90s-pro-max": {
    "left": "",
-   "ref": 1035.49
+   "ref": 1036.45
   },
   "huawei-pura-x-max": {
    "left": "",
-   "ref": 1658.53
+   "ref": 1660.45
   },
   "huawei-pura-x-view": {
    "left": "",
-   "ref": 1059.49
+   "ref": 1060.45
   },
   "iqoo-15": {
    "left": "",
@@ -174,7 +174,7 @@
   },
   "oneplus-16": {
    "left": "",
-   "ref": 1047.01
+   "ref": 1047.97
   },
   "oppo-find-n5": {
    "left": "",
@@ -190,7 +190,7 @@
   },
   "oppo-find-x10-e": {
    "left": "import tax",
-   "ref": 876.38
+   "ref": 877.42
   },
   "oppo-find-x10-pro-max": {
    "left": "",
@@ -428,7 +428,7 @@
   },
   "redmagic-12-pro-plus": {
    "left": "",
-   "ref": 1143.01
+   "ref": 1144.93
   },
   "redmi-k100-pro": {
    "left": "",
@@ -468,7 +468,7 @@
   },
   "sony-xperia-1-viii": {
    "left": "",
-   "ref": 1423.33
+   "ref": 1425.25
   },
   "vivo-x-fold-6": {
    "left": "",
@@ -480,7 +480,7 @@
   },
   "vivo-x300-fe": {
    "left": "",
-   "ref": 962.53
+   "ref": 964.45
   },
   "vivo-x300-pro": {
    "left": "",
@@ -552,8 +552,8 @@
   },
   "xiaomi-mix-flip-2": {
    "left": "",
-   "ref": 872.29
+   "ref": 873.25
   }
  },
- "updated": "2026-11-25T23:37:25Z"
+ "updated": "2026-11-26T03:24:04Z"
 }

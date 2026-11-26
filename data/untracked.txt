@@ -22,6 +22,7 @@ mobilemarvel	huawei-mate-x6/global
 mobilemarvel	huawei-mate-xt/global
 mobilemarvel	huawei-mate-xts-ultimate-design/china
 mobilemarvel	huawei-matebook-fold-2026/china
+mobilemarvel	huawei-matebook-fold-s/china
 mobilemarvel	huawei-matebook-fold-ultimate-design-2025/china
 mobilemarvel	huawei-pura-80-pro-plus/china
 mobilemarvel	huawei-pura-x/china

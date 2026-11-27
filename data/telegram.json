@@ -158,7 +158,7 @@
   },
   "motorola-razr-70-ultra": {
    "left": "",
-   "ref": 1179.95
+   "ref": 1187.95
   },
   "motorola-razr-fold": {
    "left": "",
@@ -217,12 +217,6 @@
    "ref": 707.0
   },
   "posted": [
-   {
-    "at": "2026-11-13T02:24:44Z",
-    "eur": 1112.95,
-    "slug": "honor-magic-v5",
-    "was": 1150.95
-   },
    {
     "at": "2026-11-13T18:32:54Z",
     "eur": 1337.95,
@@ -454,7 +448,7 @@
   },
   "samsung-galaxy-s26-plus": {
    "left": "",
-   "ref": 909.95
+   "ref": 920.95
   },
   "samsung-galaxy-s26-ultra": {
    "left": "",
@@ -561,5 +555,5 @@
    "ref": 873.25
   }
  },
- "updated": "2026-11-26T23:15:39Z"
+ "updated": "2026-11-27T05:55:46Z"
 }
